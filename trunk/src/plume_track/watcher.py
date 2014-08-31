@@ -28,7 +28,7 @@ changes).
 The following code shows how the watcher module can be used to print the names
 of any new files created in a directory:
 
-    from plume_track import watcher
+    from plumetrack import watcher
     import sys
     import time
     

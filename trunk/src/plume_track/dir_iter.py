@@ -32,7 +32,7 @@ to list files in realtime as they are created (using the watcher module).
 The following code shows how the dir_iter module can be used to print the names
 of any new files created in a directory:
 
-    from plume_track import dir_iter
+    from plumetrack import dir_iter
     
     for filename in dir_iter.DirFileIter("my_directory", realtime=True):
         print filename
