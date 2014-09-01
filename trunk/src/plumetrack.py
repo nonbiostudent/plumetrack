@@ -21,7 +21,8 @@ import datetime
 import os.path
 import numpy
 import Image
-from std_ops.iter_ import parallel_process
+import multiprocessing
+import itertools
 
 from plume_track import settings
 from plume_track import dir_iter
@@ -29,6 +30,83 @@ from plume_track import motion
 from plume_track import flux
 from plume_track import output
 
+
+############################################################################
+
+def __run_func(func,q,l,args,kwargs):
+    """
+    To make parallel_process compatible with Windows, the function passed to
+    the Process constructor must be pickleable. It cannot therefore be a 
+    lambda function and so __run_func is defined instead.
+    """
+    q.put([func(i,*args,**kwargs) for i in l])
+    
+    
+############################################################################    
+     
+def parallel_process(func, list_, *args, **kwargs):
+    """
+    Runs the function 'func' on all items in list_ passing any additional
+    args or kwargs specified. The list elements are processed asyncronously
+    by as many processors as there are cpus. The return value will be a list
+    of the return values of the function in the same order as the input list.
+    """    
+    if len(list_) == 0:
+        return []
+    
+    results = []
+    processes = []
+    queues = []
+    
+    for l in unsplice(list_,multiprocessing.cpu_count()):
+        q = multiprocessing.Queue(0)
+        p = multiprocessing.Process(target=__run_func,args=(func,q,l,args,kwargs))
+        p.start()
+        processes.append(p)
+        queues.append(q)
+    
+    for i in range(len(processes)):        
+        results.append(queues[i].get())
+        processes[i].join()
+    
+    return splice(results)
+
+
+############################################################################
+
+def splice(l):
+    """
+    Performs a round-robin joining of iterables.
+    
+    >>> print splice([[1, 2, 3],['a', 'b'],[100, 300, 400, 500]])
+    [1, 'a', 100, 2, 'b', 300, 3, 400, 500]
+    """
+    sentinel = object()
+    it = itertools.chain.from_iterable(itertools.izip_longest(*l,fillvalue=sentinel))
+    return [i for i in it if i is not sentinel]
+
+############################################################################
+
+def unsplice(l, n):
+    """
+    Splits a list into n sublists in the following way:
+    
+    >>> print unsplice(range(10), 3)
+    [[0, 3, 6, 9], [1, 4, 7], [2, 5, 8]]
+    >>> print splice(unsplice(range(10), 3)) == range(10)
+    True
+    >>> print unsplice([0, 1], 3)
+    [[0], [1]]
+    >>> print unsplice([], 2)
+    []
+    
+    This operation can be undone using the splice() function.
+    """
+    n = min(n, len(l))
+    return [l[i::n] for i in range(n)]
+
+
+############################################################################
 
 #read the user supplied values from the command line
 options, args = settings.parse_cmd_line()
