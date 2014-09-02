@@ -19,7 +19,7 @@ import numpy
 
 
 class Spline2D:
-    def __init__(self, xpts, ypts):
+    def __init__(self, xpts, ypts, direction):
         
         if len(xpts) != len(ypts):
             raise ValueError("xpts and ypts must contain the same number of elements")
@@ -27,21 +27,22 @@ class Spline2D:
         if len(xpts) < 2:
             raise ValueError("At least 2 points are required for interpolation")
         
-        xpts = numpy.asarray(xpts)
-        ypts = numpy.asarray(ypts)
+        self.__xpts = numpy.array(xpts, dtype='float')
+        self.__ypts = numpy.array(ypts, dtype='float')
         
-        self.__dist = numpy.zeros_like(xpts)
-        self.__dist[1:] = numpy.cumsum(numpy.sqrt((xpts[1:]-xpts[:-1])**2 + (ypts[1:]-ypts[:-1])**2))
+        self.direction = direction
+        self.__dist = numpy.zeros_like(self.__xpts)
+        self.__dist[1:] = numpy.cumsum(numpy.sqrt((self.__xpts[1:]-self.__xpts[:-1])**2 + (self.__ypts[1:]-self.__ypts[:-1])**2))
         
         if len(xpts) > 3:        
-            self._interp_x = interp1d(self.__dist, xpts, kind='cubic')
-            self._interp_y = interp1d(self.__dist, ypts, kind='cubic')
+            self._interp_x = interp1d(self.__dist, self.__xpts, kind='cubic')
+            self._interp_y = interp1d(self.__dist, self.__ypts, kind='cubic')
             
         elif len(xpts) > 1:
             #at lease four points are required for spline interpolation - so below
             #this we just use linear
-            self._interp_x = interp1d(self.__dist, xpts, kind='linear')
-            self._interp_y = interp1d(self.__dist, ypts, kind='linear')
+            self._interp_x = interp1d(self.__dist, self.__xpts, kind='linear')
+            self._interp_y = interp1d(self.__dist, self.__ypts, kind='linear')
     
     
     
@@ -60,24 +61,34 @@ class Spline2D:
     
     
     
-    def get_poly_approx(self, n=-1, z=-1.0):
+    def get_poly_approx(self, n=-1):
         """
         Returns a tuple of arrays (startpoints, vectors, normals)
         """
-        if n == -1:
+        if n < 1 and n != -1:
+            raise ValueError("n must be greater than 1 (or -1 for defaults)")
+
+        if len(self.__dist) < 4 and n == -1:
+            pts = numpy.zeros((len(self.__dist),2), dtype='float')
+            pts[:,0] = self.__xpts
+            pts[:,1] = self.__ypts
+        
+        elif n == -1:
             #make each polygon segment approx 1 pixel in size
             n = int(round(self.__dist[-1],0))
-        elif n < 1:
-            raise ValueError("n must be greater than 1 (or -1 for defaults)")
-        
-        pts = self.get_n_points(n+1)
+            
+            pts = self.get_n_points(n+1)
+            
+        else:
+            pts = self.get_n_points(n+1)
         
         vectors = pts[1:] - pts[:-1]
         
-
-        normals = numpy.cross(vectors, numpy.array([0.0,0.0,z]))
+        normals = numpy.cross(vectors, numpy.array([0.0,0.0,self.direction]))
         normals /= numpy.sqrt((normals ** 2).sum(-1))[..., numpy.newaxis]
+        normals = numpy.array(normals[...,:2]) #only return the xy components of the normals
         
+        #only return the xy components of the normals
         return pts[:-1], vectors, normals
 
 
@@ -98,7 +109,6 @@ def find_flux_contributions(flow, integration_line, poly_approx=-1):
     flow_pts_y = flow_pts_y.reshape((xsize, ysize, 1, 1))
     flow_pts = numpy.concatenate((flow_pts_x, flow_pts_y),-1)
     
-    
     #reshape the arrays of vectors
     int_pts = int_pts.reshape((1, 1, zsize, 2))
     flow = flow.reshape((xsize, ysize, 1, 2))
@@ -118,13 +128,23 @@ def find_flux_contributions(flow, integration_line, poly_approx=-1):
     a_criteria = numpy.logical_and(a <= 1.0, a >= 0.0)
     b_criteria = numpy.logical_and(b <= 1.0, b >= 0.0)
     mask = numpy.zeros_like(a)
-    mask[numpy.where(numpy.logical_and(b_criteria, a_criteria))] = 1.0
+    mask_idxs = numpy.where(numpy.logical_and(b_criteria, a_criteria))
+    
+    mask[mask_idxs] = 1.0
     
     
     #now calculate if the contribution was positive or negative
-    sign = numpy.sign(numpy.dot(flow, int_norms))
+    sign = numpy.sign(numpy.dot(flow[:,:,0,:], int_norms[0,0,:,:].T))
     
     mask *= sign
+    
+    #collapse the mask along the z-direction such that each element in the array
+    #simply gives the sign of the contribution for that pixel in the image
+    mask = numpy.sum(mask, axis=-1)
+    
+    #sanity check - no pixel in the image should contribute more than once 
+    #(or less than minus once) to the total flux
+    assert numpy.all(numpy.fabs(mask) <= 1), "Multiple contributions to the flux from the same pixel detected. Please send the offending image and your plumetrack configuration file to the plumetrack developers."
     
     return mask
 
@@ -137,6 +157,39 @@ def calc_flux(image, mask, delta_t):
     
 class FluxEngine(object):
     def __init__(self, config):
-        pass
-    def compute_flux(self, current_image, current_capture_time, velocities):
-        return None
+        
+        xpts, ypts = zip(*config['integration_line'])
+        
+        self.__int_line = Spline2D(xpts, ypts, config['integration_direction'])
+        
+        self.__pixel_size = config['pixel_size']
+        self.__conversion_factor = config['flux_conversion_factor']
+    
+    
+    def get_integration_line(self):
+        return self.__int_line
+    
+    
+    def compute_flux(self, current_image, flow, delta_t):
+        
+        
+        #convert the pixel values into mass of SO2
+        so2_masses_kg = current_image * self.__pixel_size**2 * self.__conversion_factor
+        
+        #find the pixels which contribute to the flux
+        contributing_pixels = find_flux_contributions(flow, self.__int_line)
+        
+        #sum all the contributing pixels (taking into account whether they were
+        #a positive or negative contribution)
+        total_so2_mass = numpy.sum(so2_masses_kg * contributing_pixels)
+        
+        #convert to flux
+        flux = total_so2_mass / delta_t
+        
+        return flux
+    
+    
+    
+    
+    
+    

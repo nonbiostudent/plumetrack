@@ -20,7 +20,7 @@ import numpy
 import scipy.interpolate
 
 
-def create_motion_png(image, velocities, output_filename):
+def create_motion_png(image, velocities, output_filename, integration_line):
     x_size = int(round((64.0/image.shape[0]) * image.shape[1],0))
     
     #plot the shift vectors (we interpolate onto a 50x50 grid so that there aren't too many vectors to plot)
@@ -38,7 +38,20 @@ def create_motion_png(image, velocities, output_filename):
     plt.close()
     plt.quiver(x_shifts, -y_shifts, units='xy', scale_units='xy',scale=1.5)
     extent = (0, x_size-1, 64-1, 0)
-    plt.imshow(image, cmap=plt.cm.jet, extent=extent)
+    plt.imshow(image, extent=extent)
+    
+    #plot the integration line
+    scale_factor_x = float(x_size-1) / image.shape[0]
+    scale_factor_y = 63.0 / image.shape[1]
+    pts = integration_line.get_n_points(100)
+
+    pts[:,0] *= scale_factor_x
+    pts[:,1] *= scale_factor_y
+    
+    plt.plot(pts[:,0], pts[:,1], 'w-')
+    
+    plt.xlim((0,63))
+    plt.ylim((x_size-1,0))
     plt.xticks([])
     plt.yticks([])
     plt.colorbar()

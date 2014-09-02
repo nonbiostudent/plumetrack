@@ -17,12 +17,9 @@
 
 import cv2
 import numpy
-import numpy.random
-import calendar
 import Image
 
-def date2secs(d):
-    return calendar.timegm(d.timetuple())+d.microsecond/1e6
+
 
 class MotionEngine(object):
     def __init__(self, config):
@@ -32,7 +29,11 @@ class MotionEngine(object):
         self.pix_size = config['pixel_size']
         self.__random_image = None
         self.random_level = config['random_level']
-        self.__mask_im = numpy.array(Image.open(config['mask_image']).convert('L'))
+        
+        if config['mask_image'] != "":
+            self.__mask_im = numpy.array(Image.open(config['mask_image']).convert('L'))
+        else:
+            self.__mask_im = None
         
         self.pyr_scale = config['farneback_pyr_scale']
         self.levels = config['farneback_levels']
@@ -53,10 +54,16 @@ class MotionEngine(object):
                 raise ValueError("Image is a different size to previously "
                                  "preprocessed images.")
         
+        if self.high_thresh < 0:
+            self.high_thresh = image.max()
+        
         thresh_criteria = numpy.logical_or(image < self.low_thresh, 
                                            image > self.high_thresh)
         
-        mask_criteria = (self.__mask_im == 0)
+        if self.__mask_im is not None:
+            mask_criteria = numpy.logical_not(self.__mask_im)
+        else:
+            mask_criteria = numpy.zeros_like(image)
         
         
         mask_idx = numpy.where(numpy.logical_or(thresh_criteria, mask_criteria))
@@ -68,9 +75,8 @@ class MotionEngine(object):
 
 
 
-    def compute_motion_field(self, current_image, next_image, 
-                             current_capture_time, next_capture_time):
-        
+    def compute_flow(self, current_image, next_image):
+                                     
         flow = cv2.calcOpticalFlowFarneback(current_image, next_image, 
                                             self.pyr_scale,
                                             self.levels,
@@ -81,10 +87,10 @@ class MotionEngine(object):
                                             flags=cv2.OPTFLOW_FARNEBACK_GAUSSIAN)
     
         #convert to m/s
-        delta_t = date2secs(next_capture_time) - date2secs(current_capture_time)
-        velocities = self.pix_size * flow / delta_t
+        #delta_t = date2secs(next_capture_time) - date2secs(current_capture_time)
+        #velocities = self.pix_size * flow / delta_t
         
-        return velocities
+        return flow
         
         
         

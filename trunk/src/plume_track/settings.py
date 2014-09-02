@@ -19,6 +19,8 @@ import sys
 import json
 from optparse import OptionParser
 
+import plume_track
+
 def get_plumetrack_rw_dir():
     """
     Returns the path used by plumetrack for things like caching settings.
@@ -58,9 +60,13 @@ def parse_cmd_line():
     Function parses the command line input and returns a tuple
     of (options, args)
     """
-    usage = "usage: %prog [options] image_folder"
+    usage = ("%prog [options] image_folder")
     
-    parser = OptionParser(usage)
+    parser = OptionParser()
+    
+    parser.usage = usage
+    parser.prog = plume_track.PROG_SHORT_NAME
+    parser.description = plume_track.LONG_DESCRIPTION
     
     parser.add_option("-f", "--config_file", dest="config_file", action='store', 
                       type='string', default=None,
@@ -80,8 +86,14 @@ def parse_cmd_line():
     parser.add_option("-t", "--realtime", dest="realtime", action="store_true", 
                       default=False,
                       help="Continuously monitor the image folder for new files")
+
+    parser.add_option("-o","--output_file", dest="output_file", action="store", 
+                      default=None, type='string',
+                      help="Output file to write computed fluxes to. If no file "
+                           "is specified then fluxes will be written to "
+                           "standard output")
     
-    parser.add_option("-o", "--output_pngs", dest="png_output_folder", action="store", 
+    parser.add_option("--output_pngs", dest="png_output_folder", action="store", 
                       default=None, type='string',
                       help="Output PNG files of the motion field into this "
                            "folder. Default is no PNG output.")      
@@ -89,7 +101,8 @@ def parse_cmd_line():
     parser.add_option("-s", "--skip_existing", dest="skip_existing", 
                       action="store_true", default=False,
                       help="Ignore images that are already in the folder. Use "
-                           "of this option implies --realtime")  
+                           "of this option implies --realtime") 
+
     
     (options, args) = parser.parse_args()
 
