@@ -1,19 +1,19 @@
 #Copyright (C) Nial Peters 2014
 #
-#This file is part of plumetrack.
+#This file is part of _plumetrack.
 #
-#plumetrack is free software: you can redistribute it and/or modify
+#_plumetrack is free software: you can redistribute it and/or modify
 #it under the terms of the GNU General Public License as published by
 #the Free Software Foundation, either version 3 of the License, or
 #(at your option) any later version.
 #
-#plumetrack is distributed in the hope that it will be useful,
+#_plumetrack is distributed in the hope that it will be useful,
 #but WITHOUT ANY WARRANTY; without even the implied warranty of
 #MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #GNU General Public License for more details.
 #
 #You should have received a copy of the GNU General Public License
-#along with plumetrack.  If not, see <http://www.gnu.org/licenses/>.
+#along with _plumetrack.  If not, see <http://www.gnu.org/licenses/>.
 from scipy.interpolate import interp1d
 import numpy
 
@@ -144,7 +144,7 @@ def find_flux_contributions(flow, integration_line, poly_approx=-1):
     
     #sanity check - no pixel in the image should contribute more than once 
     #(or less than minus once) to the total flux
-    assert numpy.all(numpy.fabs(mask) <= 1), "Multiple contributions to the flux from the same pixel detected. Please send the offending image and your plumetrack configuration file to the plumetrack developers."
+    assert numpy.all(numpy.fabs(mask) <= 1), "Multiple contributions to the flux from the same pixel detected. Please send the offending image and your _plumetrack configuration file to the _plumetrack developers."
     
     return mask
 

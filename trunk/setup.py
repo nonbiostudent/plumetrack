@@ -18,6 +18,7 @@
 from ez_setup import use_setuptools
 use_setuptools()
 from setuptools import setup
+from setuptools.command.install import install
 import sys
 import os
 
@@ -57,11 +58,19 @@ else:
     install_dependencies.append('pyinotify')
 
 
+class CustomInstall(install):
+    def run(self):
+        """
+        Override the run function to also create the rw directory and create the 
+        default config file there
+        """
+        install.run(self)
+
 
 ####################################################################
 #                    BUILD/INSTALL
 ####################################################################
-import src.plume_track as plumetrack_preinstall
+import src.plumetrack as plumetrack_preinstall
 
 setup(name             = plumetrack_preinstall.PROG_SHORT_NAME,
       version          = plumetrack_preinstall.VERSION,
@@ -70,8 +79,7 @@ setup(name             = plumetrack_preinstall.PROG_SHORT_NAME,
       author_email     = plumetrack_preinstall.AUTHOR_EMAIL,
       url              = plumetrack_preinstall.URL,
       package_dir      = {'':'src'},
-      packages         = ['plume_track'],
+      packages         = ['plumetrack'],
       install_requires = install_dependencies,
-      entry_points     = {'console_scripts': ['plumetrack = plumetrack:main']},
-      scripts          = ['src/plumetrack.py']
+      entry_points     = {'console_scripts': ['plumetrack = plumetrack.main_script:main']}
       )

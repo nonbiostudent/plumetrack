@@ -1,19 +1,19 @@
 #Copyright (C) Nial Peters 2014
 #
-#This file is part of plumetrack.
+#This file is part of _plumetrack.
 #
-#plumetrack is free software: you can redistribute it and/or modify
+#_plumetrack is free software: you can redistribute it and/or modify
 #it under the terms of the GNU General Public License as published by
 #the Free Software Foundation, either version 3 of the License, or
 #(at your option) any later version.
 #
-#plumetrack is distributed in the hope that it will be useful,
+#_plumetrack is distributed in the hope that it will be useful,
 #but WITHOUT ANY WARRANTY; without even the implied warranty of
 #MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #GNU General Public License for more details.
 #
 #You should have received a copy of the GNU General Public License
-#along with plumetrack.  If not, see <http://www.gnu.org/licenses/>.
+#along with _plumetrack.  If not, see <http://www.gnu.org/licenses/>.
 
 import os.path
 import Queue
@@ -21,7 +21,7 @@ import threading
 import glob
 import itertools
 
-from plume_track.watcher import create_dir_watcher, can_watch_directories
+from plumetrack.watcher import create_dir_watcher, can_watch_directories
 
 """
 The dir_iter module provides an iterator class for iterating through the files
@@ -32,7 +32,7 @@ to list files in realtime as they are created (using the watcher module).
 The following code shows how the dir_iter module can be used to print the names
 of any new files created in a directory:
 
-    from plumetrack import dir_iter
+    from _plumetrack import dir_iter
     
     for filename in dir_iter.DirFileIter("my_directory", realtime=True):
         print filename

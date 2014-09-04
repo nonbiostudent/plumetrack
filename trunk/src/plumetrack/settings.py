@@ -1,44 +1,44 @@
 #Copyright (C) Nial Peters 2014
 #
-#This file is part of plumetrack.
+#This file is part of _plumetrack.
 #
-#plumetrack is free software: you can redistribute it and/or modify
+#_plumetrack is free software: you can redistribute it and/or modify
 #it under the terms of the GNU General Public License as published by
 #the Free Software Foundation, either version 3 of the License, or
 #(at your option) any later version.
 #
-#plumetrack is distributed in the hope that it will be useful,
+#_plumetrack is distributed in the hope that it will be useful,
 #but WITHOUT ANY WARRANTY; without even the implied warranty of
 #MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #GNU General Public License for more details.
 #
 #You should have received a copy of the GNU General Public License
-#along with plumetrack.  If not, see <http://www.gnu.org/licenses/>.
+#along with _plumetrack.  If not, see <http://www.gnu.org/licenses/>.
 import os
 import sys
 import json
 from optparse import OptionParser
 
-import plume_track
+import plumetrack
 
 def get_plumetrack_rw_dir():
     """
-    Returns the path used by plumetrack for things like caching settings.
-    This is platform dependent, but on Linux it will be in ~/.plumetrack
+    Returns the path used by _plumetrack for things like caching settings.
+    This is platform dependent, but on Linux it will be in ~/._plumetrack
     """
     
     if sys.platform == 'win32':
         #Windows doesn't really do hidden directories, so get rid of the dot
-        return os.path.join(os.path.expanduser('~'),"plumetrack")
+        return os.path.join(os.path.expanduser('~'),"_plumetrack")
     else:
-        return os.path.join(os.path.expanduser('~'),".plumetrack")
+        return os.path.join(os.path.expanduser('~'),"._plumetrack")
 
 
 
 def load_config_file(filename=None):
     
     if filename is None:
-        filename = os.path.join(get_plumetrack_rw_dir(), "plumetrack.cfg")
+        filename = os.path.join(get_plumetrack_rw_dir(), "_plumetrack.cfg")
     
         
     with open(filename,'r') as ifp:
@@ -65,8 +65,8 @@ def parse_cmd_line():
     parser = OptionParser()
     
     parser.usage = usage
-    parser.prog = plume_track.PROG_SHORT_NAME
-    parser.description = plume_track.LONG_DESCRIPTION
+    parser.prog = plumetrack.PROG_SHORT_NAME
+    parser.description = plumetrack.LONG_DESCRIPTION
     
     parser.add_option("-f", "--config_file", dest="config_file", action='store', 
                       type='string', default=None,
