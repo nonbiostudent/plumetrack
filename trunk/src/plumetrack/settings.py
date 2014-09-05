@@ -23,22 +23,22 @@ import plumetrack
 
 def get_plumetrack_rw_dir():
     """
-    Returns the path used by _plumetrack for things like caching settings.
-    This is platform dependent, but on Linux it will be in ~/._plumetrack
+    Returns the path used by plumetrack for things like caching settings.
+    This is platform dependent, but on Linux it will be in ~/.plumetrack
     """
     
     if sys.platform == 'win32':
         #Windows doesn't really do hidden directories, so get rid of the dot
-        return os.path.join(os.path.expanduser('~'),"_plumetrack")
+        return os.path.join(os.path.expanduser('~'),"plumetrack")
     else:
-        return os.path.join(os.path.expanduser('~'),"._plumetrack")
+        return os.path.join(os.path.expanduser('~'),".plumetrack")
 
 
 
 def load_config_file(filename=None):
     
     if filename is None:
-        filename = os.path.join(get_plumetrack_rw_dir(), "_plumetrack.cfg")
+        filename = os.path.join(get_plumetrack_rw_dir(), "plumetrack.cfg")
     
         
     with open(filename,'r') as ifp:
@@ -64,8 +64,9 @@ def parse_cmd_line():
     
     parser = OptionParser()
     
-    parser.usage = usage
+    
     parser.prog = plumetrack.PROG_SHORT_NAME
+    parser.usage = usage
     parser.description = plumetrack.LONG_DESCRIPTION
     
     parser.add_option("-f", "--config_file", dest="config_file", action='store', 

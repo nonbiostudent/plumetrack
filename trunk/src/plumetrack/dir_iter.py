@@ -195,7 +195,15 @@ class DirFileIter:
         True, then this method will block until a new file is detected (or until
         close() is called).
         """
-        s = self._filename_q.get(block=True)
+        
+        #we do the get() call in a loop so that signals can be recieved by the 
+        #thread calling next() even if no items come into the filename queue
+        while True:
+            try:
+                s = self._filename_q.get(block=True,timeout=1)
+                break
+            except Queue.Empty:
+                continue
         
         if s is None or not self._stay_alive:
             

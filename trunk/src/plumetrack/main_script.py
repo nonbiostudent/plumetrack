@@ -192,6 +192,16 @@ def main():
                                       recursive=options.recursive, 
                                       sort_func=compare_by_time, 
                                       test_func=is_uv_image) 
+    
+    #set an exit handler if we are working in realtime - otherwise it can hang
+    #forever.
+    if options.realtime:
+        def _quit(*args):
+            image_iter.close()
+        
+        import signal
+        
+        signal.signal(signal.SIGINT, _quit)
         
     
     if options.realtime or not options.parallel:

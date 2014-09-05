@@ -26,9 +26,9 @@ AUTHOR_EMAIL = 'nonbiostudent@hotmail.com'
 
 URL = 'http://ccpforge.cse.rl.ac.uk/gf/project/_plumetrack/'
 
-PROG_SHORT_NAME = '_plumetrack'
+PROG_SHORT_NAME = 'plumetrack'
 
-PROG_LONG_NAME = '_plumetrack SO2 flux calculator'
+PROG_LONG_NAME = 'plumetrack SO2 flux calculator'
 
 SHORT_DESCRIPTION = 'Calculates SO2 fluxes from UV camera images'
 

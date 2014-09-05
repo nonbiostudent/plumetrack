@@ -115,10 +115,18 @@ def find_flux_contributions(flow, integration_line, poly_approx=-1):
     int_vecs = int_vecs.reshape((1, 1, zsize, 2))
     int_norms = int_norms.reshape((1, 1, zsize, 2))
     
+    #flows of zero should be replaced by a small value to prevent division by
+    #zero errors
+    flow[numpy.where(flow == 0)] = 1e-10
+    
     #calculate the intercept parameters
-    b = numpy.cross(flow_pts - int_pts, flow) / numpy.cross(int_vecs,flow)
+    b = numpy.ones((xsize, zsize, ysize,1), dtype='float')
+    denom = numpy.cross(int_vecs,flow)
+    valid_idxs = numpy.nonzero(denom)
+    b[:,:,:,0][valid_idxs] = numpy.cross(flow_pts - int_pts, flow)[valid_idxs] / denom[valid_idxs]
+        
     b = b.swapaxes(1,2)
-    b = b.reshape(xsize, ysize, zsize,1)
+
     a = b * (int_vecs/flow) - ((flow_pts - int_pts)/flow)
     
     a = a[:,:,:,0]
@@ -132,7 +140,6 @@ def find_flux_contributions(flow, integration_line, poly_approx=-1):
     
     mask[mask_idxs] = 1.0
     
-    
     #now calculate if the contribution was positive or negative
     sign = numpy.sign(numpy.dot(flow[:,:,0,:], int_norms[0,0,:,:].T))
     
@@ -144,15 +151,12 @@ def find_flux_contributions(flow, integration_line, poly_approx=-1):
     
     #sanity check - no pixel in the image should contribute more than once 
     #(or less than minus once) to the total flux
-    assert numpy.all(numpy.fabs(mask) <= 1), "Multiple contributions to the flux from the same pixel detected. Please send the offending image and your _plumetrack configuration file to the _plumetrack developers."
+    assert numpy.all(numpy.fabs(mask) <= 1), "Multiple contributions to the flux from the same pixel detected. Please send the offending image and your plumetrack configuration file to the plumetrack developers."
     
     return mask
 
 
 
-def calc_flux(image, mask, delta_t):
-    #TODO
-    pass
 
     
 class FluxEngine(object):

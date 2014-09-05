@@ -47,8 +47,9 @@ for mod, name in required_modules:
 #list of dependencies that are in PyPi
 install_dependencies = [
                         'numpy>=1.8', 
-                        'matplotlib>=1.3', 
-                        'scipy>=0.13', 
+                        'matplotlib>=0.9', 
+                        'scipy',
+                        'Image',
                         #'wxPython>=2.8.12'
                         ]
 
