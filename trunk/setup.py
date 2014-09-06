@@ -21,13 +21,18 @@ from setuptools import setup
 from setuptools.command.install import install
 import sys
 import os
+import json
 
 ####################################################################
 #                    CONFIGURATION
 ####################################################################
 
+
+#Note - I've included Image here even though it is available on PyPi, because on
+#PyPi it seems to depend on Django for some reason - which is a ridiculous dependency!
 required_modules = [
-                    ("cv2","OpenCV (including Python bindings)")
+                    ("cv2","OpenCV (including Python bindings)"),
+                    ("Image", "Python Image Library ")
                    ]
 
 data_files_to_install = []
@@ -49,7 +54,6 @@ install_dependencies = [
                         'numpy>=1.8', 
                         'matplotlib>=0.9', 
                         'scipy',
-                        'Image',
                         #'wxPython>=2.8.12'
                         ]
 
@@ -59,6 +63,55 @@ else:
     install_dependencies.append('pyinotify')
 
 
+####################################################################
+#                        DEFAULTS
+####################################################################
+#define a default configuration which gets written to file on installation
+default_config = {
+                  
+"filename_format": "%Y%m%d_%H%M%S.png",
+"file_extension": ".png",
+
+"threshold_low": 0,
+"threshold_high": -1,
+"random_level": 0,
+"mask_image": "", 
+
+"pixel_size": 1.0,
+"flux_conversion_factor": 1.0,
+
+"farneback_pyr_scale": 0.5,
+"farneback_levels": 4,
+"farneback_winsize": 20,
+"farneback_iterations": 10,
+"farneback_poly_n": 7,
+"farneback_poly_sigma": 1.5,
+
+"integration_line": [[0, 0],[1, 1]],
+"integration_direction": 1                 
+                  
+}
+
+
+
+####################################################################
+#                    BUILD/INSTALL
+####################################################################
+def supermakedirs(path, mode):
+    """
+    Create a directory structure and with a certain set of access permissions
+    (ignoring the umask - unlike os.makedirs()). This function is copied from 
+    http://stackoverflow.com/questions/5231901/permission-problems-when-creating-a-dir-with-os-makedirs-python
+    """
+    if not path or os.path.exists(path):
+        return []
+    (head, tail) = os.path.split(path)
+    res = supermakedirs(head, mode)
+    os.mkdir(path)
+    os.chmod(path, mode)
+    res += [path]
+    return res
+
 class CustomInstall(install):
     def run(self):
         """
@@ -66,14 +119,28 @@ class CustomInstall(install):
         default config file there
         """
         install.run(self)
+        config_filename = os.path.join(settings_preinstall.get_plumetrack_rw_dir(), 
+                                       "plumetrack.cfg")
+        
+        print "Writing default configuration to \'%s\'"%config_filename
+        
+        if not os.path.isdir(os.path.dirname(config_filename)):
+            supermakedirs(os.path.dirname(config_filename), 0777)
+        
+        with open(config_filename, 'w') as ofp:
+            json.dump(default_config, ofp, indent=2)
+        os.chmod(config_filename, 0777)
 
 
-####################################################################
-#                    BUILD/INSTALL
-####################################################################
 import src.plumetrack as plumetrack_preinstall
+import src.plumetrack.settings as settings_preinstall
 
-setup(name             = plumetrack_preinstall.PROG_SHORT_NAME,
+#ensure that the default config that we are installing is valid (i.e. up to date
+#with the version of plumetrack)
+settings_preinstall.validate_config(default_config)
+
+setup(cmdclass={'install':CustomInstall},
+      name             = plumetrack_preinstall.PROG_SHORT_NAME,
       version          = plumetrack_preinstall.VERSION,
       description      = plumetrack_preinstall.SHORT_DESCRIPTION,
       author           = plumetrack_preinstall.AUTHOR,
