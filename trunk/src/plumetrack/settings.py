@@ -40,6 +40,8 @@ def load_config_file(filename=None):
     if filename is None:
         filename = os.path.join(get_plumetrack_rw_dir(), "plumetrack.cfg")
     
+    if not os.path.exists(filename):
+        raise IOError("Failed to open config file \'%s\'. No such file."%filename)
         
     with open(filename,'r') as ifp:
         config = json.load(ifp)

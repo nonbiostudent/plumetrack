@@ -88,7 +88,6 @@ class Spline2D:
         normals /= numpy.sqrt((normals ** 2).sum(-1))[..., numpy.newaxis]
         normals = numpy.array(normals[...,:2]) #only return the xy components of the normals
         
-        #only return the xy components of the normals
         return pts[:-1], vectors, normals
 
 
@@ -134,7 +133,7 @@ def find_flux_contributions(flow, integration_line, poly_approx=-1):
     
     #create a mask for the flow vectors which intercept the integration line
     a_criteria = numpy.logical_and(a <= 1.0, a >= 0.0)
-    b_criteria = numpy.logical_and(b <= 1.0, b >= 0.0)
+    b_criteria = numpy.logical_and(b < 1.0, b >= 0.0) #<1 not <=1 to prevent b_criteria being True for two integration line segments
     mask = numpy.zeros_like(a)
     mask_idxs = numpy.where(numpy.logical_and(b_criteria, a_criteria))
     
