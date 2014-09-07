@@ -6,7 +6,7 @@
 Welcome to plumetrack's documentation!
 ======================================
 
-.. image:: _static/test.png
+.. image:: _static/villarrica.png
    :width: 400px
    :align: right
 
