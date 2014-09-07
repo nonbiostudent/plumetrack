@@ -72,9 +72,10 @@ default_config = {
 "filename_format": "%Y%m%d_%H%M%S.png",
 "file_extension": ".png",
 
-"threshold_low": 0,
-"threshold_high": -1,
-"random_level": 0,
+"threshold_low": 0.0,
+"threshold_high": -1.0,
+"random_mean": 0.0,
+"random_sigma":0.0,
 "mask_image": "", 
 
 "pixel_size": 1.0,
@@ -137,7 +138,7 @@ import src.plumetrack.settings as settings_preinstall
 
 #ensure that the default config that we are installing is valid (i.e. up to date
 #with the version of plumetrack)
-settings_preinstall.validate_config(default_config)
+settings_preinstall.validate_config(default_config, "setup.py")
 
 setup(cmdclass={'install':CustomInstall},
       name             = plumetrack_preinstall.PROG_SHORT_NAME,

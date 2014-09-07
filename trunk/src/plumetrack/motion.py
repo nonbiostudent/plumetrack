@@ -28,7 +28,8 @@ class MotionEngine(object):
         self.high_thresh = config['threshold_high']
         self.pix_size = config['pixel_size']
         self.__random_image = None
-        self.random_level = config['random_level']
+        self.random_mean = config['random_mean']
+        self.random_sigma = config['random_sigma']
         
         if config['mask_image'] != "":
             self.__mask_im = numpy.array(Image.open(config['mask_image']).convert('L'))
@@ -47,7 +48,13 @@ class MotionEngine(object):
     def preprocess(self, image):
         
         if self.__random_image is None:
-            self.__random_image = numpy.random.rand(*image.shape) * self.random_level
+            if self.random_sigma > 0:
+                self.__random_image = numpy.random.normal(self.random_mean, 
+                                                          self.random_sigma, 
+                                                          size=image.shape)
+            else:
+                self.__random_image = numpy.ones_like(image) * self.random_mean
+
         else:
             if image.shape != self.__random_image.shape:
                 print image.shape, self.__random_image.shape
@@ -77,7 +84,7 @@ class MotionEngine(object):
 
     def compute_flow(self, current_image, next_image):
                                      
-        flow = cv2.calcOpticalFlowFarneback(current_image, next_image, 
+        return cv2.calcOpticalFlowFarneback(current_image, next_image, 
                                             self.pyr_scale,
                                             self.levels,
                                             self.winsize,
@@ -86,11 +93,6 @@ class MotionEngine(object):
                                             self.poly_sigma,
                                             flags=cv2.OPTFLOW_FARNEBACK_GAUSSIAN)
     
-        #convert to m/s
-        #delta_t = date2secs(next_capture_time) - date2secs(current_capture_time)
-        #velocities = self.pix_size * flow / delta_t
-        
-        return flow
         
         
         
