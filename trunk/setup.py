@@ -22,6 +22,7 @@ from setuptools.command.install import install
 import sys
 import os
 import json
+import StringIO
 
 ####################################################################
 #                    CONFIGURATION
@@ -138,7 +139,8 @@ import src.plumetrack.settings as settings_preinstall
 
 #ensure that the default config that we are installing is valid (i.e. up to date
 #with the version of plumetrack)
-settings_preinstall.validate_config(default_config, "setup.py")
+decoded_default_config = json.loads(json.dumps(default_config))
+settings_preinstall.validate_config(decoded_default_config, "setup.py")
 
 setup(cmdclass={'install':CustomInstall},
       name             = plumetrack_preinstall.PROG_SHORT_NAME,

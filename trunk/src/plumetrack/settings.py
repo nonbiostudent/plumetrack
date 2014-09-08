@@ -17,10 +17,10 @@
 import os
 import sys
 import json
-from types import StringType, FloatType, ListType, IntType
+from types import StringType, FloatType, ListType, IntType, UnicodeType
 from optparse import OptionParser
 
-import plumetrack
+
 
 def get_plumetrack_rw_dir():
     """
@@ -37,7 +37,6 @@ def get_plumetrack_rw_dir():
 
 
 def load_config_file(filename=None):
-    
     if filename is None:
         filename = os.path.join(get_plumetrack_rw_dir(), "plumetrack.cfg")
     
@@ -58,13 +57,13 @@ class ConfigFileError(ValueError):
 
 def validate_config(config, filename):
     expected_configs = [
-                        ("filename_format", StringType, lambda x: x != "" and not x.isspace(), "filename_format cannot be an empty string."),
-                        ("file_extension", StringType, lambda x: config["filename_format"].endswith(x), "mismatch between file extension specified in filename_format and file_extension."),
+                        ("filename_format", UnicodeType, lambda x: x != "" and not x.isspace(), "filename_format cannot be an empty string."),
+                        ("file_extension", UnicodeType, lambda x: config["filename_format"].endswith(x), "mismatch between file extension specified in filename_format and file_extension."),
                         ("threshold_low", FloatType, lambda x: config["threshold_high"] == -1 or x < config["threshold_high"], "threshold_low cannot be greater than threshold_high." ),
                         ("threshold_high", FloatType, lambda x: x == -1 or x > 0, "threshold_high must be either -1 or greater than 0." ),
                         ("random_mean", FloatType, lambda x: True, "" ),
                         ("random_sigma", FloatType, lambda x: True, "" ),
-                        ("mask_image", StringType, lambda x: x=="" or x.isspace() or os.path.exists(x), "mask_image file specified does not exist."),
+                        ("mask_image", UnicodeType, lambda x: x=="" or x.isspace() or os.path.exists(x), "mask_image file specified does not exist."),
                         ("pixel_size", FloatType, lambda x: True, "" ),
                         ("flux_conversion_factor", FloatType, lambda x: True, "" ),
                         ("farneback_pyr_scale", FloatType, lambda x: x<1.0, "farneback_pyr_scale must be <1.0."),
@@ -87,7 +86,14 @@ def validate_config(config, filename):
         x = config[name]
         
         if type(x) != expected_type:
-            raise ConfigFileError("Incorrect type for conifg %s in file %s. Expecting %s"%(name, filename, expected_type))
+            if expected_type == FloatType:
+                try:
+                    x = float(x)
+                    config[name] = x
+                except ValueError:
+                    raise ConfigFileError("Incorrect type (%s) for conifg %s in file %s. Expecting %s"%(type(x),name, filename, expected_type))
+            else:
+                raise ConfigFileError("Incorrect type (%s) for conifg %s in file %s. Expecting %s"%(type(x),name, filename, expected_type))
         
         if not test_func(x):
             raise ConfigFileError(message)
@@ -99,6 +105,7 @@ def parse_cmd_line():
     Function parses the command line input and returns a tuple
     of (options, args)
     """
+    import plumetrack
     usage = ("%prog [options] image_folder")
     
     parser = OptionParser()

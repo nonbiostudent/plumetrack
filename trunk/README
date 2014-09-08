@@ -1,0 +1,38 @@
+###########################################################
+###          PLUMETRACK SO2 FLUX CALCULATOR             ###
+###                     README FILE                     ###
+###                                                     ###
+###             Nial Peters September 2014              ###
+###########################################################
+
+
+                #### INSTALLATION ####
+
+plumetrack is distributed using Python's setuptools 
+utility. Once you have installed the dependencies, running:
+  
+   python setup.py build
+   python setup.py install
+
+will install the plumetrack program. Note that you may need
+administrative privilidges for the install command. For full
+installation instructions, please see the 
+docs/build/html/installation.html document.
+
+
+
+                   #### USAGE ####
+
+Full usage instructions for plumetrack can be found in the 
+html documentation which can be found in the docs/build/html
+folder of this distribution.
+
+
+
+                  #### LICENSE ####
+
+plumetrack is distributed under the terms of the Gnu General 
+Public License (either version 3 of the License, or, at your 
+option any later version). See the COPYING document or 
+http://www.gnu.org/licenses/ for details.
+
