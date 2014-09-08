@@ -17,7 +17,7 @@
 import os
 import sys
 import json
-from types import StringType, FloatType, ListType, IntType, UnicodeType
+from types import FloatType, ListType, IntType, UnicodeType
 from optparse import OptionParser
 
 
@@ -37,6 +37,12 @@ def get_plumetrack_rw_dir():
 
 
 def load_config_file(filename=None):
+    """
+    Load the configuration file and returns a dictionary of name:value pairs
+    that were specified in the file. If filename is not specified, then loads
+    the default configuration file. This function calls validate_config on the 
+    configuration before returning it.
+    """
     if filename is None:
         filename = os.path.join(get_plumetrack_rw_dir(), "plumetrack.cfg")
     
@@ -46,47 +52,69 @@ def load_config_file(filename=None):
     with open(filename,'r') as ifp:
         config = json.load(ifp)
     
-    validate_config(config, filename)
+    try:
+        validate_config(config, filename)
+    except ConfigFileError, ex:
+        #print a friendly error message rather than a scary looking traceback
+        print "plumetrack: Configuration file error!"
+        print ex.args[0]
+        sys.exit(1)
     
     return config
 
 
 class ConfigFileError(ValueError):
+    """
+    Exception raised if the configuration file is invalid.
+    """
     pass
      
 
 def validate_config(config, filename):
+    """
+    Raises ConfigFileError if one or more of the configuration entries is 
+    invalid. This function checks that all necessary settings are defined, that 
+    they have the correct data type and that they are within sensible limits.
+    """
     expected_configs = [
-                        ("filename_format", UnicodeType, lambda x: x != "" and not x.isspace(), "filename_format cannot be an empty string."),
-                        ("file_extension", UnicodeType, lambda x: config["filename_format"].endswith(x), "mismatch between file extension specified in filename_format and file_extension."),
-                        ("threshold_low", FloatType, lambda x: config["threshold_high"] == -1 or x < config["threshold_high"], "threshold_low cannot be greater than threshold_high." ),
-                        ("threshold_high", FloatType, lambda x: x == -1 or x > 0, "threshold_high must be either -1 or greater than 0." ),
+                        ("filename_format", UnicodeType, lambda x: x != "" and not x.isspace(), "\'filename_format\' cannot be an empty string."),
+                        ("file_extension", UnicodeType, lambda x: config["filename_format"].endswith(x), "Mismatch between file extension specified in \'filename_format\' and \'file_extension\'."),
+                        ("threshold_low", FloatType, lambda x: config["threshold_high"] == -1 or x < config["threshold_high"], "\'threshold_low\' cannot be greater than \'threshold_high\'." ),
+                        ("threshold_high", FloatType, lambda x: x == -1 or x > 0, "\'threshold_high\' must be either -1 or greater than 0." ),
                         ("random_mean", FloatType, lambda x: True, "" ),
                         ("random_sigma", FloatType, lambda x: True, "" ),
-                        ("mask_image", UnicodeType, lambda x: x=="" or x.isspace() or os.path.exists(x), "mask_image file specified does not exist."),
+                        ("mask_image", UnicodeType, lambda x: x=="" or x.isspace() or os.path.exists(x), "\'mask_image\' file specified does not exist."),
                         ("pixel_size", FloatType, lambda x: True, "" ),
                         ("flux_conversion_factor", FloatType, lambda x: True, "" ),
-                        ("farneback_pyr_scale", FloatType, lambda x: x<1.0, "farneback_pyr_scale must be <1.0."),
-                        ("farneback_levels", IntType, lambda x: x>=1, "farneback_levels must be >=1"),
-                        ("farneback_winsize", IntType, lambda x: x>=1, "farneback_winsize must be >=1"),
-                        ("farneback_iterations", IntType, lambda x: x>=1, "farneback_iterations must be >=1"),
-                        ("farneback_poly_n", IntType, lambda x: x>=3, "farneback_poly_n must be >=3 (5 or 7 would be a better choice)"),
-                        ("farneback_poly_sigma", FloatType, lambda x: x>0.0, "farneback_poly_sigma must be >0.0"),
-                        ("integration_line", ListType, lambda x: len(x) >=2, "at least 2 points are required for the integration_line"),
-                        ("integration_direction", IntType, lambda x: x==1 or x==-1, "integration_direction must be either 1 or -1")
+                        ("farneback_pyr_scale", FloatType, lambda x: x<1.0, "\'farneback_pyr_scale\' must be <1.0."),
+                        ("farneback_levels", IntType, lambda x: x>=1, "\'farneback_levels\' must be >=1"),
+                        ("farneback_winsize", IntType, lambda x: x>=1, "\'farneback_winsize\' must be >=1"),
+                        ("farneback_iterations", IntType, lambda x: x>=1, "\'farneback_iterations\' must be >=1"),
+                        ("farneback_poly_n", IntType, lambda x: x>=3, "\'farneback_poly_n\' must be >=3 (5 or 7 would be a better choice)"),
+                        ("farneback_poly_sigma", FloatType, lambda x: x>0.0, "\'farneback_poly_sigma\' must be >0.0"),
+                        ("integration_line", ListType, lambda x: len(x) >=2, "At least 2 points are required for \'integration_line\'"),
+                        ("integration_direction", IntType, lambda x: x==1 or x==-1, "\'integration_direction\' must be either 1 or -1")
                         ]
 
     #first check that they all exist
+    defined_names = config.keys()
     for name in [i[0] for i in expected_configs]:
-        if not config.has_key(name):
+        try:
+            defined_names.remove(name)
+        except ValueError:
             raise ConfigFileError("Missing definition of %s in configuration file %s"%(name, filename))
-    
+        
+    #check if any unknown settings were defined
+    if len(defined_names) != 0:
+        raise ConfigFileError("Unknown setting \'%s\' in configuration file \'%s\'."%(defined_names[0], filename))
+        
     #now check all the types and the test_functions
     for name, expected_type, test_func, message in expected_configs:
         x = config[name]
         
         if type(x) != expected_type:
             if expected_type == FloatType:
+                #allow floats to be specified as ints
                 try:
                     x = float(x)
                     config[name] = x
@@ -148,7 +176,11 @@ def parse_cmd_line():
     parser.add_option("-s", "--skip_existing", dest="skip_existing", 
                       action="store_true", default=False,
                       help="Ignore images that are already in the folder. Use "
-                           "of this option implies --realtime") 
+                           "of this option implies --realtime")
+    
+    parser.add_option("", "--version", action="callback", 
+                      callback=__print_version_and_exit, help=("Print plumetrack"
+                      " version number and license information and exit."))
 
     
     (options, args) = parser.parse_args()
@@ -168,3 +200,16 @@ def parse_cmd_line():
         options.realtime = True
         
     return (options, args)
+
+
+def __print_version_and_exit(*args):
+    """
+    Prints the version number and license information for plumetrack.
+    """
+    import plumetrack
+    print "%s (version %s)"%(plumetrack.PROG_SHORT_NAME, plumetrack.VERSION)
+    print plumetrack.COPYRIGHT
+    print plumetrack.LICENSE_SHORT
+    print ""
+    print "Written by %s."%plumetrack.AUTHOR
+    sys.exit(0)
