@@ -64,6 +64,9 @@ class MotionEngine(object):
         if self.high_thresh < 0:
             self.high_thresh = image.max()
         
+        if self.low_thresh < 0:
+            self.low_thresh = image.min()
+        
         thresh_criteria = numpy.logical_or(image < self.low_thresh, 
                                            image > self.high_thresh)
         

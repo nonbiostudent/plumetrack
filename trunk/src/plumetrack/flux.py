@@ -18,8 +18,8 @@ from scipy.interpolate import interp1d
 import numpy
 
 
-class Spline2D:
-    def __init__(self, xpts, ypts, direction):
+class IntegrationLine:
+    def __init__(self, xpts, ypts, direction, line_type='linear'):
         
         if len(xpts) != len(ypts):
             raise ValueError("xpts and ypts must contain the same number of elements")
@@ -34,28 +34,37 @@ class Spline2D:
         self.__dist = numpy.zeros_like(self.__xpts)
         self.__dist[1:] = numpy.cumsum(numpy.sqrt((self.__xpts[1:]-self.__xpts[:-1])**2 + (self.__ypts[1:]-self.__ypts[:-1])**2))
         
-        if len(xpts) > 3:        
+        if len(xpts) > 3 and line_type == 'cubic':        
             self._interp_x = interp1d(self.__dist, self.__xpts, kind='cubic')
             self._interp_y = interp1d(self.__dist, self.__ypts, kind='cubic')
             
-        elif len(xpts) > 1:
+        else:
             #at lease four points are required for spline interpolation - so below
-            #this we just use linear
+            #this we just use linear even if a cubic line type was requested
             self._interp_x = interp1d(self.__dist, self.__xpts, kind='linear')
             self._interp_y = interp1d(self.__dist, self.__ypts, kind='linear')
     
     
     
-    def get_n_points(self, n):
+    def get_n_points(self, n=-1):
         """
-        Returns an n by 2 array of of x y coordinates of points on the spline.
+        Returns an n by 2 array of of x y coordinates of points along the line.
+        If n==-1 then it returns the actual points of the line rather than
+        interpolating
         """
-        result = numpy.zeros((n,2), dtype='float')
+        if n == -1:
+            result = numpy.zeros((len(self.__xpts), 2), dtype='float')
+            result[:,0] = self.__xpts
+            result[:,1] = self.__ypts
         
-        pts = numpy.linspace(0, self.__dist[-1],n)
+        else:
         
-        result[:,0] = self._interp_x(pts)
-        result[:,1] = self._interp_y(pts)
+            result = numpy.zeros((n,2), dtype='float')
+            
+            pts = numpy.linspace(0, self.__dist[-1],n)
+            
+            result[:,0] = self._interp_x(pts)
+            result[:,1] = self._interp_y(pts)
         
         return result
     
@@ -68,16 +77,9 @@ class Spline2D:
         if n < 1 and n != -1:
             raise ValueError("n must be greater than 1 (or -1 for defaults)")
 
-        if len(self.__dist) < 4 and n == -1:
-            pts = numpy.zeros((len(self.__dist),2), dtype='float')
-            pts[:,0] = self.__xpts
-            pts[:,1] = self.__ypts
-        
-        elif n == -1:
-            #make each polygon segment approx 1 pixel in size
-            n = int(round(self.__dist[-1],0))
-            
-            pts = self.get_n_points(n+1)
+
+        if n == -1:    
+            pts = self.get_n_points(n)
             
         else:
             pts = self.get_n_points(n+1)
@@ -163,7 +165,7 @@ class FluxEngine(object):
         
         xpts, ypts = zip(*config['integration_line'])
         
-        self.__int_line = Spline2D(xpts, ypts, config['integration_direction'])
+        self.__int_line = IntegrationLine(xpts, ypts, config['integration_direction'])
         
         self.__pixel_size = config['pixel_size']
         self.__conversion_factor = config['flux_conversion_factor']

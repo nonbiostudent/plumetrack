@@ -55,7 +55,7 @@ install_dependencies = [
                         'numpy>=1.8', 
                         'matplotlib>=0.9', 
                         'scipy',
-                        #'wxPython>=2.8.12'
+                        'wxPython>=2.8.12'
                         ]
 
 if sys.platform == 'win32':
@@ -152,5 +152,6 @@ setup(cmdclass={'install':CustomInstall},
       package_dir      = {'':'src'},
       packages         = ['plumetrack'],
       install_requires = install_dependencies,
-      entry_points     = {'console_scripts': ['plumetrack = plumetrack.main_script:main']}
+      entry_points     = {'console_scripts': ['plumetrack = plumetrack.main_script:main'],
+                          'gui_scripts': ['plumetrack-config = plumetrack.config_script:main']}
       )

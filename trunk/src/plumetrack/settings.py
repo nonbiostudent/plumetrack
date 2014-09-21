@@ -51,14 +51,8 @@ def load_config_file(filename=None):
         
     with open(filename,'r') as ifp:
         config = json.load(ifp)
-    
-    try:
-        validate_config(config, filename)
-    except ConfigFileError, ex:
-        #print a friendly error message rather than a scary looking traceback
-        print "plumetrack: Configuration file error!"
-        print ex.args[0]
-        sys.exit(1)
+      
+    validate_config(config, filename)
     
     return config
 
@@ -79,7 +73,7 @@ def validate_config(config, filename):
     expected_configs = [
                         ("filename_format", UnicodeType, lambda x: x != "" and not x.isspace(), "\'filename_format\' cannot be an empty string."),
                         ("file_extension", UnicodeType, lambda x: config["filename_format"].endswith(x), "Mismatch between file extension specified in \'filename_format\' and \'file_extension\'."),
-                        ("threshold_low", FloatType, lambda x: config["threshold_high"] == -1 or x < config["threshold_high"], "\'threshold_low\' cannot be greater than \'threshold_high\'." ),
+                        ("threshold_low", FloatType, lambda x: (config["threshold_high"] == -1 or x < config["threshold_high"]) and (x == -1 or x >= 0), "\'threshold_low\' must be either -1 or greater than or equal to 0 and cannot be greater than \'threshold_high\'." ),
                         ("threshold_high", FloatType, lambda x: x == -1 or x > 0, "\'threshold_high\' must be either -1 or greater than 0." ),
                         ("random_mean", FloatType, lambda x: True, "" ),
                         ("random_sigma", FloatType, lambda x: True, "" ),
@@ -114,14 +108,14 @@ def validate_config(config, filename):
         
         if type(x) != expected_type:
             if expected_type == FloatType:
-                #allow floats to be specified as ints
+                #allow floats to be specified as ints and or strings
                 try:
                     x = float(x)
                     config[name] = x
                 except ValueError:
-                    raise ConfigFileError("Incorrect type (%s) for conifg %s in file %s. Expecting %s"%(type(x),name, filename, expected_type))
+                    raise ConfigFileError("Incorrect type (%s) for config %s in file %s. Expecting %s"%(type(x),name, filename, expected_type))
             else:
-                raise ConfigFileError("Incorrect type (%s) for conifg %s in file %s. Expecting %s"%(type(x),name, filename, expected_type))
+                raise ConfigFileError("Incorrect type (%s) for config %s in file %s. Expecting %s"%(type(x),name, filename, expected_type))
         
         if not test_func(x):
             raise ConfigFileError(message)

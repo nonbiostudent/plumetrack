@@ -192,7 +192,13 @@ def main():
     image_dir = args[0]
      
     #load all the settings from the configuration file
-    config = settings.load_config_file(filename=options.config_file)
+    try:
+        config = settings.load_config_file(filename=options.config_file)
+    except settings.ConfigFileError, ex:
+        #print a friendly error message rather than a scary looking traceback
+        print "plumetrack: Configuration file error!"
+        print ex.args[0]
+        return
      
     #define a comparator function for ordering UV images by capture time 
     compare_by_time = lambda f1,f2: cmp(time_from_fname(f1, config), time_from_fname(f2, config))
