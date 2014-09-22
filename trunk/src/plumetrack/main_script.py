@@ -194,7 +194,7 @@ def main():
     #load all the settings from the configuration file
     try:
         config = settings.load_config_file(filename=options.config_file)
-    except settings.ConfigFileError, ex:
+    except settings.ConfigError, ex:
         #print a friendly error message rather than a scary looking traceback
         print "plumetrack: Configuration file error!"
         print ex.args[0]

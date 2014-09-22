@@ -98,14 +98,27 @@ class InputFilesConfig(wx.Panel):
     def get_configs(self):
         
         file_extension = self.file_extension_box.GetValue()
+        
+        if file_extension.isspace() or file_extension == "":
+            raise settings.ConfigError("File extension not specified.")
+        
+        #make sure that the filename extension includes the dot
         if not file_extension.startswith('.'):
             file_extension = '.'+file_extension
         
+        filename_format = self.filename_format_box.GetValue()
+        if filename_format.isspace() or filename_format == "":
+            raise settings.ConfigError("Filename format not specified")
+        
+        flux_conversion_factor = self.flux_conversion_factor.GetValue()
+        if flux_conversion_factor.isspace() or flux_conversion_factor == "":
+            raise settings.ConfigError("Units conversion factor not specified. Use a value of 1.0 for if you do not require any conversion.")
+        
         return {
-                'filename_format':self.filename_format_box.GetValue(),
+                'filename_format':filename_format,
                 'file_extension':file_extension,
                 'pixel_size':self.pixel_size_box.GetValue(),
-                'flux_conversion_factor':self.flux_conversion_factor.GetValue()
+                'flux_conversion_factor':flux_conversion_factor
                 }
     
     
@@ -375,7 +388,7 @@ class IntegrationLineConfig(wx.Panel):
         
         int_line_str = self.integration_line_box.GetValue()
         if int_line_str == "" or int_line_str.isspace():
-            raise settings.ConfigFileError("No integration line specified.")
+            raise settings.ConfigError("No integration line specified.")
         
         #TODO - catch json decode errors for the integration line string
         return {
@@ -477,7 +490,7 @@ class MainFrame(wx.Frame):
         #they are just left blank)
         try:
             self.set_configs(settings.load_config_file())
-        except settings.ConfigFileError:
+        except settings.ConfigError:
             pass
             
         
@@ -526,9 +539,9 @@ class MainFrame(wx.Frame):
             
             #TODO - proper usage of filename argument to validate_config
             #check that the configuration is valid
-            settings.validate_config(configs, "")
+            settings.validate_config(configs, None)
             
-        except settings.ConfigFileError, ex:
+        except settings.ConfigError, ex:
             wx.MessageBox(str(ex.args[0]), plumetrack.PROG_SHORT_NAME, wx.ICON_ERROR)
             return
                 
@@ -662,11 +675,9 @@ class IntegrationLineSelectDialog(wx.Dialog):
         
         if evnt.button == 1:
 
-            #TODO - make sure the curve doesn't overlap
-            self.line_xpts = numpy.append(self.line_xpts, evnt.xdata)
-            self.line_ypts = numpy.append(self.line_ypts, evnt.ydata)
+            self.line_xpts = numpy.append(self.line_xpts, round(evnt.xdata,0))
+            self.line_ypts = numpy.append(self.line_ypts, round(evnt.ydata,0))
             
-        
         if evnt.button == 3:
             d = numpy.sqrt((self.line_xpts - evnt.xdata)**2 + (self.line_ypts - evnt.ydata)**2)
             
@@ -676,7 +687,6 @@ class IntegrationLineSelectDialog(wx.Dialog):
                 mask[idx] = False
                 self.line_xpts = self.line_xpts[mask]
                 self.line_ypts = self.line_ypts[mask]
-                
                 
                 self.points_plt.set_data(self.line_xpts,self.line_ypts)
                 self.line_plt.set_data(self.line_xpts,self.line_ypts)

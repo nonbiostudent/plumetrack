@@ -57,16 +57,16 @@ def load_config_file(filename=None):
     return config
 
 
-class ConfigFileError(ValueError):
+class ConfigError(ValueError):
     """
     Exception raised if the configuration file is invalid.
     """
     pass
      
 
-def validate_config(config, filename):
+def validate_config(config, filename=None):
     """
-    Raises ConfigFileError if one or more of the configuration entries is 
+    Raises ConfigError if one or more of the configuration entries is 
     invalid. This function checks that all necessary settings are defined, that 
     they have the correct data type and that they are within sensible limits.
     """
@@ -96,11 +96,17 @@ def validate_config(config, filename):
         try:
             defined_names.remove(name)
         except ValueError:
-            raise ConfigFileError("Missing definition of %s in configuration file %s"%(name, filename))
+            if filename is not None:
+                raise ConfigError("Missing definition of %s in configuration file %s"%(name, filename))
+            else:
+                raise ConfigError("Missing definition of %s in configuration."%(name))
         
     #check if any unknown settings were defined
     if len(defined_names) != 0:
-        raise ConfigFileError("Unknown setting \'%s\' in configuration file \'%s\'."%(defined_names[0], filename))
+        if filename is not None:
+            raise ConfigError("Unknown setting \'%s\' in configuration file \'%s\'."%(defined_names[0], filename))
+        else:
+            raise ConfigError("Unknown setting \'%s\' in configuration."%(defined_names[0]))
         
     #now check all the types and the test_functions
     for name, expected_type, test_func, message in expected_configs:
@@ -113,12 +119,17 @@ def validate_config(config, filename):
                     x = float(x)
                     config[name] = x
                 except ValueError:
-                    raise ConfigFileError("Incorrect type (%s) for config %s in file %s. Expecting %s"%(type(x),name, filename, expected_type))
+                    if filename is not None:
+                        raise ConfigError("Incorrect type (%s) for config %s in file %s. Expecting %s"%(type(x),name, filename, expected_type))
+                    else:
+                        raise ConfigError("Incorrect type (%s) for config %s. Expecting %s"%(type(x),name, expected_type))
             else:
-                raise ConfigFileError("Incorrect type (%s) for config %s in file %s. Expecting %s"%(type(x),name, filename, expected_type))
-        
+                if filename is not None:
+                    raise ConfigError("Incorrect type (%s) for config %s in file %s. Expecting %s"%(type(x),name, filename, expected_type))
+                else:
+                    raise ConfigError("Incorrect type (%s) for config %s. Expecting %s"%(type(x),name, expected_type))
         if not test_func(x):
-            raise ConfigFileError(message)
+            raise ConfigError(message)
     
 
 
