@@ -16,6 +16,7 @@
 #along with plumetrack.  If not, see <http://www.gnu.org/licenses/>.
 
 import wx
+import os
 import json
 import Image
 import numpy
@@ -30,6 +31,9 @@ from matplotlib.figure import Figure
 
 import plumetrack
 from plumetrack import settings, flux
+
+#TODO - context help
+#TODO - zoom tools on integration line drawing dialog
 
 
 def main():
@@ -63,7 +67,49 @@ class PlumetrackConfigApp(wx.App):
 
 
 class ConfigFileSelect(wx.Panel):
-    pass
+    def __init__(self, parent, main_frame):
+        super(ConfigFileSelect, self).__init__(parent)
+        
+        self.main_frame = main_frame
+        vsizer = wx.BoxSizer(wx.VERTICAL)
+        hsizer = wx.BoxSizer(wx.HORIZONTAL)
+        
+        self.filename_box = wx.TextCtrl(self, -1, size=(250,-1))
+        self.browse_button = wx.Button(self, -1, "Browse")
+        wx.EVT_BUTTON(self, self.browse_button.GetId(), self.on_browse)
+        
+        hsizer.Add(self.filename_box, 1, wx.EXPAND|wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
+        hsizer.AddSpacer(5)
+        hsizer.Add(self.browse_button, 0, wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
+        
+        self.load_button = wx.Button(self, -1, "Load")
+        wx.EVT_BUTTON(self, self.load_button.GetId(), self.on_load)
+        
+        #set the default config file to load
+        filename = os.path.join(settings.get_plumetrack_rw_dir(), "plumetrack.cfg")
+        self.filename_box.SetValue(filename)
+        
+        vsizer.Add(hsizer, 0, wx.EXPAND)
+        vsizer.AddSpacer(5)
+        vsizer.Add(self.load_button, 0, wx.ALIGN_BOTTOM|wx.ALIGN_RIGHT)
+        self.SetSizer(vsizer)
+        vsizer.Fit(self)
+    
+    def on_browse(self, evnt):
+        filename = wx.FileSelector("Select configuration file")
+        if filename != "":
+            self.filename_box.SetValue(filename)
+    
+    def on_load(self, evnt):
+        filename = self.filename_box.GetValue()
+        
+        try:
+            config = settings.load_config_file(filename)
+            self.main_frame.set_configs(config)
+        except settings.ConfigError, ex:
+            wx.MessageBox(ex.args[0])
+        except IOError, ex:
+            wx.MessageBox(ex.args[0])
 
 
 
@@ -112,7 +158,7 @@ class InputFilesConfig(wx.Panel):
         
         flux_conversion_factor = self.flux_conversion_factor.GetValue()
         if flux_conversion_factor.isspace() or flux_conversion_factor == "":
-            raise settings.ConfigError("Units conversion factor not specified. Use a value of 1.0 for if you do not require any conversion.")
+            raise settings.ConfigError("Units conversion factor not specified. Use a value of 1.0 if you do not require any conversion.")
         
         return {
                 'filename_format':filename_format,
@@ -127,6 +173,7 @@ class InputFilesConfig(wx.Panel):
         self.file_extension_box.SetValue(configs['file_extension'])
         self.pixel_size_box.SetValue(configs['pixel_size'])
         self.flux_conversion_factor.SetValue("%0.3e"%configs['flux_conversion_factor'])
+
 
 
 class MaskingConfig(wx.Panel):
@@ -250,6 +297,7 @@ class MaskingConfig(wx.Panel):
             configs['threshold_high'] = -1
     
         return configs
+
 
 
 class MotionTrackingConfig(wx.Panel):
@@ -390,9 +438,13 @@ class IntegrationLineConfig(wx.Panel):
         if int_line_str == "" or int_line_str.isspace():
             raise settings.ConfigError("No integration line specified.")
         
-        #TODO - catch json decode errors for the integration line string
+        try:
+            integration_line = json.loads(int_line_str)
+        except ValueError:
+            raise settings.ConfigError("Invalid format for integration line. Expecting [[x1, y1], [x2, y2],...]")
+        
         return {
-                'integration_line': json.loads(int_line_str),
+                'integration_line': integration_line,
                 'integration_direction':direction
                 }
     
@@ -406,6 +458,7 @@ class IntegrationLineConfig(wx.Panel):
             raise ValueError("Unexpected value (%d) for integration_direction. Expected -1 or 1."%(configs['integration_direction']))
             
         self.integration_line_box.SetValue(str(configs['integration_line']))
+ 
  
  
 class MainFrame(wx.Frame):
@@ -431,8 +484,12 @@ class MainFrame(wx.Frame):
         
         #create the configuration panels and add them to the top panel using a 
         #box sizer to control the layout
-        self.config_file_chooser = ConfigFileSelect(top_panel)
-        vsizer.Add(self.config_file_chooser, 1, wx.EXPAND)
+        config_select_static_szr = wx.StaticBoxSizer(wx.StaticBox(top_panel, wx.ID_ANY, 'Load Existing Configuration'), wx.VERTICAL)
+        self.config_file_chooser = ConfigFileSelect(top_panel, self)
+        config_select_static_szr.Add(self.config_file_chooser, 0 , wx.EXPAND|wx.ALIGN_TOP|wx.ALIGN_RIGHT)
+        vsizer.Add(config_select_static_szr, 0, wx.EXPAND|wx.ALL, border=5)
+        config_select_static_szr.Layout()
+        
         
         input_files_static_szr = wx.StaticBoxSizer(wx.StaticBox(top_panel, wx.ID_ANY, 'Input Files'), wx.VERTICAL)
         self.input_files_config = InputFilesConfig(top_panel)
@@ -491,6 +548,7 @@ class MainFrame(wx.Frame):
         try:
             self.set_configs(settings.load_config_file())
         except settings.ConfigError:
+            #if this configuration is unloadable, then just give up
             pass
             
         
@@ -506,7 +564,6 @@ class MainFrame(wx.Frame):
         self.Show()
 
 
-
     def get_configs(self):
         configs = {}
         for p in self.config_panels:
@@ -518,6 +575,7 @@ class MainFrame(wx.Frame):
     def set_configs(self, configs):
         for p in self.config_panels:
             p.set_configs(configs)    
+    
     
     def on_cancel(self, evnt):
         """
@@ -537,7 +595,6 @@ class MainFrame(wx.Frame):
             #read the configs from the various input panels        
             configs = self.get_configs() 
             
-            #TODO - proper usage of filename argument to validate_config
             #check that the configuration is valid
             settings.validate_config(configs, None)
             
@@ -556,7 +613,7 @@ class MainFrame(wx.Frame):
         
 
 class IntegrationLineSelectDialog(wx.Dialog):
-    #TODO - helpful text to explain left clicks add points and right clicks remove them.
+    
     def __init__(self, parent, image_array, pts, direction):
         super(IntegrationLineSelectDialog, self).__init__(parent, wx.ID_ANY, plumetrack.PROG_SHORT_NAME+" Integration Line Selection Tool",
                                                          style=wx.RESIZE_BORDER|wx.DEFAULT_DIALOG_STYLE)
@@ -614,11 +671,13 @@ class IntegrationLineSelectDialog(wx.Dialog):
             self.direction_chkbx.SetValue(False)
         
         buttons_sizer.AddStretchSpacer()
-        
+        self.help_button = wx.Button(self, wx.ID_HELP, "Help")
         self.cancel_button = wx.Button(self, wx.ID_CANCEL, "Cancel")
         self.ok_button = wx.Button(self, wx.ID_OK, "Ok")
+        buttons_sizer.Add(self.help_button, 0, wx.ALIGN_BOTTOM|wx.ALIGN_RIGHT)
         buttons_sizer.Add(self.cancel_button,0,wx.ALIGN_BOTTOM|wx.ALIGN_RIGHT)
         buttons_sizer.Add(self.ok_button,0,wx.ALIGN_BOTTOM|wx.ALIGN_RIGHT)
+        wx.EVT_BUTTON(self, self.help_button.GetId(), self.on_help)
         wx.EVT_BUTTON(self, self.cancel_button.GetId(), self.on_cancel)
         wx.EVT_BUTTON(self, self.ok_button.GetId(), self.on_ok)
         top_sizer.Add(buttons_sizer, 0, wx.ALIGN_BOTTOM|wx.ALIGN_RIGHT|wx.EXPAND)
@@ -693,7 +752,16 @@ class IntegrationLineSelectDialog(wx.Dialog):
             
         self.redraw_integration_lines()
              
-
+    
+    def on_help(self, evnt):
+        wx.MessageBox("Left click on the image to add points to the integration"
+                      " line. Right clicking on points will remove them. The "
+                      "tick marks on the integration line should point in the "
+                      "positive flux direction, select \"Reverse integration "
+                      "direction\" if they do not.", 
+                      "plumetrack Integration line help")
+    
+    
     def on_cancel(self,evnt):
         self.EndModal(wx.CANCEL)
     
