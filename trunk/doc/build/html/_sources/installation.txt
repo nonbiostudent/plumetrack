@@ -15,6 +15,8 @@ Prerequisites - Using Anaconda
 ..............................
 Download and install Anaconda from `here <https://store.continuum.io/cshop/anaconda/>`_. Note, that you want the Python 2.7 version.
 
+Unfortunately, Anaconda does not come with wxPython, and so you will need to install that separately. wxPython can be downloaded from `here <http://www.wxpython.org/>`_.
+
 Now go to the OpenCV section below.
 
 
@@ -27,6 +29,7 @@ If you already have a Python installation on your system, then you will need to 
  * `matplotlib <http://matplotlib.org/>`_
  * `pywin32 <http://sourceforge.net/projects/pywin32>`_
  * `PIL <http://www.pythonware.com/products/pil/>`_
+ * `wxPython <http://www.wxpython.org/>`_
 
 
 Installing OpenCV

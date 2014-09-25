@@ -20,7 +20,11 @@ The configuration file itself is a JSON file (JavaScript Object Notation). Full 
 
 The plumetrack-config Program
 -----------------------------
-The plumetrack-config program is a graphical application for creating configuration files. Unfortunately, it isn't written yet! So for now, you are stuck creating configuration files manually using a text editor.
+The plumetrack-config program is a graphical application for creating configuration files. To launch the configuration program run the following command::
+
+    plumetrack-config
+    
+If you have not used plumetrack before, then it is recomended to load and edit the default configuration file (see above) rather than creating your own from scratch. The parameters in this file should give *reasonable* results, and so will give you a good starting point for your own configuration.
 
 
 Configuration Options
@@ -34,7 +38,7 @@ All of the following options *must* be declared in the configuration file. More 
 +===========================+=========+===================================================================================+
 | **filename_format**       | String  | The format of the filenames of the images you want to process (including the file |
 |                           |         | extension). The filenames must contain the capture times of the images. The       |
-|                           |         | format is specified using the Python's `date/time format specifiers`_.            |
+|                           |         | format is specified using the Python `date/time format specifiers`_.              |
 +---------------------------+---------+-----------------------------------------------------------------------------------+
 | **file_extension**        | String  | The filename extension used for the image files e.g. `".png"`.                    |
 +---------------------------+---------+-----------------------------------------------------------------------------------+

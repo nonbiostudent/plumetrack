@@ -70,7 +70,11 @@
 </div>
 <div class="section" id="the-plumetrack-config-program">
 <h2>The plumetrack-config Program<a class="headerlink" href="#the-plumetrack-config-program" title="Permalink to this headline">¶</a></h2>
-<p>The plumetrack-config program is a graphical application for creating configuration files. Unfortunately, it isn&#8217;t written yet! So for now, you are stuck creating configuration files manually using a text editor.</p>
+<p>The plumetrack-config program is a graphical application for creating configuration files. To launch the configuration program run the following command:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">plumetrack</span><span class="o">-</span><span class="n">config</span>
+</pre></div>
+</div>
+<p>If you have not used plumetrack before, then it is recomended to load and edit the default configuration file (see above) rather than creating your own from scratch. The parameters in this file should give <em>reasonable</em> results, and so will give you a good starting point for your own configuration.</p>
 </div>
 <div class="section" id="configuration-options">
 <h2>Configuration Options<a class="headerlink" href="#configuration-options" title="Permalink to this headline">¶</a></h2>
@@ -92,7 +96,7 @@
 <td>String</td>
 <td>The format of the filenames of the images you want to process (including the file
 extension). The filenames must contain the capture times of the images. The
-format is specified using the Python&#8217;s <a class="reference external" href="https://docs.python.org/2/library/datetime.html#strftime-strptime-behavior">date/time format specifiers</a>.</td>
+format is specified using the Python <a class="reference external" href="https://docs.python.org/2/library/datetime.html#strftime-strptime-behavior">date/time format specifiers</a>.</td>
 </tr>
 <tr class="row-odd"><td><strong>file_extension</strong></td>
 <td>String</td>
