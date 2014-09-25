@@ -1,0 +1,269 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Configuration &mdash; plumetrack 14.09 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '14.09',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="plumetrack 14.09 documentation" href="index.html" />
+    <link rel="next" title="API" href="API.html" />
+    <link rel="prev" title="Quickstart" href="quickstart.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="API.html" title="API"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="quickstart.html" title="Quickstart"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">plumetrack 14.09 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="configuration">
+<span id="section-configuration"></span><h1>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="the-configuration-file">
+<h2>The Configuration File<a class="headerlink" href="#the-configuration-file" title="Permalink to this headline">¶</a></h2>
+<p>The parameters that plumetrack uses for computing fluxes are controlled through the use of a configuration file. The configuration file used for a particular run of the program can be specified using the <em>-f</em> option on the command line. For example:</p>
+<div class="highlight-python"><div class="highlight"><pre>plumetrack -f my_config.cfg example_images
+</pre></div>
+</div>
+<p>will process all of the images in the example_images folder using the settings stored in the my_config.cfg file. This allows multiple configurations to be stored for different situations (for example for processing images from different cameras).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If you do not specify a configuration file using the <em>-f</em> option, then plumetrack will use the default configuration file. This may not be what you want!</p>
+</div>
+<p>The configuration file itself is a JSON file (JavaScript Object Notation). Full details of the JSON format can be found <a class="reference external" href="http://json.org/">here</a>. plumetrack configuration files consist of a single collection of name/value pairs (equivalent to a dict in Python). A default configuration file will have been created during installation of plumetrack, and it is recommended to use this as a template for customised configurations. The default configuration file can be found in the My Documents\plumetrack folder on Windows and ~/.plumetrack folder on Linux systems.</p>
+</div>
+<div class="section" id="the-plumetrack-config-program">
+<h2>The plumetrack-config Program<a class="headerlink" href="#the-plumetrack-config-program" title="Permalink to this headline">¶</a></h2>
+<p>The plumetrack-config program is a graphical application for creating configuration files. Unfortunately, it isn&#8217;t written yet! So for now, you are stuck creating configuration files manually using a text editor.</p>
+</div>
+<div class="section" id="configuration-options">
+<h2>Configuration Options<a class="headerlink" href="#configuration-options" title="Permalink to this headline">¶</a></h2>
+<p>All of the following options <em>must</em> be declared in the configuration file. More information about the Farneback algorithm parameters can be found in the <a class="reference external" href="http://docs.opencv.org/trunk/modules/video/doc/motion_analysis_and_object_tracking.html?highlight=farneback#cv2.calcOpticalFlowFarneback">OpenCV documentation</a>.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="23%" />
+<col width="8%" />
+<col width="70%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>filename_format</strong></td>
+<td>String</td>
+<td>The format of the filenames of the images you want to process (including the file
+extension). The filenames must contain the capture times of the images. The
+format is specified using the Python&#8217;s <a class="reference external" href="https://docs.python.org/2/library/datetime.html#strftime-strptime-behavior">date/time format specifiers</a>.</td>
+</tr>
+<tr class="row-odd"><td><strong>file_extension</strong></td>
+<td>String</td>
+<td>The filename extension used for the image files e.g. <cite>&#8221;.png&#8221;</cite>.</td>
+</tr>
+<tr class="row-even"><td><strong>threshold_low</strong></td>
+<td>Float</td>
+<td>Any pixels that are below this threshold will be masked using random noise and
+will be excluded from the flux calculation. Set to -1.0 to prevent low-value
+thresholding.</td>
+</tr>
+<tr class="row-odd"><td><strong>threshold_high</strong></td>
+<td>Float</td>
+<td>Any pixels that are above this threshold will be masked using random noise and
+will be excluded from the flux calculation. Set to -1.0 to prevent high-value
+thresholding.</td>
+</tr>
+<tr class="row-even"><td><strong>random_mean</strong></td>
+<td>Float</td>
+<td>Masked pixels (either due to thresholding or a mask image) are replaced by
+Gaussian distributed white noise. This parameter controls the mean value of this
+noise.</td>
+</tr>
+<tr class="row-odd"><td><strong>random_sigma</strong></td>
+<td>Float</td>
+<td>Masked pixels (either due to thresholding or a mask image) are replaced by
+Gaussian distributed white noise. This parameter controls the standard-deviation
+of this  noise.</td>
+</tr>
+<tr class="row-even"><td><strong>mask_image</strong></td>
+<td>String</td>
+<td>Regions of the image which you do not want to contribute to the flux, or that
+might interfere with the motion estimation (for example high-contrast boudaries
+of the volcanic edifice) can be excluded from the calculations by creating a mask
+image. This should be a greyscale image of the same size as the UV images to be
+processed. Any pixels that are black (pixel value of 0) in the mask image will be
+replaced with random noise and excluded from the flux calculations. Set this to
+an empty string if you do not wish to use a mask image.</td>
+</tr>
+<tr class="row-odd"><td><strong>pixel_size</strong></td>
+<td>Float</td>
+<td>The size (either the width or the height) of the pixels in the images in meters.
+Note that this is <em>not</em> the area of the pixels.</td>
+</tr>
+<tr class="row-even"><td><strong>flux_conversion_factor</strong></td>
+<td>Float</td>
+<td>This is used in conjunction with the pixel_size parameter to convert
+the pixel values in your images into SO2 masses. You need to select a value for
+this parameter such that <cite>SO2_mass = pixel_value x pixel_size^2 x
+flux_conversion_factor</cite>. The fluxes returned will then have units of
+SO2-mass-units per second.</td>
+</tr>
+<tr class="row-odd"><td><strong>farneback_pyr_scale</strong></td>
+<td>Float</td>
+<td>Farneback algorithm parameter: the image scale (&lt;1.0) to build pyramids for each
+image; <tt class="docutils literal"><span class="pre">farneback_pyr_scale=0.5</span></tt> means a classical pyramid, where each next
+layer is twice smaller than the previous one.</td>
+</tr>
+<tr class="row-even"><td><strong>farneback_levels</strong></td>
+<td>Integer</td>
+<td>Farneback algorithm parameter: number of pyramid layers including the initial
+image; <tt class="docutils literal"><span class="pre">farneback_levels=1</span></tt> means that no extra layers are created and only the
+original images are used.</td>
+</tr>
+<tr class="row-odd"><td><strong>farneback_winsize</strong></td>
+<td>Integer</td>
+<td>Farneback algorithm parameter: averaging window size; larger values increase the
+algorithm robustness to image noise and give more chances for fast motion
+detection, but yield more blurred motion field.</td>
+</tr>
+<tr class="row-even"><td><strong>farneback_iterations</strong></td>
+<td>Integer</td>
+<td>Farneback algorithm parameter: number of iterations the algorithm does at each
+pyramid level.</td>
+</tr>
+<tr class="row-odd"><td><strong>farneback_poly_n</strong></td>
+<td>Integer</td>
+<td>Farneback algorithm parameter: size of the pixel neighborhood used to find
+polynomial expansion in each pixel; larger values mean that the image will be
+approximated with smoother surfaces, yielding more robust algorithm and more
+blurred  motion field, typically <tt class="docutils literal"><span class="pre">farneback_poly_n</span></tt> =5 or 7.</td>
+</tr>
+<tr class="row-even"><td><strong>farneback_poly_sigma</strong></td>
+<td>Float</td>
+<td>Farneback algorithm parameter: standard deviation of the Gaussian that is used to
+smooth derivatives used as a basis for the polynomial expansion; for
+<tt class="docutils literal"><span class="pre">farneback_poly_n=5</span></tt>, you can set <tt class="docutils literal"><span class="pre">farneback_poly_sigma=1.1</span></tt>, for
+<tt class="docutils literal"><span class="pre">farneback_poly_n=7</span></tt>, a good value would be <tt class="docutils literal"><span class="pre">farneback_poly_sigma=1.5</span></tt>.</td>
+</tr>
+<tr class="row-odd"><td><strong>integration_line</strong></td>
+<td>List</td>
+<td>List of [x, y] points defining the integration line for the flux calculation. x
+and y are in pixel coordinates.</td>
+</tr>
+<tr class="row-even"><td><strong>integration_direction</strong></td>
+<td>Integer</td>
+<td>Either 1 or -1. Defines which way is positive across the integration line. The
+positive direction is defined as the cross-product of a unit vector with
+<cite>integration_direction</cite> sign along the z-axis with a vector along the integration
+line.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Configuration</a><ul>
+<li><a class="reference internal" href="#the-configuration-file">The Configuration File</a></li>
+<li><a class="reference internal" href="#the-plumetrack-config-program">The plumetrack-config Program</a></li>
+<li><a class="reference internal" href="#configuration-options">Configuration Options</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="quickstart.html"
+                        title="previous chapter">Quickstart</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="API.html"
+                        title="next chapter">API</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/configuration.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="API.html" title="API"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="quickstart.html" title="Quickstart"
+             >previous</a> |</li>
+        <li><a href="index.html">plumetrack 14.09 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Nial Peters.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

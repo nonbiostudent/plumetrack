@@ -1,0 +1,585 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>plumetrack.watcher &mdash; plumetrack 14.09 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '14.09',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="plumetrack 14.09 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">plumetrack 14.09 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for plumetrack.watcher</h1><div class="highlight"><pre>
+<span class="c">#Copyright (C) Nial Peters 2014</span>
+<span class="c">#</span>
+<span class="c">#This file is part of _plumetrack.</span>
+<span class="c">#</span>
+<span class="c">#_plumetrack is free software: you can redistribute it and/or modify</span>
+<span class="c">#it under the terms of the GNU General Public License as published by</span>
+<span class="c">#the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c">#(at your option) any later version.</span>
+<span class="c">#</span>
+<span class="c">#_plumetrack is distributed in the hope that it will be useful,</span>
+<span class="c">#but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c">#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c">#GNU General Public License for more details.</span>
+<span class="c">#</span>
+<span class="c">#You should have received a copy of the GNU General Public License</span>
+<span class="c">#along with _plumetrack.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+<span class="c">#</span>
+<span class="c">#Large parts of this implementation (in particular the Windows </span>
+<span class="c">#implementation) is copied from Wim Leers&#39; fsmonitor.py module:</span>
+<span class="c">#https://github.com/wimleers/fileconveyor/blob/master/fileconveyor/fsmonitor.py</span>
+<span class="c">#this is licensed under GPL.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The watcher module provides functions and classes for monitoring a directory</span>
+<span class="sd">structure for new files. It uses system-level functions for detecting new files</span>
+<span class="sd">(rather than repeatedly listing the files in a directory and looking for </span>
+<span class="sd">changes).</span>
+
+<span class="sd">The following code shows how the watcher module can be used to print the names</span>
+<span class="sd">of any new files created in a directory:</span>
+
+<span class="sd">    from _plumetrack import watcher</span>
+<span class="sd">    import sys</span>
+<span class="sd">    import time</span>
+<span class="sd">    </span>
+<span class="sd">    def print_name(s, t):</span>
+<span class="sd">        print s</span>
+<span class="sd">    </span>
+<span class="sd">    if not watcher.can_watch_directories():</span>
+<span class="sd">        print &quot;No directory watching implementation available.&quot;</span>
+<span class="sd">        sys.exit()</span>
+<span class="sd">    </span>
+<span class="sd">    dir_watcher = watcher.create_dir_watcher(&quot;my_directory&quot;, False, print_name)</span>
+<span class="sd">    </span>
+<span class="sd">    dir_watcher.start()</span>
+<span class="sd">    </span>
+<span class="sd">    #during the next minute, the names of any files created in &quot;my_directory&quot;</span>
+<span class="sd">    #will be printed</span>
+<span class="sd">    time.sleep(60)</span>
+<span class="sd">    </span>
+<span class="sd">    dir_watcher.stop()</span>
+<span class="sd">    </span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os.path</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">calendar</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">Queue</span>
+
+<div class="viewcode-block" id="can_watch_directories"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.watcher.can_watch_directories">[docs]</a><span class="k">def</span> <span class="nf">can_watch_directories</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns true if there is a directory watching implementation for</span>
+<span class="sd">    this system type.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c">#because this function takes a long time to complete - we cache the result</span>
+    <span class="c">#and return that for future calls</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">can_watch_directories</span><span class="p">,</span> <span class="s">&#39;result_cache&#39;</span><span class="p">):</span>
+    
+        <span class="c">#check if we have better than 1 second resolution on the system clock    </span>
+        <span class="n">t1</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">t2</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">((</span><span class="mf">0.5</span> <span class="o">-</span> <span class="p">(</span><span class="n">t2</span> <span class="o">-</span> <span class="n">t1</span><span class="p">)</span><span class="o">.</span><span class="n">microseconds</span> <span class="o">*</span> <span class="mf">1e-6</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mf">0.1</span><span class="p">:</span>
+            
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">False</span>
+        
+        <span class="c">#check if the modules needed for directory watching are installed.</span>
+        <span class="c">#For Linux systems we use the inotify Python bindings and for Windows</span>
+        <span class="c">#we use the win32 Python module.</span>
+        <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s">&#39;linux2&#39;</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="kn">import</span> <span class="nn">pyinotify</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="bp">False</span>
+            
+        <span class="k">elif</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s">&#39;win32&#39;</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="kn">import</span> <span class="nn">win32file</span>
+                <span class="kn">import</span> <span class="nn">win32con</span> 
+                <span class="n">result</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">False</span>
+        
+        <span class="c">#cache the result so that future calls to this function return faster</span>
+        <span class="n">can_watch_directories</span><span class="o">.</span><span class="n">result_cache</span> <span class="o">=</span> <span class="n">result</span>
+        
+    <span class="k">return</span> <span class="n">can_watch_directories</span><span class="o">.</span><span class="n">result_cache</span>
+
+
+    </div>
+<div class="viewcode-block" id="create_dir_watcher"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.watcher.create_dir_watcher">[docs]</a><span class="k">def</span> <span class="nf">create_dir_watcher</span><span class="p">(</span><span class="n">dir_name</span><span class="p">,</span> <span class="n">recursive</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a watcher class suitable for this system type, or</span>
+<span class="sd">    None if no implementation is available.</span>
+<span class="sd">    </span>
+<span class="sd">    * dir_name - path to directory to be watched</span>
+<span class="sd">    * recursive - boolean specifying whether to watch subdirectories as well.</span>
+<span class="sd">    * func - callable which will be called each time a new file is detected, </span>
+<span class="sd">             this will be passed the the full path to the created file, the </span>
+<span class="sd">             creation time of the file (a datetime object), and any additional </span>
+<span class="sd">             args or kwargs specified.</span>
+<span class="sd">    * args/kwargs - additional arguments to pass to func. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">can_watch_directories</span><span class="p">():</span>
+    
+        <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s">&#39;linux2&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">LinuxDirectoryWatcher</span><span class="p">(</span><span class="n">dir_name</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">recursive</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s">&#39;win32&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">WindowsDirectoryWatcher</span><span class="p">(</span><span class="n">dir_name</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">recursive</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">,</span> <span class="s">&quot;Failed to create DirectoryWatcher. Unsupported OS&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">None</span>
+
+            
+            </div>
+<span class="k">class</span> <span class="nc">_DirectoryWatcherBase</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base class for watcher classes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dir_name</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">recursive</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dir_to_watch</span> <span class="o">=</span> <span class="n">dir_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__func</span> <span class="o">=</span> <span class="n">func</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__args</span> <span class="o">=</span> <span class="n">args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+     
+    <span class="k">def</span> <span class="nf">_on_new_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">time_</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__func</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">time_</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">__args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">__kwargs</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+    
+    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span> 
+
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">pyinotify</span>
+<div class="viewcode-block" id="LinuxDirectoryWatcher"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.watcher.LinuxDirectoryWatcher">[docs]</a>    <span class="k">class</span> <span class="nc">LinuxDirectoryWatcher</span><span class="p">(</span><span class="n">_DirectoryWatcherBase</span><span class="p">,</span><span class="n">pyinotify</span><span class="o">.</span><span class="n">ProcessEvent</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Watcher class using inotify.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dir_name</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">recursive</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="c">#note that you are not supposed to override the __init__ method</span>
+            <span class="c"># of the ProcessEvent class, however, in order to pass args </span>
+            <span class="c"># through to the DirWatcherBase class I need to.</span>
+            
+            <span class="n">pyinotify</span><span class="o">.</span><span class="n">ProcessEvent</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="n">_DirectoryWatcherBase</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dir_name</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">recursive</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="n">watch_manager</span> <span class="o">=</span> <span class="n">pyinotify</span><span class="o">.</span><span class="n">WatchManager</span><span class="p">()</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">pyinotify</span><span class="o">.</span><span class="n">EventsCodes</span><span class="o">.</span><span class="n">OP_FLAGS</span><span class="p">[</span><span class="s">&#39;IN_CREATE&#39;</span><span class="p">]</span> <span class="o">|</span> <span class="n">pyinotify</span><span class="o">.</span><span class="n">EventsCodes</span><span class="o">.</span><span class="n">OP_FLAGS</span><span class="p">[</span><span class="s">&#39;IN_CLOSE_WRITE&#39;</span><span class="p">]</span>
+            <span class="n">watch_manager</span><span class="o">.</span><span class="n">add_watch</span><span class="p">(</span><span class="n">dir_name</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">rec</span><span class="o">=</span><span class="n">recursive</span><span class="p">,</span> <span class="n">auto_add</span><span class="o">=</span><span class="n">recursive</span><span class="p">)</span>
+                    
+            <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span> <span class="o">=</span> <span class="n">pyinotify</span><span class="o">.</span><span class="n">ThreadedNotifier</span><span class="p">(</span><span class="n">watch_manager</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">__created_files</span> <span class="o">=</span> <span class="p">{}</span>
+        
+        
+<div class="viewcode-block" id="LinuxDirectoryWatcher.start"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.watcher.LinuxDirectoryWatcher.start">[docs]</a>        <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+     
+        </div>
+<div class="viewcode-block" id="LinuxDirectoryWatcher.stop"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.watcher.LinuxDirectoryWatcher.stop">[docs]</a>        <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">notifier</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+    
+            </div>
+<div class="viewcode-block" id="LinuxDirectoryWatcher.process_IN_CREATE"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.watcher.LinuxDirectoryWatcher.process_IN_CREATE">[docs]</a>        <span class="k">def</span> <span class="nf">process_IN_CREATE</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+            <span class="c">#we want to make sure that the process that created the new file has</span>
+            <span class="c">#finished writing to it before we call the on_new_file function, otherwise</span>
+            <span class="c">#we may end up reading a partly written file. To do this, we store the </span>
+            <span class="c">#creation time of each file in a dictionary, and then wait for the in_close_write</span>
+            <span class="c">#event to trigger before calling the on_new_file function. This also means</span>
+            <span class="c">#that the on_new_file function will only be called if the file is newly created,</span>
+            <span class="c">#editing an existing file will not result in on_new_file being called.</span>
+            
+            <span class="n">t</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__created_files</span><span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">name</span><span class="p">)]</span> <span class="o">=</span> <span class="n">calendar</span><span class="o">.</span><span class="n">timegm</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">timetuple</span><span class="p">())</span> <span class="o">+</span> <span class="n">t</span><span class="o">.</span><span class="n">microsecond</span><span class="o">*</span><span class="mf">1e-6</span>
+            
+          </div>
+<div class="viewcode-block" id="LinuxDirectoryWatcher.process_IN_CLOSE_WRITE"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.watcher.LinuxDirectoryWatcher.process_IN_CLOSE_WRITE">[docs]</a>        <span class="k">def</span> <span class="nf">process_IN_CLOSE_WRITE</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                <span class="n">creation_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__created_files</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_on_new_file</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="n">creation_time</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="c">#file has only been edited, not newly created</span>
+                <span class="k">pass</span>
+            
+        </div></div>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="k">pass</span>
+
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">win32file</span>
+    <span class="kn">import</span> <span class="nn">winerror</span>
+    <span class="kn">import</span> <span class="nn">win32con</span>
+    <span class="kn">import</span> <span class="nn">pywintypes</span>
+    <span class="kn">import</span> <span class="nn">ctypes</span>    
+      
+      
+    <span class="k">class</span> <span class="nc">FSMonitorError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+        <span class="k">pass</span>
+    
+    <span class="k">class</span> <span class="nc">FSMonitorOSError</span><span class="p">(</span><span class="ne">OSError</span><span class="p">,</span> <span class="n">FSMonitorError</span><span class="p">):</span>
+        <span class="k">pass</span>
+    
+    <span class="k">class</span> <span class="nc">FSEvent</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">watch</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">watch</span> <span class="o">=</span> <span class="n">watch</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">action</span> <span class="o">=</span> <span class="n">action</span>
+    
+        <span class="nd">@property</span>
+        <span class="k">def</span> <span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">watch</span><span class="o">.</span><span class="n">path</span>
+    
+        <span class="nd">@property</span>
+        <span class="k">def</span> <span class="nf">user</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">watch</span><span class="o">.</span><span class="n">user</span>
+    
+        <span class="n">Access</span> <span class="o">=</span> <span class="mh">0x01</span>
+        <span class="n">Modify</span> <span class="o">=</span> <span class="mh">0x02</span>
+        <span class="n">Attrib</span> <span class="o">=</span> <span class="mh">0x04</span>
+        <span class="n">Create</span> <span class="o">=</span> <span class="mh">0x08</span>
+        <span class="n">Delete</span> <span class="o">=</span> <span class="mh">0x10</span>
+        <span class="n">DeleteSelf</span> <span class="o">=</span> <span class="mh">0x20</span>
+        <span class="n">MoveFrom</span> <span class="o">=</span> <span class="mh">0x40</span>
+        <span class="n">MoveTo</span> <span class="o">=</span> <span class="mh">0x80</span>
+        <span class="n">All</span> <span class="o">=</span> <span class="mh">0xFF</span>
+
+    
+    <span class="k">class</span> <span class="nc">FSMonitorWindowsError</span><span class="p">(</span><span class="n">FSMonitorError</span><span class="p">):</span>
+        <span class="k">pass</span>
+    
+    <span class="k">class</span> <span class="nc">FSMonitorWatch</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">flags</span><span class="p">,</span> <span class="n">recursive</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">enabled</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_recursive</span> <span class="o">=</span> <span class="n">recursive</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_win32_flags</span> <span class="o">=</span> <span class="n">flags</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_key</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_hDir</span> <span class="o">=</span> <span class="bp">None</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">_hDir</span> <span class="o">=</span> <span class="n">win32file</span><span class="o">.</span><span class="n">CreateFile</span><span class="p">(</span>
+                                                <span class="n">path</span><span class="p">,</span>
+                                                <span class="mh">0x0001</span><span class="p">,</span>
+                                                <span class="n">win32con</span><span class="o">.</span><span class="n">FILE_SHARE_READ</span> <span class="o">|</span> <span class="n">win32con</span><span class="o">.</span><span class="n">FILE_SHARE_WRITE</span> <span class="o">|</span> <span class="n">win32con</span><span class="o">.</span><span class="n">FILE_SHARE_DELETE</span><span class="p">,</span>
+                                                <span class="bp">None</span><span class="p">,</span>
+                                                <span class="n">win32con</span><span class="o">.</span><span class="n">OPEN_EXISTING</span><span class="p">,</span>
+                                                <span class="n">win32con</span><span class="o">.</span><span class="n">FILE_FLAG_BACKUP_SEMANTICS</span> <span class="o">|</span> <span class="n">win32con</span><span class="o">.</span><span class="n">FILE_FLAG_OVERLAPPED</span><span class="p">,</span>
+                                                <span class="bp">None</span><span class="p">)</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">_overlapped</span> <span class="o">=</span> <span class="n">pywintypes</span><span class="o">.</span><span class="n">OVERLAPPED</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_buf</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">create_string_buffer</span><span class="p">(</span><span class="mi">1024</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_removed</span> <span class="o">=</span> <span class="bp">False</span>
+    
+        <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">close_watch</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+    
+        <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s">&quot;&lt;FSMonitorWatch </span><span class="si">%r</span><span class="s">&gt;&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span>
+    
+    <span class="k">def</span> <span class="nf">close_watch</span><span class="p">(</span><span class="n">watch</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">watch</span><span class="o">.</span><span class="n">_hDir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">win32file</span><span class="o">.</span><span class="n">CancelIo</span><span class="p">(</span><span class="n">watch</span><span class="o">.</span><span class="n">_hDir</span><span class="p">)</span>
+            <span class="n">win32file</span><span class="o">.</span><span class="n">CloseHandle</span><span class="p">(</span><span class="n">watch</span><span class="o">.</span><span class="n">_hDir</span><span class="p">)</span>
+            <span class="n">watch</span><span class="o">.</span><span class="n">_hDir</span> <span class="o">=</span> <span class="bp">None</span>
+    
+    <span class="k">def</span> <span class="nf">read_changes</span><span class="p">(</span><span class="n">watch</span><span class="p">):</span>
+        <span class="n">win32file</span><span class="o">.</span><span class="n">ReadDirectoryChangesW</span> <span class="p">(</span>
+                                            <span class="n">watch</span><span class="o">.</span><span class="n">_hDir</span><span class="p">,</span>
+                                            <span class="n">watch</span><span class="o">.</span><span class="n">_buf</span><span class="p">,</span>
+                                            <span class="bp">True</span><span class="p">,</span>
+                                            <span class="n">win32con</span><span class="o">.</span><span class="n">FILE_NOTIFY_CHANGE_FILE_NAME</span> <span class="o">|</span>
+                                            <span class="n">win32con</span><span class="o">.</span><span class="n">FILE_NOTIFY_CHANGE_LAST_WRITE</span><span class="p">,</span>
+                                            <span class="n">watch</span><span class="o">.</span><span class="n">_overlapped</span><span class="p">,</span>
+                                            <span class="bp">None</span>
+                                          <span class="p">)</span>
+
+    
+    <span class="k">def</span> <span class="nf">process_events</span><span class="p">(</span><span class="n">watch</span><span class="p">,</span> <span class="n">num</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">action</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">win32file</span><span class="o">.</span><span class="n">FILE_NOTIFY_INFORMATION</span><span class="p">(</span><span class="n">watch</span><span class="o">.</span><span class="n">_buf</span><span class="o">.</span><span class="n">raw</span><span class="p">,</span> <span class="n">num</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">action</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="p">(</span><span class="n">action</span> <span class="o">&amp;</span> <span class="n">win32con</span><span class="o">.</span><span class="n">FILE_NOTIFY_CHANGE_FILE_NAME</span> <span class="o">|</span> <span class="n">win32con</span><span class="o">.</span><span class="n">FILE_NOTIFY_CHANGE_LAST_WRITE</span><span class="p">):</span>
+                <span class="k">yield</span> <span class="n">FSEvent</span><span class="p">(</span><span class="n">watch</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">read_changes</span><span class="p">(</span><span class="n">watch</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">pywintypes</span><span class="o">.</span><span class="n">error</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
+                <span class="n">close_watch</span><span class="p">(</span><span class="n">watch</span><span class="p">)</span>
+                <span class="k">yield</span> <span class="n">FSEvent</span><span class="p">(</span><span class="n">watch</span><span class="p">,</span> <span class="n">FSEvent</span><span class="o">.</span><span class="n">DeleteSelf</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">FSMonitorWindowsError</span><span class="p">(</span><span class="o">*</span><span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">)</span>
+    
+    
+    
+    <span class="k">class</span> <span class="nc">FSMonitor</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__key_to_watch</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__last_key</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__cphandle</span> <span class="o">=</span> <span class="n">win32file</span><span class="o">.</span><span class="n">CreateIoCompletionPort</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    
+    
+        <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    
+    
+        <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__cphandle</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">win32file</span><span class="o">.</span><span class="n">CloseHandle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__cphandle</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__cphandle</span> <span class="o">=</span> <span class="bp">None</span>
+    
+    
+        <span class="k">def</span> <span class="nf">add_dir_watch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">flags</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">flags</span> <span class="o">|=</span> <span class="n">FSEvent</span><span class="o">.</span><span class="n">DeleteSelf</span>
+                <span class="n">watch</span> <span class="o">=</span> <span class="n">FSMonitorWatch</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">flags</span><span class="p">,</span> <span class="n">recursive</span><span class="p">)</span>
+                <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">__lock</span><span class="p">:</span>
+                    <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__last_key</span>
+                    <span class="n">win32file</span><span class="o">.</span><span class="n">CreateIoCompletionPort</span><span class="p">(</span><span class="n">watch</span><span class="o">.</span><span class="n">_hDir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__cphandle</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__last_key</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="n">read_changes</span><span class="p">(</span><span class="n">watch</span><span class="p">)</span>
+                    <span class="n">watch</span><span class="o">.</span><span class="n">_key</span> <span class="o">=</span> <span class="n">key</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__key_to_watch</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">watch</span>
+                <span class="k">return</span> <span class="n">watch</span>
+            <span class="k">except</span> <span class="n">pywintypes</span><span class="o">.</span><span class="n">error</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">FSMonitorWindowsError</span><span class="p">(</span><span class="o">*</span><span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">)</span>
+    
+    
+        <span class="k">def</span> <span class="nf">__remove_watch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">watch</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">watch</span><span class="o">.</span><span class="n">_removed</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">watch</span><span class="o">.</span><span class="n">_removed</span> <span class="o">=</span> <span class="bp">True</span>
+                    <span class="n">close_watch</span><span class="p">(</span><span class="n">watch</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="bp">True</span>
+                <span class="k">except</span> <span class="n">pywintypes</span><span class="o">.</span><span class="n">error</span><span class="p">:</span>
+                    <span class="k">pass</span>
+            <span class="k">return</span> <span class="bp">False</span>
+    
+    
+        <span class="k">def</span> <span class="nf">remove_all_watches</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">__lock</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">watch</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__key_to_watch</span><span class="o">.</span><span class="n">itervalues</span><span class="p">():</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__remove_watch</span><span class="p">(</span><span class="n">watch</span><span class="p">)</span>
+    
+    
+        <span class="k">def</span> <span class="nf">read_events</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">events</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">rc</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">win32file</span><span class="o">.</span><span class="n">GetQueuedCompletionStatus</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__cphandle</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">rc</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">__lock</span><span class="p">:</span>
+                        <span class="n">watch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__key_to_watch</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">watch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">watch</span><span class="o">.</span><span class="n">enabled</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">watch</span><span class="o">.</span><span class="n">_removed</span><span class="p">:</span>
+                            <span class="k">for</span> <span class="n">evt</span> <span class="ow">in</span> <span class="n">process_events</span><span class="p">(</span><span class="n">watch</span><span class="p">,</span> <span class="n">num</span><span class="p">):</span>
+                                <span class="n">events</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">rc</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
+                    <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">__lock</span><span class="p">:</span>
+                        <span class="n">watch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__key_to_watch</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">watch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">watch</span><span class="o">.</span><span class="n">enabled</span><span class="p">:</span>
+                            <span class="n">close_watch</span><span class="p">(</span><span class="n">watch</span><span class="p">)</span>
+                            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">__key_to_watch</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                            <span class="n">events</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">FSEvent</span><span class="p">(</span><span class="n">watch</span><span class="p">,</span> <span class="n">FSEvent</span><span class="o">.</span><span class="n">DeleteSelf</span><span class="p">))</span>
+                <span class="k">return</span> <span class="n">events</span>
+            <span class="k">except</span> <span class="n">pywintypes</span><span class="o">.</span><span class="n">error</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">FSMonitorWindowsError</span><span class="p">(</span><span class="o">*</span><span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">)</span>       
+       
+       
+    <span class="k">class</span> <span class="nc">WindowsDirectoryWatcher</span><span class="p">(</span><span class="n">_DirectoryWatcherBase</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dir_name</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">recursive</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="n">_DirectoryWatcherBase</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dir_name</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">recursive</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">recursive</span> <span class="o">=</span> <span class="n">recursive</span>            
+            <span class="bp">self</span><span class="o">.</span><span class="n">worker_thread</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">processing_thread</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stay_alive</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">monitor</span> <span class="o">=</span> <span class="n">FSMonitor</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__created_files</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__new_files_q</span> <span class="o">=</span> <span class="n">Queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
+
+        
+        <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stay_alive</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">monitor</span><span class="o">.</span><span class="n">add_dir_watch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dir_to_watch</span><span class="p">,</span> <span class="n">win32con</span><span class="o">.</span><span class="n">FILE_NOTIFY_CHANGE_FILE_NAME</span> <span class="o">|</span> <span class="n">win32con</span><span class="o">.</span><span class="n">FILE_NOTIFY_CHANGE_LAST_WRITE</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">recursive</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">worker_thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__do_watching</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">processing_thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__do_processing</span><span class="p">)</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">worker_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">processing_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    
+    
+        <span class="k">def</span> <span class="nf">__do_watching</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">stay_alive</span><span class="p">:</span>
+                <span class="c">#try:</span>
+                <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">monitor</span><span class="o">.</span><span class="n">read_events</span><span class="p">():</span>
+                    
+                    <span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dir_to_watch</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+                    <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">action</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span> <span class="c">#file creation event</span>
+                        <span class="n">t</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">__created_files</span><span class="p">[</span><span class="n">file_path</span><span class="p">]</span> <span class="o">=</span> <span class="n">calendar</span><span class="o">.</span><span class="n">timegm</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">timetuple</span><span class="p">())</span> <span class="o">+</span> <span class="n">t</span><span class="o">.</span><span class="n">microsecond</span><span class="o">*</span><span class="mf">1e-6</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">__new_files_q</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">action</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span> <span class="c">#file update event</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__created_files</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+                            <span class="c">#file has just been modified - not newly created</span>
+                            <span class="k">continue</span>
+
+    
+        <span class="k">def</span> <span class="nf">__do_processing</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Wait for the newly created file to be closed and then run the </span>
+<span class="sd">            processing function on it (this is required since there is no such </span>
+<span class="sd">            thing as a close_write event on Windows)</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">stay_alive</span><span class="p">:</span>
+                <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__new_files_q</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+                
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="p">:</span> <span class="c">#probably an exit request</span>
+                    <span class="k">continue</span>
+                
+                <span class="n">file_is_closed</span> <span class="o">=</span> <span class="bp">False</span>
+                <span class="k">while</span> <span class="ow">not</span> <span class="n">file_is_closed</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">stay_alive</span><span class="p">:</span>
+                
+                    <span class="c">#try to open the file for reading, specifying exclusive access</span>
+                    <span class="c">#this will fail if the file is already open in an another process</span>
+                    
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">handle</span> <span class="o">=</span> <span class="n">win32file</span><span class="o">.</span><span class="n">CreateFile</span><span class="p">(</span>
+                                                    <span class="n">path</span><span class="p">,</span>
+                                                    <span class="n">win32file</span><span class="o">.</span><span class="n">GENERIC_READ</span><span class="p">,</span>
+                                                    <span class="mi">0</span><span class="p">,</span> <span class="c">#share mode - 0 == no sharing</span>
+                                                    <span class="bp">None</span><span class="p">,</span>
+                                                    <span class="n">win32file</span><span class="o">.</span><span class="n">OPEN_ALWAYS</span><span class="p">,</span>
+                                                    <span class="n">win32file</span><span class="o">.</span><span class="n">FILE_ATTRIBUTE_NORMAL</span><span class="p">,</span>
+                                                    <span class="bp">None</span><span class="p">)</span>
+                        <span class="n">handle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                        <span class="n">file_is_closed</span> <span class="o">=</span> <span class="bp">True</span>
+                    <span class="k">except</span> <span class="n">pywintypes</span><span class="o">.</span><span class="n">error</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">winerror</span><span class="o">.</span><span class="n">ERROR_SHARING_VIOLATION</span><span class="p">:</span>
+                            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">raise</span>
+                
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">stay_alive</span><span class="p">:</span>
+                    <span class="k">return</span>
+                
+                <span class="bp">self</span><span class="o">.</span><span class="n">_on_new_file</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__created_files</span><span class="p">[</span><span class="n">path</span><span class="p">])</span>
+                    
+        
+        <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stay_alive</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">monitor</span><span class="o">.</span><span class="n">remove_all_watches</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">worker_thread</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">worker_thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+            
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">processing_thread</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__new_files_q</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">processing_thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+            
+            <span class="c">#empty the new_files queue</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__new_files_q</span><span class="o">.</span><span class="n">get_nowait</span><span class="p">()</span>
+            <span class="k">except</span> <span class="n">Queue</span><span class="o">.</span><span class="n">Empty</span><span class="p">:</span>
+                <span class="k">pass</span>
+                
+            <span class="bp">self</span><span class="o">.</span><span class="n">worker_thread</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">processing_thread</span> <span class="o">=</span> <span class="bp">None</span>
+
+
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="k">pass</span>   
+    
+    
+    
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">plumetrack 14.09 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Nial Peters.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>
