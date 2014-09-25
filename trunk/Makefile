@@ -6,8 +6,8 @@ docs:
 	sphinx-apidoc -f -o doc/source src/plumetrack
 	@echo "Building HTML documetation"
 	cd doc; make html
-#	@echo "setting MIME types"
-#	cd doc; ./set_mime_types.sh
+	@echo "setting MIME types"
+	cd doc; ./set_mime_types.sh
 	@echo "Done building documentation"
 
 clean:
