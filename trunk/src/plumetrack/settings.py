@@ -163,6 +163,11 @@ def parse_cmd_line():
                       help="Parallel process the images. This will be ignored "
                            "when used with the realtime option")
     
+    parser.add_option("-i","--integration_method", dest="integration_method", action="store", 
+                      default='2d', type='string',
+                      help="Select either '1d' or '2d' method for integrating "
+                           "the flux. Default is '2d'.")
+    
     parser.add_option("-t", "--realtime", dest="realtime", action="store_true", 
                       default=False,
                       help="Continuously monitor the image folder for new files")
@@ -203,6 +208,11 @@ def parse_cmd_line():
     #use of the skip_existing option implies the use of the realtime option
     if options.skip_existing and not options.realtime:
         options.realtime = True
+    
+    #check that the integration method is valid
+    if not options.integration_method in ('1d','2d'):
+        parser.error("Unknown integration_method '%s', expecting either '1d' "
+                     "or '2d'"%options.integration_method)
         
     return (options, args)
 

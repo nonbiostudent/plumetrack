@@ -208,8 +208,14 @@ def main():
     
 
     motion_engine = motion.MotionEngine(config)
-     
-    flux_engine = flux.FluxEngine(config)
+    
+    if options.integration_method == '2d': 
+        flux_engine = flux.FluxEngine2D(config)
+    elif options.integration_method == '1d':
+        flux_engine = flux.FluxEngine1D(config)
+    else:
+        raise ValueError("Unexpected value \"%s\"for integration_method. "
+                         "Expected either '1d' or '2d'"%options.integration_method)
      
     image_iter = dir_iter.DirFileIter(image_dir, realtime=options.realtime, 
                                       skip_existing=options.skip_existing, 

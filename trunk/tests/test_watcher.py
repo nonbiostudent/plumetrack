@@ -23,7 +23,7 @@ import shutil
 import datetime
 import time
 
-from plume_track import watcher
+from plumetrack import watcher
 
 def do_nothing():
     pass
