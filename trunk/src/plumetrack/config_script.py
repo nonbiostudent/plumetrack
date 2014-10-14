@@ -41,6 +41,9 @@ def main():
     Runs the main program - this is set as the entry point for the configuration
     utility in the setup.py file.
     """
+    provider = wx.SimpleHelpProvider()
+    wx.HelpProvider_Set(provider)
+
     app = PlumetrackConfigApp()
     app.MainLoop()
     
@@ -120,17 +123,38 @@ class InputFilesConfig(wx.Panel):
         sizer = wx.FlexGridSizer(4, 2, 5, 0)
         sizer.AddGrowableCol(1,1)
         
-        sizer.Add(wx.StaticText(self, -1, "Filename format:"), 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTRE_VERTICAL)
+        sizer.Add(wx.StaticText(self, -1, "Filename format:"), 0, 
+                  wx.ALIGN_RIGHT | wx.ALIGN_CENTRE_VERTICAL)
         self.filename_format_box = wx.TextCtrl(self, -1, size=(250,-1))
-        sizer.Add(self.filename_format_box, 1, wx.EXPAND|wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
+        self.filename_format_box.SetHelpText("The format of the filenames of the"
+                                            " images to be processed. The "
+                                            "filenames must include the capture"
+                                            " time of the images, and the "
+                                            "format must be described using the"
+                                            " Python strftime format. See "
+                                            "either the plumetrack or the "
+                                            "Python documentation for details."
+                                            " The filename format entered here "
+                                            "should include the file extension.")
+        sizer.Add(self.filename_format_box, 1, 
+                  wx.EXPAND | wx.ALIGN_LEFT | wx.ALIGN_CENTRE_VERTICAL)
         
-        sizer.Add(wx.StaticText(self, -1, "File extension:"), 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTRE_VERTICAL)
+        sizer.Add(wx.StaticText(self, -1, "File extension:"), 0, 
+                  wx.ALIGN_RIGHT | wx.ALIGN_CENTRE_VERTICAL)
         self.file_extension_box = wx.TextCtrl(self, -1, size=(100,-1))
+        h_txt = ("The file extension of your image files to be processed e.g. "
+                 "'.png' or '.jpg'. This may be specified with or without the "
+                 "preceding dot. It must match the file extension given in the "
+                 "filename format box above.")
+        self.file_extension_box.SetHelpText(h_txt)
+        self.file_extension_box.SetToolTipString(h_txt)
         sizer.Add(self.file_extension_box, 0, wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
         
-        sizer.Add(wx.StaticText(self, -1, "Pixel size (metres):"), 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTRE_VERTICAL)
-        self.pixel_size_box = floatspin.FloatSpin(self, wx.ID_ANY, min_val=0.01, max_val=50.0,
-                                                  increment=0.1, digits=2)
+        sizer.Add(wx.StaticText(self, -1, "Pixel size (metres):"), 0, 
+                  wx.ALIGN_RIGHT | wx.ALIGN_CENTRE_VERTICAL)
+        self.pixel_size_box = floatspin.FloatSpin(self, wx.ID_ANY, min_val=0.01, 
+                                                  max_val=50.0, increment=0.1, 
+                                                  digits=2)
         sizer.Add(self.pixel_size_box, 0, wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
         
         sizer.Add(wx.StaticText(self, -1, "Units conversion factor:"), 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTRE_VERTICAL)
@@ -532,6 +556,10 @@ class MainFrame(wx.Frame):
         
         #create the save and cancel button
         buttons_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        
+        self.help_button = wx.ContextHelpButton(self)
+        buttons_sizer.Add(self.help_button, 0, wx.ALIGN_BOTTOM|wx.ALIGN_RIGHT|wx.TOP|wx.BOTTOM, border=10)
+
         
         self.cancel_button = wx.Button(self, wx.ID_CANCEL, "Cancel")
         buttons_sizer.Add(self.cancel_button, 0, wx.ALIGN_BOTTOM|wx.ALIGN_RIGHT|wx.TOP|wx.BOTTOM, border=10)

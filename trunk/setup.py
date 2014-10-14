@@ -52,10 +52,10 @@ for mod, name in required_modules:
 
 #list of dependencies that are in PyPi
 install_dependencies = [
-                        'numpy>=1.8', 
+                        'numpy>=1.6', 
                         'matplotlib>=0.9', 
                         'scipy',
-                        'wxPython>=2.8.12'
+                        'wxPython>=2.8.10'
                         ]
 
 if sys.platform == 'win32':
