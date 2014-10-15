@@ -32,7 +32,6 @@ from matplotlib.figure import Figure
 import plumetrack
 from plumetrack import settings, flux
 
-#TODO - context help
 #TODO - zoom tools on integration line drawing dialog
 
 
@@ -41,9 +40,6 @@ def main():
     Runs the main program - this is set as the entry point for the configuration
     utility in the setup.py file.
     """
-    provider = wx.SimpleHelpProvider()
-    wx.HelpProvider_Set(provider)
-
     app = PlumetrackConfigApp()
     app.MainLoop()
     
@@ -79,6 +75,9 @@ class ConfigFileSelect(wx.Panel):
         
         self.filename_box = wx.TextCtrl(self, -1, size=(250,-1))
         self.browse_button = wx.Button(self, -1, "Browse")
+        h_txt = "Select an existing configuration file to load parameters from."
+        self.filename_box.SetToolTipString(h_txt)
+        self.browse_button.SetToolTipString(h_txt)
         wx.EVT_BUTTON(self, self.browse_button.GetId(), self.on_browse)
         
         hsizer.Add(self.filename_box, 1, wx.EXPAND|wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
@@ -86,6 +85,10 @@ class ConfigFileSelect(wx.Panel):
         hsizer.Add(self.browse_button, 0, wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
         
         self.load_button = wx.Button(self, -1, "Load")
+        h_txt = ("Load the configuration parameters from the currently "
+                 "selected file. This will overwrite any parameters already "
+                 "defined below.")
+        self.load_button.SetToolTipString(h_txt)
         wx.EVT_BUTTON(self, self.load_button.GetId(), self.on_load)
         
         #set the default config file to load
@@ -126,16 +129,13 @@ class InputFilesConfig(wx.Panel):
         sizer.Add(wx.StaticText(self, -1, "Filename format:"), 0, 
                   wx.ALIGN_RIGHT | wx.ALIGN_CENTRE_VERTICAL)
         self.filename_format_box = wx.TextCtrl(self, -1, size=(250,-1))
-        self.filename_format_box.SetHelpText("The format of the filenames of the"
-                                            " images to be processed. The "
-                                            "filenames must include the capture"
-                                            " time of the images, and the "
-                                            "format must be described using the"
-                                            " Python strftime format. See "
-                                            "either the plumetrack or the "
-                                            "Python documentation for details."
-                                            " The filename format entered here "
-                                            "should include the file extension.")
+        h_txt = ("The format of the filenames of the images to be processed. "
+                 "The filenames must include the capture time of the images, "
+                 "and the format must be described using the Python strftime "
+                 "format. See either the plumetrack or the Python documentation"
+                 " for details. The filename format entered here should include"
+                 " the file extension.")
+        self.filename_format_box.SetToolTipString(h_txt)
         sizer.Add(self.filename_format_box, 1, 
                   wx.EXPAND | wx.ALIGN_LEFT | wx.ALIGN_CENTRE_VERTICAL)
         
@@ -146,7 +146,6 @@ class InputFilesConfig(wx.Panel):
                  "'.png' or '.jpg'. This may be specified with or without the "
                  "preceding dot. It must match the file extension given in the "
                  "filename format box above.")
-        self.file_extension_box.SetHelpText(h_txt)
         self.file_extension_box.SetToolTipString(h_txt)
         sizer.Add(self.file_extension_box, 0, wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
         
@@ -155,10 +154,21 @@ class InputFilesConfig(wx.Panel):
         self.pixel_size_box = floatspin.FloatSpin(self, wx.ID_ANY, min_val=0.01, 
                                                   max_val=50.0, increment=0.1, 
                                                   digits=2)
+        h_txt = ("The size of the pixels in the images. Note that this is the "
+                 "length in metres along one pixel dimension, not the area of "
+                 "the pixel.")
+        self.pixel_size_box.SetToolTipString(h_txt)
         sizer.Add(self.pixel_size_box, 0, wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
         
         sizer.Add(wx.StaticText(self, -1, "Units conversion factor:"), 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTRE_VERTICAL)
         self.flux_conversion_factor = wx.TextCtrl(self, -1, size=(150,-1))
+        h_txt = ("This is used in conjunction with the pixel_size parameter to "
+                 "convert the pixel values in your images into SO2 masses. You "
+                 "need to select a value for this parameter such that SO2_mass "
+                 "= pixel_value * pixel_size^2 * flux_conversion_factor. The "
+                 "fluxes returned will then have units of SO2-mass-units per "
+                 "second.")
+        self.flux_conversion_factor.SetToolTipString(h_txt)
         sizer.Add(self.flux_conversion_factor, 0, wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
         
         self.SetSizer(sizer)
@@ -211,6 +221,10 @@ class MaskingConfig(wx.Panel):
         self.low_thresh_chkbx = wx.CheckBox(self, -1, "Low pixel threshold:")
         sizer.Add(self.low_thresh_chkbx, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTRE_VERTICAL)
         self.low_thresh_box = floatspin.FloatSpin(self, wx.ID_ANY, increment=1.0, digits=0, min_val=0)
+        h_txt = ("Any pixels that are below this threshold will be masked using"
+                 " random noise during the motion estimation and will be "
+                 "excluded from the flux calculation.")
+        self.low_thresh_box.SetToolTipString(h_txt)
         sizer.Add(self.low_thresh_box, 0,wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
         wx.EVT_CHECKBOX(self, self.low_thresh_chkbx.GetId(), self.on_low_thresh)
         
@@ -219,17 +233,30 @@ class MaskingConfig(wx.Panel):
         self.high_thresh_chkbx = wx.CheckBox(self, -1, "High pixel threshold:")
         sizer.Add(self.high_thresh_chkbx, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTRE_VERTICAL)
         self.high_thresh_box = floatspin.FloatSpin(self, wx.ID_ANY, increment=1.0, digits=0, min_val=0)
+        h_txt = ("Any pixels that are above this threshold will be masked using"
+                 " random noise during the motion estimation and will be "
+                 "excluded from the flux calculation.")
+        self.high_thresh_box.SetToolTipString(h_txt)
         sizer.Add(self.high_thresh_box, 0, wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
         wx.EVT_CHECKBOX(self, self.high_thresh_chkbx.GetId(), self.on_high_thresh)
         
         sizer.Add(wx.StaticText(self, -1, "Mask value mean:"), 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTRE_VERTICAL)
         self.random_mean_box = floatspin.FloatSpin(self, wx.ID_ANY, increment=1, digits=1, min_val=0.0)
+        h_txt = ("Masked pixels (either due to thresholding or a mask image) "
+                 "are replaced by Gaussian distributed white noise. This "
+                 "parameter controls the mean value of this noise.")
+        self.random_mean_box.SetToolTipString(h_txt)
         sizer.Add(self.random_mean_box, 0, wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
         
         sizer.AddSpacer((20,1))
         
         sizer.Add(wx.StaticText(self, -1, "Mask value Std. Dev.:"), 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTRE_VERTICAL)
         self.random_sigma_box = floatspin.FloatSpin(self, wx.ID_ANY, increment=1, min_val=0.0, digits=1)
+        h_txt = ("Masked pixels (either due to thresholding or a mask image) "
+                 "are replaced by Gaussian distributed white noise. This "
+                 "parameter controls the standard-deviation of this noise. It "
+                 "can be set to 0 if masking with a single value is required.")
+        self.random_sigma_box.SetToolTipString(h_txt)
         sizer.Add(self.random_sigma_box, 0, wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
         
         vsizer.Add(sizer, 1, wx.EXPAND|wx.ALIGN_TOP|wx.ALIGN_LEFT)
@@ -238,8 +265,20 @@ class MaskingConfig(wx.Panel):
         self.mask_im_chkbx = wx.CheckBox(self, -1, "Mask image:")
         hsizer.Add(self.mask_im_chkbx, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTRE_VERTICAL)
         self.mask_im_box = wx.TextCtrl(self, -1)
+        h_txt = ("Regions of the image which you do not want to contribute to "
+                 "the flux, or that might interfere with the motion estimation "
+                 "(for example high-contrast boudaries of the volcanic edifice)"
+                 " can be excluded from the calculations by creating a mask "
+                 "image. This should be a greyscale image of the same size as "
+                 "the UV images to be processed. Any pixels that are black "
+                 "(pixel value of 0) in the mask image will be replaced with "
+                 "random noise and excluded from the flux calculations. Enter "
+                 "the filename of the mask image here.")
+        self.mask_im_box.SetToolTipString(h_txt)
         hsizer.Add(self.mask_im_box, 1, wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
         self.browse_button = wx.Button(self, -1, "Browse")
+        h_txt = ("Select an existing mask image to use.")
+        self.browse_button.SetToolTipString(h_txt)
         hsizer.Add(self.browse_button, 0, wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
         
         wx.EVT_CHECKBOX(self, self.mask_im_chkbx.GetId(), self.on_mask_im)
@@ -331,30 +370,55 @@ class MotionTrackingConfig(wx.Panel):
         
         sizer = wx.FlexGridSizer(3, 5, 10, 0)
         
-        sizer.Add(wx.StaticText(self, -1, "Pyramid scale:"), 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTRE_VERTICAL)
+        sizer.Add(wx.StaticText(self, -1, "Pyramid scale:"), 0, 
+                  wx.ALIGN_RIGHT | wx.ALIGN_CENTRE_VERTICAL)
         self.pyr_scale_box = floatspin.FloatSpin(self, wx.ID_ANY, min_val=0.01, max_val=1.0,
                                                   increment=0.1, digits=2)
+        h_txt = ("Farneback algorithm parameter: the image scale (<1.0) to "
+                 "build pyramids for each image; setting this to 0.5 means a "
+                 "classical pyramid, where each next layer is half the size "
+                 "of the previous one.")
+        self.pyr_scale_box.SetToolTipString(h_txt)
         sizer.Add(self.pyr_scale_box, 0, wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
         
         sizer.AddSpacer((20,1))
         
         sizer.Add(wx.StaticText(self, -1, "Pyramid levels:"), 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTRE_VERTICAL)
         self.levels_box = wx.SpinCtrl(self, wx.ID_ANY, min=1)
+        h_txt = ("Farneback algorithm parameter: number of pyramid layers "
+                 "including the initial image; setting this to 1 means that no "
+                 "extra layers are created and only the original images "
+                 "are used.")
+        self.levels_box.SetToolTipString(h_txt)
         sizer.Add(self.levels_box, 0, wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
                
         
         sizer.Add(wx.StaticText(self, -1, "Window size:"), 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTRE_VERTICAL)
         self.winsize_box = wx.SpinCtrl(self, wx.ID_ANY, min=1, max=1000)
+        h_txt = ("Farneback algorithm parameter: averaging window size; larger "
+                 "values increase the algorithm robustness to image noise and "
+                 "give more chances for fast motion detection, but yield more "
+                 "blurred motion field.")
+        self.winsize_box.SetToolTipString(h_txt)
         sizer.Add(self.winsize_box, 0, wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
         
         sizer.AddSpacer((20,1))
         
         sizer.Add(wx.StaticText(self, -1, "Iterations:"), 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTRE_VERTICAL)
         self.iterations_box = wx.SpinCtrl(self, wx.ID_ANY, min=1, max=1000)
+        h_txt = ("Farneback algorithm parameter: number of iterations the "
+                 "algorithm performs at each pyramid level.")
+        self.iterations_box.SetToolTipString(h_txt)
         sizer.Add(self.iterations_box, 0, wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
         
-        sizer.Add(wx.StaticText(self, -1, "Polynomial order:"), 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTRE_VERTICAL)
+        sizer.Add(wx.StaticText(self, -1, "Polynomial size:"), 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTRE_VERTICAL)
         self.poly_n_box = wx.SpinCtrl(self, wx.ID_ANY, min=3, max=100)
+        h_txt = ("Farneback algorithm parameter: size of the pixel neighborhood"
+                 " used to find polynomial expansion in each pixel; larger "
+                 "values mean that the image will be approximated with smoother"
+                 " surfaces, yielding more robust algorithm and more blurred "
+                 "motion field, typically values of 5 or 7 are used.")
+        self.poly_n_box.SetToolTipString(h_txt)
         sizer.Add(self.poly_n_box, 0, wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
         
         sizer.AddSpacer((20,1))
@@ -362,6 +426,12 @@ class MotionTrackingConfig(wx.Panel):
         sizer.Add(wx.StaticText(self, -1, "Gaussian smoothing:"), 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTRE_VERTICAL)
         self.poly_sigma_box = floatspin.FloatSpin(self, wx.ID_ANY, min_val=0.0,
                                                   increment=0.1, digits=3)
+        h_txt = ("Farneback algorithm parameter: standard deviation of the "
+                 "Gaussian that is used to smooth derivatives used as a basis "
+                 "for the polynomial expansion; for polynomial sizes of 5 and "
+                 "7, reasonable choices of this parameter would be 1.1 and 1.5 "
+                 "respectively.")
+        self.poly_sigma_box.SetToolTipString(h_txt)
         sizer.Add(self.poly_sigma_box, 0, wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
     
         self.SetSizer(sizer)
@@ -398,8 +468,16 @@ class IntegrationLineConfig(wx.Panel):
         hsizer = wx.BoxSizer(wx.HORIZONTAL)
         hsizer.Add(wx.StaticText(self, -1, "Integration line:"),0,wx.ALIGN_CENTER_VERTICAL|wx.ALIGN_RIGHT)
         self.integration_line_box = wx.TextCtrl(self, -1)
+        h_txt =  ("List of [x, y] points (e.g. [[x1, y1], [x2, y2],...]) "
+                  "defining the integration line for the flux calculation. x "
+                  "and y are in pixel coordinates - the origin is in the top "
+                  "left of an image.")
+        self.integration_line_box.SetToolTipString(h_txt)
         hsizer.Add(self.integration_line_box,1, wx.ALIGN_CENTER_VERTICAL)
         self.draw_button = wx.Button(self, -1, "Draw")
+        h_txt = ("Opens a dialog in which the integration line can be chosen by"
+                 " drawing it onto an image.")
+        self.draw_button.SetToolTipString(h_txt)
         hsizer.Add(self.draw_button,0,wx.ALIGN_CENTER_VERTICAL|wx.ALIGN_LEFT)
         wx.EVT_BUTTON(self, self.draw_button.GetId(), self.on_draw)
         
@@ -407,6 +485,10 @@ class IntegrationLineConfig(wx.Panel):
         vsizer.AddSpacer(10)
         
         self.direction_chkbx = wx.CheckBox(self, -1, "Reverse integration direction")
+        h_txt = ("Defines which way is positive across the integration line. "
+                 "This is easier to set in the 'Draw' dialog (click button "
+                 "above).")
+        self.direction_chkbx.SetToolTipString(h_txt)
         vsizer.Add(self.direction_chkbx, 0 , wx.ALIGN_LEFT)
         
         self.SetSizer(vsizer)
@@ -556,10 +638,6 @@ class MainFrame(wx.Frame):
         
         #create the save and cancel button
         buttons_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        
-        self.help_button = wx.ContextHelpButton(self)
-        buttons_sizer.Add(self.help_button, 0, wx.ALIGN_BOTTOM|wx.ALIGN_RIGHT|wx.TOP|wx.BOTTOM, border=10)
-
         
         self.cancel_button = wx.Button(self, wx.ID_CANCEL, "Cancel")
         buttons_sizer.Add(self.cancel_button, 0, wx.ALIGN_BOTTOM|wx.ALIGN_RIGHT|wx.TOP|wx.BOTTOM, border=10)
