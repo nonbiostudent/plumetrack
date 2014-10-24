@@ -16,6 +16,7 @@
 #along with plumetrack.  If not, see <http://www.gnu.org/licenses/>.
 
 import wx
+import wx.html
 import os
 import json
 import Image
@@ -132,12 +133,19 @@ class InputFilesConfig(wx.Panel):
         h_txt = ("The format of the filenames of the images to be processed. "
                  "The filenames must include the capture time of the images, "
                  "and the format must be described using the Python strftime "
-                 "format. See either the plumetrack or the Python documentation"
-                 " for details. The filename format entered here should include"
-                 " the file extension.")
+                 "format. Click the Help button for details of the format. "
+                 "The filename format entered here should include "
+                 "the file extension.")
         self.filename_format_box.SetToolTipString(h_txt)
-        sizer.Add(self.filename_format_box, 1, 
+        
+        hsizer = wx.BoxSizer(wx.HORIZONTAL)
+        hsizer.Add(self.filename_format_box, 1, 
                   wx.EXPAND | wx.ALIGN_LEFT | wx.ALIGN_CENTRE_VERTICAL)
+        
+        format_help_button = wx.Button(self, -1, "Help")
+        hsizer.Add(format_help_button, 0, wx.ALIGN_LEFT | wx.ALIGN_CENTRE_VERTICAL)
+        sizer.Add(hsizer, 1, wx.EXPAND | wx.ALIGN_LEFT | wx.ALIGN_CENTRE_VERTICAL)
+        wx.EVT_BUTTON(self, format_help_button.GetId(), self.on_help)
         
         sizer.Add(wx.StaticText(self, -1, "File extension:"), 0, 
                   wx.ALIGN_RIGHT | wx.ALIGN_CENTRE_VERTICAL)
@@ -174,7 +182,13 @@ class InputFilesConfig(wx.Panel):
         self.SetSizer(sizer)
         sizer.Fit(self)
     
+    def on_help(self, evnt):
+        help_frame = wx.Frame(self, -1, "Filename format help - plumetrack-config ")
+        w = wx.html.HtmlWindow(help_frame, -1)
+        w.SetPage(html_help_str)
+        help_frame.Show()
     
+     
     def get_configs(self):
         
         file_extension = self.file_extension_box.GetValue()
@@ -192,7 +206,9 @@ class InputFilesConfig(wx.Panel):
         
         flux_conversion_factor = self.flux_conversion_factor.GetValue()
         if flux_conversion_factor.isspace() or flux_conversion_factor == "":
-            raise settings.ConfigError("Units conversion factor not specified. Use a value of 1.0 if you do not require any conversion.")
+            raise settings.ConfigError("Units conversion factor not specified. "
+                                       "Use a value of 1.0 if you do not "
+                                       "require any conversion.")
         
         return {
                 'filename_format':filename_format,
@@ -220,7 +236,8 @@ class MaskingConfig(wx.Panel):
         
         self.low_thresh_chkbx = wx.CheckBox(self, -1, "Low pixel threshold:")
         sizer.Add(self.low_thresh_chkbx, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTRE_VERTICAL)
-        self.low_thresh_box = floatspin.FloatSpin(self, wx.ID_ANY, increment=1.0, digits=0, min_val=0)
+        self.low_thresh_box = floatspin.FloatSpin(self, wx.ID_ANY, increment=1.0,
+                                                   digits=0, min_val=0)
         h_txt = ("Any pixels that are below this threshold will be masked using"
                  " random noise during the motion estimation and will be "
                  "excluded from the flux calculation.")
@@ -232,7 +249,8 @@ class MaskingConfig(wx.Panel):
         
         self.high_thresh_chkbx = wx.CheckBox(self, -1, "High pixel threshold:")
         sizer.Add(self.high_thresh_chkbx, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTRE_VERTICAL)
-        self.high_thresh_box = floatspin.FloatSpin(self, wx.ID_ANY, increment=1.0, digits=0, min_val=0)
+        self.high_thresh_box = floatspin.FloatSpin(self, wx.ID_ANY, increment=1.0,
+                                                   digits=0, min_val=0)
         h_txt = ("Any pixels that are above this threshold will be masked using"
                  " random noise during the motion estimation and will be "
                  "excluded from the flux calculation.")
@@ -240,8 +258,10 @@ class MaskingConfig(wx.Panel):
         sizer.Add(self.high_thresh_box, 0, wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
         wx.EVT_CHECKBOX(self, self.high_thresh_chkbx.GetId(), self.on_high_thresh)
         
-        sizer.Add(wx.StaticText(self, -1, "Mask value mean:"), 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTRE_VERTICAL)
-        self.random_mean_box = floatspin.FloatSpin(self, wx.ID_ANY, increment=1, digits=1, min_val=0.0)
+        sizer.Add(wx.StaticText(self, -1, "Mask value mean:"), 0, 
+                  wx.ALIGN_RIGHT|wx.ALIGN_CENTRE_VERTICAL)
+        self.random_mean_box = floatspin.FloatSpin(self, wx.ID_ANY, increment=1, 
+                                                   digits=1, min_val=0.0)
         h_txt = ("Masked pixels (either due to thresholding or a mask image) "
                  "are replaced by Gaussian distributed white noise. This "
                  "parameter controls the mean value of this noise.")
@@ -250,8 +270,10 @@ class MaskingConfig(wx.Panel):
         
         sizer.AddSpacer((20,1))
         
-        sizer.Add(wx.StaticText(self, -1, "Mask value Std. Dev.:"), 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTRE_VERTICAL)
-        self.random_sigma_box = floatspin.FloatSpin(self, wx.ID_ANY, increment=1, min_val=0.0, digits=1)
+        sizer.Add(wx.StaticText(self, -1, "Mask value Std. Dev.:"), 0, 
+                  wx.ALIGN_RIGHT|wx.ALIGN_CENTRE_VERTICAL)
+        self.random_sigma_box = floatspin.FloatSpin(self, wx.ID_ANY, increment=1,
+                                                     min_val=0.0, digits=1)
         h_txt = ("Masked pixels (either due to thresholding or a mask image) "
                  "are replaced by Gaussian distributed white noise. This "
                  "parameter controls the standard-deviation of this noise. It "
@@ -313,7 +335,9 @@ class MaskingConfig(wx.Panel):
         
         
     def update_threshold_visibility(self):
-        enabled = self.mask_im_chkbx.IsChecked() or self.low_thresh_chkbx.IsChecked() or self.high_thresh_chkbx.IsChecked()
+        enabled = (self.mask_im_chkbx.IsChecked() or 
+                   self.low_thresh_chkbx.IsChecked() or 
+                   self.high_thresh_chkbx.IsChecked())
         self.random_mean_box.Enable(enabled)
         self.random_sigma_box.Enable(enabled)
     
@@ -383,7 +407,8 @@ class MotionTrackingConfig(wx.Panel):
         
         sizer.AddSpacer((20,1))
         
-        sizer.Add(wx.StaticText(self, -1, "Pyramid levels:"), 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTRE_VERTICAL)
+        sizer.Add(wx.StaticText(self, -1, "Pyramid levels:"), 0, 
+                  wx.ALIGN_RIGHT|wx.ALIGN_CENTRE_VERTICAL)
         self.levels_box = wx.SpinCtrl(self, wx.ID_ANY, min=1)
         h_txt = ("Farneback algorithm parameter: number of pyramid layers "
                  "including the initial image; setting this to 1 means that no "
@@ -393,7 +418,8 @@ class MotionTrackingConfig(wx.Panel):
         sizer.Add(self.levels_box, 0, wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
                
         
-        sizer.Add(wx.StaticText(self, -1, "Window size:"), 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTRE_VERTICAL)
+        sizer.Add(wx.StaticText(self, -1, "Window size:"), 0, 
+                  wx.ALIGN_RIGHT|wx.ALIGN_CENTRE_VERTICAL)
         self.winsize_box = wx.SpinCtrl(self, wx.ID_ANY, min=1, max=1000)
         h_txt = ("Farneback algorithm parameter: averaging window size; larger "
                  "values increase the algorithm robustness to image noise and "
@@ -404,14 +430,16 @@ class MotionTrackingConfig(wx.Panel):
         
         sizer.AddSpacer((20,1))
         
-        sizer.Add(wx.StaticText(self, -1, "Iterations:"), 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTRE_VERTICAL)
+        sizer.Add(wx.StaticText(self, -1, "Iterations:"), 0, 
+                  wx.ALIGN_RIGHT|wx.ALIGN_CENTRE_VERTICAL)
         self.iterations_box = wx.SpinCtrl(self, wx.ID_ANY, min=1, max=1000)
         h_txt = ("Farneback algorithm parameter: number of iterations the "
                  "algorithm performs at each pyramid level.")
         self.iterations_box.SetToolTipString(h_txt)
         sizer.Add(self.iterations_box, 0, wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
         
-        sizer.Add(wx.StaticText(self, -1, "Polynomial size:"), 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTRE_VERTICAL)
+        sizer.Add(wx.StaticText(self, -1, "Polynomial size:"), 0, 
+                  wx.ALIGN_RIGHT|wx.ALIGN_CENTRE_VERTICAL)
         self.poly_n_box = wx.SpinCtrl(self, wx.ID_ANY, min=3, max=100)
         h_txt = ("Farneback algorithm parameter: size of the pixel neighborhood"
                  " used to find polynomial expansion in each pixel; larger "
@@ -423,7 +451,8 @@ class MotionTrackingConfig(wx.Panel):
         
         sizer.AddSpacer((20,1))
         
-        sizer.Add(wx.StaticText(self, -1, "Gaussian smoothing:"), 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTRE_VERTICAL)
+        sizer.Add(wx.StaticText(self, -1, "Gaussian smoothing:"), 0, 
+                  wx.ALIGN_RIGHT|wx.ALIGN_CENTRE_VERTICAL)
         self.poly_sigma_box = floatspin.FloatSpin(self, wx.ID_ANY, min_val=0.0,
                                                   increment=0.1, digits=3)
         h_txt = ("Farneback algorithm parameter: standard deviation of the "
@@ -466,7 +495,8 @@ class IntegrationLineConfig(wx.Panel):
         vsizer = wx.BoxSizer(wx.VERTICAL)
         
         hsizer = wx.BoxSizer(wx.HORIZONTAL)
-        hsizer.Add(wx.StaticText(self, -1, "Integration line:"),0,wx.ALIGN_CENTER_VERTICAL|wx.ALIGN_RIGHT)
+        hsizer.Add(wx.StaticText(self, -1, "Integration line:"),0,
+                   wx.ALIGN_CENTER_VERTICAL|wx.ALIGN_RIGHT)
         self.integration_line_box = wx.TextCtrl(self, -1)
         h_txt =  ("List of [x, y] points (e.g. [[x1, y1], [x2, y2],...]) "
                   "defining the integration line for the flux calculation. x "
@@ -547,7 +577,8 @@ class IntegrationLineConfig(wx.Panel):
         try:
             integration_line = json.loads(int_line_str)
         except ValueError:
-            raise settings.ConfigError("Invalid format for integration line. Expecting [[x1, y1], [x2, y2],...]")
+            raise settings.ConfigError("Invalid format for integration line. "
+                                       "Expecting [[x1, y1], [x2, y2],...]")
         
         return {
                 'integration_line': integration_line,
@@ -561,7 +592,8 @@ class IntegrationLineConfig(wx.Panel):
         elif configs['integration_direction'] == 1:
             self.direction_chkbx.SetValue(False)
         else:
-            raise ValueError("Unexpected value (%d) for integration_direction. Expected -1 or 1."%(configs['integration_direction']))
+            raise ValueError("Unexpected value (%d) for integration_direction. "
+                             "Expected -1 or 1."%(configs['integration_direction']))
             
         self.integration_line_box.SetValue(str(configs['integration_line']))
  
@@ -893,5 +925,131 @@ class IntegrationLineSelectDialog(wx.Dialog):
         
         return self.int_direction
 
-           
+
+
+html_help_str = """
+<p>The filenames used for the image files must encode the capture time of the image. The format used to express the capture time is flexible and can be specified using the directives in the table below.</p>
+<p>A few example filenames and their corresponding format strings:</p>
+<p>2013_08_25_234632.png  => %Y_%m_%d_%H%M%S.png</p>
+<p>24Jan13_164700_235.png => %d%b%y_%H%M%S_%f.png</p>
+<p></p>
+<p>A complete list of available format specifiers:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="22%" />
+<col width="64%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Directive</th>
+<th class="head">Meaning</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td><tt class="docutils literal"><span class="pre">%a</span></tt></td>
+<td>Locale&#8217;s abbreviated weekday
+name.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">%A</span></tt></td>
+<td>Locale&#8217;s full weekday name.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">%b</span></tt></td>
+<td>Locale&#8217;s abbreviated month
+name.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">%B</span></tt></td>
+<td>Locale&#8217;s full month name.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">%c</span></tt></td>
+<td>Locale&#8217;s appropriate date and
+time representation.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">%d</span></tt></td>
+<td>Day of the month as a decimal
+number [01,31].</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">%f</span></tt></td>
+<td>Microsecond as a decimal
+number [0,999999], zero-padded
+on the left</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">%H</span></tt></td>
+<td>Hour (24-hour clock) as a
+decimal number [00,23].</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">%I</span></tt></td>
+<td>Hour (12-hour clock) as a
+decimal number [01,12].</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">%j</span></tt></td>
+<td>Day of the year as a decimal
+number [001,366].</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">%m</span></tt></td>
+<td>Month as a decimal number
+[01,12].</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">%M</span></tt></td>
+<td>Minute as a decimal number
+[00,59].</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">%p</span></tt></td>
+<td>Locale&#8217;s equivalent of either
+AM or PM.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">%S</span></tt></td>
+<td>Second as a decimal number
+[00,61].</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">%U</span></tt></td>
+<td>Week number of the year
+(Sunday as the first day of
+the week) as a decimal number
+[00,53].  All days in a new
+year preceding the first
+Sunday are considered to be in
+week 0.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">%w</span></tt></td>
+<td>Weekday as a decimal number
+[0(Sunday),6].</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">%W</span></tt></td>
+<td>Week number of the year
+(Monday as the first day of
+the week) as a decimal number
+[00,53].  All days in a new
+year preceding the first
+Monday are considered to be in
+week 0.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">%x</span></tt></td>
+<td>Locale&#8217;s appropriate date
+representation.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">%X</span></tt></td>
+<td>Locale&#8217;s appropriate time
+representation.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">%y</span></tt></td>
+<td>Year without century as a
+decimal number [00,99].</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">%Y</span></tt></td>
+<td>Year with century as a decimal
+number.</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">%z</span></tt></td>
+<td>UTC offset in the form +HHMM
+or -HHMM (empty string if the
+the object is naive).</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">%Z</span></tt></td>
+<td>Time zone name (empty string
+if the object is naive).</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">%%</span></tt></td>
+<td>A literal <tt class="docutils literal"><span class="pre">'%'</span></tt> character.</td>
+</tr>
+</tbody>
+</table>"""           
         
