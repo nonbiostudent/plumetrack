@@ -14,12 +14,24 @@
 #
 #You should have received a copy of the GNU General Public License
 #along with plumetrack.  If not, see <http://www.gnu.org/licenses/>.
-from scipy.interpolate import interp1d, RectBivariateSpline
+from scipy.interpolate import interp1d, interp2d
 import numpy
 
 
 class IntegrationLine:
     def __init__(self, xpts, ypts, direction):
+        """
+        Class to represent an integration line in an image. Note that the xpts and ypts
+        are *not* in pixel coordinates, they are in line coordinates - which are pixel boundary
+        coordinates where (0,0) is the top left of the image.
+        
+        For example, for a 512x512 pixel image, if you want a horizontal integration line
+        that spans the entire width of the image you would specify its x points as
+        [0, 513].
+        
+        Integration lines can extend beyond the boundaries of the image without 
+        problems.
+        """
         
         if len(xpts) != len(ypts):
             raise ValueError("xpts and ypts must contain the same number of elements")
@@ -39,6 +51,7 @@ class IntegrationLine:
         self._interp_y = interp1d(self.__dist, self.__ypts, kind='linear')
 
     
+    
     def get_length(self):
         """
         Returns the cumulative length of all the line segments.
@@ -51,12 +64,13 @@ class IntegrationLine:
         """
         Returns an n by 2 array of of x y coordinates of points along the line.
         If n==-1 then it returns the actual points of the line rather than
-        interpolating
+        interpolating. Note that the points returned are in pixel coordinates, 
+        *not* line coordinates.
         """
         if n == -1:
             result = numpy.zeros((len(self.__xpts), 2), dtype='float')
-            result[:,0] = self.__xpts
-            result[:,1] = self.__ypts
+            result[:,0] = self.__xpts - 0.5
+            result[:,1] = self.__ypts - 0.5
         
         else:
         
@@ -64,8 +78,8 @@ class IntegrationLine:
             
             pts = numpy.linspace(0, self.__dist[-1],n)
             
-            result[:,0] = self._interp_x(pts)
-            result[:,1] = self._interp_y(pts)
+            result[:,0] = self._interp_x(pts) - 0.5
+            result[:,1] = self._interp_y(pts) - 0.5
         
         return result
     
@@ -73,7 +87,8 @@ class IntegrationLine:
     
     def get_poly_approx(self, n=-1):
         """
-        Returns a tuple of arrays (startpoints, vectors, normals)
+        Returns a tuple of arrays (startpoints, vectors, normals). Note that the
+        points returned are in pixel coordinates, *not* line coordinates.
         """
         if n < 1 and n != -1:
             raise ValueError("n must be greater than 1 (or -1 for defaults)")
@@ -123,6 +138,11 @@ class FluxEngine1D(FluxEngineBase):
     
     def compute_flux(self, current_image, flow, delta_t):
         
+        #zero pad the image so that interpolation at the edges falls to zero
+        padded_im = numpy.zeros((current_image.shape[0]+20, current_image.shape[1]+20), current_image.dtype)
+        padded_im[10:-10,10:-10] = current_image
+        
+        
         #convert the displacements to velocities in m/s
         flow *= (self._pixel_size / delta_t)
         
@@ -131,28 +151,31 @@ class FluxEngine1D(FluxEngineBase):
         line_length = self._int_line.get_length()
         number_of_segments = int(round(line_length, 0))
         
-        int_pts, int_vecs, int_norms = self._int_line.get_poly_approx(n=number_of_segments)
+        int_pts, int_vecs, int_norms = self._int_line.get_poly_approx(n=number_of_segments) 
+        
+        #calculate the mid-points of each line segment
+        mid_points = int_pts + (0.5*int_vecs)
         
         #interpolate the current image to find the pixel values at the points 
         #on the integration line
-        image_interp = RectBivariateSpline(numpy.arange(current_image.shape[0]), 
-                                           numpy.arange(current_image.shape[1]), 
-                                           current_image)
+        image_interp = interp2d(numpy.arange(padded_im.shape[0]), 
+                                numpy.arange(padded_im.shape[1]), 
+                                padded_im)
         
-        pix_vals = image_interp.ev(int_pts[:,1], int_pts[:,0])
+        pix_vals = image_interp(mid_points[:,0]+10, mid_points[:,1]+10)[:,0]
         
         #interpolate the flow field to find the velocities on the integration
         #line
-        x_flow_interp = RectBivariateSpline(numpy.arange(flow.shape[0]), 
-                                            numpy.arange(flow.shape[1]), 
-                                            flow[...,0])
+        x_flow_interp = interp2d(numpy.arange(flow.shape[0]), 
+                                 numpy.arange(flow.shape[1]), 
+                                 flow[...,0])
         
-        y_flow_interp = RectBivariateSpline(numpy.arange(flow.shape[0]), 
-                                            numpy.arange(flow.shape[1]), 
-                                            flow[...,1])
+        y_flow_interp = interp2d(numpy.arange(flow.shape[0]), 
+                                 numpy.arange(flow.shape[1]), 
+                                 flow[...,1])
         
-        xvel = x_flow_interp.ev(int_pts[:,1], int_pts[:,0])
-        yvel = y_flow_interp.ev(int_pts[:,1], int_pts[:,0])
+        xvel = x_flow_interp(mid_points[:,0], mid_points[:,1])[:,0]
+        yvel = y_flow_interp(mid_points[:,0], mid_points[:,1])[:,0]
         
         velocities = numpy.zeros((xvel.shape[0],2), dtype=xvel.dtype)
         velocities[:,0] = xvel
@@ -162,7 +185,7 @@ class FluxEngine1D(FluxEngineBase):
         perp_vel = numpy.diag(numpy.dot(velocities, int_norms.T))
         
         #caculate flux
-        fluxes = pix_vals * self._conversion_factor * perp_vel * self._pixel_size
+        fluxes = pix_vals * self._conversion_factor * perp_vel * (line_length / float(number_of_segments))#self._pixel_size
         
         #sanity check
         assert fluxes.shape == (number_of_segments,),"incorrect shape for fluxes array %s, expecting %s"%(str(fluxes.shape), str((number_of_segments,)))
@@ -220,10 +243,6 @@ class FluxEngine2D(FluxEngineBase):
         int_vecs = int_vecs.reshape((1, 1, zsize, 2))
         int_norms = int_norms.reshape((1, 1, zsize, 2))
         
-        #flows of zero should be replaced by a small value to prevent division by
-        #zero errors
-        #flow[numpy.where(flow == 0)] = 1e-10
-        
         #calculate the intercept parameters
         b = numpy.ones((xsize, zsize, ysize,1), dtype='float') * 2.0 #*2 prevents invalid indexes from passing the b_criteria test below
         denom = numpy.cross(int_vecs,flow)
@@ -232,6 +251,8 @@ class FluxEngine2D(FluxEngineBase):
             
         b = b.swapaxes(1,2)
         
+        #we ignore divide by 0 and multiply by NaN errors since NaN results will
+        #fail the 'criteria' tests below anyway.
         with numpy.errstate(divide='ignore', invalid='ignore'):
             a = b * (int_vecs/flow) - ((flow_pts - int_pts)/flow)
         
@@ -245,14 +266,6 @@ class FluxEngine2D(FluxEngineBase):
         mask_idxs = numpy.where(numpy.logical_and(b_criteria, a_criteria))
         
         mask[mask_idxs] = 1.0
-        
-        #the final segment of the integration line needs special treatment 
-        #in order to include its final pixel under certain circumstances. This 
-        #is pretty pedantic, but it makes writing tests easier since the mask will
-        #now behave as expected.
-        c_criteria = b[:, :, -1] == 1.0
-        mask_idxs = numpy.where(numpy.logical_and(c_criteria, a_criteria[:, :, -1]))
-        mask[:,:,-1][mask_idxs] = 1.0
         
         #now calculate if the contribution was positive or negative
         sign = numpy.sign(numpy.dot(flow[:,:,0,:], int_norms[0,0,:,:].T))
@@ -268,4 +281,3 @@ class FluxEngine2D(FluxEngineBase):
         assert numpy.all(numpy.fabs(mask) <= 1), "Multiple contributions to the flux from the same pixel detected. Please send the offending image and your plumetrack configuration file to the plumetrack developers."
            
         return mask
-       
