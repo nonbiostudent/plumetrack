@@ -120,7 +120,7 @@ class FluxEngineBase(object):
     
     
     def get_integration_line(self):
-        return self.__int_line
+        return self._int_line
     
     
     def compute_flux(self, current_image, flow, delta_t):
@@ -138,11 +138,10 @@ class FluxEngine1D(FluxEngineBase):
     
     def compute_flux(self, current_image, flow, delta_t):
         
-        #zero pad the image so that interpolation at the edges falls to zero
-        padded_im = numpy.zeros((current_image.shape[0]+20, current_image.shape[1]+20), current_image.dtype)
-        padded_im[10:-10,10:-10] = current_image
-        
-        
+        if flow[...,0].shape != current_image.shape:
+            raise ValueError("The image has a different shape %s to the flow "
+                             "array %s"%(str(current_image.shape), str(flow[...,0].shape)))
+               
         #convert the displacements to velocities in m/s
         flow *= (self._pixel_size / delta_t)
         
@@ -158,29 +157,34 @@ class FluxEngine1D(FluxEngineBase):
         
         #interpolate the current image to find the pixel values at the points 
         #on the integration line
-        image_interp = interp2d(numpy.arange(padded_im.shape[0]), 
-                                numpy.arange(padded_im.shape[1]), 
-                                padded_im)
-        
-        pix_vals = image_interp(mid_points[:,0]+10, mid_points[:,1]+10)[:,0]
-        
+        image_interp = interp2d(numpy.arange(current_image.shape[1]), 
+                                numpy.arange(current_image.shape[0]), 
+                                current_image, copy=False, fill_value=0.0)
+               
         #interpolate the flow field to find the velocities on the integration
         #line
-        x_flow_interp = interp2d(numpy.arange(flow.shape[0]), 
-                                 numpy.arange(flow.shape[1]), 
-                                 flow[...,0])
+        x_flow_interp = interp2d(numpy.arange(flow.shape[1]), 
+                                 numpy.arange(flow.shape[0]), 
+                                 flow[...,0], copy=False, fill_value=0.0)
         
-        y_flow_interp = interp2d(numpy.arange(flow.shape[0]), 
-                                 numpy.arange(flow.shape[1]), 
-                                 flow[...,1])
+        y_flow_interp = interp2d(numpy.arange(flow.shape[1]), 
+                                 numpy.arange(flow.shape[0]), 
+                                 flow[...,1], copy=False, fill_value=0.0)
         
-        xvel = x_flow_interp(mid_points[:,0], mid_points[:,1])[:,0]
-        yvel = y_flow_interp(mid_points[:,0], mid_points[:,1])[:,0]
+        pix_vals = numpy.zeros((number_of_segments,), dtype='float')
+        velocities = numpy.zeros((number_of_segments,2), dtype='float')
         
-        velocities = numpy.zeros((xvel.shape[0],2), dtype=xvel.dtype)
-        velocities[:,0] = xvel
-        velocities[:,1] = yvel
-
+        #note that we have to do this in a for loop rather than calling the 
+        #interpolator with arrays of values - because the mid-points may not be
+        #sorted (or even sortable - e.g. the x coordinates may increase as the 
+        #y coordinates decrease)
+        for i in range(number_of_segments):
+            x_coord = mid_points[i,0]
+            y_coord = mid_points[i,1]
+            pix_vals[i] = image_interp(x_coord, y_coord)        
+            velocities[i,0] = x_flow_interp(x_coord, y_coord)
+            velocities[i,1] = y_flow_interp(x_coord, y_coord)
+        
         #find component of velocities perpendicular to integration line
         perp_vel = numpy.diag(numpy.dot(velocities, int_norms.T))
         
@@ -203,7 +207,10 @@ class FluxEngine2D(FluxEngineBase):
         
         
     def compute_flux(self, current_image, flow, delta_t):
-        
+        if flow[...,0].shape != current_image.shape:
+            raise ValueError("The image has a different shape %s to the flow "
+                             "array %s"%(str(current_image.shape), str(flow[...,0].shape)))
+            
         #convert the pixel values into mass of SO2
         so2_masses_kg = current_image * self._pixel_size**2 * self._conversion_factor
         
@@ -229,8 +236,8 @@ class FluxEngine2D(FluxEngineBase):
         zsize = int_pts.shape[0] #same as number of line segments in the poly approx
         
         #create an array of start pts for the flow vectors
-        flow_pts_x, flow_pts_y = numpy.meshgrid(numpy.arange(xsize), 
-                                                numpy.arange(ysize), 
+        flow_pts_x, flow_pts_y = numpy.meshgrid(numpy.arange(ysize), 
+                                                numpy.arange(xsize), 
                                                 indexing='xy',dtype='float')
         
         flow_pts_x = flow_pts_x.reshape((xsize, ysize, 1, 1))

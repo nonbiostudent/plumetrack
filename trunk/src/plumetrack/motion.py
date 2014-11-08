@@ -23,7 +23,11 @@ import Image
 
 class MotionEngine(object):
     def __init__(self, config):
-        
+        """
+        Class providing methods for computing the flow field that maps pixels in
+        one image to pixels in a consecutive image. The config argument should be
+        a dict of configuration options (as returned from settings.load_config_file()).
+        """
         self.low_thresh = config['threshold_low']
         self.high_thresh = config['threshold_high']
         self.pix_size = config['pixel_size']
@@ -46,7 +50,14 @@ class MotionEngine(object):
     
     
     def preprocess(self, image):
-        
+        """
+        Performs any required preprocessing tasks on the image (should be called
+        prior to calling compute_flow()). Depending on the configuration,
+        preprocessing tasks may include thresholding the image and applying 
+        random noise masking.
+         
+        The image argument should be a numpy array.
+        """
         if self.__random_image is None:
             if self.random_sigma > 0:
                 self.__random_image = numpy.random.normal(self.random_mean, 
@@ -86,7 +97,11 @@ class MotionEngine(object):
 
 
     def compute_flow(self, current_image, next_image):
-                                     
+        """
+        Uses the Farnebakc algorithm to compute the flow field that maps pixels
+        in current_image, to pixels in next_image. Both image arguments should be
+        numpy arrays.
+        """                             
         return cv2.calcOpticalFlowFarneback(current_image, next_image, 
                                             self.pyr_scale,
                                             self.levels,

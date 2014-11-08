@@ -18,7 +18,7 @@
 import datetime
 import os.path
 import numpy
-import Image
+import cv2
 import multiprocessing
 import itertools
 import calendar
@@ -151,11 +151,11 @@ def process_image_pair(im_pair, motion_engine, flux_engine, options, config):
     im2 = im_pair[1]
      
     current_capture_time = time_from_fname(im1, config)
-    current_image = numpy.array(Image.open(im1)) 
+    current_image = cv2.imread(im1) 
     current_masked_im = motion_engine.preprocess(current_image)
      
     next_capture_time = time_from_fname(im2, config)
-    next_image = numpy.array(Image.open(im2)) 
+    next_image = cv2.imread(im2) 
     next_masked_im = motion_engine.preprocess(next_image)
     
     delta_t = date2secs(next_capture_time) - date2secs(current_capture_time)

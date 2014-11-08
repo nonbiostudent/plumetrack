@@ -35,8 +35,7 @@ class IntegrationLineTestCase(unittest.TestCase):
     
     def test_get_npoints(self):
         int_line = flux.IntegrationLine([1,1,1],[0,3,5],1)
-        
-        
+               
         self.assertTrue(numpy.all(int_line.get_n_points(-1)== numpy.array([[0.5,-0.5],[0.5,2.5],[0.5,4.5]])), "Expecting to retrieve [[0.5,-0.5],[0.5,2.5],[0.5,4.5]], got %s"%(str(int_line.get_n_points(-1))))
 
 
@@ -54,7 +53,14 @@ class Simple1DFluxesTestCase(unittest.TestCase):
                         'flux_conversion_factor': 1.0
                         }
         
+    def test_get_int_line(self):
+        #ensure that we can retrieve the integration line object
+        flux_engine = self._flux_engine(self.configs)   
         
+        int_line = flux_engine.get_integration_line()
+        
+        self.assert_(isinstance(int_line, flux.IntegrationLine), "Failed to retrieve the integration line object from the flux engine")
+    
     
     def test_zero_flux(self):
         #if the velocities are all zero then we would expect zero flux
@@ -295,6 +301,61 @@ class Simple2DFluxesTestCase(Simple1DFluxesTestCase):
 class MultiSegment2DFluxesTestCase(Simple2DFluxesTestCase, MultiSegment1DFluxesTestCase):
     _flux_engine = flux.FluxEngine2D
 
+
+#now try the tests with an image of incorrect data type
+class IncorrectDataType1DTestCase(Simple1DFluxesTestCase):
+    def setup(self):
+        super(IncorrectDataType1DTestCase, self).setup()
+        self.image = numpy.ones((5, 5), dtype='int32')
+
+
+class IncorrectDataType2DTestCase(MultiSegment2DFluxesTestCase):
+    def setup(self):
+        super(IncorrectDataType2DTestCase, self).setup()
+        self.image = numpy.ones((5, 5), dtype='int32')
+
+
+#test with a closed loop integration line - this test also checks for reappearance
+#of the bug related to unascending points on the integration line. These tests are
+#also performed on non-square images
+class ClosedLoopIntegration1D(unittest.TestCase):
+    _flux_engine = flux.FluxEngine1D
+    def setUp(self):
+        self.image = numpy.ones((5, 10), dtype='float')
+        self.configs = {
+                        'integration_line':[[3, 2], [7, 2],[7, 4],[3, 4],[3, 2]], #vertical line in centre of image
+                        'integration_direction': 1, #positive flux goes from left to right
+                        'pixel_size': 1.0,
+                        'flux_conversion_factor': 1.0
+                        }
+    
+    def test_unity_flow(self):
+        
+        flow = numpy.zeros((5, 10, 2), dtype='float')
+        flow[..., 0] = 1.0
+        
+        flux_engine = self._flux_engine(self.configs)
+        f = flux_engine.compute_flux(self.image, flow, 1.0)
+        #matshow(flux_engine.find_flux_contributions(flow))
+        #colorbar()
+        #show()
+        self.assertEqual(f, 0.0, "Expecting flux of 0, got %f"%f)  
+        
+               
+    def test_diagonal_flow(self):
+        
+        flow = numpy.zeros((5, 10, 2), dtype='float')
+        flow[..., 0] = 1.0
+        flow[..., 1] = -1.0
+        flux_engine = self._flux_engine(self.configs)
+        f = flux_engine.compute_flux(self.image, flow, 1.0)
+        
+        self.assertEqual(f, 0.0, "Expecting flux of 0, got %f"%f)
+
+
+#now perform the closed loop tests for the 2D flux engine
+class ClosedLoopIntegration2D(ClosedLoopIntegration1D):
+    _flux_engine = flux.FluxEngine2D
             
 if __name__ == '__main__':
     unittest.main()

@@ -28,7 +28,6 @@ If you already have a Python installation on your system, then you will need to 
  * `SciPy <http://www.scipy.org/>`_
  * `matplotlib <http://matplotlib.org/>`_
  * `pywin32 <http://sourceforge.net/projects/pywin32>`_
- * `PIL <http://www.pythonware.com/products/pil/>`_
  * `wxPython <http://www.wxpython.org/>`_
 
 
