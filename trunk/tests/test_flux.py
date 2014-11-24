@@ -97,6 +97,21 @@ class Simple1DFluxesTestCase(unittest.TestCase):
         self.assertEqual(f, 5.0, "Expecting flux of 5, got %f"%f)
     
     
+    def test_unity_motion_flux_large_pixels(self):
+        #if the flow is unity in the positive x direction, then we would expect 
+        #a flux equal to the number of pixels in the y-direction of the image times
+        #the square of the pixel size
+        self.configs['pixel_size'] = 2.3
+        
+        flow = numpy.zeros((5, 5, 2), dtype='float')
+        flow[..., 0] = 1.0
+        
+        flux_engine = self._flux_engine(self.configs)
+        f = flux_engine.compute_flux(self.image, flow, 1.0)
+        
+        self.assertEqual(f, 2.3*2.3*5.0, "Expecting flux of %f, got %f"%(5.0*2.3**2,f))
+    
+    
     def test_unity_motion_diagonal_line_flux(self):
         #if the flow is unity in the positive x direction, then we would expect 
         #a flux equal to the number of pixels in the y-direction of the image - 

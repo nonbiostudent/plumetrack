@@ -54,7 +54,8 @@ class IntegrationLine:
     
     def get_length(self):
         """
-        Returns the cumulative length of all the line segments.
+        Returns the cumulative length of all the line segments in pixels (not 
+        in metres!)
         """
         return self.__dist[-1]
     
@@ -189,7 +190,8 @@ class FluxEngine1D(FluxEngineBase):
         perp_vel = numpy.diag(numpy.dot(velocities, int_norms.T))
         
         #caculate flux
-        fluxes = pix_vals * self._conversion_factor * perp_vel * (line_length / float(number_of_segments))#self._pixel_size
+        line_length_metres = line_length * self._pixel_size
+        fluxes = pix_vals * self._conversion_factor * perp_vel * (line_length_metres / float(number_of_segments))#self._pixel_size
         
         #sanity check
         assert fluxes.shape == (number_of_segments,),"incorrect shape for fluxes array %s, expecting %s"%(str(fluxes.shape), str((number_of_segments,)))
