@@ -63,3 +63,18 @@ SRC_FILE_HEADER = ('#%s\n\nThis file is part of %s.\n\n%s'
                        COPY_PERMISSION)).replace('\n','\n#')
 
 ####################################################################
+
+__have_gpu = False
+try:
+    from plumetrack import gpu_motion
+    __have_gpu = gpu_motion.haveGPU()
+except ImportError:
+    pass
+
+
+def have_gpu():
+    """
+    Returns True if at least one CUDA capable GPU is detected on the system and
+    plumetrack has been built with GPU support. Returns False otherwise.
+    """
+    return __have_gpu

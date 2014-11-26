@@ -23,6 +23,7 @@ import multiprocessing
 import itertools
 import calendar
 
+import plumetrack
 from plumetrack import settings
 from plumetrack import dir_iter
 from plumetrack import motion
@@ -149,18 +150,27 @@ def process_image_pair(im_pair, motion_engine, flux_engine, options, config):
     
     im1 = im_pair[0]
     im2 = im_pair[1]
-     
+    
     current_capture_time = time_from_fname(im1, config)
-    current_image = cv2.imread(im1) 
+    current_image = cv2.imread(im1, cv2.IMREAD_UNCHANGED) 
     current_masked_im = motion_engine.preprocess(current_image)
-     
+    
     next_capture_time = time_from_fname(im2, config)
-    next_image = cv2.imread(im2) 
+    next_image = cv2.imread(im2, cv2.IMREAD_UNCHANGED) 
     next_masked_im = motion_engine.preprocess(next_image)
     
+    #images must be the same size for motion estimation
+    if current_image.shape != next_image.shape:
+        raise ValueError("Images \'%s\' and \'%s\' are different sizes %s and "
+                         "%s respectively"%(im1, im2,str(current_image.shape), 
+                                            str(next_image.shape)))
+    
+    
     delta_t = date2secs(next_capture_time) - date2secs(current_capture_time)
-     
+    
+    
     flow = motion_engine.compute_flow(current_masked_im, next_masked_im)
+    
          
     if options.png_output_folder is not None:
         if not os.path.isdir(options.png_output_folder):
@@ -176,7 +186,7 @@ def process_image_pair(im_pair, motion_engine, flux_engine, options, config):
     current_image[numpy.where(current_image != current_masked_im)] = 0.0
      
     so2_flux = flux_engine.compute_flux(current_image, flow, delta_t) 
-     
+    
     return so2_flux
 
 ############################################################################
@@ -206,8 +216,10 @@ def main():
     #define a test function for excluding files which are not uv images
     is_uv_image = lambda fname: is_uv_image_file(fname, config)
     
-
-    motion_engine = motion.MotionEngine(config)
+    if plumetrack.have_gpu() and not options.no_gpu:
+        motion_engine = motion.GPUMotionEngine(config)
+    else:
+        motion_engine = motion.MotionEngine(config)
     
     if options.integration_method == '2d': 
         flux_engine = flux.FluxEngine2D(config)
@@ -246,6 +258,7 @@ def main():
         for next_image_fname in image_iter:
              
             if current_image_fname is not None:
+                
                 so2flux = process_image_pair((current_image_fname, next_image_fname),
                                              motion_engine, flux_engine, options,
                                              config)

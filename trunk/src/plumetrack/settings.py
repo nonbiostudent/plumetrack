@@ -171,7 +171,12 @@ def parse_cmd_line():
     parser.add_option("-t", "--realtime", dest="realtime", action="store_true", 
                       default=False,
                       help="Continuously monitor the image folder for new files")
+    
+    parser.add_option( "--no_gpu", dest="no_gpu", action="store_true", 
+                      default=False,
+                      help="Stops plumetrack from using the GPU for processing")
 
+    
     parser.add_option("-o","--output_file", dest="output_file", action="store", 
                       default=None, type='string',
                       help="Output file to write computed fluxes to. If no file "

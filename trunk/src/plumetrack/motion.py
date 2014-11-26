@@ -19,6 +19,8 @@ import cv2
 import numpy
 import Image
 
+import plumetrack
+
 
 
 class MotionEngine(object):
@@ -98,7 +100,7 @@ class MotionEngine(object):
 
     def compute_flow(self, current_image, next_image):
         """
-        Uses the Farnebakc algorithm to compute the flow field that maps pixels
+        Uses the Farneback algorithm to compute the flow field that maps pixels
         in current_image, to pixels in next_image. Both image arguments should be
         numpy arrays.
         """                             
@@ -112,7 +114,50 @@ class MotionEngine(object):
                                             flags=cv2.OPTFLOW_FARNEBACK_GAUSSIAN)
     
         
+if plumetrack.have_gpu():
+    
+    from plumetrack import gpu_motion
+    
+    class GPUMotionEngine(MotionEngine):
         
+        def __init__(self, config):
+            """
+            Subclass of MotionEngine which uses OpenCV's GPU implementation of
+            the Farneback algorithm to compute the flow between image frames.
+            
+            Note that this class is only defined if a CUDA capable GPU is 
+            detected on the system and plumetrack has been built with GPU support.
+            """
+            super(GPUMotionEngine, self).__init__(config)
+            
+            self.__gpu_interface = gpu_motion.GPUInterface(config["farneback_pyr_scale"],
+                                                           config["farneback_levels"],
+                                                           config["farneback_winsize"],
+                                                           config["farneback_iterations"],
+                                                           config["farneback_poly_n"],
+                                                           config["farneback_poly_sigma"])
+            
+            
+        def compute_flow(self, current_image, next_image):
+            """
+            Uses the Farneback algorithm to compute the flow field that maps pixels
+            in current_image, to pixels in next_image. Both image arguments should be
+            numpy arrays.
+            
+            The computation is done on the GPU which should be much faster than 
+            then CPU implementation.
+            """
+            xflow = numpy.zeros((current_image.shape[0], current_image.shape[1]), dtype='float32')
+            yflow = numpy.zeros((current_image.shape[0], current_image.shape[1]), dtype='float32')
+            
+            self.__gpu_interface.computeFlow(current_image, next_image, xflow, yflow)
+            
+            flow = numpy.dstack((xflow,yflow))
+            if numpy.all(flow == 0):
+                print "All zeros!"
+            
+            return flow
+                
         
         
         
