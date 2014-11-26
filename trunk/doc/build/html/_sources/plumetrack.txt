@@ -28,6 +28,14 @@ plumetrack.flux module
     :undoc-members:
     :show-inheritance:
 
+plumetrack.gpu_motion module
+----------------------------
+
+.. automodule:: plumetrack.gpu_motion
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 plumetrack.main_script module
 -----------------------------
 

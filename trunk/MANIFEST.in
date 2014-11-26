@@ -1,5 +1,10 @@
 include examples/*
-include misc/*
+include doc/build/html/*
+include tests/*
+include ez_setup.py
 include AUTHORS
 include COPYING
-
+include UserGuide.html
+global-exclude *~
+prune src/swig
+exclude src/plumetrack/gpu_motion.py

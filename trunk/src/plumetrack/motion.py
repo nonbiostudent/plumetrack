@@ -1,23 +1,22 @@
 #Copyright (C) Nial Peters 2014
 #
-#This file is part of _plumetrack.
+#This file is part of plumetrack.
 #
-#_plumetrack is free software: you can redistribute it and/or modify
+#plumetrack is free software: you can redistribute it and/or modify
 #it under the terms of the GNU General Public License as published by
 #the Free Software Foundation, either version 3 of the License, or
 #(at your option) any later version.
 #
-#_plumetrack is distributed in the hope that it will be useful,
+#plumetrack is distributed in the hope that it will be useful,
 #but WITHOUT ANY WARRANTY; without even the implied warranty of
 #MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #GNU General Public License for more details.
 #
 #You should have received a copy of the GNU General Public License
-#along with _plumetrack.  If not, see <http://www.gnu.org/licenses/>.
+#along with plumetrack.  If not, see <http://www.gnu.org/licenses/>.
 
 import cv2
 import numpy
-import Image
 
 import plumetrack
 
@@ -38,7 +37,10 @@ class MotionEngine(object):
         self.random_sigma = config['random_sigma']
         
         if config['mask_image'] != "":
-            self.__mask_im = numpy.array(Image.open(config['mask_image']).convert('L'))
+            self.__mask_im = cv2.imread(config['mask_image'], cv2.IMREAD_GRAYSCALE)
+            
+            #ensure the loaded mask has the correct data type
+            self.__mask_im = self.__mask_im.astype(numpy.uint8, copy=False)
         else:
             self.__mask_im = None
         

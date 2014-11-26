@@ -17,6 +17,18 @@ clean:
 	rm -rf dist
 	@echo "Removing MANIFEST file"
 	rm MANIFEST
+	
+.PHONY: build
+build:
+	@echo "Creating wrappers using SWIG"
+	cd src/swig; swig -c++ -python gpu_motion.i
+	@echo "Copying auto-generated .py files to src folder"
+	cp src/swig/*.py src/
+	@echo "Building..."
+	python setup.py build
+
+install: build
+	python setup.py install
 
 dist: docs icons
 	@echo "Creating source dist"

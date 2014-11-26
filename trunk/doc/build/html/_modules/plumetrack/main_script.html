@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>plumetrack.main_script &mdash; plumetrack 14.09 documentation</title>
+    <title>plumetrack.main_script &mdash; plumetrack 14.11 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '14.09',
+        VERSION:     '14.11',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,8 +24,8 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="plumetrack 14.09 documentation" href="../../index.html" />
-    <link rel="up" title="Module code" href="../index.html" /> 
+    <link rel="top" title="plumetrack 14.11 documentation" href="../../index.html" />
+    <link rel="up" title="plumetrack" href="../plumetrack.html" /> 
   </head>
   <body>
     <div class="related">
@@ -37,8 +37,9 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">plumetrack 14.09 documentation</a> &raquo;</li>
-          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+        <li><a href="../../index.html">plumetrack 14.11 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../plumetrack.html" accesskey="U">plumetrack</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -50,29 +51,30 @@
   <h1>Source code for plumetrack.main_script</h1><div class="highlight"><pre>
 <span class="c">#Copyright (C) Nial Peters 2014</span>
 <span class="c">#</span>
-<span class="c">#This file is part of _plumetrack.</span>
+<span class="c">#This file is part of plumetrack.</span>
 <span class="c">#</span>
-<span class="c">#_plumetrack is free software: you can redistribute it and/or modify</span>
+<span class="c">#plumetrack is free software: you can redistribute it and/or modify</span>
 <span class="c">#it under the terms of the GNU General Public License as published by</span>
 <span class="c">#the Free Software Foundation, either version 3 of the License, or</span>
 <span class="c">#(at your option) any later version.</span>
 <span class="c">#</span>
-<span class="c">#_plumetrack is distributed in the hope that it will be useful,</span>
+<span class="c">#plumetrack is distributed in the hope that it will be useful,</span>
 <span class="c">#but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
 <span class="c">#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
 <span class="c">#GNU General Public License for more details.</span>
 <span class="c">#</span>
 <span class="c">#You should have received a copy of the GNU General Public License</span>
-<span class="c">#along with _plumetrack.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+<span class="c">#along with plumetrack.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
 
 <span class="kn">import</span> <span class="nn">datetime</span>
 <span class="kn">import</span> <span class="nn">os.path</span>
 <span class="kn">import</span> <span class="nn">numpy</span>
-<span class="kn">import</span> <span class="nn">Image</span>
+<span class="kn">import</span> <span class="nn">cv2</span>
 <span class="kn">import</span> <span class="nn">multiprocessing</span>
 <span class="kn">import</span> <span class="nn">itertools</span>
 <span class="kn">import</span> <span class="nn">calendar</span>
 
+<span class="kn">import</span> <span class="nn">plumetrack</span>
 <span class="kn">from</span> <span class="nn">plumetrack</span> <span class="kn">import</span> <span class="n">settings</span>
 <span class="kn">from</span> <span class="nn">plumetrack</span> <span class="kn">import</span> <span class="n">dir_iter</span>
 <span class="kn">from</span> <span class="nn">plumetrack</span> <span class="kn">import</span> <span class="n">motion</span>
@@ -199,18 +201,27 @@
     
     <span class="n">im1</span> <span class="o">=</span> <span class="n">im_pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">im2</span> <span class="o">=</span> <span class="n">im_pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-     
+    
     <span class="n">current_capture_time</span> <span class="o">=</span> <span class="n">time_from_fname</span><span class="p">(</span><span class="n">im1</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
-    <span class="n">current_image</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">im1</span><span class="p">))</span> 
+    <span class="n">current_image</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">im1</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">IMREAD_UNCHANGED</span><span class="p">)</span> 
     <span class="n">current_masked_im</span> <span class="o">=</span> <span class="n">motion_engine</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">current_image</span><span class="p">)</span>
-     
+    
     <span class="n">next_capture_time</span> <span class="o">=</span> <span class="n">time_from_fname</span><span class="p">(</span><span class="n">im2</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
-    <span class="n">next_image</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">im2</span><span class="p">))</span> 
+    <span class="n">next_image</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">im2</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">IMREAD_UNCHANGED</span><span class="p">)</span> 
     <span class="n">next_masked_im</span> <span class="o">=</span> <span class="n">motion_engine</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">next_image</span><span class="p">)</span>
     
+    <span class="c">#images must be the same size for motion estimation</span>
+    <span class="k">if</span> <span class="n">current_image</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">next_image</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Images </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s"> and </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s"> are different sizes </span><span class="si">%s</span><span class="s"> and &quot;</span>
+                         <span class="s">&quot;</span><span class="si">%s</span><span class="s"> respectively&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">im1</span><span class="p">,</span> <span class="n">im2</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">current_image</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span> 
+                                            <span class="nb">str</span><span class="p">(</span><span class="n">next_image</span><span class="o">.</span><span class="n">shape</span><span class="p">)))</span>
+    
+    
     <span class="n">delta_t</span> <span class="o">=</span> <span class="n">date2secs</span><span class="p">(</span><span class="n">next_capture_time</span><span class="p">)</span> <span class="o">-</span> <span class="n">date2secs</span><span class="p">(</span><span class="n">current_capture_time</span><span class="p">)</span>
-     
+    
+    
     <span class="n">flow</span> <span class="o">=</span> <span class="n">motion_engine</span><span class="o">.</span><span class="n">compute_flow</span><span class="p">(</span><span class="n">current_masked_im</span><span class="p">,</span> <span class="n">next_masked_im</span><span class="p">)</span>
+    
          
     <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">png_output_folder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">png_output_folder</span><span class="p">):</span>
@@ -226,7 +237,7 @@
     <span class="n">current_image</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">current_image</span> <span class="o">!=</span> <span class="n">current_masked_im</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">0.0</span>
      
     <span class="n">so2_flux</span> <span class="o">=</span> <span class="n">flux_engine</span><span class="o">.</span><span class="n">compute_flux</span><span class="p">(</span><span class="n">current_image</span><span class="p">,</span> <span class="n">flow</span><span class="p">,</span> <span class="n">delta_t</span><span class="p">)</span> 
-     
+    
     <span class="k">return</span> <span class="n">so2_flux</span>
 
 <span class="c">############################################################################</span>
@@ -256,10 +267,18 @@
     <span class="c">#define a test function for excluding files which are not uv images</span>
     <span class="n">is_uv_image</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">fname</span><span class="p">:</span> <span class="n">is_uv_image_file</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
     
-
-    <span class="n">motion_engine</span> <span class="o">=</span> <span class="n">motion</span><span class="o">.</span><span class="n">MotionEngine</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
-     
-    <span class="n">flux_engine</span> <span class="o">=</span> <span class="n">flux</span><span class="o">.</span><span class="n">FluxEngine</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">plumetrack</span><span class="o">.</span><span class="n">have_gpu</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">options</span><span class="o">.</span><span class="n">no_gpu</span><span class="p">:</span>
+        <span class="n">motion_engine</span> <span class="o">=</span> <span class="n">motion</span><span class="o">.</span><span class="n">GPUMotionEngine</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">motion_engine</span> <span class="o">=</span> <span class="n">motion</span><span class="o">.</span><span class="n">MotionEngine</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">integration_method</span> <span class="o">==</span> <span class="s">&#39;2d&#39;</span><span class="p">:</span> 
+        <span class="n">flux_engine</span> <span class="o">=</span> <span class="n">flux</span><span class="o">.</span><span class="n">FluxEngine2D</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">options</span><span class="o">.</span><span class="n">integration_method</span> <span class="o">==</span> <span class="s">&#39;1d&#39;</span><span class="p">:</span>
+        <span class="n">flux_engine</span> <span class="o">=</span> <span class="n">flux</span><span class="o">.</span><span class="n">FluxEngine1D</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Unexpected value </span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s">for integration_method. &quot;</span>
+                         <span class="s">&quot;Expected either &#39;1d&#39; or &#39;2d&#39;&quot;</span><span class="o">%</span><span class="n">options</span><span class="o">.</span><span class="n">integration_method</span><span class="p">)</span>
      
     <span class="n">image_iter</span> <span class="o">=</span> <span class="n">dir_iter</span><span class="o">.</span><span class="n">DirFileIter</span><span class="p">(</span><span class="n">image_dir</span><span class="p">,</span> <span class="n">realtime</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">realtime</span><span class="p">,</span> 
                                       <span class="n">skip_existing</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">skip_existing</span><span class="p">,</span> 
@@ -290,6 +309,7 @@
         <span class="k">for</span> <span class="n">next_image_fname</span> <span class="ow">in</span> <span class="n">image_iter</span><span class="p">:</span>
              
             <span class="k">if</span> <span class="n">current_image_fname</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                
                 <span class="n">so2flux</span> <span class="o">=</span> <span class="n">process_image_pair</span><span class="p">((</span><span class="n">current_image_fname</span><span class="p">,</span> <span class="n">next_image_fname</span><span class="p">),</span>
                                              <span class="n">motion_engine</span><span class="p">,</span> <span class="n">flux_engine</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span>
                                              <span class="n">config</span><span class="p">)</span>
@@ -352,8 +372,9 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">plumetrack 14.09 documentation</a> &raquo;</li>
-          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+        <li><a href="../../index.html">plumetrack 14.11 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../plumetrack.html" >plumetrack</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

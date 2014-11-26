@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>plumetrack package &mdash; plumetrack 14.09 documentation</title>
+    <title>plumetrack package &mdash; plumetrack 14.11 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '14.09',
+        VERSION:     '14.11',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="plumetrack 14.09 documentation" href="index.html" />
+    <link rel="top" title="plumetrack 14.11 documentation" href="index.html" />
     <link rel="up" title="API" href="API.html" />
     <link rel="prev" title="API" href="API.html" /> 
   </head>
@@ -41,7 +41,7 @@
         <li class="right" >
           <a href="API.html" title="API"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">plumetrack 14.09 documentation</a> &raquo;</li>
+        <li><a href="index.html">plumetrack 14.11 documentation</a> &raquo;</li>
           <li><a href="API.html" accesskey="U">API</a> &raquo;</li> 
       </ul>
     </div>  
@@ -81,6 +81,11 @@
 <dl class="method">
 <dt id="plumetrack.config_script.InputFilesConfig.get_configs">
 <tt class="descname">get_configs</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack/config_script.html#InputFilesConfig.get_configs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.config_script.InputFilesConfig.get_configs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plumetrack.config_script.InputFilesConfig.on_help">
+<tt class="descname">on_help</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/config_script.html#InputFilesConfig.on_help"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.config_script.InputFilesConfig.on_help" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -352,45 +357,79 @@ element types will be flattened. This algorithm is taken from:
 <div class="section" id="module-plumetrack.flux">
 <span id="plumetrack-flux-module"></span><h2>plumetrack.flux module<a class="headerlink" href="#module-plumetrack.flux" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="plumetrack.flux.FluxEngine">
-<em class="property">class </em><tt class="descclassname">plumetrack.flux.</tt><tt class="descname">FluxEngine</tt><big>(</big><em>config</em><big>)</big><a class="reference internal" href="_modules/plumetrack/flux.html#FluxEngine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.FluxEngine" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<dt id="plumetrack.flux.FluxEngine1D">
+<em class="property">class </em><tt class="descclassname">plumetrack.flux.</tt><tt class="descname">FluxEngine1D</tt><big>(</big><em>config</em><big>)</big><a class="reference internal" href="_modules/plumetrack/flux.html#FluxEngine1D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.FluxEngine1D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#plumetrack.flux.FluxEngineBase" title="plumetrack.flux.FluxEngineBase"><tt class="xref py py-class docutils literal"><span class="pre">plumetrack.flux.FluxEngineBase</span></tt></a></p>
 <dl class="method">
-<dt id="plumetrack.flux.FluxEngine.compute_flux">
-<tt class="descname">compute_flux</tt><big>(</big><em>current_image</em>, <em>flow</em>, <em>delta_t</em><big>)</big><a class="reference internal" href="_modules/plumetrack/flux.html#FluxEngine.compute_flux"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.FluxEngine.compute_flux" title="Permalink to this definition">¶</a></dt>
+<dt id="plumetrack.flux.FluxEngine1D.compute_flux">
+<tt class="descname">compute_flux</tt><big>(</big><em>current_image</em>, <em>flow</em>, <em>delta_t</em><big>)</big><a class="reference internal" href="_modules/plumetrack/flux.html#FluxEngine1D.compute_flux"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.FluxEngine1D.compute_flux" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="plumetrack.flux.FluxEngine2D">
+<em class="property">class </em><tt class="descclassname">plumetrack.flux.</tt><tt class="descname">FluxEngine2D</tt><big>(</big><em>config</em><big>)</big><a class="reference internal" href="_modules/plumetrack/flux.html#FluxEngine2D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.FluxEngine2D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#plumetrack.flux.FluxEngineBase" title="plumetrack.flux.FluxEngineBase"><tt class="xref py py-class docutils literal"><span class="pre">plumetrack.flux.FluxEngineBase</span></tt></a></p>
+<dl class="method">
+<dt id="plumetrack.flux.FluxEngine2D.compute_flux">
+<tt class="descname">compute_flux</tt><big>(</big><em>current_image</em>, <em>flow</em>, <em>delta_t</em><big>)</big><a class="reference internal" href="_modules/plumetrack/flux.html#FluxEngine2D.compute_flux"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.FluxEngine2D.compute_flux" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="plumetrack.flux.FluxEngine.get_integration_line">
-<tt class="descname">get_integration_line</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack/flux.html#FluxEngine.get_integration_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.FluxEngine.get_integration_line" title="Permalink to this definition">¶</a></dt>
+<dt id="plumetrack.flux.FluxEngine2D.find_flux_contributions">
+<tt class="descname">find_flux_contributions</tt><big>(</big><em>flow</em>, <em>poly_approx=-1</em><big>)</big><a class="reference internal" href="_modules/plumetrack/flux.html#FluxEngine2D.find_flux_contributions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.FluxEngine2D.find_flux_contributions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="plumetrack.flux.FluxEngineBase">
+<em class="property">class </em><tt class="descclassname">plumetrack.flux.</tt><tt class="descname">FluxEngineBase</tt><big>(</big><em>config</em><big>)</big><a class="reference internal" href="_modules/plumetrack/flux.html#FluxEngineBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.FluxEngineBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<dl class="method">
+<dt id="plumetrack.flux.FluxEngineBase.compute_flux">
+<tt class="descname">compute_flux</tt><big>(</big><em>current_image</em>, <em>flow</em>, <em>delta_t</em><big>)</big><a class="reference internal" href="_modules/plumetrack/flux.html#FluxEngineBase.compute_flux"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.FluxEngineBase.compute_flux" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plumetrack.flux.FluxEngineBase.get_integration_line">
+<tt class="descname">get_integration_line</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack/flux.html#FluxEngineBase.get_integration_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.FluxEngineBase.get_integration_line" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="plumetrack.flux.IntegrationLine">
-<em class="property">class </em><tt class="descclassname">plumetrack.flux.</tt><tt class="descname">IntegrationLine</tt><big>(</big><em>xpts</em>, <em>ypts</em>, <em>direction</em>, <em>line_type='linear'</em><big>)</big><a class="reference internal" href="_modules/plumetrack/flux.html#IntegrationLine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.IntegrationLine" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">plumetrack.flux.</tt><tt class="descname">IntegrationLine</tt><big>(</big><em>xpts</em>, <em>ypts</em>, <em>direction</em><big>)</big><a class="reference internal" href="_modules/plumetrack/flux.html#IntegrationLine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.IntegrationLine" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="method">
+<dt id="plumetrack.flux.IntegrationLine.get_length">
+<tt class="descname">get_length</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack/flux.html#IntegrationLine.get_length"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.IntegrationLine.get_length" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the cumulative length of all the line segments in pixels (not 
+in metres!)</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="plumetrack.flux.IntegrationLine.get_n_points">
 <tt class="descname">get_n_points</tt><big>(</big><em>n=-1</em><big>)</big><a class="reference internal" href="_modules/plumetrack/flux.html#IntegrationLine.get_n_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.IntegrationLine.get_n_points" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns an n by 2 array of of x y coordinates of points along the line.
 If n==-1 then it returns the actual points of the line rather than
-interpolating</p>
+interpolating. Note that the points returned are in pixel coordinates, 
+<em>not</em> line coordinates.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.flux.IntegrationLine.get_poly_approx">
 <tt class="descname">get_poly_approx</tt><big>(</big><em>n=-1</em><big>)</big><a class="reference internal" href="_modules/plumetrack/flux.html#IntegrationLine.get_poly_approx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.IntegrationLine.get_poly_approx" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a tuple of arrays (startpoints, vectors, normals)</p>
+<dd><p>Returns a tuple of arrays (startpoints, vectors, normals). Note that the
+points returned are in pixel coordinates, <em>not</em> line coordinates.</p>
 </dd></dl>
 
 </dd></dl>
 
-<dl class="function">
-<dt id="plumetrack.flux.find_flux_contributions">
-<tt class="descclassname">plumetrack.flux.</tt><tt class="descname">find_flux_contributions</tt><big>(</big><em>flow</em>, <em>integration_line</em>, <em>poly_approx=-1</em><big>)</big><a class="reference internal" href="_modules/plumetrack/flux.html#find_flux_contributions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.find_flux_contributions" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+</div>
+<div class="section" id="plumetrack-gpu-motion-module">
+<h2>plumetrack.gpu_motion module<a class="headerlink" href="#plumetrack-gpu-motion-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-plumetrack.main_script">
 <span id="plumetrack-main-script-module"></span><h2>plumetrack.main_script module<a class="headerlink" href="#module-plumetrack.main_script" title="Permalink to this headline">¶</a></h2>
@@ -478,16 +517,24 @@ This is split into a separate function to make facilitate parallel execution.</p
 <dl class="class">
 <dt id="plumetrack.motion.MotionEngine">
 <em class="property">class </em><tt class="descclassname">plumetrack.motion.</tt><tt class="descname">MotionEngine</tt><big>(</big><em>config</em><big>)</big><a class="reference internal" href="_modules/plumetrack/motion.html#MotionEngine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.motion.MotionEngine" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
 <dl class="method">
 <dt id="plumetrack.motion.MotionEngine.compute_flow">
 <tt class="descname">compute_flow</tt><big>(</big><em>current_image</em>, <em>next_image</em><big>)</big><a class="reference internal" href="_modules/plumetrack/motion.html#MotionEngine.compute_flow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.motion.MotionEngine.compute_flow" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Uses the Farneback algorithm to compute the flow field that maps pixels
+in current_image, to pixels in next_image. Both image arguments should be
+numpy arrays.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.motion.MotionEngine.preprocess">
 <tt class="descname">preprocess</tt><big>(</big><em>image</em><big>)</big><a class="reference internal" href="_modules/plumetrack/motion.html#MotionEngine.preprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.motion.MotionEngine.preprocess" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Performs any required preprocessing tasks on the image (should be called
+prior to calling compute_flow()). Depending on the configuration,
+preprocessing tasks may include thresholding the image and applying 
+random noise masking.</p>
+<p>The image argument should be a numpy array.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -497,7 +544,10 @@ This is split into a separate function to make facilitate parallel execution.</p
 <dl class="function">
 <dt id="plumetrack.output.create_motion_png">
 <tt class="descclassname">plumetrack.output.</tt><tt class="descname">create_motion_png</tt><big>(</big><em>image</em>, <em>velocities</em>, <em>output_filename</em>, <em>integration_line</em><big>)</big><a class="reference internal" href="_modules/plumetrack/output.html#create_motion_png"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.output.create_motion_png" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Creates and saves a PNG image showing the original image with the computed 
+motion vectors and the integration line superimposed on the top. Note that 
+the motion field will be downsampled to make the vectors visible on the plot.</p>
+</dd></dl>
 
 </div>
 <div class="section" id="module-plumetrack.settings">
@@ -550,7 +600,7 @@ changes).</p>
 <p>The following code shows how the watcher module can be used to print the names
 of any new files created in a directory:</p>
 <blockquote>
-<div><p>from _plumetrack import watcher
+<div><p>from plumetrack import watcher
 import sys
 import time</p>
 <dl class="docutils">
@@ -627,6 +677,13 @@ args or kwargs specified.</p>
 </div>
 <div class="section" id="module-plumetrack">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-plumetrack" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="plumetrack.have_gpu">
+<tt class="descclassname">plumetrack.</tt><tt class="descname">have_gpu</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack.html#have_gpu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.have_gpu" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True if at least one CUDA capable GPU is detected on the system and
+plumetrack has been built with GPU support. Returns False otherwise.</p>
+</dd></dl>
+
 </div>
 </div>
 
@@ -643,6 +700,7 @@ args or kwargs specified.</p>
 <li><a class="reference internal" href="#module-plumetrack.config_script">plumetrack.config_script module</a></li>
 <li><a class="reference internal" href="#module-plumetrack.dir_iter">plumetrack.dir_iter module</a></li>
 <li><a class="reference internal" href="#module-plumetrack.flux">plumetrack.flux module</a></li>
+<li><a class="reference internal" href="#plumetrack-gpu-motion-module">plumetrack.gpu_motion module</a></li>
 <li><a class="reference internal" href="#module-plumetrack.main_script">plumetrack.main_script module</a></li>
 <li><a class="reference internal" href="#module-plumetrack.motion">plumetrack.motion module</a></li>
 <li><a class="reference internal" href="#module-plumetrack.output">plumetrack.output module</a></li>
@@ -690,7 +748,7 @@ args or kwargs specified.</p>
         <li class="right" >
           <a href="API.html" title="API"
              >previous</a> |</li>
-        <li><a href="index.html">plumetrack 14.09 documentation</a> &raquo;</li>
+        <li><a href="index.html">plumetrack 14.11 documentation</a> &raquo;</li>
           <li><a href="API.html" >API</a> &raquo;</li> 
       </ul>
     </div>

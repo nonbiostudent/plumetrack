@@ -1,19 +1,19 @@
 #Copyright (C) Nial Peters 2014
 #
-#This file is part of _plumetrack.
+#This file is part of plumetrack.
 #
-#_plumetrack is free software: you can redistribute it and/or modify
+#plumetrack is free software: you can redistribute it and/or modify
 #it under the terms of the GNU General Public License as published by
 #the Free Software Foundation, either version 3 of the License, or
 #(at your option) any later version.
 #
-#_plumetrack is distributed in the hope that it will be useful,
+#plumetrack is distributed in the hope that it will be useful,
 #but WITHOUT ANY WARRANTY; without even the implied warranty of
 #MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #GNU General Public License for more details.
 #
 #You should have received a copy of the GNU General Public License
-#along with _plumetrack.  If not, see <http://www.gnu.org/licenses/>.
+#along with plumetrack.  If not, see <http://www.gnu.org/licenses/>.
 #
 #Large parts of this implementation (in particular the Windows 
 #implementation) is copied from Wim Leers' fsmonitor.py module:
@@ -28,7 +28,7 @@ changes).
 The following code shows how the watcher module can be used to print the names
 of any new files created in a directory:
 
-    from _plumetrack import watcher
+    from plumetrack import watcher
     import sys
     import time
     

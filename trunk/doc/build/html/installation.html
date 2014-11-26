@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Installation &mdash; plumetrack 14.09 documentation</title>
+    <title>Installation &mdash; plumetrack 14.11 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '14.09',
+        VERSION:     '14.11',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="plumetrack 14.09 documentation" href="index.html" />
+    <link rel="top" title="plumetrack 14.11 documentation" href="index.html" />
     <link rel="next" title="Quickstart" href="quickstart.html" />
     <link rel="prev" title="Welcome to plumetrack’s documentation!" href="index.html" /> 
   </head>
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="index.html" title="Welcome to plumetrack’s documentation!"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">plumetrack 14.09 documentation</a> &raquo;</li> 
+        <li><a href="index.html">plumetrack 14.11 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -74,7 +74,6 @@
 <li><a class="reference external" href="http://www.scipy.org/">SciPy</a></li>
 <li><a class="reference external" href="http://matplotlib.org/">matplotlib</a></li>
 <li><a class="reference external" href="http://sourceforge.net/projects/pywin32">pywin32</a></li>
-<li><a class="reference external" href="http://www.pythonware.com/products/pil/">PIL</a></li>
 <li><a class="reference external" href="http://www.wxpython.org/">wxPython</a></li>
 </ul>
 </div></blockquote>
@@ -93,7 +92,43 @@
 </div>
 <div class="section" id="installing-plumetrack">
 <h3>Installing plumetrack<a class="headerlink" href="#installing-plumetrack" title="Permalink to this headline">¶</a></h3>
-<p>Since plumetrack is still in an early stage of development, there are currently no release versions and you will therefore have to install it from the SVN repository. To do this you need an SVN client, which you can get from <a class="reference external" href="http://sourceforge.net/projects/win32svn">here</a>. Once you have installed an SVN client:</p>
+<p>Once you have installed all of the dependencies, then installation of plumetrack itself should be relatively straightforward.</p>
+<blockquote>
+<div><ol class="arabic">
+<li><p class="first">Download the plumetrack distribution package (a .zip file) from <a class="reference external" href="http://ccpforge.cse.rl.ac.uk/gf/project/plumetrack/frs">here</a>.</p>
+</li>
+<li><p class="first">Unzip the package.</p>
+</li>
+<li><p class="first">Open a terminal (start-&gt;run-&gt;cmd.exe).</p>
+</li>
+<li><p class="first">Navigate to the unzipped plumetrack folder. For example:</p>
+<div class="highlight-python"><div class="highlight"><pre>cd plumetrack-14.11
+</pre></div>
+</div>
+</li>
+<li><p class="first">Install plumetrack using the following commands:</p>
+<div class="highlight-python"><div class="highlight"><pre>python setup.py build
+python setup.py install
+</pre></div>
+</div>
+</li>
+<li><p class="first">If the previous commands gave you the error &#8216;&#8217;python&#8217; is not recognised as an internal or external command, operable or batch file&#8217;, then you need to add c:\python27 to your system path (or c:\anaconda if you are using anaconda) there are some instructions for this <a class="reference external" href="http://stackoverflow.com/questions/6318156/adding-python-path-on-windows-7">here</a>.</p>
+</li>
+<li><p class="first">Add the C:\Python27\Scripts (or C:\Anaconda\Scripts) directory to your system path, following the same procedure as above.</p>
+</li>
+<li><p class="first">Open a new terminal and type:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">plumetrack</span> <span class="o">-</span><span class="n">h</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<blockquote>
+<div>This should print a summary of options that can be passed to plumetrack. If this works, then you&#8217;re done!</div></blockquote>
+</div></blockquote>
+</div>
+<div class="section" id="installing-plumetrack-from-svn">
+<h3>Installing plumetrack from SVN<a class="headerlink" href="#installing-plumetrack-from-svn" title="Permalink to this headline">¶</a></h3>
+<p>If you want the very latest version of plumetrack (and be advised that this may not be very stable!) then you can install it from the SVN repository. To do this you need an SVN client, which you can get from <a class="reference external" href="http://sourceforge.net/projects/win32svn">here</a>. Once you have installed an SVN client:</p>
 <blockquote>
 <div><ol class="arabic">
 <li><p class="first">Create a folder on your desktop called plumetrack.</p>
@@ -149,6 +184,7 @@ python setup.py install
 <li><a class="reference internal" href="#prerequisites-using-an-existing-python-installation">Prerequisites - Using an Existing Python Installation</a></li>
 <li><a class="reference internal" href="#installing-opencv">Installing OpenCV</a></li>
 <li><a class="reference internal" href="#installing-plumetrack">Installing plumetrack</a></li>
+<li><a class="reference internal" href="#installing-plumetrack-from-svn">Installing plumetrack from SVN</a></li>
 </ul>
 </li>
 </ul>
@@ -198,7 +234,7 @@ python setup.py install
         <li class="right" >
           <a href="index.html" title="Welcome to plumetrack’s documentation!"
              >previous</a> |</li>
-        <li><a href="index.html">plumetrack 14.09 documentation</a> &raquo;</li> 
+        <li><a href="index.html">plumetrack 14.11 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

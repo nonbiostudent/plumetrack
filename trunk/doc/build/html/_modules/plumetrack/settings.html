@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>plumetrack.settings &mdash; plumetrack 14.09 documentation</title>
+    <title>plumetrack.settings &mdash; plumetrack 14.11 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '14.09',
+        VERSION:     '14.11',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,8 +24,8 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="plumetrack 14.09 documentation" href="../../index.html" />
-    <link rel="up" title="Module code" href="../index.html" /> 
+    <link rel="top" title="plumetrack 14.11 documentation" href="../../index.html" />
+    <link rel="up" title="plumetrack" href="../plumetrack.html" /> 
   </head>
   <body>
     <div class="related">
@@ -37,8 +37,9 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">plumetrack 14.09 documentation</a> &raquo;</li>
-          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+        <li><a href="../../index.html">plumetrack 14.11 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../plumetrack.html" accesskey="U">plumetrack</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -50,20 +51,20 @@
   <h1>Source code for plumetrack.settings</h1><div class="highlight"><pre>
 <span class="c">#Copyright (C) Nial Peters 2014</span>
 <span class="c">#</span>
-<span class="c">#This file is part of _plumetrack.</span>
+<span class="c">#This file is part of plumetrack.</span>
 <span class="c">#</span>
-<span class="c">#_plumetrack is free software: you can redistribute it and/or modify</span>
+<span class="c">#plumetrack is free software: you can redistribute it and/or modify</span>
 <span class="c">#it under the terms of the GNU General Public License as published by</span>
 <span class="c">#the Free Software Foundation, either version 3 of the License, or</span>
 <span class="c">#(at your option) any later version.</span>
 <span class="c">#</span>
-<span class="c">#_plumetrack is distributed in the hope that it will be useful,</span>
+<span class="c">#plumetrack is distributed in the hope that it will be useful,</span>
 <span class="c">#but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
 <span class="c">#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
 <span class="c">#GNU General Public License for more details.</span>
 <span class="c">#</span>
 <span class="c">#You should have received a copy of the GNU General Public License</span>
-<span class="c">#along with _plumetrack.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+<span class="c">#along with plumetrack.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">json</span>
@@ -106,12 +107,14 @@
     
     <span class="k">return</span> <span class="n">config</span>
 
+
 </div>
 <div class="viewcode-block" id="ConfigError"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.settings.ConfigError">[docs]</a><span class="k">class</span> <span class="nc">ConfigError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Exception raised if the configuration file is invalid.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span>
+     
      
 </div>
 <div class="viewcode-block" id="validate_config"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.settings.validate_config">[docs]</a><span class="k">def</span> <span class="nf">validate_config</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
@@ -213,10 +216,20 @@
                       <span class="n">help</span><span class="o">=</span><span class="s">&quot;Parallel process the images. This will be ignored &quot;</span>
                            <span class="s">&quot;when used with the realtime option&quot;</span><span class="p">)</span>
     
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&quot;-i&quot;</span><span class="p">,</span><span class="s">&quot;--integration_method&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&quot;integration_method&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s">&quot;store&quot;</span><span class="p">,</span> 
+                      <span class="n">default</span><span class="o">=</span><span class="s">&#39;2d&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s">&#39;string&#39;</span><span class="p">,</span>
+                      <span class="n">help</span><span class="o">=</span><span class="s">&quot;Select either &#39;1d&#39; or &#39;2d&#39; method for integrating &quot;</span>
+                           <span class="s">&quot;the flux. Default is &#39;2d&#39;.&quot;</span><span class="p">)</span>
+    
     <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&quot;-t&quot;</span><span class="p">,</span> <span class="s">&quot;--realtime&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&quot;realtime&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s">&quot;store_true&quot;</span><span class="p">,</span> 
                       <span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
                       <span class="n">help</span><span class="o">=</span><span class="s">&quot;Continuously monitor the image folder for new files&quot;</span><span class="p">)</span>
+    
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span> <span class="s">&quot;--no_gpu&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&quot;no_gpu&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s">&quot;store_true&quot;</span><span class="p">,</span> 
+                      <span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                      <span class="n">help</span><span class="o">=</span><span class="s">&quot;Stops plumetrack from using the GPU for processing&quot;</span><span class="p">)</span>
 
+    
     <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&quot;-o&quot;</span><span class="p">,</span><span class="s">&quot;--output_file&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&quot;output_file&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s">&quot;store&quot;</span><span class="p">,</span> 
                       <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s">&#39;string&#39;</span><span class="p">,</span>
                       <span class="n">help</span><span class="o">=</span><span class="s">&quot;Output file to write computed fluxes to. If no file &quot;</span>
@@ -253,21 +266,28 @@
     <span class="c">#use of the skip_existing option implies the use of the realtime option</span>
     <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">skip_existing</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">options</span><span class="o">.</span><span class="n">realtime</span><span class="p">:</span>
         <span class="n">options</span><span class="o">.</span><span class="n">realtime</span> <span class="o">=</span> <span class="bp">True</span>
+    
+    <span class="c">#check that the integration method is valid</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">options</span><span class="o">.</span><span class="n">integration_method</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;1d&#39;</span><span class="p">,</span><span class="s">&#39;2d&#39;</span><span class="p">):</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;Unknown integration_method &#39;</span><span class="si">%s</span><span class="s">&#39;, expecting either &#39;1d&#39; &quot;</span>
+                     <span class="s">&quot;or &#39;2d&#39;&quot;</span><span class="o">%</span><span class="n">options</span><span class="o">.</span><span class="n">integration_method</span><span class="p">)</span>
         
     <span class="k">return</span> <span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+
 
 </div>
 <span class="k">def</span> <span class="nf">__print_version_and_exit</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Prints the version number and license information for plumetrack.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">import</span> <span class="nn">plumetrack</span>
+    <span class="kn">import</span> <span class="nn">plumetrack</span> <span class="c">#imported here to prevent circular imports</span>
     <span class="k">print</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s"> (version </span><span class="si">%s</span><span class="s">)&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">plumetrack</span><span class="o">.</span><span class="n">PROG_SHORT_NAME</span><span class="p">,</span> <span class="n">plumetrack</span><span class="o">.</span><span class="n">VERSION</span><span class="p">)</span>
     <span class="k">print</span> <span class="n">plumetrack</span><span class="o">.</span><span class="n">COPYRIGHT</span>
     <span class="k">print</span> <span class="n">plumetrack</span><span class="o">.</span><span class="n">LICENSE_SHORT</span>
     <span class="k">print</span> <span class="s">&quot;&quot;</span>
     <span class="k">print</span> <span class="s">&quot;Written by </span><span class="si">%s</span><span class="s">.&quot;</span><span class="o">%</span><span class="n">plumetrack</span><span class="o">.</span><span class="n">AUTHOR</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    
 </pre></div>
 
           </div>
@@ -301,8 +321,9 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">plumetrack 14.09 documentation</a> &raquo;</li>
-          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+        <li><a href="../../index.html">plumetrack 14.11 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../plumetrack.html" >plumetrack</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

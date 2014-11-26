@@ -1,8 +1,8 @@
 #Copyright (C) Nial Peters 2014
 #
-#This file is part of _plumetrack.
+#This file is part of plumetrack.
 #
-#_plumetrack is free software: you can redistribute it and/or modify
+#plumetrack is free software: you can redistribute it and/or modify
 #it under the terms of the GNU General Public License as published by
 #the Free Software Foundation, either version 3 of the License, or
 #(at your option) any later version.
@@ -13,18 +13,18 @@
 #GNU General Public License for more details.
 #
 #You should have received a copy of the GNU General Public License
-#along with _plumetrack.  If not, see <http://www.gnu.org/licenses/>.
+#along with plumetrack.  If not, see <http://www.gnu.org/licenses/>.
 
 ####################################################################
 #                     Program Information
 ####################################################################
-VERSION = "14.09" #year.month of release
+VERSION = "14.11" #year.month of release
 
 AUTHOR = 'Nial Peters'
 
 AUTHOR_EMAIL = 'nonbiostudent@hotmail.com'
 
-URL = 'http://ccpforge.cse.rl.ac.uk/gf/project/_plumetrack/'
+URL = 'http://ccpforge.cse.rl.ac.uk/gf/project/plumetrack/'
 
 PROG_SHORT_NAME = 'plumetrack'
 
@@ -38,10 +38,7 @@ LONG_DESCRIPTION = ('Calculates SO2 fluxes from UV camera images using the '
 
 COPYRIGHT = 'Copyright (C) 2014 %s'%AUTHOR
 
-LICENSE_SHORT = ('License GPLv3+: GNU GPL version 3 or later '
-                 '<http://gnu.org/licenses/gpl.html>.\nThis is free software: '
-                 'you are free to change and redistribute it.\nThere is NO '
-                 'WARRANTY, to the extent permitted by law.')
+LICENSE_SHORT = ('GNU General Public License v3 or later (GPLv3+)')
 
 COPY_PERMISSION =(
 '\n%s is free software: you can redistribute it and/or modify\n'

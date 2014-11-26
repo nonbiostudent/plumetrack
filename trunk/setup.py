@@ -17,8 +17,9 @@
 
 from ez_setup import use_setuptools
 use_setuptools()
-from setuptools import setup
+from setuptools import setup, Extension
 from setuptools.command.install import install
+import numpy
 import sys
 import os
 import json
@@ -28,12 +29,8 @@ import StringIO
 #                    CONFIGURATION
 ####################################################################
 
-
-#Note - I've included Image here even though it is available on PyPi, because on
-#PyPi it seems to depend on Django for some reason - which is a ridiculous dependency!
 required_modules = [
                     ("cv2","OpenCV (including Python bindings)"),
-                    ("Image", "Python Image Library ")
                    ]
 
 data_files_to_install = []
@@ -95,6 +92,19 @@ default_config = {
 }
 
 
+####################################################################
+#                    EXTENSION MODULES
+####################################################################
+extension_modules = []
+
+# numpyincludedirs = numpy.get_include()
+# gpu_extension = Extension("plumetrack._gpu_motion",
+#                    ["src/swig/gpu_motion_wrap.cxx", "src/swig/gpu_motion.cxx", "src/swig/traceback.cxx"],
+#                    include_dirs=[numpyincludedirs] + ['/usr/local/include/opencv', '/usr/local/include'],
+#                    libraries=['opencv_core','opencv_gpu', 'cudart' ])
+# 
+# extension_modules.append(gpu_extension)
+
 
 ####################################################################
 #                    BUILD/INSTALL
@@ -113,6 +123,8 @@ def supermakedirs(path, mode):
     os.chmod(path, mode)
     res += [path]
     return res
+
+
 
 class CustomInstall(install):
     def run(self):
@@ -134,6 +146,7 @@ class CustomInstall(install):
         os.chmod(config_filename, 0777)
 
 
+
 import src.plumetrack as plumetrack_preinstall
 import src.plumetrack.settings as settings_preinstall
 
@@ -142,15 +155,19 @@ import src.plumetrack.settings as settings_preinstall
 decoded_default_config = json.loads(json.dumps(default_config))
 settings_preinstall.validate_config(decoded_default_config, "setup.py")
 
+#do the build/install
 setup(cmdclass={'install':CustomInstall},
       name             = plumetrack_preinstall.PROG_SHORT_NAME,
       version          = plumetrack_preinstall.VERSION,
       description      = plumetrack_preinstall.SHORT_DESCRIPTION,
+      long_description = plumetrack_preinstall.LONG_DESCRIPTION,
       author           = plumetrack_preinstall.AUTHOR,
       author_email     = plumetrack_preinstall.AUTHOR_EMAIL,
       url              = plumetrack_preinstall.URL,
+      license          = plumetrack_preinstall.LICENSE_SHORT,  
       package_dir      = {'':'src'},
       packages         = ['plumetrack'],
+      ext_modules      = extension_modules,
       install_requires = install_dependencies,
       entry_points     = {'console_scripts': ['plumetrack = plumetrack.main_script:main'],
                           'gui_scripts': ['plumetrack-config = plumetrack.config_script:main']}

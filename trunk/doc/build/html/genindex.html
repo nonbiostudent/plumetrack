@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Index &mdash; plumetrack 14.09 documentation</title>
+    <title>Index &mdash; plumetrack 14.11 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '14.09',
+        VERSION:     '14.11',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="plumetrack 14.09 documentation" href="index.html" /> 
+    <link rel="top" title="plumetrack 14.11 documentation" href="index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -37,7 +37,7 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="index.html">plumetrack 14.09 documentation</a> &raquo;</li> 
+        <li><a href="index.html">plumetrack 14.11 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -54,6 +54,7 @@
  | <a href="#D"><strong>D</strong></a>
  | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
+ | <a href="#H"><strong>H</strong></a>
  | <a href="#I"><strong>I</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
@@ -83,9 +84,19 @@
   </dt>
 
       
-  <dt><a href="plumetrack.html#plumetrack.flux.FluxEngine.compute_flux">compute_flux() (plumetrack.flux.FluxEngine method)</a>
+  <dt><a href="plumetrack.html#plumetrack.flux.FluxEngine1D.compute_flux">compute_flux() (plumetrack.flux.FluxEngine1D method)</a>
   </dt>
 
+      <dd><dl>
+        
+  <dt><a href="plumetrack.html#plumetrack.flux.FluxEngine2D.compute_flux">(plumetrack.flux.FluxEngine2D method)</a>
+  </dt>
+
+        
+  <dt><a href="plumetrack.html#plumetrack.flux.FluxEngineBase.compute_flux">(plumetrack.flux.FluxEngineBase method)</a>
+  </dt>
+
+      </dl></dd>
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
@@ -131,17 +142,25 @@
   </dt>
 
       
-  <dt><a href="plumetrack.html#plumetrack.flux.find_flux_contributions">find_flux_contributions() (in module plumetrack.flux)</a>
+  <dt><a href="plumetrack.html#plumetrack.flux.FluxEngine2D.find_flux_contributions">find_flux_contributions() (plumetrack.flux.FluxEngine2D method)</a>
+  </dt>
+
+      
+  <dt><a href="plumetrack.html#plumetrack.dir_iter.flatten">flatten() (in module plumetrack.dir_iter)</a>
   </dt>
 
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="plumetrack.html#plumetrack.dir_iter.flatten">flatten() (in module plumetrack.dir_iter)</a>
+  <dt><a href="plumetrack.html#plumetrack.flux.FluxEngine1D">FluxEngine1D (class in plumetrack.flux)</a>
   </dt>
 
       
-  <dt><a href="plumetrack.html#plumetrack.flux.FluxEngine">FluxEngine (class in plumetrack.flux)</a>
+  <dt><a href="plumetrack.html#plumetrack.flux.FluxEngine2D">FluxEngine2D (class in plumetrack.flux)</a>
+  </dt>
+
+      
+  <dt><a href="plumetrack.html#plumetrack.flux.FluxEngineBase">FluxEngineBase (class in plumetrack.flux)</a>
   </dt>
 
   </dl></td>
@@ -182,10 +201,14 @@
 
       <dd><dl>
         
-  <dt><a href="plumetrack.html#plumetrack.flux.FluxEngine.get_integration_line">(plumetrack.flux.FluxEngine method)</a>
+  <dt><a href="plumetrack.html#plumetrack.flux.FluxEngineBase.get_integration_line">(plumetrack.flux.FluxEngineBase method)</a>
   </dt>
 
       </dl></dd>
+      
+  <dt><a href="plumetrack.html#plumetrack.flux.IntegrationLine.get_length">get_length() (plumetrack.flux.IntegrationLine method)</a>
+  </dt>
+
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
@@ -198,6 +221,16 @@
 
       
   <dt><a href="plumetrack.html#plumetrack.flux.IntegrationLine.get_poly_approx">get_poly_approx() (plumetrack.flux.IntegrationLine method)</a>
+  </dt>
+
+  </dl></td>
+</tr></table>
+
+<h2 id="H">H</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="plumetrack.html#plumetrack.have_gpu">have_gpu() (in module plumetrack)</a>
   </dt>
 
   </dl></td>
@@ -331,9 +364,15 @@
   </dt>
 
       
-  <dt><a href="plumetrack.html#plumetrack.config_script.IntegrationLineSelectDialog.on_help">on_help() (plumetrack.config_script.IntegrationLineSelectDialog method)</a>
+  <dt><a href="plumetrack.html#plumetrack.config_script.InputFilesConfig.on_help">on_help() (plumetrack.config_script.InputFilesConfig method)</a>
   </dt>
 
+      <dd><dl>
+        
+  <dt><a href="plumetrack.html#plumetrack.config_script.IntegrationLineSelectDialog.on_help">(plumetrack.config_script.IntegrationLineSelectDialog method)</a>
+  </dt>
+
+      </dl></dd>
       
   <dt><a href="plumetrack.html#plumetrack.config_script.MaskingConfig.on_high_thresh">on_high_thresh() (plumetrack.config_script.MaskingConfig method)</a>
   </dt>
@@ -567,7 +606,7 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="index.html">plumetrack 14.09 documentation</a> &raquo;</li> 
+        <li><a href="index.html">plumetrack 14.11 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

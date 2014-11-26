@@ -19,7 +19,7 @@ import wx
 import wx.html
 import os
 import json
-import Image
+import cv2
 import numpy
 import matplotlib
 matplotlib.use('wxagg')
@@ -102,10 +102,12 @@ class ConfigFileSelect(wx.Panel):
         self.SetSizer(vsizer)
         vsizer.Fit(self)
     
+    
     def on_browse(self, evnt):
         filename = wx.FileSelector("Select configuration file")
         if filename != "":
             self.filename_box.SetValue(filename)
+    
     
     def on_load(self, evnt):
         filename = self.filename_box.GetValue()
@@ -181,6 +183,7 @@ class InputFilesConfig(wx.Panel):
         
         self.SetSizer(sizer)
         sizer.Fit(self)
+    
     
     def on_help(self, evnt):
         help_frame = wx.Frame(self, -1, "Filename format help - plumetrack-config ")
@@ -532,11 +535,9 @@ class IntegrationLineConfig(wx.Panel):
             return
         
         try:
-            im = Image.open(image_file)
+            im = cv2.imread(image_file, cv2.IMREAD_UNCHANGED) 
         except Exception, ex:
             wx.MessageBox("Failed to open '%s'. Error was: %s"%(image_file, ex.args[0]))
-        
-        arr = numpy.array(im)
         
         if self.direction_chkbx.IsChecked():
             direction = -1
@@ -548,7 +549,7 @@ class IntegrationLineConfig(wx.Panel):
         except:
             pts = None
         
-        int_line_dialog = IntegrationLineSelectDialog(self.Parent, arr, pts, direction)
+        int_line_dialog = IntegrationLineSelectDialog(self.Parent, im, pts, direction)
         
         if int_line_dialog.ShowModal() == wx.OK:
             int_line = int_line_dialog.get_integration_line()
@@ -689,7 +690,6 @@ class MainFrame(wx.Frame):
             #if this configuration is unloadable, then just give up
             pass
             
-        
         #do the layout       
         top_panel.SetSizer(vsizer)
         top_panel.SetAutoLayout(True)

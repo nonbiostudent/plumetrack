@@ -1,19 +1,19 @@
 #Copyright (C) Nial Peters 2014
 #
-#This file is part of _plumetrack.
+#This file is part of plumetrack.
 #
-#_plumetrack is free software: you can redistribute it and/or modify
+#plumetrack is free software: you can redistribute it and/or modify
 #it under the terms of the GNU General Public License as published by
 #the Free Software Foundation, either version 3 of the License, or
 #(at your option) any later version.
 #
-#_plumetrack is distributed in the hope that it will be useful,
+#plumetrack is distributed in the hope that it will be useful,
 #but WITHOUT ANY WARRANTY; without even the implied warranty of
 #MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #GNU General Public License for more details.
 #
 #You should have received a copy of the GNU General Public License
-#along with _plumetrack.  If not, see <http://www.gnu.org/licenses/>.
+#along with plumetrack.  If not, see <http://www.gnu.org/licenses/>.
 import os
 import sys
 import json
@@ -57,11 +57,13 @@ def load_config_file(filename=None):
     return config
 
 
+
 class ConfigError(ValueError):
     """
     Exception raised if the configuration file is invalid.
     """
     pass
+     
      
 
 def validate_config(config, filename=None):
@@ -222,14 +224,16 @@ def parse_cmd_line():
     return (options, args)
 
 
+
 def __print_version_and_exit(*args):
     """
     Prints the version number and license information for plumetrack.
     """
-    import plumetrack
+    import plumetrack #imported here to prevent circular imports
     print "%s (version %s)"%(plumetrack.PROG_SHORT_NAME, plumetrack.VERSION)
     print plumetrack.COPYRIGHT
     print plumetrack.LICENSE_SHORT
     print ""
     print "Written by %s."%plumetrack.AUTHOR
     sys.exit(0)
+    

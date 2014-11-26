@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>plumetrack.config_script &mdash; plumetrack 14.09 documentation</title>
+    <title>plumetrack.config_script &mdash; plumetrack 14.11 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '14.09',
+        VERSION:     '14.11',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,8 +24,8 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="plumetrack 14.09 documentation" href="../../index.html" />
-    <link rel="up" title="Module code" href="../index.html" /> 
+    <link rel="top" title="plumetrack 14.11 documentation" href="../../index.html" />
+    <link rel="up" title="plumetrack" href="../plumetrack.html" /> 
   </head>
   <body>
     <div class="related">
@@ -37,8 +37,9 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">plumetrack 14.09 documentation</a> &raquo;</li>
-          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+        <li><a href="../../index.html">plumetrack 14.11 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../plumetrack.html" accesskey="U">plumetrack</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -66,9 +67,10 @@
 <span class="c">#along with plumetrack.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
 
 <span class="kn">import</span> <span class="nn">wx</span>
+<span class="kn">import</span> <span class="nn">wx.html</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">Image</span>
+<span class="kn">import</span> <span class="nn">cv2</span>
 <span class="kn">import</span> <span class="nn">numpy</span>
 <span class="kn">import</span> <span class="nn">matplotlib</span>
 <span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s">&#39;wxagg&#39;</span><span class="p">)</span>
@@ -81,6 +83,8 @@
 
 <span class="kn">import</span> <span class="nn">plumetrack</span>
 <span class="kn">from</span> <span class="nn">plumetrack</span> <span class="kn">import</span> <span class="n">settings</span><span class="p">,</span> <span class="n">flux</span>
+
+<span class="c">#TODO - zoom tools on integration line drawing dialog</span>
 
 
 <div class="viewcode-block" id="main"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.config_script.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
@@ -123,6 +127,9 @@
         
         <span class="bp">self</span><span class="o">.</span><span class="n">filename_box</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">TextCtrl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">250</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">browse_button</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Browse&quot;</span><span class="p">)</span>
+        <span class="n">h_txt</span> <span class="o">=</span> <span class="s">&quot;Select an existing configuration file to load parameters from.&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename_box</span><span class="o">.</span><span class="n">SetToolTipString</span><span class="p">(</span><span class="n">h_txt</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">browse_button</span><span class="o">.</span><span class="n">SetToolTipString</span><span class="p">(</span><span class="n">h_txt</span><span class="p">)</span>
         <span class="n">wx</span><span class="o">.</span><span class="n">EVT_BUTTON</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">browse_button</span><span class="o">.</span><span class="n">GetId</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_browse</span><span class="p">)</span>
         
         <span class="n">hsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename_box</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">EXPAND</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_LEFT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
@@ -130,6 +137,10 @@
         <span class="n">hsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">browse_button</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_LEFT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">load_button</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Load&quot;</span><span class="p">)</span>
+        <span class="n">h_txt</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;Load the configuration parameters from the currently &quot;</span>
+                 <span class="s">&quot;selected file. This will overwrite any parameters already &quot;</span>
+                 <span class="s">&quot;defined below.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">load_button</span><span class="o">.</span><span class="n">SetToolTipString</span><span class="p">(</span><span class="n">h_txt</span><span class="p">)</span>
         <span class="n">wx</span><span class="o">.</span><span class="n">EVT_BUTTON</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_button</span><span class="o">.</span><span class="n">GetId</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_load</span><span class="p">)</span>
         
         <span class="c">#set the default config file to load</span>
@@ -142,10 +153,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">SetSizer</span><span class="p">(</span><span class="n">vsizer</span><span class="p">)</span>
         <span class="n">vsizer</span><span class="o">.</span><span class="n">Fit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
     
+    
 <div class="viewcode-block" id="ConfigFileSelect.on_browse"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.config_script.ConfigFileSelect.on_browse">[docs]</a>    <span class="k">def</span> <span class="nf">on_browse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evnt</span><span class="p">):</span>
         <span class="n">filename</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">FileSelector</span><span class="p">(</span><span class="s">&quot;Select configuration file&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">filename</span> <span class="o">!=</span> <span class="s">&quot;&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">filename_box</span><span class="o">.</span><span class="n">SetValue</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    
     </div>
 <div class="viewcode-block" id="ConfigFileSelect.on_load"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.config_script.ConfigFileSelect.on_load">[docs]</a>    <span class="k">def</span> <span class="nf">on_load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evnt</span><span class="p">):</span>
         <span class="n">filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename_box</span><span class="o">.</span><span class="n">GetValue</span><span class="p">()</span>
@@ -167,27 +180,69 @@
         <span class="n">sizer</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">FlexGridSizer</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="n">sizer</span><span class="o">.</span><span class="n">AddGrowableCol</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
         
-        <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">StaticText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Filename format:&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_RIGHT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
+        <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">StaticText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Filename format:&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> 
+                  <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_RIGHT</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filename_format_box</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">TextCtrl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">250</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
-        <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename_format_box</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">EXPAND</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_LEFT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
+        <span class="n">h_txt</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;The format of the filenames of the images to be processed. &quot;</span>
+                 <span class="s">&quot;The filenames must include the capture time of the images, &quot;</span>
+                 <span class="s">&quot;and the format must be described using the Python strftime &quot;</span>
+                 <span class="s">&quot;format. Click the Help button for details of the format. &quot;</span>
+                 <span class="s">&quot;The filename format entered here should include &quot;</span>
+                 <span class="s">&quot;the file extension.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename_format_box</span><span class="o">.</span><span class="n">SetToolTipString</span><span class="p">(</span><span class="n">h_txt</span><span class="p">)</span>
         
-        <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">StaticText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;File extension:&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_RIGHT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
+        <span class="n">hsizer</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">BoxSizer</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">HORIZONTAL</span><span class="p">)</span>
+        <span class="n">hsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename_format_box</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> 
+                  <span class="n">wx</span><span class="o">.</span><span class="n">EXPAND</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_LEFT</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
+        
+        <span class="n">format_help_button</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Help&quot;</span><span class="p">)</span>
+        <span class="n">hsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">format_help_button</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_LEFT</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
+        <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">hsizer</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">EXPAND</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_LEFT</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
+        <span class="n">wx</span><span class="o">.</span><span class="n">EVT_BUTTON</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format_help_button</span><span class="o">.</span><span class="n">GetId</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_help</span><span class="p">)</span>
+        
+        <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">StaticText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;File extension:&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> 
+                  <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_RIGHT</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">file_extension_box</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">TextCtrl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">h_txt</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;The file extension of your image files to be processed e.g. &quot;</span>
+                 <span class="s">&quot;&#39;.png&#39; or &#39;.jpg&#39;. This may be specified with or without the &quot;</span>
+                 <span class="s">&quot;preceding dot. It must match the file extension given in the &quot;</span>
+                 <span class="s">&quot;filename format box above.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_extension_box</span><span class="o">.</span><span class="n">SetToolTipString</span><span class="p">(</span><span class="n">h_txt</span><span class="p">)</span>
         <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_extension_box</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_LEFT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
         
-        <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">StaticText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Pixel size (metres):&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_RIGHT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pixel_size_box</span> <span class="o">=</span> <span class="n">floatspin</span><span class="o">.</span><span class="n">FloatSpin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_ANY</span><span class="p">,</span> <span class="n">min_val</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">max_val</span><span class="o">=</span><span class="mf">50.0</span><span class="p">,</span>
-                                                  <span class="n">increment</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">digits</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">StaticText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Pixel size (metres):&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> 
+                  <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_RIGHT</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pixel_size_box</span> <span class="o">=</span> <span class="n">floatspin</span><span class="o">.</span><span class="n">FloatSpin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_ANY</span><span class="p">,</span> <span class="n">min_val</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> 
+                                                  <span class="n">max_val</span><span class="o">=</span><span class="mf">50.0</span><span class="p">,</span> <span class="n">increment</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> 
+                                                  <span class="n">digits</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">h_txt</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;The size of the pixels in the images. Note that this is the &quot;</span>
+                 <span class="s">&quot;length in metres along one pixel dimension, not the area of &quot;</span>
+                 <span class="s">&quot;the pixel.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pixel_size_box</span><span class="o">.</span><span class="n">SetToolTipString</span><span class="p">(</span><span class="n">h_txt</span><span class="p">)</span>
         <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pixel_size_box</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_LEFT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
         
         <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">StaticText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Units conversion factor:&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_RIGHT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">flux_conversion_factor</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">TextCtrl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">150</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">h_txt</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;This is used in conjunction with the pixel_size parameter to &quot;</span>
+                 <span class="s">&quot;convert the pixel values in your images into SO2 masses. You &quot;</span>
+                 <span class="s">&quot;need to select a value for this parameter such that SO2_mass &quot;</span>
+                 <span class="s">&quot;= pixel_value * pixel_size^2 * flux_conversion_factor. The &quot;</span>
+                 <span class="s">&quot;fluxes returned will then have units of SO2-mass-units per &quot;</span>
+                 <span class="s">&quot;second.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flux_conversion_factor</span><span class="o">.</span><span class="n">SetToolTipString</span><span class="p">(</span><span class="n">h_txt</span><span class="p">)</span>
         <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flux_conversion_factor</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_LEFT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">SetSizer</span><span class="p">(</span><span class="n">sizer</span><span class="p">)</span>
         <span class="n">sizer</span><span class="o">.</span><span class="n">Fit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
     
     
+<div class="viewcode-block" id="InputFilesConfig.on_help"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.config_script.InputFilesConfig.on_help">[docs]</a>    <span class="k">def</span> <span class="nf">on_help</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evnt</span><span class="p">):</span>
+        <span class="n">help_frame</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Filename format help - plumetrack-config &quot;</span><span class="p">)</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">HtmlWindow</span><span class="p">(</span><span class="n">help_frame</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">SetPage</span><span class="p">(</span><span class="n">html_help_str</span><span class="p">)</span>
+        <span class="n">help_frame</span><span class="o">.</span><span class="n">Show</span><span class="p">()</span>
+    
+     </div>
 <div class="viewcode-block" id="InputFilesConfig.get_configs"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.config_script.InputFilesConfig.get_configs">[docs]</a>    <span class="k">def</span> <span class="nf">get_configs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         
         <span class="n">file_extension</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_extension_box</span><span class="o">.</span><span class="n">GetValue</span><span class="p">()</span>
@@ -205,7 +260,9 @@
         
         <span class="n">flux_conversion_factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flux_conversion_factor</span><span class="o">.</span><span class="n">GetValue</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">flux_conversion_factor</span><span class="o">.</span><span class="n">isspace</span><span class="p">()</span> <span class="ow">or</span> <span class="n">flux_conversion_factor</span> <span class="o">==</span> <span class="s">&quot;&quot;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">settings</span><span class="o">.</span><span class="n">ConfigError</span><span class="p">(</span><span class="s">&quot;Units conversion factor not specified. Use a value of 1.0 if you do not require any conversion.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">settings</span><span class="o">.</span><span class="n">ConfigError</span><span class="p">(</span><span class="s">&quot;Units conversion factor not specified. &quot;</span>
+                                       <span class="s">&quot;Use a value of 1.0 if you do not &quot;</span>
+                                       <span class="s">&quot;require any conversion.&quot;</span><span class="p">)</span>
         
         <span class="k">return</span> <span class="p">{</span>
                 <span class="s">&#39;filename_format&#39;</span><span class="p">:</span><span class="n">filename_format</span><span class="p">,</span>
@@ -221,6 +278,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">pixel_size_box</span><span class="o">.</span><span class="n">SetValue</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s">&#39;pixel_size&#39;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">flux_conversion_factor</span><span class="o">.</span><span class="n">SetValue</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%0.3e</span><span class="s">&quot;</span><span class="o">%</span><span class="n">configs</span><span class="p">[</span><span class="s">&#39;flux_conversion_factor&#39;</span><span class="p">])</span>
 
+
 </div></div>
 <div class="viewcode-block" id="MaskingConfig"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.config_script.MaskingConfig">[docs]</a><span class="k">class</span> <span class="nc">MaskingConfig</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">Panel</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
@@ -232,7 +290,12 @@
         
         <span class="bp">self</span><span class="o">.</span><span class="n">low_thresh_chkbx</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">CheckBox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Low pixel threshold:&quot;</span><span class="p">)</span>
         <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">low_thresh_chkbx</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_RIGHT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">low_thresh_box</span> <span class="o">=</span> <span class="n">floatspin</span><span class="o">.</span><span class="n">FloatSpin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_ANY</span><span class="p">,</span> <span class="n">increment</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">digits</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">min_val</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">low_thresh_box</span> <span class="o">=</span> <span class="n">floatspin</span><span class="o">.</span><span class="n">FloatSpin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_ANY</span><span class="p">,</span> <span class="n">increment</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+                                                   <span class="n">digits</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">min_val</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">h_txt</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;Any pixels that are below this threshold will be masked using&quot;</span>
+                 <span class="s">&quot; random noise during the motion estimation and will be &quot;</span>
+                 <span class="s">&quot;excluded from the flux calculation.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">low_thresh_box</span><span class="o">.</span><span class="n">SetToolTipString</span><span class="p">(</span><span class="n">h_txt</span><span class="p">)</span>
         <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">low_thresh_box</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_LEFT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
         <span class="n">wx</span><span class="o">.</span><span class="n">EVT_CHECKBOX</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">low_thresh_chkbx</span><span class="o">.</span><span class="n">GetId</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_low_thresh</span><span class="p">)</span>
         
@@ -240,18 +303,36 @@
         
         <span class="bp">self</span><span class="o">.</span><span class="n">high_thresh_chkbx</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">CheckBox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;High pixel threshold:&quot;</span><span class="p">)</span>
         <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">high_thresh_chkbx</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_RIGHT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">high_thresh_box</span> <span class="o">=</span> <span class="n">floatspin</span><span class="o">.</span><span class="n">FloatSpin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_ANY</span><span class="p">,</span> <span class="n">increment</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">digits</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">min_val</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">high_thresh_box</span> <span class="o">=</span> <span class="n">floatspin</span><span class="o">.</span><span class="n">FloatSpin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_ANY</span><span class="p">,</span> <span class="n">increment</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+                                                   <span class="n">digits</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">min_val</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">h_txt</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;Any pixels that are above this threshold will be masked using&quot;</span>
+                 <span class="s">&quot; random noise during the motion estimation and will be &quot;</span>
+                 <span class="s">&quot;excluded from the flux calculation.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">high_thresh_box</span><span class="o">.</span><span class="n">SetToolTipString</span><span class="p">(</span><span class="n">h_txt</span><span class="p">)</span>
         <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">high_thresh_box</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_LEFT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
         <span class="n">wx</span><span class="o">.</span><span class="n">EVT_CHECKBOX</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">high_thresh_chkbx</span><span class="o">.</span><span class="n">GetId</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_high_thresh</span><span class="p">)</span>
         
-        <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">StaticText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Mask value mean:&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_RIGHT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">random_mean_box</span> <span class="o">=</span> <span class="n">floatspin</span><span class="o">.</span><span class="n">FloatSpin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_ANY</span><span class="p">,</span> <span class="n">increment</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">digits</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">min_val</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+        <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">StaticText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Mask value mean:&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> 
+                  <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_RIGHT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">random_mean_box</span> <span class="o">=</span> <span class="n">floatspin</span><span class="o">.</span><span class="n">FloatSpin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_ANY</span><span class="p">,</span> <span class="n">increment</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> 
+                                                   <span class="n">digits</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">min_val</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+        <span class="n">h_txt</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;Masked pixels (either due to thresholding or a mask image) &quot;</span>
+                 <span class="s">&quot;are replaced by Gaussian distributed white noise. This &quot;</span>
+                 <span class="s">&quot;parameter controls the mean value of this noise.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">random_mean_box</span><span class="o">.</span><span class="n">SetToolTipString</span><span class="p">(</span><span class="n">h_txt</span><span class="p">)</span>
         <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">random_mean_box</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_LEFT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
         
         <span class="n">sizer</span><span class="o">.</span><span class="n">AddSpacer</span><span class="p">((</span><span class="mi">20</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
         
-        <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">StaticText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Mask value Std. Dev.:&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_RIGHT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">random_sigma_box</span> <span class="o">=</span> <span class="n">floatspin</span><span class="o">.</span><span class="n">FloatSpin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_ANY</span><span class="p">,</span> <span class="n">increment</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">min_val</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">digits</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">StaticText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Mask value Std. Dev.:&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> 
+                  <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_RIGHT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">random_sigma_box</span> <span class="o">=</span> <span class="n">floatspin</span><span class="o">.</span><span class="n">FloatSpin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_ANY</span><span class="p">,</span> <span class="n">increment</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                                                     <span class="n">min_val</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">digits</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">h_txt</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;Masked pixels (either due to thresholding or a mask image) &quot;</span>
+                 <span class="s">&quot;are replaced by Gaussian distributed white noise. This &quot;</span>
+                 <span class="s">&quot;parameter controls the standard-deviation of this noise. It &quot;</span>
+                 <span class="s">&quot;can be set to 0 if masking with a single value is required.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">random_sigma_box</span><span class="o">.</span><span class="n">SetToolTipString</span><span class="p">(</span><span class="n">h_txt</span><span class="p">)</span>
         <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">random_sigma_box</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_LEFT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
         
         <span class="n">vsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">sizer</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">EXPAND</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_TOP</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_LEFT</span><span class="p">)</span>
@@ -260,8 +341,20 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">mask_im_chkbx</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">CheckBox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Mask image:&quot;</span><span class="p">)</span>
         <span class="n">hsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mask_im_chkbx</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_RIGHT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mask_im_box</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">TextCtrl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">h_txt</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;Regions of the image which you do not want to contribute to &quot;</span>
+                 <span class="s">&quot;the flux, or that might interfere with the motion estimation &quot;</span>
+                 <span class="s">&quot;(for example high-contrast boudaries of the volcanic edifice)&quot;</span>
+                 <span class="s">&quot; can be excluded from the calculations by creating a mask &quot;</span>
+                 <span class="s">&quot;image. This should be a greyscale image of the same size as &quot;</span>
+                 <span class="s">&quot;the UV images to be processed. Any pixels that are black &quot;</span>
+                 <span class="s">&quot;(pixel value of 0) in the mask image will be replaced with &quot;</span>
+                 <span class="s">&quot;random noise and excluded from the flux calculations. Enter &quot;</span>
+                 <span class="s">&quot;the filename of the mask image here.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mask_im_box</span><span class="o">.</span><span class="n">SetToolTipString</span><span class="p">(</span><span class="n">h_txt</span><span class="p">)</span>
         <span class="n">hsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mask_im_box</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_LEFT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">browse_button</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Browse&quot;</span><span class="p">)</span>
+        <span class="n">h_txt</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;Select an existing mask image to use.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">browse_button</span><span class="o">.</span><span class="n">SetToolTipString</span><span class="p">(</span><span class="n">h_txt</span><span class="p">)</span>
         <span class="n">hsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">browse_button</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_LEFT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
         
         <span class="n">wx</span><span class="o">.</span><span class="n">EVT_CHECKBOX</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_im_chkbx</span><span class="o">.</span><span class="n">GetId</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_mask_im</span><span class="p">)</span>
@@ -296,7 +389,9 @@
         
         </div>
 <div class="viewcode-block" id="MaskingConfig.update_threshold_visibility"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.config_script.MaskingConfig.update_threshold_visibility">[docs]</a>    <span class="k">def</span> <span class="nf">update_threshold_visibility</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">enabled</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_im_chkbx</span><span class="o">.</span><span class="n">IsChecked</span><span class="p">()</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">low_thresh_chkbx</span><span class="o">.</span><span class="n">IsChecked</span><span class="p">()</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">high_thresh_chkbx</span><span class="o">.</span><span class="n">IsChecked</span><span class="p">()</span>
+        <span class="n">enabled</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mask_im_chkbx</span><span class="o">.</span><span class="n">IsChecked</span><span class="p">()</span> <span class="ow">or</span> 
+                   <span class="bp">self</span><span class="o">.</span><span class="n">low_thresh_chkbx</span><span class="o">.</span><span class="n">IsChecked</span><span class="p">()</span> <span class="ow">or</span> 
+                   <span class="bp">self</span><span class="o">.</span><span class="n">high_thresh_chkbx</span><span class="o">.</span><span class="n">IsChecked</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">random_mean_box</span><span class="o">.</span><span class="n">Enable</span><span class="p">(</span><span class="n">enabled</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">random_sigma_box</span><span class="o">.</span><span class="n">Enable</span><span class="p">(</span><span class="n">enabled</span><span class="p">)</span>
     
@@ -344,6 +439,7 @@
     
         <span class="k">return</span> <span class="n">configs</span>
 
+
 </div></div>
 <div class="viewcode-block" id="MotionTrackingConfig"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.config_script.MotionTrackingConfig">[docs]</a><span class="k">class</span> <span class="nc">MotionTrackingConfig</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">Panel</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
@@ -352,37 +448,73 @@
         
         <span class="n">sizer</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">FlexGridSizer</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         
-        <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">StaticText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Pyramid scale:&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_RIGHT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
+        <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">StaticText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Pyramid scale:&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> 
+                  <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_RIGHT</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pyr_scale_box</span> <span class="o">=</span> <span class="n">floatspin</span><span class="o">.</span><span class="n">FloatSpin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_ANY</span><span class="p">,</span> <span class="n">min_val</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">max_val</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
                                                   <span class="n">increment</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">digits</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">h_txt</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;Farneback algorithm parameter: the image scale (&lt;1.0) to &quot;</span>
+                 <span class="s">&quot;build pyramids for each image; setting this to 0.5 means a &quot;</span>
+                 <span class="s">&quot;classical pyramid, where each next layer is half the size &quot;</span>
+                 <span class="s">&quot;of the previous one.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pyr_scale_box</span><span class="o">.</span><span class="n">SetToolTipString</span><span class="p">(</span><span class="n">h_txt</span><span class="p">)</span>
         <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pyr_scale_box</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_LEFT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
         
         <span class="n">sizer</span><span class="o">.</span><span class="n">AddSpacer</span><span class="p">((</span><span class="mi">20</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
         
-        <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">StaticText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Pyramid levels:&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_RIGHT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
+        <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">StaticText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Pyramid levels:&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> 
+                  <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_RIGHT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">levels_box</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">SpinCtrl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_ANY</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">h_txt</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;Farneback algorithm parameter: number of pyramid layers &quot;</span>
+                 <span class="s">&quot;including the initial image; setting this to 1 means that no &quot;</span>
+                 <span class="s">&quot;extra layers are created and only the original images &quot;</span>
+                 <span class="s">&quot;are used.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">levels_box</span><span class="o">.</span><span class="n">SetToolTipString</span><span class="p">(</span><span class="n">h_txt</span><span class="p">)</span>
         <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">levels_box</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_LEFT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
                
         
-        <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">StaticText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Window size:&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_RIGHT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
+        <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">StaticText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Window size:&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> 
+                  <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_RIGHT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">winsize_box</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">SpinCtrl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_ANY</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+        <span class="n">h_txt</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;Farneback algorithm parameter: averaging window size; larger &quot;</span>
+                 <span class="s">&quot;values increase the algorithm robustness to image noise and &quot;</span>
+                 <span class="s">&quot;give more chances for fast motion detection, but yield more &quot;</span>
+                 <span class="s">&quot;blurred motion field.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">winsize_box</span><span class="o">.</span><span class="n">SetToolTipString</span><span class="p">(</span><span class="n">h_txt</span><span class="p">)</span>
         <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">winsize_box</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_LEFT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
         
         <span class="n">sizer</span><span class="o">.</span><span class="n">AddSpacer</span><span class="p">((</span><span class="mi">20</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
         
-        <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">StaticText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Iterations:&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_RIGHT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
+        <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">StaticText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Iterations:&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> 
+                  <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_RIGHT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">iterations_box</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">SpinCtrl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_ANY</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+        <span class="n">h_txt</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;Farneback algorithm parameter: number of iterations the &quot;</span>
+                 <span class="s">&quot;algorithm performs at each pyramid level.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iterations_box</span><span class="o">.</span><span class="n">SetToolTipString</span><span class="p">(</span><span class="n">h_txt</span><span class="p">)</span>
         <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iterations_box</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_LEFT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
         
-        <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">StaticText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Polynomial order:&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_RIGHT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
+        <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">StaticText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Polynomial size:&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> 
+                  <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_RIGHT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">poly_n_box</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">SpinCtrl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_ANY</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+        <span class="n">h_txt</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;Farneback algorithm parameter: size of the pixel neighborhood&quot;</span>
+                 <span class="s">&quot; used to find polynomial expansion in each pixel; larger &quot;</span>
+                 <span class="s">&quot;values mean that the image will be approximated with smoother&quot;</span>
+                 <span class="s">&quot; surfaces, yielding more robust algorithm and more blurred &quot;</span>
+                 <span class="s">&quot;motion field, typically values of 5 or 7 are used.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">poly_n_box</span><span class="o">.</span><span class="n">SetToolTipString</span><span class="p">(</span><span class="n">h_txt</span><span class="p">)</span>
         <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">poly_n_box</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_LEFT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
         
         <span class="n">sizer</span><span class="o">.</span><span class="n">AddSpacer</span><span class="p">((</span><span class="mi">20</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
         
-        <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">StaticText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Gaussian smoothing:&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_RIGHT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
+        <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">StaticText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Gaussian smoothing:&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> 
+                  <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_RIGHT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">poly_sigma_box</span> <span class="o">=</span> <span class="n">floatspin</span><span class="o">.</span><span class="n">FloatSpin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_ANY</span><span class="p">,</span> <span class="n">min_val</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
                                                   <span class="n">increment</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">digits</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+        <span class="n">h_txt</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;Farneback algorithm parameter: standard deviation of the &quot;</span>
+                 <span class="s">&quot;Gaussian that is used to smooth derivatives used as a basis &quot;</span>
+                 <span class="s">&quot;for the polynomial expansion; for polynomial sizes of 5 and &quot;</span>
+                 <span class="s">&quot;7, reasonable choices of this parameter would be 1.1 and 1.5 &quot;</span>
+                 <span class="s">&quot;respectively.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">poly_sigma_box</span><span class="o">.</span><span class="n">SetToolTipString</span><span class="p">(</span><span class="n">h_txt</span><span class="p">)</span>
         <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">poly_sigma_box</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_LEFT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
     
         <span class="bp">self</span><span class="o">.</span><span class="n">SetSizer</span><span class="p">(</span><span class="n">sizer</span><span class="p">)</span>
@@ -417,10 +549,19 @@
         <span class="n">vsizer</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">BoxSizer</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">VERTICAL</span><span class="p">)</span>
         
         <span class="n">hsizer</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">BoxSizer</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">HORIZONTAL</span><span class="p">)</span>
-        <span class="n">hsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">StaticText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Integration line:&quot;</span><span class="p">),</span><span class="mi">0</span><span class="p">,</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTER_VERTICAL</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_RIGHT</span><span class="p">)</span>
+        <span class="n">hsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">StaticText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Integration line:&quot;</span><span class="p">),</span><span class="mi">0</span><span class="p">,</span>
+                   <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTER_VERTICAL</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_RIGHT</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">integration_line_box</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">TextCtrl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">h_txt</span> <span class="o">=</span>  <span class="p">(</span><span class="s">&quot;List of [x, y] points (e.g. [[x1, y1], [x2, y2],...]) &quot;</span>
+                  <span class="s">&quot;defining the integration line for the flux calculation. x &quot;</span>
+                  <span class="s">&quot;and y are in pixel coordinates - the origin is in the top &quot;</span>
+                  <span class="s">&quot;left of an image.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">integration_line_box</span><span class="o">.</span><span class="n">SetToolTipString</span><span class="p">(</span><span class="n">h_txt</span><span class="p">)</span>
         <span class="n">hsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">integration_line_box</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTER_VERTICAL</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">draw_button</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Draw&quot;</span><span class="p">)</span>
+        <span class="n">h_txt</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;Opens a dialog in which the integration line can be chosen by&quot;</span>
+                 <span class="s">&quot; drawing it onto an image.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">draw_button</span><span class="o">.</span><span class="n">SetToolTipString</span><span class="p">(</span><span class="n">h_txt</span><span class="p">)</span>
         <span class="n">hsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">draw_button</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTER_VERTICAL</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_LEFT</span><span class="p">)</span>
         <span class="n">wx</span><span class="o">.</span><span class="n">EVT_BUTTON</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">draw_button</span><span class="o">.</span><span class="n">GetId</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_draw</span><span class="p">)</span>
         
@@ -428,6 +569,10 @@
         <span class="n">vsizer</span><span class="o">.</span><span class="n">AddSpacer</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">direction_chkbx</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">CheckBox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Reverse integration direction&quot;</span><span class="p">)</span>
+        <span class="n">h_txt</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;Defines which way is positive across the integration line. &quot;</span>
+                 <span class="s">&quot;This is easier to set in the &#39;Draw&#39; dialog (click button &quot;</span>
+                 <span class="s">&quot;above).&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">direction_chkbx</span><span class="o">.</span><span class="n">SetToolTipString</span><span class="p">(</span><span class="n">h_txt</span><span class="p">)</span>
         <span class="n">vsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">direction_chkbx</span><span class="p">,</span> <span class="mi">0</span> <span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_LEFT</span><span class="p">)</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">SetSizer</span><span class="p">(</span><span class="n">vsizer</span><span class="p">)</span>
@@ -441,11 +586,9 @@
             <span class="k">return</span>
         
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">image_file</span><span class="p">)</span>
+            <span class="n">im</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">image_file</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">IMREAD_UNCHANGED</span><span class="p">)</span> 
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">ex</span><span class="p">:</span>
             <span class="n">wx</span><span class="o">.</span><span class="n">MessageBox</span><span class="p">(</span><span class="s">&quot;Failed to open &#39;</span><span class="si">%s</span><span class="s">&#39;. Error was: </span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">image_file</span><span class="p">,</span> <span class="n">ex</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-        
-        <span class="n">arr</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">im</span><span class="p">)</span>
         
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction_chkbx</span><span class="o">.</span><span class="n">IsChecked</span><span class="p">():</span>
             <span class="n">direction</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
@@ -457,7 +600,7 @@
         <span class="k">except</span><span class="p">:</span>
             <span class="n">pts</span> <span class="o">=</span> <span class="bp">None</span>
         
-        <span class="n">int_line_dialog</span> <span class="o">=</span> <span class="n">IntegrationLineSelectDialog</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Parent</span><span class="p">,</span> <span class="n">arr</span><span class="p">,</span> <span class="n">pts</span><span class="p">,</span> <span class="n">direction</span><span class="p">)</span>
+        <span class="n">int_line_dialog</span> <span class="o">=</span> <span class="n">IntegrationLineSelectDialog</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Parent</span><span class="p">,</span> <span class="n">im</span><span class="p">,</span> <span class="n">pts</span><span class="p">,</span> <span class="n">direction</span><span class="p">)</span>
         
         <span class="k">if</span> <span class="n">int_line_dialog</span><span class="o">.</span><span class="n">ShowModal</span><span class="p">()</span> <span class="o">==</span> <span class="n">wx</span><span class="o">.</span><span class="n">OK</span><span class="p">:</span>
             <span class="n">int_line</span> <span class="o">=</span> <span class="n">int_line_dialog</span><span class="o">.</span><span class="n">get_integration_line</span><span class="p">()</span>
@@ -486,7 +629,8 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">integration_line</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">int_line_str</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">settings</span><span class="o">.</span><span class="n">ConfigError</span><span class="p">(</span><span class="s">&quot;Invalid format for integration line. Expecting [[x1, y1], [x2, y2],...]&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">settings</span><span class="o">.</span><span class="n">ConfigError</span><span class="p">(</span><span class="s">&quot;Invalid format for integration line. &quot;</span>
+                                       <span class="s">&quot;Expecting [[x1, y1], [x2, y2],...]&quot;</span><span class="p">)</span>
         
         <span class="k">return</span> <span class="p">{</span>
                 <span class="s">&#39;integration_line&#39;</span><span class="p">:</span> <span class="n">integration_line</span><span class="p">,</span>
@@ -500,9 +644,11 @@
         <span class="k">elif</span> <span class="n">configs</span><span class="p">[</span><span class="s">&#39;integration_direction&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">direction_chkbx</span><span class="o">.</span><span class="n">SetValue</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Unexpected value (</span><span class="si">%d</span><span class="s">) for integration_direction. Expected -1 or 1.&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s">&#39;integration_direction&#39;</span><span class="p">]))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Unexpected value (</span><span class="si">%d</span><span class="s">) for integration_direction. &quot;</span>
+                             <span class="s">&quot;Expected -1 or 1.&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s">&#39;integration_direction&#39;</span><span class="p">]))</span>
             
         <span class="bp">self</span><span class="o">.</span><span class="n">integration_line_box</span><span class="o">.</span><span class="n">SetValue</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s">&#39;integration_line&#39;</span><span class="p">]))</span>
+ 
  
  </div></div>
 <div class="viewcode-block" id="MainFrame"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.config_script.MainFrame">[docs]</a><span class="k">class</span> <span class="nc">MainFrame</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">Frame</span><span class="p">):</span>
@@ -587,8 +733,14 @@
         
         <span class="n">top_sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">buttons_sizer</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_BOTTOM</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_RIGHT</span><span class="p">)</span>
         
+        <span class="c">#set the configs to those in the default config file (if we can - otherwise</span>
+        <span class="c">#they are just left blank)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_configs</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">load_config_file</span><span class="p">())</span>
+        <span class="k">except</span> <span class="n">settings</span><span class="o">.</span><span class="n">ConfigError</span><span class="p">:</span>
+            <span class="c">#if this configuration is unloadable, then just give up</span>
+            <span class="k">pass</span>
             
-        
         <span class="c">#do the layout       </span>
         <span class="n">top_panel</span><span class="o">.</span><span class="n">SetSizer</span><span class="p">(</span><span class="n">vsizer</span><span class="p">)</span>
         <span class="n">top_panel</span><span class="o">.</span><span class="n">SetAutoLayout</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
@@ -599,7 +751,6 @@
         <span class="n">top_sizer</span><span class="o">.</span><span class="n">Fit</span><span class="p">(</span><span class="n">top_panel</span><span class="p">)</span>
             
         <span class="bp">self</span><span class="o">.</span><span class="n">Show</span><span class="p">()</span>
-
 
 </div>
 <div class="viewcode-block" id="MainFrame.get_configs"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.config_script.MainFrame.get_configs">[docs]</a>    <span class="k">def</span> <span class="nf">get_configs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -613,6 +764,7 @@
 <div class="viewcode-block" id="MainFrame.set_configs"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.config_script.MainFrame.set_configs">[docs]</a>    <span class="k">def</span> <span class="nf">set_configs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config_panels</span><span class="p">:</span>
             <span class="n">p</span><span class="o">.</span><span class="n">set_configs</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>    
+    
     </div>
 <div class="viewcode-block" id="MainFrame.on_cancel"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.config_script.MainFrame.on_cancel">[docs]</a>    <span class="k">def</span> <span class="nf">on_cancel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evnt</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -824,8 +976,134 @@
         
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">int_direction</span>
 
-           
-        </div></div>
+
+</div></div>
+<span class="n">html_help_str</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">&lt;p&gt;The filenames used for the image files must encode the capture time of the image. The format used to express the capture time is flexible and can be specified using the directives in the table below.&lt;/p&gt;</span>
+<span class="s">&lt;p&gt;A few example filenames and their corresponding format strings:&lt;/p&gt;</span>
+<span class="s">&lt;p&gt;2013_08_25_234632.png  =&gt; %Y_%m_</span><span class="si">%d</span><span class="s">_%H%M%S.png&lt;/p&gt;</span>
+<span class="s">&lt;p&gt;24Jan13_164700_235.png =&gt; </span><span class="si">%d</span><span class="s">%b%y_%H%M%S_</span><span class="si">%f</span><span class="s">.png&lt;/p&gt;</span>
+<span class="s">&lt;p&gt;&lt;/p&gt;</span>
+<span class="s">&lt;p&gt;A complete list of available format specifiers:&lt;/p&gt;</span>
+<span class="s">&lt;table border=&quot;1&quot; class=&quot;docutils&quot;&gt;</span>
+<span class="s">&lt;colgroup&gt;</span>
+<span class="s">&lt;col width=&quot;22%&quot; /&gt;</span>
+<span class="s">&lt;col width=&quot;64%&quot; /&gt;</span>
+<span class="s">&lt;/colgroup&gt;</span>
+<span class="s">&lt;thead valign=&quot;bottom&quot;&gt;</span>
+<span class="s">&lt;tr&gt;&lt;th class=&quot;head&quot;&gt;Directive&lt;/th&gt;</span>
+<span class="s">&lt;th class=&quot;head&quot;&gt;Meaning&lt;/th&gt;</span>
+<span class="s">&lt;/tr&gt;</span>
+<span class="s">&lt;/thead&gt;</span>
+<span class="s">&lt;tbody valign=&quot;top&quot;&gt;</span>
+<span class="s">&lt;tr&gt;&lt;td&gt;&lt;tt class=&quot;docutils literal&quot;&gt;&lt;span class=&quot;pre&quot;&gt;%a&lt;/span&gt;&lt;/tt&gt;&lt;/td&gt;</span>
+<span class="s">&lt;td&gt;Locale&amp;#8217;s abbreviated weekday</span>
+<span class="s">name.&lt;/td&gt;</span>
+<span class="s">&lt;/tr&gt;</span>
+<span class="s">&lt;tr&gt;&lt;td&gt;&lt;tt class=&quot;docutils literal&quot;&gt;&lt;span class=&quot;pre&quot;&gt;%A&lt;/span&gt;&lt;/tt&gt;&lt;/td&gt;</span>
+<span class="s">&lt;td&gt;Locale&amp;#8217;s full weekday name.&lt;/td&gt;</span>
+<span class="s">&lt;/tr&gt;</span>
+<span class="s">&lt;tr&gt;&lt;td&gt;&lt;tt class=&quot;docutils literal&quot;&gt;&lt;span class=&quot;pre&quot;&gt;%b&lt;/span&gt;&lt;/tt&gt;&lt;/td&gt;</span>
+<span class="s">&lt;td&gt;Locale&amp;#8217;s abbreviated month</span>
+<span class="s">name.&lt;/td&gt;</span>
+<span class="s">&lt;/tr&gt;</span>
+<span class="s">&lt;tr&gt;&lt;td&gt;&lt;tt class=&quot;docutils literal&quot;&gt;&lt;span class=&quot;pre&quot;&gt;%B&lt;/span&gt;&lt;/tt&gt;&lt;/td&gt;</span>
+<span class="s">&lt;td&gt;Locale&amp;#8217;s full month name.&lt;/td&gt;</span>
+<span class="s">&lt;/tr&gt;</span>
+<span class="s">&lt;tr&gt;&lt;td&gt;&lt;tt class=&quot;docutils literal&quot;&gt;&lt;span class=&quot;pre&quot;&gt;</span><span class="si">%c</span><span class="s">&lt;/span&gt;&lt;/tt&gt;&lt;/td&gt;</span>
+<span class="s">&lt;td&gt;Locale&amp;#8217;s appropriate date and</span>
+<span class="s">time representation.&lt;/td&gt;</span>
+<span class="s">&lt;/tr&gt;</span>
+<span class="s">&lt;tr&gt;&lt;td&gt;&lt;tt class=&quot;docutils literal&quot;&gt;&lt;span class=&quot;pre&quot;&gt;</span><span class="si">%d</span><span class="s">&lt;/span&gt;&lt;/tt&gt;&lt;/td&gt;</span>
+<span class="s">&lt;td&gt;Day of the month as a decimal</span>
+<span class="s">number [01,31].&lt;/td&gt;</span>
+<span class="s">&lt;/tr&gt;</span>
+<span class="s">&lt;tr&gt;&lt;td&gt;&lt;tt class=&quot;docutils literal&quot;&gt;&lt;span class=&quot;pre&quot;&gt;</span><span class="si">%f</span><span class="s">&lt;/span&gt;&lt;/tt&gt;&lt;/td&gt;</span>
+<span class="s">&lt;td&gt;Microsecond as a decimal</span>
+<span class="s">number [0,999999], zero-padded</span>
+<span class="s">on the left&lt;/td&gt;</span>
+<span class="s">&lt;/tr&gt;</span>
+<span class="s">&lt;tr&gt;&lt;td&gt;&lt;tt class=&quot;docutils literal&quot;&gt;&lt;span class=&quot;pre&quot;&gt;%H&lt;/span&gt;&lt;/tt&gt;&lt;/td&gt;</span>
+<span class="s">&lt;td&gt;Hour (24-hour clock) as a</span>
+<span class="s">decimal number [00,23].&lt;/td&gt;</span>
+<span class="s">&lt;/tr&gt;</span>
+<span class="s">&lt;tr&gt;&lt;td&gt;&lt;tt class=&quot;docutils literal&quot;&gt;&lt;span class=&quot;pre&quot;&gt;%I&lt;/span&gt;&lt;/tt&gt;&lt;/td&gt;</span>
+<span class="s">&lt;td&gt;Hour (12-hour clock) as a</span>
+<span class="s">decimal number [01,12].&lt;/td&gt;</span>
+<span class="s">&lt;/tr&gt;</span>
+<span class="s">&lt;tr&gt;&lt;td&gt;&lt;tt class=&quot;docutils literal&quot;&gt;&lt;span class=&quot;pre&quot;&gt;%j&lt;/span&gt;&lt;/tt&gt;&lt;/td&gt;</span>
+<span class="s">&lt;td&gt;Day of the year as a decimal</span>
+<span class="s">number [001,366].&lt;/td&gt;</span>
+<span class="s">&lt;/tr&gt;</span>
+<span class="s">&lt;tr&gt;&lt;td&gt;&lt;tt class=&quot;docutils literal&quot;&gt;&lt;span class=&quot;pre&quot;&gt;%m&lt;/span&gt;&lt;/tt&gt;&lt;/td&gt;</span>
+<span class="s">&lt;td&gt;Month as a decimal number</span>
+<span class="s">[01,12].&lt;/td&gt;</span>
+<span class="s">&lt;/tr&gt;</span>
+<span class="s">&lt;tr&gt;&lt;td&gt;&lt;tt class=&quot;docutils literal&quot;&gt;&lt;span class=&quot;pre&quot;&gt;%M&lt;/span&gt;&lt;/tt&gt;&lt;/td&gt;</span>
+<span class="s">&lt;td&gt;Minute as a decimal number</span>
+<span class="s">[00,59].&lt;/td&gt;</span>
+<span class="s">&lt;/tr&gt;</span>
+<span class="s">&lt;tr&gt;&lt;td&gt;&lt;tt class=&quot;docutils literal&quot;&gt;&lt;span class=&quot;pre&quot;&gt;%p&lt;/span&gt;&lt;/tt&gt;&lt;/td&gt;</span>
+<span class="s">&lt;td&gt;Locale&amp;#8217;s equivalent of either</span>
+<span class="s">AM or PM.&lt;/td&gt;</span>
+<span class="s">&lt;/tr&gt;</span>
+<span class="s">&lt;tr&gt;&lt;td&gt;&lt;tt class=&quot;docutils literal&quot;&gt;&lt;span class=&quot;pre&quot;&gt;%S&lt;/span&gt;&lt;/tt&gt;&lt;/td&gt;</span>
+<span class="s">&lt;td&gt;Second as a decimal number</span>
+<span class="s">[00,61].&lt;/td&gt;</span>
+<span class="s">&lt;/tr&gt;</span>
+<span class="s">&lt;tr&gt;&lt;td&gt;&lt;tt class=&quot;docutils literal&quot;&gt;&lt;span class=&quot;pre&quot;&gt;%U&lt;/span&gt;&lt;/tt&gt;&lt;/td&gt;</span>
+<span class="s">&lt;td&gt;Week number of the year</span>
+<span class="s">(Sunday as the first day of</span>
+<span class="s">the week) as a decimal number</span>
+<span class="s">[00,53].  All days in a new</span>
+<span class="s">year preceding the first</span>
+<span class="s">Sunday are considered to be in</span>
+<span class="s">week 0.&lt;/td&gt;</span>
+<span class="s">&lt;/tr&gt;</span>
+<span class="s">&lt;tr&gt;&lt;td&gt;&lt;tt class=&quot;docutils literal&quot;&gt;&lt;span class=&quot;pre&quot;&gt;%w&lt;/span&gt;&lt;/tt&gt;&lt;/td&gt;</span>
+<span class="s">&lt;td&gt;Weekday as a decimal number</span>
+<span class="s">[0(Sunday),6].&lt;/td&gt;</span>
+<span class="s">&lt;/tr&gt;</span>
+<span class="s">&lt;tr&gt;&lt;td&gt;&lt;tt class=&quot;docutils literal&quot;&gt;&lt;span class=&quot;pre&quot;&gt;%W&lt;/span&gt;&lt;/tt&gt;&lt;/td&gt;</span>
+<span class="s">&lt;td&gt;Week number of the year</span>
+<span class="s">(Monday as the first day of</span>
+<span class="s">the week) as a decimal number</span>
+<span class="s">[00,53].  All days in a new</span>
+<span class="s">year preceding the first</span>
+<span class="s">Monday are considered to be in</span>
+<span class="s">week 0.&lt;/td&gt;</span>
+<span class="s">&lt;/tr&gt;</span>
+<span class="s">&lt;tr&gt;&lt;td&gt;&lt;tt class=&quot;docutils literal&quot;&gt;&lt;span class=&quot;pre&quot;&gt;</span><span class="si">%x</span><span class="s">&lt;/span&gt;&lt;/tt&gt;&lt;/td&gt;</span>
+<span class="s">&lt;td&gt;Locale&amp;#8217;s appropriate date</span>
+<span class="s">representation.&lt;/td&gt;</span>
+<span class="s">&lt;/tr&gt;</span>
+<span class="s">&lt;tr&gt;&lt;td&gt;&lt;tt class=&quot;docutils literal&quot;&gt;&lt;span class=&quot;pre&quot;&gt;</span><span class="si">%X</span><span class="s">&lt;/span&gt;&lt;/tt&gt;&lt;/td&gt;</span>
+<span class="s">&lt;td&gt;Locale&amp;#8217;s appropriate time</span>
+<span class="s">representation.&lt;/td&gt;</span>
+<span class="s">&lt;/tr&gt;</span>
+<span class="s">&lt;tr&gt;&lt;td&gt;&lt;tt class=&quot;docutils literal&quot;&gt;&lt;span class=&quot;pre&quot;&gt;%y&lt;/span&gt;&lt;/tt&gt;&lt;/td&gt;</span>
+<span class="s">&lt;td&gt;Year without century as a</span>
+<span class="s">decimal number [00,99].&lt;/td&gt;</span>
+<span class="s">&lt;/tr&gt;</span>
+<span class="s">&lt;tr&gt;&lt;td&gt;&lt;tt class=&quot;docutils literal&quot;&gt;&lt;span class=&quot;pre&quot;&gt;%Y&lt;/span&gt;&lt;/tt&gt;&lt;/td&gt;</span>
+<span class="s">&lt;td&gt;Year with century as a decimal</span>
+<span class="s">number.&lt;/td&gt;</span>
+<span class="s">&lt;/tr&gt;</span>
+<span class="s">&lt;tr&gt;&lt;td&gt;&lt;tt class=&quot;docutils literal&quot;&gt;&lt;span class=&quot;pre&quot;&gt;%z&lt;/span&gt;&lt;/tt&gt;&lt;/td&gt;</span>
+<span class="s">&lt;td&gt;UTC offset in the form +HHMM</span>
+<span class="s">or -HHMM (empty string if the</span>
+<span class="s">the object is naive).&lt;/td&gt;</span>
+<span class="s">&lt;/tr&gt;</span>
+<span class="s">&lt;tr&gt;&lt;td&gt;&lt;tt class=&quot;docutils literal&quot;&gt;&lt;span class=&quot;pre&quot;&gt;%Z&lt;/span&gt;&lt;/tt&gt;&lt;/td&gt;</span>
+<span class="s">&lt;td&gt;Time zone name (empty string</span>
+<span class="s">if the object is naive).&lt;/td&gt;</span>
+<span class="s">&lt;/tr&gt;</span>
+<span class="s">&lt;tr&gt;&lt;td&gt;&lt;tt class=&quot;docutils literal&quot;&gt;&lt;span class=&quot;pre&quot;&gt;</span><span class="si">%%</span><span class="s">&lt;/span&gt;&lt;/tt&gt;&lt;/td&gt;</span>
+<span class="s">&lt;td&gt;A literal &lt;tt class=&quot;docutils literal&quot;&gt;&lt;span class=&quot;pre&quot;&gt;&#39;%&#39;&lt;/span&gt;&lt;/tt&gt; character.&lt;/td&gt;</span>
+<span class="s">&lt;/tr&gt;</span>
+<span class="s">&lt;/tbody&gt;</span>
+<span class="s">&lt;/table&gt;&quot;&quot;&quot;</span>           
+        
 </pre></div>
 
           </div>
@@ -859,8 +1137,9 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">plumetrack 14.09 documentation</a> &raquo;</li>
-          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+        <li><a href="../../index.html">plumetrack 14.11 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../plumetrack.html" >plumetrack</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

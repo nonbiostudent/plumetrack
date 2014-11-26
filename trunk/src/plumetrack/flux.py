@@ -60,7 +60,6 @@ class IntegrationLine:
         return self.__dist[-1]
     
     
-    
     def get_n_points(self, n=-1):
         """
         Returns an n by 2 array of of x y coordinates of points along the line.
@@ -83,7 +82,6 @@ class IntegrationLine:
             result[:,1] = self._interp_y(pts) - 0.5
         
         return result
-    
     
     
     def get_poly_approx(self, n=-1):

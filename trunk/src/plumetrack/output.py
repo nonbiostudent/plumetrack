@@ -1,19 +1,19 @@
 #Copyright (C) Nial Peters 2014
 #
-#This file is part of _plumetrack.
+#This file is part of plumetrack.
 #
-#_plumetrack is free software: you can redistribute it and/or modify
+#plumetrack is free software: you can redistribute it and/or modify
 #it under the terms of the GNU General Public License as published by
 #the Free Software Foundation, either version 3 of the License, or
 #(at your option) any later version.
 #
-#_plumetrack is distributed in the hope that it will be useful,
+#plumetrack is distributed in the hope that it will be useful,
 #but WITHOUT ANY WARRANTY; without even the implied warranty of
 #MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #GNU General Public License for more details.
 #
 #You should have received a copy of the GNU General Public License
-#along with _plumetrack.  If not, see <http://www.gnu.org/licenses/>.
+#along with plumetrack.  If not, see <http://www.gnu.org/licenses/>.
 
 import matplotlib.pyplot as plt
 import numpy
@@ -21,6 +21,11 @@ import scipy.interpolate
 
 
 def create_motion_png(image, velocities, output_filename, integration_line):
+    """
+    Creates and saves a PNG image showing the original image with the computed 
+    motion vectors and the integration line superimposed on the top. Note that 
+    the motion field will be downsampled to make the vectors visible on the plot.
+    """
     x_size = int(round((64.0/image.shape[1]) * image.shape[0],0))
     
     #plot the shift vectors (we interpolate onto a 50x50 grid so that there aren't too many vectors to plot)
@@ -34,7 +39,6 @@ def create_motion_png(image, velocities, output_filename, integration_line):
     
     y_shift_interp = scipy.interpolate.RectBivariateSpline(orig_x, orig_y, velocities[...,1])
     y_shifts = y_shift_interp(interp_x,interp_y)
-    print y_shifts.shape
     plt.close()
     plt.quiver(x_shifts, -y_shifts, units='xy', scale_units='xy',scale=1.5)
     extent = (0, 64-1, x_size-1, 0)
@@ -56,3 +60,4 @@ def create_motion_png(image, velocities, output_filename, integration_line):
     plt.yticks([])
     plt.colorbar()
     plt.savefig(output_filename)
+    

@@ -48,7 +48,39 @@ To install the Python bindings for the OpenCV library:
 Installing plumetrack
 .....................
 
-Since plumetrack is still in an early stage of development, there are currently no release versions and you will therefore have to install it from the SVN repository. To do this you need an SVN client, which you can get from `here <http://sourceforge.net/projects/win32svn>`_. Once you have installed an SVN client:
+Once you have installed all of the dependencies, then installation of plumetrack itself should be relatively straightforward.
+
+ #. Download the plumetrack distribution package (a .zip file) from `here <http://ccpforge.cse.rl.ac.uk/gf/project/plumetrack/frs>`_.
+ 
+ #. Unzip the package.
+ 
+ #. Open a terminal (start->run->cmd.exe).
+ 
+ #. Navigate to the unzipped plumetrack folder. For example::
+     
+     cd plumetrack-14.11
+ 
+ #. Install plumetrack using the following commands::
+
+     python setup.py build
+     python setup.py install
+
+ #. If the previous commands gave you the error ''python' is not recognised as an internal or external command, operable or batch file', then you need to add c:\\python27 to your system path (or c:\\anaconda if you are using anaconda) there are some instructions for this `here <http://stackoverflow.com/questions/6318156/adding-python-path-on-windows-7>`_.
+ 
+ #. Add the C:\\Python27\\Scripts (or C:\\Anaconda\\Scripts) directory to your system path, following the same procedure as above.
+
+ #. Open a new terminal and type::
+     
+     plumetrack -h
+  
+  This should print a summary of options that can be passed to plumetrack. If this works, then you're done!
+
+
+
+Installing plumetrack from SVN
+..............................
+
+If you want the very latest version of plumetrack (and be advised that this may not be very stable!) then you can install it from the SVN repository. To do this you need an SVN client, which you can get from `here <http://sourceforge.net/projects/win32svn>`_. Once you have installed an SVN client:
 
  #. Create a folder on your desktop called plumetrack.
 
