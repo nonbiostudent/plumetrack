@@ -20,7 +20,6 @@ import os.path
 import numpy
 import cv2
 import multiprocessing
-import itertools
 import calendar
 
 import plumetrack
@@ -66,7 +65,7 @@ def parallel_process(func, list_, *args, **kwargs):
     processes = []
     queues = []
      
-    for l in unsplice(list_,multiprocessing.cpu_count()):
+    for l in split(list_,multiprocessing.cpu_count()):
         q = multiprocessing.Queue(0)
         p = multiprocessing.Process(target=__run_func,args=(func,q,l,args,kwargs))
         p.start()
@@ -77,41 +76,73 @@ def parallel_process(func, list_, *args, **kwargs):
         results.append(queues[i].get())
         processes[i].join()
      
-    return splice(results)
+    return flatten(results)
  
 ############################################################################
- 
-def splice(l):
+
+def split(l,n):
     """
-    Performs a round-robin joining of iterables.
-     
-    >>> print splice([[1, 2, 3],['a', 'b'],[100, 300, 400, 500]])
-    [1, 'a', 100, 2, 'b', 300, 3, 400, 500]
+    splits the list l into n approximately equal length lists and returns
+    them in a tuple. if n > len(l) then the returned tuple may contain
+    less than n elements.
+    >>> split([1,2,3],2)
+    ([1, 2], [3])
+    >>> split([1,2],3)
+    ([1], [2])
     """
-    sentinel = object()
-    it = itertools.chain.from_iterable(itertools.izip_longest(*l,fillvalue=sentinel))
-    return [i for i in it if i is not sentinel]
- 
+    length = len(l)
+        
+    #can't split into more pieces than there are elements!
+    if n > length:
+        n = length
+    
+    if int(n) <= 0:
+        raise ValueError, "n must be a positive integer"
+    
+    inc = int(float(length) / float(n) + 0.5)
+    split_list = []
+
+    for i in range(0, n - 1):
+        split_list.append(l[i * inc:i * inc + inc])
+        
+    split_list.append(l[n * inc - inc:])
+    
+    return tuple(split_list)
+
 ############################################################################
- 
-def unsplice(l, n):
+
+def flatten(l, ltypes=(list, tuple)):
     """
-    Splits a list into n sublists in the following way:
-     
-    >>> print unsplice(range(10), 3)
-    [[0, 3, 6, 9], [1, 4, 7], [2, 5, 8]]
-    >>> print splice(unsplice(range(10), 3)) == range(10)
-    True
-    >>> print unsplice([0, 1], 3)
-    [[0], [1]]
-    >>> print unsplice([], 2)
-    []
-     
-    This operation can be undone using the splice() function.
+    Reduces any iterable containing other iterables into a single list
+    of non-iterable items. The ltypes option allows control over what 
+    element types will be flattened. This algorithm is taken from:
+    http://rightfootin.blogspot.com/2006/09/more-on-python-flatten.html
+    
+    >>> print flatten([range(3),range(3,6)])
+    [0, 1, 2, 3, 4, 5]
+    >>> print flatten([1,2,(3,4)])
+    [1, 2, 3, 4]
+    >>> print flatten([1,[2,3,[4,5,[6,[7,8,[9,[10]]]]]]])
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    >>> print flatten([1,[2,3,[4,5,[6,[7,8,[9,[10]]]]]]], ltypes=())
+    [1, [2, 3, [4, 5, [6, [7, 8, [9, [10]]]]]]]
+    >>> print flatten([1,2,(3,4)],ltypes=(list))
+    [1, 2, (3, 4)]
     """
-    n = min(n, len(l))
-    return [l[i::n] for i in range(n)]
- 
+    ltype = type(l)
+    l = list(l)
+    i = 0
+    while i < len(l):
+        while isinstance(l[i], ltypes):
+            if not l[i]:
+                l.pop(i)
+                i -= 1
+                break
+            else:
+                l[i:i + 1] = l[i]
+        i += 1
+    return ltype(l)
+
 ############################################################################
 
 def time_from_fname(fname, config):
@@ -123,7 +154,6 @@ def time_from_fname(fname, config):
     
     return datetime.datetime.strptime(os.path.basename(fname), 
                                       config['filename_format'])
-
 
 ############################################################################
 
@@ -146,29 +176,36 @@ def process_image_pair(im_pair, motion_engine, flux_engine, options, config):
     """
     Performs the motion tracking and flux calculation on a single image pair.
     This is split into a separate function to make facilitate parallel execution.
-    """
-    
+    """  
     im1 = im_pair[0]
     im2 = im_pair[1]
     
     current_capture_time = time_from_fname(im1, config)
-    current_image = cv2.imread(im1, cv2.IMREAD_UNCHANGED) 
-    current_masked_im = motion_engine.preprocess(current_image)
+    
+    if im1 == process_image_pair.cached_im_name:
+        current_masked_im = process_image_pair.cached_im
+        integration_mask = process_image_pair.cached_mask
+    else:
+        current_masked_im = cv2.imread(im1, cv2.IMREAD_UNCHANGED) 
+        integration_mask = motion_engine.preprocess(current_masked_im)
     
     next_capture_time = time_from_fname(im2, config)
-    next_image = cv2.imread(im2, cv2.IMREAD_UNCHANGED) 
-    next_masked_im = motion_engine.preprocess(next_image)
+    next_masked_im = cv2.imread(im2, cv2.IMREAD_UNCHANGED) 
+    process_image_pair.cached_mask = motion_engine.preprocess(next_masked_im)
+    
+    #update cached values
+    process_image_pair.cached_im_name = im2
+    process_image_pair.cached_im = next_masked_im
     
     #images must be the same size for motion estimation
-    if current_image.shape != next_image.shape:
+    if current_masked_im.shape != next_masked_im.shape:
         raise ValueError("Images \'%s\' and \'%s\' are different sizes %s and "
-                         "%s respectively"%(im1, im2,str(current_image.shape), 
-                                            str(next_image.shape)))
+                         "%s respectively"%(im1, im2,str(current_masked_im.shape), 
+                                            str(next_masked_im.shape)))
     
     
     delta_t = date2secs(next_capture_time) - date2secs(current_capture_time)
-    
-    
+     
     flow = motion_engine.compute_flow(current_masked_im, next_masked_im)
     
          
@@ -183,11 +220,16 @@ def process_image_pair(im_pair, motion_engine, flux_engine, options, config):
                                  flux_engine.get_integration_line())
     
     #only include pixels in the non-masked regions in the flux calculation
-    current_image[numpy.where(current_image != current_masked_im)] = 0.0
-     
-    so2_flux = flux_engine.compute_flux(current_image, flow, delta_t) 
+    current_masked_im *= numpy.logical_not(integration_mask) 
+    
+    so2_flux = flux_engine.compute_flux(current_masked_im, flow, delta_t) 
     
     return so2_flux
+
+#define the cache for the process_image_pair function
+process_image_pair.cached_im_name = None
+process_image_pair.cached_im = None
+process_image_pair.cached_mask = None
 
 ############################################################################
 
@@ -233,7 +275,8 @@ def main():
                                       skip_existing=options.skip_existing, 
                                       recursive=options.recursive, 
                                       sort_func=compare_by_time, 
-                                      test_func=is_uv_image) 
+                                      test_func=is_uv_image,
+                                      max_n=options.max_n) 
     
     #set an exit handler if we are working in realtime - otherwise it can hang
     #forever.
@@ -247,6 +290,7 @@ def main():
         
     
     if options.realtime or not options.parallel:
+        
         #main loop for realtime processing
         current_image_fname = None
         

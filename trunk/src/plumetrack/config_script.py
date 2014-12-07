@@ -31,9 +31,10 @@ from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg
 from matplotlib.figure import Figure
 
 import plumetrack
-from plumetrack import settings, flux
+from plumetrack import settings, flux, config_test_frame
 
 #TODO - zoom tools on integration line drawing dialog
+
 
 
 def main():
@@ -41,6 +42,7 @@ def main():
     Runs the main program - this is set as the entry point for the configuration
     utility in the setup.py file.
     """
+    
     app = PlumetrackConfigApp()
     app.MainLoop()
     
@@ -61,7 +63,6 @@ class PlumetrackConfigApp(wx.App):
         self.main_frame = MainFrame()
         self.SetTopWindow(self.main_frame)
         self.main_frame.launch()
-        
         return True
 
 
@@ -74,14 +75,14 @@ class ConfigFileSelect(wx.Panel):
         vsizer = wx.BoxSizer(wx.VERTICAL)
         hsizer = wx.BoxSizer(wx.HORIZONTAL)
         
-        self.filename_box = wx.TextCtrl(self, -1, size=(250,-1))
+        self.im_dir_box = wx.TextCtrl(self, -1, size=(250,-1))
         self.browse_button = wx.Button(self, -1, "Browse")
         h_txt = "Select an existing configuration file to load parameters from."
-        self.filename_box.SetToolTipString(h_txt)
+        self.im_dir_box.SetToolTipString(h_txt)
         self.browse_button.SetToolTipString(h_txt)
         wx.EVT_BUTTON(self, self.browse_button.GetId(), self.on_browse)
         
-        hsizer.Add(self.filename_box, 1, wx.EXPAND|wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
+        hsizer.Add(self.im_dir_box, 1, wx.EXPAND|wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
         hsizer.AddSpacer(5)
         hsizer.Add(self.browse_button, 0, wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
         
@@ -94,7 +95,7 @@ class ConfigFileSelect(wx.Panel):
         
         #set the default config file to load
         filename = os.path.join(settings.get_plumetrack_rw_dir(), "plumetrack.cfg")
-        self.filename_box.SetValue(filename)
+        self.im_dir_box.SetValue(filename)
         
         vsizer.Add(hsizer, 0, wx.EXPAND)
         vsizer.AddSpacer(5)
@@ -106,11 +107,11 @@ class ConfigFileSelect(wx.Panel):
     def on_browse(self, evnt):
         filename = wx.FileSelector("Select configuration file")
         if filename != "":
-            self.filename_box.SetValue(filename)
+            self.im_dir_box.SetValue(filename)
     
     
     def on_load(self, evnt):
-        filename = self.filename_box.GetValue()
+        filename = self.im_dir_box.GetValue()
         
         try:
             config = settings.load_config_file(filename)
@@ -607,6 +608,7 @@ class MainFrame(wx.Frame):
     def __init__(self):
         wx.Frame.__init__(self, None, wx.ID_ANY, plumetrack.PROG_SHORT_NAME+" Configuration Utility")
         self.config_panels = []
+        self.config_test_frame = None
     
     
     def launch(self):
@@ -672,6 +674,10 @@ class MainFrame(wx.Frame):
         #create the save and cancel button
         buttons_sizer = wx.BoxSizer(wx.HORIZONTAL)
         
+        self.test_button = wx.Button(self, wx.ID_ANY, "Test")
+        buttons_sizer.Add(self.test_button, 0, wx.ALIGN_BOTTOM|wx.ALIGN_RIGHT|wx.TOP|wx.BOTTOM, border=10)
+        wx.EVT_BUTTON(self, self.test_button.GetId(), self.on_test)
+        
         self.cancel_button = wx.Button(self, wx.ID_CANCEL, "Cancel")
         buttons_sizer.Add(self.cancel_button, 0, wx.ALIGN_BOTTOM|wx.ALIGN_RIGHT|wx.TOP|wx.BOTTOM, border=10)
         wx.EVT_BUTTON(self, self.cancel_button.GetId(), self.on_cancel)
@@ -698,6 +704,8 @@ class MainFrame(wx.Frame):
         self.SetSizer(top_sizer)
         self.SetAutoLayout(True)
         top_sizer.Fit(top_panel)
+        
+        wx.EVT_CLOSE(self, self.on_close)
             
         self.Show()
 
@@ -715,12 +723,52 @@ class MainFrame(wx.Frame):
             p.set_configs(configs)    
     
     
+    def on_test(self, evnt):
+        """
+        Event handler for Test button events. Opens a directory choice dialog
+        to choose an image directory to test the configs on and then launches 
+        a config_test_frame. Note that if a config test frame already exists
+        then clicking test simply updates the configuration that the config test
+        frame is displaying
+        """
+        try:
+            #read the configs from the various input panels        
+            configs = self.get_configs() 
+            
+            #check that the configuration is valid
+            settings.validate_config(configs, None)
+            
+        except settings.ConfigError, ex:
+            wx.MessageBox(str(ex.args[0]), plumetrack.PROG_SHORT_NAME, wx.ICON_ERROR)
+            return
+        
+        if self.config_test_frame is not None:
+            self.config_test_frame.set_config(configs)
+            return
+        
+        im_dir = wx.DirSelector("Select directory containing images to test the configuration on")
+        if im_dir == "":
+            return
+        
+        self.config_test_frame = config_test_frame.ConfigTestFrame(self, im_dir, configs)
+    
+    
     def on_cancel(self, evnt):
         """
         Event handler for cancel button events. Exits the program.
         """
-        self.Destroy()
+        self.on_close(None)
         
+    
+    def on_close(self, evnt):
+        """
+        Event handler for close events - exits the program.
+        """
+        #this is a hack for now, since I can't figure out what component of the 
+        #ConfigTestFrame is not being destroyed properly and is preventing the
+        #main application from closing.
+        wx.GetApp().ExitMainLoop()
+    
     
     def on_save(self, evnt):
         """

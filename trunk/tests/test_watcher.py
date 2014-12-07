@@ -28,6 +28,7 @@ from plumetrack import watcher
 def do_nothing():
     pass
 
+
 class AvailabilityTestCase(unittest.TestCase):
     
     def test_availability(self):

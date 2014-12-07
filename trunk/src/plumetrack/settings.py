@@ -188,8 +188,14 @@ def parse_cmd_line():
     parser.add_option("--output_pngs", dest="png_output_folder", action="store", 
                       default=None, type='string',
                       help="Output PNG files of the motion field into this "
-                           "folder. Default is no PNG output.")      
-    
+                           "folder. Default is no PNG output.")
+          
+    parser.add_option("--max_n", dest="max_n", action="store", 
+                      default=None, type='int', help="Sets the maximum number "
+                      "of images to process. Note that you will get max_n - 1 "
+                      "flux measurements returned (since each flux requires "
+                      "two images.")
+                      
     parser.add_option("-s", "--skip_existing", dest="skip_existing", 
                       action="store_true", default=False,
                       help="Ignore images that are already in the folder. Use "

@@ -108,7 +108,7 @@ def flatten(l, ltypes=(list, tuple)):
 
 class DirFileIter:
     def __init__(self, directory, realtime=False, skip_existing=False, 
-                 recursive=False, sort_func=cmp, test_func=None):
+                 recursive=False, sort_func=cmp, test_func=None, max_n=None):
         """
         Iterator class which returns the filenames in a directory structure, with
         the option of monitoring for new files in realtime.
@@ -132,6 +132,9 @@ class DirFileIter:
                           which evaluate to True with the test function will
                           be returned from the iterator. Setting this to None 
                           results in all filenames being returned.
+            * max_n     - Return at most max_n filenames (regardless of how many
+                          files are in the directory). Default is None, return
+                          all filenames.
         """
         
         if not os.path.isdir(directory):
@@ -154,6 +157,8 @@ class DirFileIter:
         self._finished_loading_existing_lock.acquire()
         self.__existing_files_found = {}
         self.__recursive = recursive
+        self.__max_n = max_n
+        self.__return_count = 0
         
         #note that we start the realtime loader thread BEFORE the existing loader thread
         #this is to prevent spectra that are created during the find_files() call being 
@@ -198,6 +203,10 @@ class DirFileIter:
         
         #we do the get() call in a loop so that signals can be recieved by the 
         #thread calling next() even if no items come into the filename queue
+        self.__return_count += 1
+        if self.__max_n is not None and self.__return_count > self.__max_n:
+            raise StopIteration
+        
         while True:
             try:
                 s = self._filename_q.get(block=True,timeout=1)

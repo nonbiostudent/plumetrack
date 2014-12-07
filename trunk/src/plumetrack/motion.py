@@ -50,7 +50,6 @@ class MotionEngine(object):
         self.iterations = config['farneback_iterations']
         self.poly_n = config['farneback_poly_n']
         self.poly_sigma = config['farneback_poly_sigma']
-        
     
     
     def preprocess(self, image):
@@ -60,7 +59,11 @@ class MotionEngine(object):
         preprocessing tasks may include thresholding the image and applying 
         random noise masking.
          
-        The image argument should be a numpy array.
+        The image argument should be a numpy array. Note that the preprocessing
+        is done in-place - modifying the array that is passed in.
+        
+        Returns the mask array (boolean) showing which array elements were 
+        replaced with random noise.
         """
         if self.__random_image is None:
             if self.random_sigma > 0:
@@ -90,13 +93,12 @@ class MotionEngine(object):
         else:
             mask_criteria = numpy.zeros_like(image)
         
+        mask = numpy.logical_or(thresh_criteria, mask_criteria)
+        mask_idx = numpy.where(mask)
         
-        mask_idx = numpy.where(numpy.logical_or(thresh_criteria, mask_criteria))
-        masked_im = numpy.array(image)
+        image[mask_idx] = self.__random_image[mask_idx]
         
-        masked_im[mask_idx] = self.__random_image[mask_idx]
-        
-        return masked_im
+        return mask
 
 
 
@@ -117,7 +119,6 @@ class MotionEngine(object):
     
         
 if plumetrack.have_gpu():
-    
     from plumetrack import gpu_motion
     
     class GPUMotionEngine(MotionEngine):
@@ -132,13 +133,13 @@ if plumetrack.have_gpu():
             """
             super(GPUMotionEngine, self).__init__(config)
             
-            self.__gpu_interface = gpu_motion.GPUInterface(config["farneback_pyr_scale"],
-                                                           config["farneback_levels"],
-                                                           config["farneback_winsize"],
-                                                           config["farneback_iterations"],
-                                                           config["farneback_poly_n"],
-                                                           config["farneback_poly_sigma"])
-            
+            self.__gpu_interface = gpu_motion.GPUInterface(self.pyr_scale, 
+                                                               self.levels,
+                                                               self.winsize,
+                                                               self.iterations,
+                                                               self.poly_n,
+                                                               self.poly_sigma)
+
             
         def compute_flow(self, current_image, next_image):
             """
