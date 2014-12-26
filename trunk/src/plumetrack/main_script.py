@@ -271,7 +271,7 @@ def main():
         raise ValueError("Unexpected value \"%s\"for integration_method. "
                          "Expected either '1d' or '2d'"%options.integration_method)
      
-    image_iter = dir_iter.DirFileIter(image_dir, realtime=options.realtime, 
+    image_iter = dir_iter.ListDirIter(image_dir, realtime=options.realtime, 
                                       skip_existing=options.skip_existing, 
                                       recursive=options.recursive, 
                                       sort_func=compare_by_time, 
