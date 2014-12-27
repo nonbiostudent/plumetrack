@@ -35,8 +35,6 @@ from plumetrack import settings, flux, config_test_frame
 
 #TODO - zoom tools on integration line drawing dialog
 
-
-
 def main():
     """
     Runs the main program - this is set as the entry point for the configuration
@@ -127,7 +125,7 @@ class InputFilesConfig(wx.Panel):
     def __init__(self, parent):
         super(InputFilesConfig, self).__init__(parent)
         
-        sizer = wx.FlexGridSizer(4, 2, 5, 0)
+        sizer = wx.FlexGridSizer(5, 2, 5, 0)
         sizer.AddGrowableCol(1,1)
         
         sizer.Add(wx.StaticText(self, -1, "Filename format:"), 0, 
@@ -182,6 +180,16 @@ class InputFilesConfig(wx.Panel):
         self.flux_conversion_factor.SetToolTipString(h_txt)
         sizer.Add(self.flux_conversion_factor, 0, wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
         
+        sizer.Add(wx.StaticText(self, -1, "Downsizing factor:"), 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTRE_VERTICAL)
+        self.downsizing_factor = floatspin.FloatSpin(self, wx.ID_ANY, min_val=1.0,
+                                                          increment=0.5, digits=1)
+        h_txt = ("A downsizing factor of >1.0 means that images will be"
+                 " scaled (resized) by this factor before being processed. This "
+                 "results in a less accurate flux estimate, but increased "
+                 "processing speed.")
+        self.downsizing_factor.SetToolTipString(h_txt)
+        sizer.Add(self.downsizing_factor, 0, wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
+        
         self.SetSizer(sizer)
         sizer.Fit(self)
     
@@ -214,11 +222,14 @@ class InputFilesConfig(wx.Panel):
                                        "Use a value of 1.0 if you do not "
                                        "require any conversion.")
         
+        downsizing_factor = self.downsizing_factor.GetValue()
+        
         return {
                 'filename_format':filename_format,
                 'file_extension':file_extension,
                 'pixel_size':self.pixel_size_box.GetValue(),
-                'flux_conversion_factor':flux_conversion_factor
+                'flux_conversion_factor':flux_conversion_factor,
+                'downsizing_factor': downsizing_factor
                 }
     
     
@@ -227,6 +238,7 @@ class InputFilesConfig(wx.Panel):
         self.file_extension_box.SetValue(configs['file_extension'])
         self.pixel_size_box.SetValue(configs['pixel_size'])
         self.flux_conversion_factor.SetValue("%0.3e"%configs['flux_conversion_factor'])
+        self.downsizing_factor.SetValue(configs['downsizing_factor'])
 
 
 
@@ -496,7 +508,21 @@ class IntegrationLineConfig(wx.Panel):
     def __init__(self, parent):
         super(IntegrationLineConfig, self).__init__(parent)
         
+        self.__integration_methods = [u'2d', u'1d']
+        
         vsizer = wx.BoxSizer(wx.VERTICAL)
+        
+        method_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        method_sizer.Add(wx.StaticText(self, -1, "Integration method:"),0,
+                         wx.ALIGN_CENTER_VERTICAL|wx.ALIGN_RIGHT)
+        self.integration_method_choice = wx.Choice(self, -1, choices=self.__integration_methods)
+        h_txt = ("Method used to calculate the flux. '1d' is marginally faster,"
+                 " but '2d' is more robust, especially for images with a large "
+                 "time gaps between them.")
+        self.integration_method_choice.SetToolTipString(h_txt)
+        method_sizer.Add(self.integration_method_choice,1, wx.ALIGN_CENTER_VERTICAL)
+        vsizer.Add(method_sizer, 1, wx.ALIGN_LEFT|wx.ALIGN_TOP)
+        vsizer.AddSpacer(10)
         
         hsizer = wx.BoxSizer(wx.HORIZONTAL)
         hsizer.Add(wx.StaticText(self, -1, "Integration line:"),0,
@@ -582,9 +608,12 @@ class IntegrationLineConfig(wx.Panel):
             raise settings.ConfigError("Invalid format for integration line. "
                                        "Expecting [[x1, y1], [x2, y2],...]")
         
+        int_method = self.__integration_methods[self.integration_method_choice.GetSelection()]
+        
         return {
                 'integration_line': integration_line,
-                'integration_direction':direction
+                'integration_direction':direction,
+                'integration_method':int_method
                 }
     
     
@@ -598,6 +627,9 @@ class IntegrationLineConfig(wx.Panel):
                              "Expected -1 or 1."%(configs['integration_direction']))
             
         self.integration_line_box.SetValue(str(configs['integration_line']))
+        
+        int_method_idx = self.__integration_methods.index(configs['integration_method'])
+        self.integration_method_choice.SetSelection(int_method_idx)
  
  
  

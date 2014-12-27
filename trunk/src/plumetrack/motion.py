@@ -31,13 +31,20 @@ class MotionEngine(object):
         """
         self.low_thresh = config['threshold_low']
         self.high_thresh = config['threshold_high']
-        self.pix_size = config['pixel_size']
         self.__random_image = None
         self.random_mean = config['random_mean']
         self.random_sigma = config['random_sigma']
+        self.downsizing_factor = config['downsizing_factor']
         
         if config['mask_image'] != "":
             self.__mask_im = cv2.imread(config['mask_image'], cv2.IMREAD_GRAYSCALE)
+            
+            #if we are using downsizing - then rescale the mask image
+            if self.downsizing_factor != 1.0:
+                new_x = int(round(self.__mask_im.shape[0] / self.downsizing_factor))
+                new_y = int(round(self.__mask_im.shape[1] / self.downsizing_factor))
+                
+                self.__mask_im = cv2.resize(self.__mask_im, (new_x,new_y))
             
             #ensure the loaded mask has the correct data type
             self.__mask_im = self.__mask_im.astype(numpy.uint8, copy=False)
@@ -65,6 +72,17 @@ class MotionEngine(object):
         Returns the mask array (boolean) showing which array elements were 
         replaced with random noise.
         """
+        #if we are using downsizing - then rescale the image
+        if self.downsizing_factor != 1.0:
+            new_x = int(round(image.shape[0] / self.downsizing_factor))
+            new_y = int(round(image.shape[1] / self.downsizing_factor))
+            
+            im_cpy = image.copy()
+            
+            image.resize((new_x, new_y), refcheck=False)
+            
+            cv2.resize(im_cpy, (new_x,new_y), image)
+        
         if self.__random_image is None:
             if self.random_sigma > 0:
                 self.__random_image = numpy.random.normal(self.random_mean, 

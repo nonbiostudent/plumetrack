@@ -42,6 +42,9 @@ def load_config_file(filename=None):
     that were specified in the file. If filename is not specified, then loads
     the default configuration file. This function calls validate_config on the 
     configuration before returning it.
+    
+    Configurations may be loaded either from config files, or from plumetrack
+    results files.
     """
     if filename is None:
         filename = os.path.join(get_plumetrack_rw_dir(), "plumetrack.cfg")
@@ -50,7 +53,21 @@ def load_config_file(filename=None):
         raise IOError("Failed to open config file \'%s\'. No such file."%filename)
         
     with open(filename,'r') as ifp:
-        config = json.load(ifp)
+        try:
+            config = json.load(ifp)
+        except ValueError:
+            #maybe we are trying to load a configuration from a results file
+            ifp.seek(0)
+            config_str = ''
+            for line in ifp:
+                if line.lstrip().lstrip('#').lstrip().startswith('Configuration'):
+                    config_str = line.partition('=')[2]
+                    break
+            
+            try:
+                config = json.loads(config_str)
+            except ValueError:
+                raise IOError("File \"%s\" does not contain a valid plumetrack configuration")
       
     validate_config(config, filename)
     
@@ -82,6 +99,7 @@ def validate_config(config, filename=None):
                         ("mask_image", UnicodeType, lambda x: x=="" or x.isspace() or os.path.exists(x), "\'mask_image\' file specified does not exist."),
                         ("pixel_size", FloatType, lambda x: True, "" ),
                         ("flux_conversion_factor", FloatType, lambda x: True, "" ),
+                        ("downsizing_factor", FloatType, lambda x: x >=1.0, "\'downsizing_factor\' must be greater than or equal to 1."),
                         ("farneback_pyr_scale", FloatType, lambda x: x<1.0, "\'farneback_pyr_scale\' must be <1.0."),
                         ("farneback_levels", IntType, lambda x: x>=1, "\'farneback_levels\' must be >=1"),
                         ("farneback_winsize", IntType, lambda x: x>=1, "\'farneback_winsize\' must be >=1"),
@@ -89,7 +107,8 @@ def validate_config(config, filename=None):
                         ("farneback_poly_n", IntType, lambda x: x>=3, "\'farneback_poly_n\' must be >=3 (5 or 7 would be a better choice)"),
                         ("farneback_poly_sigma", FloatType, lambda x: x>0.0, "\'farneback_poly_sigma\' must be >0.0"),
                         ("integration_line", ListType, lambda x: len(x) >=2, "At least 2 points are required for \'integration_line\'"),
-                        ("integration_direction", IntType, lambda x: x==1 or x==-1, "\'integration_direction\' must be either 1 or -1")
+                        ("integration_direction", IntType, lambda x: x==1 or x==-1, "\'integration_direction\' must be either 1 or -1"),
+                        ("integration_method", UnicodeType, lambda x: x in ('1d','2d'), "\'integration_method\' must be either \'1d\' or \'2d\'")
                         ]
 
     #first check that they all exist
@@ -165,11 +184,6 @@ def parse_cmd_line():
                       help="Parallel process the images. This will be ignored "
                            "when used with the realtime option")
     
-    parser.add_option("-i","--integration_method", dest="integration_method", action="store", 
-                      default='2d', type='string',
-                      help="Select either '1d' or '2d' method for integrating "
-                           "the flux. Default is '2d'.")
-    
     parser.add_option("-t", "--realtime", dest="realtime", action="store_true", 
                       default=False,
                       help="Continuously monitor the image folder for new files")
@@ -222,10 +236,6 @@ def parse_cmd_line():
     if options.skip_existing and not options.realtime:
         options.realtime = True
     
-    #check that the integration method is valid
-    if not options.integration_method in ('1d','2d'):
-        parser.error("Unknown integration_method '%s', expecting either '1d' "
-                     "or '2d'"%options.integration_method)
         
     return (options, args)
 

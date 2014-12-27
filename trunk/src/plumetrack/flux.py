@@ -107,14 +107,29 @@ class IntegrationLine:
         return pts[:-1], vectors, normals
 
 
+def create_flux_engine(config):
+    """
+    Returns a flux engine based on the values in config.
+    """
+    if config['integration_method'] == '2d':
+        return FluxEngine2D(config)
+    elif config['integration_method'] == '1d':
+        return FluxEngine1D(config)
+    else:
+        raise ValueError("Unknown integration method \"\". Expecting either \"1d\" or \"2d\".")
+
+
 
 class FluxEngineBase(object):
     def __init__(self, config):
         xpts, ypts = zip(*config['integration_line'])
         
+        xpts = [i/config['downsizing_factor'] for i in xpts]
+        ypts = [i/config['downsizing_factor'] for i in ypts]
+        
         self._int_line = IntegrationLine(xpts, ypts, config['integration_direction'])
         
-        self._pixel_size = config['pixel_size']
+        self._pixel_size = config['pixel_size'] * config['downsizing_factor']
         self._conversion_factor = config['flux_conversion_factor']
     
     

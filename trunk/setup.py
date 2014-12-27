@@ -78,6 +78,7 @@ default_config = {
 
 "pixel_size": 1.0,
 "flux_conversion_factor": 1.0,
+"downsizing_factor": 1.0,
 
 "farneback_pyr_scale": 0.5,
 "farneback_levels": 4,
@@ -86,6 +87,7 @@ default_config = {
 "farneback_poly_n": 7,
 "farneback_poly_sigma": 1.5,
 
+"integration_method": "2d",
 "integration_line": [[0, 0],[1, 1]],
 "integration_direction": 1                 
                   
@@ -97,13 +99,13 @@ default_config = {
 ####################################################################
 extension_modules = []
 
-# numpyincludedirs = numpy.get_include()
-# gpu_extension = Extension("plumetrack._gpu_motion",
-#                    ["src/swig/gpu_motion_wrap.cxx", "src/swig/gpu_motion.cxx", "src/swig/traceback.cxx"],
-#                    include_dirs=[numpyincludedirs] + ['/usr/local/include/opencv', '/usr/local/include'],
-#                    libraries=['opencv_core','opencv_gpu', 'cudart' ])
-# 
-# extension_modules.append(gpu_extension)
+numpyincludedirs = numpy.get_include()
+gpu_extension = Extension("plumetrack._gpu_motion",
+                   ["src/swig/gpu_motion_wrap.cxx", "src/swig/gpu_motion.cxx", "src/swig/traceback.cxx"],
+                   include_dirs=[numpyincludedirs] + ['/usr/local/include/opencv', '/usr/local/include'],
+                   libraries=['opencv_core','opencv_gpu', 'cudart' ])
+ 
+extension_modules.append(gpu_extension)
 
 
 ####################################################################

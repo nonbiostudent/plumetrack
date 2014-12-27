@@ -263,13 +263,7 @@ def main():
     else:
         motion_engine = motion.MotionEngine(config)
     
-    if options.integration_method == '2d': 
-        flux_engine = flux.FluxEngine2D(config)
-    elif options.integration_method == '1d':
-        flux_engine = flux.FluxEngine1D(config)
-    else:
-        raise ValueError("Unexpected value \"%s\"for integration_method. "
-                         "Expected either '1d' or '2d'"%options.integration_method)
+    flux_engine = flux.create_flux_engine(config)
      
     image_iter = dir_iter.ListDirIter(image_dir, realtime=options.realtime, 
                                       skip_existing=options.skip_existing, 
@@ -287,17 +281,16 @@ def main():
             image_iter.close()
         
         signal.signal(signal.SIGINT, _quit)
-        
+      
+    #create a blank output file which we later append to    
+    if options.output_file is not None:
+            output.write_output_file_header(options.output_file, image_dir, config)
+    
     
     if options.realtime or not options.parallel:
         
         #main loop for realtime processing
         current_image_fname = None
-        
-        if options.output_file is not None:
-            #create a blank file which we later append to
-            with open(options.output_file,'w') as ofp:
-                pass
          
         for next_image_fname in image_iter:
              
@@ -309,9 +302,9 @@ def main():
                 
                 if options.output_file is not None:
                     with open(options.output_file,'a') as ofp:
-                        ofp.write("%s\t%f\n"%(str(time_from_fname(current_image_fname, config)),so2flux))
+                        ofp.write("%s\t%s\t%f\n"%(current_image_fname, str(time_from_fname(current_image_fname, config)),so2flux))
                 else:
-                    print "%s\t%f"%(str(time_from_fname(current_image_fname, config)),so2flux)
+                    print "%s\t%s\t%f"%(current_image_fname, str(time_from_fname(current_image_fname, config)),so2flux)
                  
             current_image_fname = next_image_fname
      
@@ -324,11 +317,11 @@ def main():
                                   flux_engine, options, config)
         
         if options.output_file is not None:
-            with open(options.output_file,'w') as ofp:
+            with open(options.output_file,'a') as ofp:
                 for i in range(len(fluxes)):
-                    ofp.write("%s\t%f\n"%(str(time_from_fname(files[i], config)),fluxes[i]))
+                    ofp.write("%s\t%s\t%f\n"%(files[i], str(time_from_fname(files[i], config)),fluxes[i]))
         else:
             for i in range(len(fluxes)):
-                print "%s\t%f"%(str(time_from_fname(files[i], config)),fluxes[i])
+                print "%s\t%s\t%f"%(files[i], str(time_from_fname(files[i], config)),fluxes[i])
         
         
