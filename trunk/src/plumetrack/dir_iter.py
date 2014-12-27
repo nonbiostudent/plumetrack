@@ -63,7 +63,9 @@ def find_files(path, recursive=False, pattern='*', skip_links=True, full_paths=F
             files = [os.path.join(folder,f) for f in files]
             
         if pattern != '*':
-            found_files += glob.fnmatch.filter(files, pattern)    
+            found_files += glob.fnmatch.filter(files, pattern)
+        else:
+            found_files += files
                 
         if not recursive:
             break
@@ -361,6 +363,9 @@ class ListDirIter:
                                      pattern=self.__pattern)
             
             for filename in self.__async_file_iter:
+                if self.__test_func is not None and not self.__test_func(filename):
+                    continue
+                
                 self.__existing_files_found[filename] = None
                 self._filename_q.put(filename)
              
@@ -373,7 +378,6 @@ class ListDirIter:
     
        
     def __load_existing(self):
-        
         try: 
             existing_files = find_files(self.__dir, recursive=self.__recursive,
                                         full_paths=self.__full_paths, 
@@ -383,7 +387,7 @@ class ListDirIter:
             #if a test function was specified, then only keep the filenames which satisfy it
             if self.__test_func is not None:
                 existing_files = [x for x in itertools.ifilter(self.__test_func, existing_files)]
-                
+             
             #sort the filenames using the comparator function specified in the 
             #kwargs to the constructor of the DirFilesIter object
             existing_files.sort(cmp=self.__sort_func)
