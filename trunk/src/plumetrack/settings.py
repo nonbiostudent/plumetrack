@@ -22,19 +22,6 @@ from optparse import OptionParser
 
 
 
-def get_plumetrack_rw_dir():
-    """
-    Returns the path used by plumetrack for things like caching settings.
-    This is platform dependent, but on Linux it will be in ~/.plumetrack
-    """
-    
-    if sys.platform == 'win32':
-        #Windows doesn't really do hidden directories, so get rid of the dot
-        return os.path.join(os.path.expanduser('~'),"plumetrack")
-    else:
-        return os.path.join(os.path.expanduser('~'),".plumetrack")
-
-
 
 def load_config_file(filename=None):
     """
@@ -46,8 +33,10 @@ def load_config_file(filename=None):
     Configurations may be loaded either from config files, or from plumetrack
     results files.
     """
+    
     if filename is None:
-        filename = os.path.join(get_plumetrack_rw_dir(), "plumetrack.cfg")
+        import plumetrack
+        filename = os.path.join(plumetrack.get_plumetrack_rw_dir(), "plumetrack.cfg")
     
     if not os.path.exists(filename):
         raise IOError("Failed to open config file \'%s\'. No such file."%filename)
@@ -92,7 +81,7 @@ def validate_config(config, filename=None):
     expected_configs = [
                         ("filename_format", UnicodeType, lambda x: x != "" and not x.isspace(), "\'filename_format\' cannot be an empty string."),
                         ("file_extension", UnicodeType, lambda x: config["filename_format"].endswith(x), "Mismatch between file extension specified in \'filename_format\' and \'file_extension\'."),
-                        ("threshold_low", FloatType, lambda x: (config["threshold_high"] == -1 or x < config["threshold_high"]) and (x == -1 or x >= 0), "\'threshold_low\' must be either -1 or greater than or equal to 0 and cannot be greater than \'threshold_high\'." ),
+                        ("threshold_low", FloatType, lambda x: (config["threshold_high"] == -1 or x < config["threshold_high"]) and (x == -1 or x >= 0), "\'threshold_low\' must be either -1 or greater than or equal to 0 and must be less than \'threshold_high\'." ),
                         ("threshold_high", FloatType, lambda x: x == -1 or x > 0, "\'threshold_high\' must be either -1 or greater than 0." ),
                         ("random_mean", FloatType, lambda x: True, "" ),
                         ("random_sigma", FloatType, lambda x: True, "" ),

@@ -96,15 +96,19 @@ class MotionEngine(object):
                 print image.shape, self.__random_image.shape
                 raise ValueError("Image is a different size to previously "
                                  "preprocessed images.")
-        
+
         if self.high_thresh < 0:
-            self.high_thresh = image.max()
+            h_thresh = image.max()
+        else:
+            h_thresh = self.high_thresh
         
         if self.low_thresh < 0:
-            self.low_thresh = image.min()
+            l_thresh = image.min()
+        else:
+            l_thresh = self.low_thresh
         
-        thresh_criteria = numpy.logical_or(image < self.low_thresh, 
-                                           image > self.high_thresh)
+        thresh_criteria = numpy.logical_or(image < l_thresh, 
+                                           image > h_thresh)
         
         if self.__mask_im is not None:
             mask_criteria = numpy.logical_not(self.__mask_im)

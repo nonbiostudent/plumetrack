@@ -15,6 +15,9 @@
 #You should have received a copy of the GNU General Public License
 #along with plumetrack.  If not, see <http://www.gnu.org/licenses/>.
 
+import os
+import sys
+
 ####################################################################
 #                     Program Information
 ####################################################################
@@ -75,3 +78,26 @@ def have_gpu():
     plumetrack has been built with GPU support. Returns False otherwise.
     """
     return __have_gpu
+
+
+def get_plumetrack_rw_dir():
+    """
+    Returns the path used by plumetrack for things like caching settings,
+    storing templates etc. This is platform dependent, but on Linux it 
+    will be in ~/.plumetrack
+    """
+    
+    if sys.platform == 'win32':
+        #Windows doesn't really do hidden directories, so get rid of the dot
+        return os.path.join(os.path.expanduser('~'),"%s"%PROG_SHORT_NAME)
+    else:
+        return os.path.join(os.path.expanduser('~'),".%s"%PROG_SHORT_NAME)
+
+
+#make sure that all the directories that we are expecting to exist actually do.
+try:
+    os.makedirs(get_plumetrack_rw_dir())
+    
+except OSError:
+    #dir already exists
+    pass

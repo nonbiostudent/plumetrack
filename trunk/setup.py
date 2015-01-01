@@ -135,7 +135,7 @@ class CustomInstall(install):
         default config file there
         """
         install.run(self)
-        config_filename = os.path.join(settings_preinstall.get_plumetrack_rw_dir(), 
+        config_filename = os.path.join(plumetrack_preinstall.get_plumetrack_rw_dir(), 
                                        "plumetrack.cfg")
         
         print "Writing default configuration to \'%s\'"%config_filename
@@ -168,9 +168,9 @@ setup(cmdclass={'install':CustomInstall},
       url              = plumetrack_preinstall.URL,
       license          = plumetrack_preinstall.LICENSE_SHORT,  
       package_dir      = {'':'src'},
-      packages         = ['plumetrack'],
+      packages         = ['plumetrack', 'plumetrack.plumetrack_config'],
       ext_modules      = extension_modules,
       install_requires = install_dependencies,
       entry_points     = {'console_scripts': ['plumetrack = plumetrack.main_script:main'],
-                          'gui_scripts': ['plumetrack-config = plumetrack.config_script:main']}
+                          'gui_scripts': ['plumetrack-config = plumetrack.plumetrack_config.config_script:main']}
       )
