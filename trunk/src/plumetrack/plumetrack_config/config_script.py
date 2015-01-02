@@ -188,7 +188,9 @@ class ConfigFileSelect(wx.Panel):
         
         self.im_dir_box = wx.TextCtrl(self, -1, size=(250,-1))
         self.browse_button = wx.Button(self, -1, "Browse")
-        h_txt = "Select an existing configuration file to load parameters from."
+        h_txt = ("Select an existing configuration file to load parameters from."
+                 " This can be either a \'.cfg\' configuration file, or a "
+                 "results file produced by a previous plumetrack run.")
         self.im_dir_box.SetToolTipString(h_txt)
         self.browse_button.SetToolTipString(h_txt)
         wx.EVT_BUTTON(self, self.browse_button.GetId(), self.on_browse)
@@ -237,11 +239,11 @@ class InputFilesConfig(wx.Panel):
     def __init__(self, parent):
         super(InputFilesConfig, self).__init__(parent)
         
-        sizer = wx.FlexGridSizer(5, 2, 5, 0)
+        vsizer = wx.BoxSizer(wx.VERTICAL)
+        
+        sizer = wx.FlexGridSizer(2, 5, 10, 0)
         sizer.AddGrowableCol(1,1)
         
-        sizer.Add(wx.StaticText(self, -1, "Filename format:"), 0, 
-                  wx.ALIGN_RIGHT | wx.ALIGN_CENTRE_VERTICAL)
         self.filename_format_box = AutoUpdateTextCtrl(self, -1, size=(250,-1), style=wx.TE_PROCESS_ENTER)
         h_txt = ("The format of the filenames of the images to be processed. "
                  "The filenames must include the capture time of the images, "
@@ -252,12 +254,14 @@ class InputFilesConfig(wx.Panel):
         self.filename_format_box.SetToolTipString(h_txt)
         
         hsizer = wx.BoxSizer(wx.HORIZONTAL)
+        hsizer.Add(wx.StaticText(self, -1, "Filename format:"), 0, 
+                  wx.ALIGN_RIGHT | wx.ALIGN_CENTRE_VERTICAL)
         hsizer.Add(self.filename_format_box, 1, 
                   wx.EXPAND | wx.ALIGN_LEFT | wx.ALIGN_CENTRE_VERTICAL)
         
         format_help_button = wx.Button(self, -1, "Help")
         hsizer.Add(format_help_button, 0, wx.ALIGN_LEFT | wx.ALIGN_CENTRE_VERTICAL)
-        sizer.Add(hsizer, 1, wx.EXPAND | wx.ALIGN_LEFT | wx.ALIGN_CENTRE_VERTICAL)
+        vsizer.Add(hsizer, 0, wx.EXPAND | wx.ALIGN_LEFT | wx.ALIGN_CENTRE_VERTICAL)
         wx.EVT_BUTTON(self, format_help_button.GetId(), self.on_help)
         
         sizer.Add(wx.StaticText(self, -1, "File extension:"), 0, 
@@ -270,6 +274,8 @@ class InputFilesConfig(wx.Panel):
         self.file_extension_box.SetToolTipString(h_txt)
         sizer.Add(self.file_extension_box, 0, wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
         
+        sizer.AddSpacer((10, 1))
+        
         sizer.Add(wx.StaticText(self, -1, "Pixel size (metres):"), 0, 
                   wx.ALIGN_RIGHT | wx.ALIGN_CENTRE_VERTICAL)
         self.pixel_size_box = AutoUpdateFloatspin(self, wx.ID_ANY, min_val=0.01, 
@@ -280,6 +286,19 @@ class InputFilesConfig(wx.Panel):
                  "the pixel.")
         self.pixel_size_box.SetToolTipString(h_txt)
         sizer.Add(self.pixel_size_box, 0, wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
+        
+        
+        sizer.Add(wx.StaticText(self, -1, "Downsizing factor:"), 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTRE_VERTICAL)
+        self.downsizing_factor = AutoUpdateFloatspin(self, wx.ID_ANY, min_val=1.0,
+                                                          increment=0.5, digits=1)
+        h_txt = ("A downsizing factor of >1.0 means that images will be"
+                 " scaled (resized) by this factor before being processed. This "
+                 "results in a less accurate flux estimate, but increased "
+                 "processing speed.")
+        self.downsizing_factor.SetToolTipString(h_txt)
+        sizer.Add(self.downsizing_factor, 0, wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
+        
+        sizer.AddSpacer((10, 1))
         
         sizer.Add(wx.StaticText(self, -1, "Units conversion factor:"), 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTRE_VERTICAL)
         self.flux_conversion_factor = AutoUpdateTextCtrl(self, -1, size=(150,-1), style=wx.TE_PROCESS_ENTER)
@@ -292,18 +311,11 @@ class InputFilesConfig(wx.Panel):
         self.flux_conversion_factor.SetToolTipString(h_txt)
         sizer.Add(self.flux_conversion_factor, 0, wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
         
-        sizer.Add(wx.StaticText(self, -1, "Downsizing factor:"), 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTRE_VERTICAL)
-        self.downsizing_factor = AutoUpdateFloatspin(self, wx.ID_ANY, min_val=1.0,
-                                                          increment=0.5, digits=1)
-        h_txt = ("A downsizing factor of >1.0 means that images will be"
-                 " scaled (resized) by this factor before being processed. This "
-                 "results in a less accurate flux estimate, but increased "
-                 "processing speed.")
-        self.downsizing_factor.SetToolTipString(h_txt)
-        sizer.Add(self.downsizing_factor, 0, wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
+        vsizer.AddSpacer(10)
+        vsizer.Add(sizer, 1, wx.ALIGN_LEFT)
         
-        self.SetSizer(sizer)
-        sizer.Fit(self)
+        self.SetSizer(vsizer)
+        vsizer.Fit(self)
     
     
     def on_help(self, evnt):
@@ -369,6 +381,7 @@ class MaskingConfig(wx.Panel):
         h_txt = ("Any pixels that are below this threshold will be masked using"
                  " random noise during the motion estimation and will be "
                  "excluded from the flux calculation.")
+        self.low_thresh_chkbx.SetToolTipString(h_txt)
         self.low_thresh_box.SetToolTipString(h_txt)
         sizer.Add(self.low_thresh_box, 0,wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
         wx.EVT_CHECKBOX(self, self.low_thresh_chkbx.GetId(), self.on_low_thresh)
@@ -382,6 +395,7 @@ class MaskingConfig(wx.Panel):
         h_txt = ("Any pixels that are above this threshold will be masked using"
                  " random noise during the motion estimation and will be "
                  "excluded from the flux calculation.")
+        self.high_thresh_chkbx.SetToolTipString(h_txt)
         self.high_thresh_box.SetToolTipString(h_txt)
         sizer.Add(self.high_thresh_box, 0, wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
         wx.EVT_CHECKBOX(self, self.high_thresh_chkbx.GetId(), self.on_high_thresh)
@@ -471,17 +485,17 @@ class MaskingConfig(wx.Panel):
     
     
     def set_configs(self, configs):
-        self.low_thresh_box.SetValue(configs['threshold_low'])
-        self.high_thresh_box.SetValue(configs['threshold_high'])
+        self.low_thresh_box.SetValue(configs['motion_pix_threshold_low'])
+        self.high_thresh_box.SetValue(configs['motion_pix_threshold_high'])
         self.mask_im_box.SetValue(configs['mask_image'])
         self.random_mean_box.SetValue(configs['random_mean'])
         self.random_sigma_box.SetValue(configs['random_sigma'])
         
-        self.low_thresh_chkbx.SetValue(configs['threshold_low']!=0)
-        self.low_thresh_box.Enable(configs['threshold_low']!=0)
+        self.low_thresh_chkbx.SetValue(configs['motion_pix_threshold_low']!=0)
+        self.low_thresh_box.Enable(configs['motion_pix_threshold_low']!=0)
                                    
-        self.high_thresh_chkbx.SetValue(configs['threshold_high']!=-1)
-        self.high_thresh_box.Enable(configs['threshold_high']!=-1)
+        self.high_thresh_chkbx.SetValue(configs['motion_pix_threshold_high']!=-1)
+        self.high_thresh_box.Enable(configs['motion_pix_threshold_high']!=-1)
         
         self.mask_im_chkbx.SetValue(configs['mask_image'] != "")
         self.mask_im_box.Enable(configs['mask_image'] != "")
@@ -502,14 +516,14 @@ class MaskingConfig(wx.Panel):
             configs['mask_image'] = unicode("")
         
         if self.low_thresh_chkbx.IsChecked():
-            configs['threshold_low'] = self.low_thresh_box.GetValue()
+            configs['motion_pix_threshold_low'] = self.low_thresh_box.GetValue()
         else:
-            configs['threshold_low'] = -1
+            configs['motion_pix_threshold_low'] = -1
         
         if self.high_thresh_chkbx.IsChecked():
-            configs['threshold_high'] = self.high_thresh_box.GetValue()
+            configs['motion_pix_threshold_high'] = self.high_thresh_box.GetValue()
         else:
-            configs['threshold_high'] = -1
+            configs['motion_pix_threshold_high'] = -1
     
         return configs
 
@@ -520,7 +534,7 @@ class MotionTrackingConfig(wx.Panel):
     
         super(MotionTrackingConfig, self).__init__(parent)
         
-        sizer = wx.FlexGridSizer(3, 5, 10, 0)
+        sizer = wx.FlexGridSizer(2, 8, 10, 0)
         
         sizer.Add(wx.StaticText(self, -1, "Pyramid scale:"), 0, 
                   wx.ALIGN_RIGHT | wx.ALIGN_CENTRE_VERTICAL)
@@ -533,7 +547,7 @@ class MotionTrackingConfig(wx.Panel):
         self.pyr_scale_box.SetToolTipString(h_txt)
         sizer.Add(self.pyr_scale_box, 0, wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
         
-        sizer.AddSpacer((20,1))
+        sizer.AddSpacer((10,1))
         
         sizer.Add(wx.StaticText(self, -1, "Pyramid levels:"), 0, 
                   wx.ALIGN_RIGHT|wx.ALIGN_CENTRE_VERTICAL)
@@ -544,7 +558,8 @@ class MotionTrackingConfig(wx.Panel):
                  "are used.")
         self.levels_box.SetToolTipString(h_txt)
         sizer.Add(self.levels_box, 0, wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
-               
+        
+        sizer.AddSpacer((10,1))       
         
         sizer.Add(wx.StaticText(self, -1, "Window size:"), 0, 
                   wx.ALIGN_RIGHT|wx.ALIGN_CENTRE_VERTICAL)
@@ -556,7 +571,6 @@ class MotionTrackingConfig(wx.Panel):
         self.winsize_box.SetToolTipString(h_txt)
         sizer.Add(self.winsize_box, 0, wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
         
-        sizer.AddSpacer((20,1))
         
         sizer.Add(wx.StaticText(self, -1, "Iterations:"), 0, 
                   wx.ALIGN_RIGHT|wx.ALIGN_CENTRE_VERTICAL)
@@ -565,6 +579,8 @@ class MotionTrackingConfig(wx.Panel):
                  "algorithm performs at each pyramid level.")
         self.iterations_box.SetToolTipString(h_txt)
         sizer.Add(self.iterations_box, 0, wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
+        
+        sizer.AddSpacer((10,1))
         
         sizer.Add(wx.StaticText(self, -1, "Polynomial size:"), 0, 
                   wx.ALIGN_RIGHT|wx.ALIGN_CENTRE_VERTICAL)
@@ -577,7 +593,7 @@ class MotionTrackingConfig(wx.Panel):
         self.poly_n_box.SetToolTipString(h_txt)
         sizer.Add(self.poly_n_box, 0, wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
         
-        sizer.AddSpacer((20,1))
+        sizer.AddSpacer((10,1))
         
         sizer.Add(wx.StaticText(self, -1, "Gaussian smoothing:"), 0, 
                   wx.ALIGN_RIGHT|wx.ALIGN_CENTRE_VERTICAL)
@@ -614,30 +630,26 @@ class MotionTrackingConfig(wx.Panel):
         self.poly_n_box.SetValue(configs['farneback_poly_n'])
         self.poly_sigma_box.SetValue(configs['farneback_poly_sigma'])
  
-
-
 class IntegrationLineConfig(wx.Panel):
-    def __init__(self, parent):
+    def __init__(self, parent, num):
         super(IntegrationLineConfig, self).__init__(parent)
-        
-        self.__integration_methods = [u'2d', u'1d']
+        self._num = num
         
         vsizer = wx.BoxSizer(wx.VERTICAL)
-        
-        method_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        method_sizer.Add(wx.StaticText(self, -1, "Integration method:"),0,
-                         wx.ALIGN_CENTER_VERTICAL|wx.ALIGN_RIGHT)
-        self.integration_method_choice = wx.Choice(self, -1, choices=self.__integration_methods)
-        h_txt = ("Method used to calculate the flux. '1d' is marginally faster,"
-                 " but '2d' is more robust, especially for images with a large "
-                 "time gaps between them.")
-        self.integration_method_choice.SetToolTipString(h_txt)
-        method_sizer.Add(self.integration_method_choice,1, wx.ALIGN_CENTER_VERTICAL)
-        vsizer.Add(method_sizer, 1, wx.ALIGN_LEFT|wx.ALIGN_TOP)
-        vsizer.AddSpacer(10)
-        
+      
         hsizer = wx.BoxSizer(wx.HORIZONTAL)
-        hsizer.Add(wx.StaticText(self, -1, "Integration line:"),0,
+        
+        hsizer.Add(wx.StaticText(self, -1, "Name:"),0,
+                   wx.ALIGN_CENTER_VERTICAL|wx.ALIGN_RIGHT)
+        self.name_box = wx.TextCtrl(self, -1, style=wx.TE_PROCESS_ENTER)
+        self.name_box.SetValue("Integration Line %d"%num)
+        
+        h_txt =  ("Descriptive name for this integration line. This will appear"
+                  " as a column heading in plumetrack results files")
+        self.name_box.SetToolTipString(h_txt)
+        hsizer.Add(self.name_box,1, wx.ALIGN_CENTER_VERTICAL)
+        hsizer.AddSpacer(10)
+        hsizer.Add(wx.StaticText(self, -1, "Points:"),0,
                    wx.ALIGN_CENTER_VERTICAL|wx.ALIGN_RIGHT)
         self.integration_line_box = AutoUpdateTextCtrl(self, -1, style=wx.TE_PROCESS_ENTER)
         h_txt =  ("List of [x, y] points (e.g. [[x1, y1], [x2, y2],...]) "
@@ -652,10 +664,10 @@ class IntegrationLineConfig(wx.Panel):
         self.draw_button.SetToolTipString(h_txt)
         hsizer.Add(self.draw_button,0,wx.ALIGN_CENTER_VERTICAL|wx.ALIGN_LEFT)
         wx.EVT_BUTTON(self, self.draw_button.GetId(), self.on_draw)
-        
+         
         vsizer.Add(hsizer, 1, wx.ALIGN_LEFT|wx.ALIGN_TOP|wx.EXPAND)
         vsizer.AddSpacer(10)
-        
+         
         self.direction_chkbx = AutoUpdateCheckbox(self, -1, "Reverse integration direction")
         h_txt = ("Defines which way is positive across the integration line. "
                  "This is easier to set in the 'Draw' dialog (click button "
@@ -665,8 +677,8 @@ class IntegrationLineConfig(wx.Panel):
         
         self.SetSizer(vsizer)
         vsizer.Fit(self)
-        
-        
+    
+            
     def on_draw(self, evnt):
         image_file = wx.FileSelector("Choose image file to draw integration line on")
         
@@ -703,32 +715,6 @@ class IntegrationLineConfig(wx.Panel):
             else:
                 self.direction_chkbx.SetValue(False)
     
-    
-    def get_configs(self):
-        if self.direction_chkbx.IsChecked():
-            direction = -1
-        else:
-            direction = 1
-        
-        int_line_str = self.integration_line_box.GetValue()
-        if int_line_str == "" or int_line_str.isspace():
-            raise settings.ConfigError("No integration line specified.")
-        
-        try:
-            integration_line = json.loads(int_line_str)
-        except ValueError:
-            raise settings.ConfigError("Invalid format for integration line. "
-                                       "Expecting [[x1, y1], [x2, y2],...]")
-        
-        int_method = self.__integration_methods[self.integration_method_choice.GetSelection()]
-        
-        return {
-                'integration_line': integration_line,
-                'integration_direction':direction,
-                'integration_method':int_method
-                }
-    
-    
     def set_configs(self, configs):
         if configs['integration_direction'] == -1:
             self.direction_chkbx.SetValue(True)
@@ -738,10 +724,183 @@ class IntegrationLineConfig(wx.Panel):
             raise ValueError("Unexpected value (%d) for integration_direction. "
                              "Expected -1 or 1."%(configs['integration_direction']))
             
-        self.integration_line_box.SetValue(str(configs['integration_line']))
+        self.integration_line_box.SetValue(str(configs['integration_points']))
+        self.name_box.SetValue(configs['name'])
+    
+    
+    def get_configs(self):
+        if self.direction_chkbx.IsChecked():
+            direction = -1
+        else:
+            direction = 1
         
+        name = self.name_box.GetValue()
+        
+        int_line_str = self.integration_line_box.GetValue()
+        if int_line_str == "" or int_line_str.isspace():
+           raise settings.ConfigError("No points specified for integration "
+                                      "line %d."%self._num)
+        
+        try:
+            integration_points = json.loads(int_line_str)
+        except ValueError:
+            raise settings.ConfigError("Invalid format for integration line %d "
+                                       "points. Expecting [[x1, y1], "
+                                       "[x2, y2],...]"%self._num)
+        
+        return {
+                'name' : name,
+                'integration_points': integration_points,
+                'integration_direction': direction
+                }
+
+
+class FluxCalculationConfig(wx.Panel):
+    def __init__(self, parent):
+        super(FluxCalculationConfig, self).__init__(parent)
+        
+        self.__integration_methods = [u'2d', u'1d']
+        self._int_lines = []
+        self._int_line_szrs = []
+        
+        self.vsizer = wx.BoxSizer(wx.VERTICAL)
+        
+        gsizer = wx.FlexGridSizer(1,5,10,0)
+        
+        gsizer.Add(wx.StaticText(self, -1, "Integration method:"),0,
+                         wx.ALIGN_CENTER_VERTICAL|wx.ALIGN_RIGHT)
+        self.integration_method_choice = wx.Choice(self, -1, choices=self.__integration_methods)
+        h_txt = ("Method used to calculate the flux. '1d' is marginally faster,"
+                 " but '2d' is more robust, especially for images with a large "
+                 "time gaps between them.")
+        self.integration_method_choice.SetToolTipString(h_txt)
+        gsizer.Add(self.integration_method_choice,1, wx.ALIGN_CENTER_VERTICAL)
+        
+        gsizer.AddSpacer((10, 1))
+        
+        self.low_thresh_chkbx = AutoUpdateCheckbox(self, -1, "Low pixel threshold:")
+        gsizer.Add(self.low_thresh_chkbx, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTRE_VERTICAL)
+        self.low_thresh_box = AutoUpdateFloatspin(self, wx.ID_ANY, increment=1.0,
+                                                   digits=0, min_val=0)
+        self.low_thresh_box.Enable(self.low_thresh_chkbx.IsChecked())
+        h_txt = ("Any pixels that are below this threshold will be excluded "
+                 "from the flux calculation. However, this does not affect their"
+                 "visibility to the motion estimation algorithm (unlike the "
+                 "threshold in the Image Masking section above).")
+        self.low_thresh_chkbx.SetToolTipString(h_txt)
+        self.low_thresh_box.SetToolTipString(h_txt)
+        gsizer.Add(self.low_thresh_box, 0,wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
+        wx.EVT_CHECKBOX(self, self.low_thresh_chkbx.GetId(), self.on_low_thresh)
+        
+        self.vsizer.Add(gsizer, 1, wx.ALIGN_LEFT|wx.ALIGN_TOP)
+        self.vsizer.AddSpacer(10)
+        
+        self.button_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        
+        self.add_button = wx.Button(self, -1, "Add")
+        h_txt = ("Add an extra integration line.")
+        self.add_button.SetToolTipString(h_txt)
+        
+        self.remove_button = wx.Button(self, -1, "Remove")
+        h_txt = ("Remove the last integration line.")
+        self.remove_button.SetToolTipString(h_txt)
+        
+        self.button_sizer.Add(self.add_button, 0, wx.EXPAND|wx.ALIGN_RIGHT)
+        self.button_sizer.Add(self.remove_button, 0, wx.EXPAND|wx.ALIGN_RIGHT)
+        self.button_sizer.AddSpacer(5)
+        wx.EVT_BUTTON(self, self.add_button.GetId(), self.on_add_int_line)
+        wx.EVT_BUTTON(self, self.remove_button.GetId(), self.on_remove_int_line)
+        self.remove_button.Enable(False)
+        
+        self.vsizer.Add(self.button_sizer, 1 , wx.ALIGN_RIGHT)
+        
+        self.SetSizer(self.vsizer)
+        self.vsizer.Fit(self)
+        
+        self.on_add_int_line(None)
+        
+        
+    def on_low_thresh(self, evnt):
+        self.low_thresh_box.Enable(self.low_thresh_chkbx.IsChecked())
+    
+    
+    def on_add_int_line(self, evnt):
+        num_of_int_lines = len(self._int_lines) + 1
+        
+        self._int_lines.append(IntegrationLineConfig(self, num_of_int_lines))
+        
+        #create the configuration panels and add them to the top panel using a 
+        #box sizer to control the layout
+        static_szr = wx.StaticBoxSizer(wx.StaticBox(self, wx.ID_ANY, 'Integration Line %d'%num_of_int_lines), wx.VERTICAL)
+        static_szr.Add(self._int_lines[-1], 0 , wx.EXPAND|wx.ALIGN_TOP|wx.ALIGN_RIGHT)
+        idx = self.vsizer.GetItemIndex(self.button_sizer)
+        self.vsizer.Insert(idx, static_szr, 0, wx.EXPAND|wx.ALL, border=5)
+        self._int_line_szrs.append(static_szr)
+        
+        if len(self._int_lines) > 1:
+            self.remove_button.Enable(True)
+        
+        static_szr.Layout()
+        self.vsizer.Layout()
+        self.Parent.SendSizeEvent()
+        
+        
+    def on_remove_int_line(self, evnt):
+        self.vsizer.Remove(self._int_line_szrs[-1])
+        self._int_line_szrs.pop()
+        line = self._int_lines.pop()
+        line.Destroy()
+        if len(self._int_lines) == 1:
+            self.remove_button.Enable(False)
+        
+        self.button_sizer.Layout()
+        self.vsizer.Layout()
+        self.Parent.SendSizeEvent()
+    
+    
+    def get_configs(self):
+
+        if self.low_thresh_chkbx.IsChecked():
+            low_thresh = self.low_thresh_box.GetValue()
+        else:
+            low_thresh = -1
+                 
+        int_method = self.__integration_methods[self.integration_method_choice.GetSelection()]
+        
+        integration_lines = [l.get_configs() for l in self._int_lines]
+        
+        return {
+                'integration_pix_threshold_low': low_thresh,
+                'integration_method': int_method,
+                'integration_lines': integration_lines
+                }
+    
+    
+    def set_configs(self, configs):
+        #set the flux calculation configs
         int_method_idx = self.__integration_methods.index(configs['integration_method'])
         self.integration_method_choice.SetSelection(int_method_idx)
+        
+        if configs['integration_pix_threshold_low'] >= 0:
+            self.low_thresh_chkbx.SetValue(True)
+            self.low_thresh_box.SetValue(configs['integration_pix_threshold_low'])
+        else:
+            self.low_thresh_chkbx.SetValue(False)
+        
+        #now set the configs for all the integration lines that are defined
+        
+        #first remove any extra lines
+        while len(self._int_lines) > 1:
+            self.on_remove_int_line(None)
+        
+        #now set the configs for the first one
+        self._int_lines[0].set_configs(configs['integration_lines'][0])
+        
+        #and now for the rest (if there are any more)
+        if len(configs['integration_lines']) > 1:
+            for i in range(1, len(configs['integration_lines'][1:])+1):
+                self.on_add_int_line(None)
+                self._int_lines[i].set_configs(configs['integration_lines'][i])
  
  
  
@@ -750,7 +909,7 @@ class MainFrame(wx.Frame):
     Main frame of the configuration utility GUI.
     """   
     def __init__(self):
-        wx.Frame.__init__(self, None, wx.ID_ANY, plumetrack.PROG_SHORT_NAME+" Configuration Utility")
+        wx.Frame.__init__(self, None, wx.ID_ANY, " Configuration Utility - "+plumetrack.PROG_SHORT_NAME)
         self.config_panels = []
         self.config_test_frame = None
     
@@ -779,6 +938,8 @@ class MainFrame(wx.Frame):
         vsizer.Add(config_select_static_szr, 0, wx.EXPAND|wx.ALL, border=5)
         config_select_static_szr.Layout()
         
+        vsizer.AddSpacer(10)
+        vsizer.AddStretchSpacer()
         
         input_files_static_szr = wx.StaticBoxSizer(wx.StaticBox(top_panel, wx.ID_ANY, 'Input Files'), wx.VERTICAL)
         self.input_files_config = InputFilesConfig(top_panel)
@@ -811,7 +972,7 @@ class MainFrame(wx.Frame):
         vsizer.AddStretchSpacer()
         
         integration_static_szr = wx.StaticBoxSizer(wx.StaticBox(top_panel, wx.ID_ANY, 'Flux Calculation'), wx.VERTICAL)
-        self.integration_config = IntegrationLineConfig(top_panel)
+        self.integration_config = FluxCalculationConfig(top_panel)
         integration_static_szr.Add(self.integration_config, 0 , wx.EXPAND|wx.ALIGN_TOP|wx.ALIGN_RIGHT)
         vsizer.Add(integration_static_szr, 0, wx.EXPAND|wx.ALL, border=5)
         self.config_panels.append(self.integration_config)

@@ -17,7 +17,7 @@
 import os
 import sys
 import json
-from types import FloatType, ListType, IntType, UnicodeType
+from types import FloatType, ListType, IntType, UnicodeType, DictType
 from optparse import OptionParser
 
 
@@ -81,8 +81,8 @@ def validate_config(config, filename=None):
     expected_configs = [
                         ("filename_format", UnicodeType, lambda x: x != "" and not x.isspace(), "\'filename_format\' cannot be an empty string."),
                         ("file_extension", UnicodeType, lambda x: config["filename_format"].endswith(x), "Mismatch between file extension specified in \'filename_format\' and \'file_extension\'."),
-                        ("threshold_low", FloatType, lambda x: (config["threshold_high"] == -1 or x < config["threshold_high"]) and (x == -1 or x >= 0), "\'threshold_low\' must be either -1 or greater than or equal to 0 and must be less than \'threshold_high\'." ),
-                        ("threshold_high", FloatType, lambda x: x == -1 or x > 0, "\'threshold_high\' must be either -1 or greater than 0." ),
+                        ("motion_pix_threshold_low", FloatType, lambda x: (config["motion_pix_threshold_high"] == -1 or x < config["motion_pix_threshold_high"]) and (x == -1 or x >= 0), "\'threshold_low\' must be either -1 or greater than or equal to 0 and must be less than \'threshold_high\'." ),
+                        ("motion_pix_threshold_high", FloatType, lambda x: x == -1 or x > 0, "\'threshold_high\' must be either -1 or greater than 0." ),
                         ("random_mean", FloatType, lambda x: True, "" ),
                         ("random_sigma", FloatType, lambda x: True, "" ),
                         ("mask_image", UnicodeType, lambda x: x=="" or x.isspace() or os.path.exists(x), "\'mask_image\' file specified does not exist."),
@@ -95,11 +95,32 @@ def validate_config(config, filename=None):
                         ("farneback_iterations", IntType, lambda x: x>=1, "\'farneback_iterations\' must be >=1"),
                         ("farneback_poly_n", IntType, lambda x: x>=3, "\'farneback_poly_n\' must be >=3 (5 or 7 would be a better choice)"),
                         ("farneback_poly_sigma", FloatType, lambda x: x>0.0, "\'farneback_poly_sigma\' must be >0.0"),
-                        ("integration_line", ListType, lambda x: len(x) >=2, "At least 2 points are required for \'integration_line\'"),
-                        ("integration_direction", IntType, lambda x: x==1 or x==-1, "\'integration_direction\' must be either 1 or -1"),
+                        ("integration_pix_threshold_low", FloatType, lambda x: (x == -1 or x >= 0), "\'integration_pix_threshold_low\' must be either -1 or >=0."),
+                        ("integration_lines", ListType, lambda x: len(x) >= 1, "At least one integration line must be defined."),
                         ("integration_method", UnicodeType, lambda x: x in ('1d','2d'), "\'integration_method\' must be either \'1d\' or \'2d\'")
                         ]
+    
+    int_line_configs = [
+                        ("integration_direction", IntType, lambda x: x==1 or x==-1, "\'integration_direction\' must be either 1 or -1"),
+                        ("name", UnicodeType, lambda x: x!="" and not x.isspace(), "Missing name for integration line"),
+                        ("integration_points", ListType, lambda x: len(x)>1, "At least two points are required for each integration line.")
+                        ]
+    
+    #first validate all the top-level configs
+    __validate_config(config, expected_configs, filename=filename)
+    
+    #now validate the configs for the integration lines
+    for i,c in enumerate(config["integration_lines"]):
+        if type(c) != DictType:
+            raise ConfigError("Incorrect type for definition of integration "
+                              "line %d. Expecting a dict."%(i+1))
+        
+        __validate_config(c, int_line_configs, filename=filename, 
+                          subsection="integration line %d"%(i+1))
+    
 
+
+def __validate_config(config, expected_configs, filename=None, subsection=None):
     #first check that they all exist
     defined_names = config.keys()
     for name in [i[0] for i in expected_configs]:
@@ -107,17 +128,29 @@ def validate_config(config, filename=None):
             defined_names.remove(name)
         except ValueError:
             if filename is not None:
-                raise ConfigError("Missing definition of %s in configuration file %s"%(name, filename))
+                if subsection is None:
+                    raise ConfigError("Missing definition of %s in configuration file %s"%(name, filename))
+                else: 
+                    raise ConfigError("Missing definition of %s for %s in configuration file %s"%(name, subsection,filename))
             else:
-                raise ConfigError("Missing definition of %s in configuration."%(name))
-        
+                if subsection is None:
+                    raise ConfigError("Missing definition of %s in configuration."%(name))
+                else:
+                    raise ConfigError("Missing definition of %s for %s in configuration."%(name, subsection))
+                    
     #check if any unknown settings were defined
     if len(defined_names) != 0:
         if filename is not None:
-            raise ConfigError("Unknown setting \'%s\' in configuration file \'%s\'."%(defined_names[0], filename))
+            if subsection is None:
+                raise ConfigError("Unknown setting \'%s\' in configuration file \'%s\'."%(defined_names[0], filename))
+            else:
+                raise ConfigError("Unknown setting \'%s\' for %s in configuration file \'%s\'."%(defined_names[0], subsection, filename))
         else:
-            raise ConfigError("Unknown setting \'%s\' in configuration."%(defined_names[0]))
-        
+            if subsection is None:
+                raise ConfigError("Unknown setting \'%s\' in configuration."%(defined_names[0]))
+            else:
+                raise ConfigError("Unknown setting \'%s\' for %s in configuration."%(defined_names[0], subsection))
+            
     #now check all the types and the test_functions
     for name, expected_type, test_func, message in expected_configs:
         x = config[name]
@@ -130,14 +163,27 @@ def validate_config(config, filename=None):
                     config[name] = x
                 except ValueError:
                     if filename is not None:
-                        raise ConfigError("Incorrect type (%s) for config %s in file %s. Expecting %s"%(type(x),name, filename, expected_type))
+                        if subsection is None:
+                            raise ConfigError("Incorrect type (%s) for config %s in file %s. Expecting %s"%(type(x),name, filename, expected_type))
+                        else:
+                            raise ConfigError("Incorrect type (%s) for config %s for %s in file %s. Expecting %s"%(type(x),name, subsection,filename, expected_type))
                     else:
-                        raise ConfigError("Incorrect type (%s) for config %s. Expecting %s"%(type(x),name, expected_type))
+                        if subsection is None:
+                            raise ConfigError("Incorrect type (%s) for config %s. Expecting %s"%(type(x),name, expected_type))
+                        else:
+                            raise ConfigError("Incorrect type (%s) for config %s for %s. Expecting %s"%(type(x),name, subsection, expected_type))
             else:
                 if filename is not None:
-                    raise ConfigError("Incorrect type (%s) for config %s in file %s. Expecting %s"%(type(x),name, filename, expected_type))
+                    if subsection is None:
+                        raise ConfigError("Incorrect type (%s) for config %s in file %s. Expecting %s"%(type(x),name, filename, expected_type))
+                    else:
+                        raise ConfigError("Incorrect type (%s) for config %s for %s in file %s. Expecting %s"%(type(x),name, subsection,filename, expected_type))
+
                 else:
-                    raise ConfigError("Incorrect type (%s) for config %s. Expecting %s"%(type(x),name, expected_type))
+                    if subsection is None:
+                        raise ConfigError("Incorrect type (%s) for config %s. Expecting %s"%(type(x),name, expected_type))
+                    else:
+                        raise ConfigError("Incorrect type (%s) for config %s for %s. Expecting %s"%(type(x),name, subsection,expected_type))
         if not test_func(x):
             raise ConfigError(message)
     

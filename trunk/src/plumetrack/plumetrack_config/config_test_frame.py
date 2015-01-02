@@ -114,6 +114,10 @@ class MotionFigureControls(wx.Panel):
         sizer.Add(wx.StaticText(self, -1, "Vector density"),0,wx.ALIGN_CENTRE_HORIZONTAL)
         sizer.Add(wx.StaticText(self, -1, "Vector scale"),0,wx.ALIGN_CENTRE_HORIZONTAL)
         self.density_slider = wx.Slider(self, -1, 64, 10, 100)
+        h_txt = ("Change the number of motion vectors that are plotted. This "
+                 "has no effect on the accuracy of the motion field calculated "
+                 "- it only effects the visualisation.")
+        self.density_slider.SetToolTipString(h_txt)
         sizer.Add(self.density_slider, 1, wx.EXPAND)
         
         hsizer.Add(sizer,1,wx.EXPAND)
@@ -121,6 +125,8 @@ class MotionFigureControls(wx.Panel):
         wx.EVT_COMMAND_SCROLL_THUMBRELEASE(self, self.density_slider.GetId(), self.on_density)
         
         self.scale_slider = wx.Slider(self, -1, 25, -50, 50)
+        h_txt = ("Change the length of the plotted motion vectors.")
+        self.scale_slider.SetToolTipString(h_txt)
         sizer.Add(self.scale_slider, 1, wx.EXPAND)
         wx.EVT_COMMAND_SCROLL_THUMBRELEASE(self, self.scale_slider.GetId(), self.on_scale)
         

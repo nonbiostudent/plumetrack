@@ -29,8 +29,8 @@ class MotionEngine(object):
         one image to pixels in a consecutive image. The config argument should be
         a dict of configuration options (as returned from settings.load_config_file()).
         """
-        self.low_thresh = config['threshold_low']
-        self.high_thresh = config['threshold_high']
+        self.low_thresh = config['motion_pix_threshold_low']
+        self.high_thresh = config['motion_pix_threshold_high']
         self.__random_image = None
         self.random_mean = config['random_mean']
         self.random_sigma = config['random_sigma']

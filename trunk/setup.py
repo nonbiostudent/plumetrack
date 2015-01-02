@@ -70,8 +70,8 @@ default_config = {
 "filename_format": "%Y%m%d_%H%M%S.png",
 "file_extension": ".png",
 
-"threshold_low": 0.0,
-"threshold_high": -1.0,
+"motion_pix_threshold_low": 0.0,
+"motion_pix_threshold_high": -1.0,
 "random_mean": 0.0,
 "random_sigma":0.0,
 "mask_image": "", 
@@ -88,8 +88,12 @@ default_config = {
 "farneback_poly_sigma": 1.5,
 
 "integration_method": "2d",
-"integration_line": [[0, 0],[1, 1]],
-"integration_direction": 1                 
+"integration_pix_threshold_low" : -1,
+"integration_lines": [{
+                       "name":"Integration Line 1",
+                       "integration_points": [[0, 0],[1, 1]],
+                       "integration_direction": 1
+                       }]             
                   
 }
 
