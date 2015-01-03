@@ -19,6 +19,7 @@ from matplotlib.backends.backend_wx import NavigationToolbar2Wx
 from matplotlib.pyplot import subplot, figure
 import wx
 import math
+import numpy
 import os
 from plumetrack import dir_iter
 from plumetrack import persist
@@ -106,6 +107,7 @@ class MotionFigureControls(wx.Panel):
         hsizer = wx.BoxSizer(wx.HORIZONTAL)
         
         self.show_intline_chkbx = wx.CheckBox(self, -1, "Show integration lines")
+        wx.EVT_CHECKBOX(self, self.show_intline_chkbx.GetId(), self.on_int_line_chkbx)
         
         hsizer.Add(self.show_intline_chkbx, 0, wx.ALIGN_TOP)
         hsizer.AddSpacer(10)
@@ -122,13 +124,13 @@ class MotionFigureControls(wx.Panel):
         
         hsizer.Add(sizer,1,wx.EXPAND)
         hsizer.AddSpacer(10)
-        wx.EVT_COMMAND_SCROLL_THUMBRELEASE(self, self.density_slider.GetId(), self.on_density)
+        wx.EVT_COMMAND_SCROLL_CHANGED(self, self.density_slider.GetId(), self.on_density)
         
         self.scale_slider = wx.Slider(self, -1, 25, -50, 50)
         h_txt = ("Change the length of the plotted motion vectors.")
         self.scale_slider.SetToolTipString(h_txt)
         sizer.Add(self.scale_slider, 1, wx.EXPAND)
-        wx.EVT_COMMAND_SCROLL_THUMBRELEASE(self, self.scale_slider.GetId(), self.on_scale)
+        wx.EVT_COMMAND_SCROLL_CHANGED(self, self.scale_slider.GetId(), self.on_scale)
         
         self.SetSizer(hsizer)
         hsizer.Fit(self)
@@ -150,6 +152,12 @@ class MotionFigureControls(wx.Panel):
         self.Parent.tb._views._pos = 0
         
         self.Parent.redraw_plot()
+    
+    
+    def on_int_line_chkbx(self, evnt):
+        for p in self.Parent.int_line_plots:
+            p.set_visible(self.show_intline_chkbx.IsChecked())
+        self.Parent.canvas.draw()
         
 
 
@@ -191,6 +199,7 @@ class MotionFigure(wx.Panel):
         
         self.masked_im_plot = None
         self.quiver_plot = None
+        self.int_line_plots = []
         
         #create the matplotlib toolbar
         self.tb = NavBar(self.motion_ax.figure.canvas)
@@ -311,12 +320,31 @@ class MotionFigure(wx.Panel):
             self.masked_im_plot.remove()
             self.masked_im_plot = self.motion_ax.imshow(self.cur_im_masked, extent=self.extent)
         
+        
+              
+        
         if self.quiver_plot is None:
             self.quiver_plot = self.motion_ax.quiver(x_shifts, y_shifts, width=1.6, units='dots', scale_units='xy',angles='xy',scale=self.vector_scale)
         else:
             self.quiver_plot.remove()
             self.quiver_plot = self.motion_ax.quiver(x_shifts, y_shifts, width=1.6, units='dots',scale_units='xy',angles='xy',scale=self.vector_scale)
+        
+        #draw integration lines
+        for p in self.int_line_plots:
+            p.remove()
+        self.int_line_plots = []    
+        
+        for l in self.config['integration_lines']:
+            pts = numpy.array(l['integration_points'])
+            
+            pts[:,0] *= self.extent[2]/float(self.cur_im_masked.shape[1])
+            pts[:,1] *= self.extent[1]/float(self.cur_im_masked.shape[0])
 
+            p, =   self.motion_ax.plot(pts[:,0], pts[:,1], 'w-', linewidth=2)
+            self.int_line_plots.append(p)
+            
+            p.set_visible(self.controls.show_intline_chkbx.IsChecked())
+        
         self.masked_im_plot.axes.set_xlim(self.extent[:2])
         self.masked_im_plot.axes.set_ylim(self.extent[2:])    
 

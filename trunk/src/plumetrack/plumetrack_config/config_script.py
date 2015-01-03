@@ -630,6 +630,7 @@ class MotionTrackingConfig(wx.Panel):
         self.poly_n_box.SetValue(configs['farneback_poly_n'])
         self.poly_sigma_box.SetValue(configs['farneback_poly_sigma'])
  
+ 
 class IntegrationLineConfig(wx.Panel):
     def __init__(self, parent, num):
         super(IntegrationLineConfig, self).__init__(parent)
@@ -700,7 +701,10 @@ class IntegrationLineConfig(wx.Panel):
         except:
             pts = None
         
-        int_line_dialog = IntegrationLineSelectDialog(self.Parent, im, pts, direction)
+        #get any other integration line points from the parent frame
+        other_pts = self.Parent.get_other_int_line_pts(self._num)
+        
+        int_line_dialog = IntegrationLineSelectDialog(self.Parent, im, pts, direction, other_pts=other_pts)
         
         if int_line_dialog.ShowModal() == wx.OK:
             int_line = int_line_dialog.get_integration_line()
@@ -714,6 +718,10 @@ class IntegrationLineConfig(wx.Panel):
                 self.direction_chkbx.SetValue(True)
             else:
                 self.direction_chkbx.SetValue(False)
+            
+            #manually call on config change to update int lines in config test 
+            #frame (if it exists)
+            wx.GetApp().main_frame.on_config_change()
     
     def set_configs(self, configs):
         if configs['integration_direction'] == -1:
@@ -818,6 +826,32 @@ class FluxCalculationConfig(wx.Panel):
         self.vsizer.Fit(self)
         
         self.on_add_int_line(None)
+        
+        
+    def get_other_int_line_pts(self, num):
+        """
+        Returns the points in all the other integration lines except 'num'.
+        """
+        if len(self._int_lines) == 1:
+            return []
+        
+        pts = []
+        for i,l in enumerate(self._int_lines):
+            if i+1 == num:
+                continue
+            
+            int_line_str = l.integration_line_box.GetValue()
+            if int_line_str == "" or int_line_str.isspace():
+                continue
+            
+            try:
+                integration_points = json.loads(int_line_str)
+            except:
+                continue
+            pts.append(numpy.array(integration_points))
+        
+        return pts
+        
         
         
     def on_low_thresh(self, evnt):
@@ -1027,6 +1061,7 @@ class MainFrame(wx.Frame):
         return configs
     
     
+     
     def set_configs(self, configs):
         for p in self.config_panels:
             p.set_configs(configs)    
@@ -1139,7 +1174,7 @@ class MainFrame(wx.Frame):
 
 class IntegrationLineSelectDialog(wx.Dialog):
     
-    def __init__(self, parent, image_array, pts, direction):
+    def __init__(self, parent, image_array, pts, direction, other_pts=[]):
         super(IntegrationLineSelectDialog, self).__init__(parent, wx.ID_ANY, plumetrack.PROG_SHORT_NAME+" Integration Line Selection Tool",
                                                          style=wx.RESIZE_BORDER|wx.DEFAULT_DIALOG_STYLE)
         
@@ -1168,6 +1203,12 @@ class IntegrationLineSelectDialog(wx.Dialog):
         self.mpl_axes.imshow(image_array, cmap=matplotlib.cm.gray)
         self.mpl_axes.set_xticks([])
         self.mpl_axes.set_yticks([])
+        
+        #if other integration lines already exist then draw these in
+        for p in other_pts:
+            self.mpl_axes.plot(p[:,0], p[:,1], 'g--')
+        
+        
         self.canvas.draw()
         
         #create blank plots of the integration line
@@ -1234,7 +1275,7 @@ class IntegrationLineSelectDialog(wx.Dialog):
             start_pts_x = 0.5 * (self.line_xpts[:-1] + self.line_xpts[1:])
             start_pts_y = 0.5 * (self.line_ypts[:-1] + self.line_ypts[1:])
             
-            int_line = flux.IntegrationLine(self.line_xpts, self.line_ypts, self.int_direction)
+            int_line = flux.IntegrationLine("",self.line_xpts, self.line_ypts, self.int_direction)
             
             normals = int_line.get_poly_approx()[2]
             
@@ -1283,7 +1324,8 @@ class IntegrationLineSelectDialog(wx.Dialog):
                       " line. Right clicking on points will remove them. The "
                       "tick marks on the integration line should point in the "
                       "positive flux direction, select \"Reverse integration "
-                      "direction\" if they do not.", 
+                      "direction\" if they do not. Other integration lines that"
+                      " are defined are shown as green dashed lines.", 
                       "plumetrack Integration line help")
     
     

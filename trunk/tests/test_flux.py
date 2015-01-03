@@ -25,16 +25,16 @@ from plumetrack import flux
 
 class IntegrationLineTestCase(unittest.TestCase):
     def test_length(self):
-        int_line = flux.IntegrationLine([0,0],[0,5],1)
+        int_line = flux.IntegrationLine("",[0,0],[0,5],1)
         
         self.assertEqual(int_line.get_length(), 5.0, "Expecting a length of 5.0, got %f"%int_line.get_length())
         
-        int_line = flux.IntegrationLine([0,5],[0,5],1)
+        int_line = flux.IntegrationLine("",[0,5],[0,5],1)
         self.assertEqual(int_line.get_length(), 5.0 * math.sqrt(2.0), "Expecting a length of 5.0 * sqrt(2), got %f"%int_line.get_length())
         
     
     def test_get_npoints(self):
-        int_line = flux.IntegrationLine([1,1,1],[0,3,5],1)
+        int_line = flux.IntegrationLine("",[1,1,1],[0,3,5],1)
                
         self.assertTrue(numpy.all(int_line.get_n_points(-1)== numpy.array([[0.5,-0.5],[0.5,2.5],[0.5,4.5]])), "Expecting to retrieve [[0.5,-0.5],[0.5,2.5],[0.5,4.5]], got %s"%(str(int_line.get_n_points(-1))))
 
@@ -47,19 +47,24 @@ class Simple1DFluxesTestCase(unittest.TestCase):
         
         self.image = numpy.ones((5, 5), dtype='float')
         self.configs = {
-                        'integration_line':[[3, 0], [3, 5]], #vertical line in centre of image
-                        'integration_direction': 1, #positive flux goes from left to right
                         'pixel_size': 1.0,
-                        'flux_conversion_factor': 1.0
+                        'integration_pix_threshold_low': -1,
+                        'flux_conversion_factor': 1.0,
+                        'downsizing_factor': 1.0,
+                        "integration_lines": [{
+                                               "name":"Integration Line 1",
+                                               "integration_points": [[3, 0], [3, 5]],#vertical line in centre of image
+                                               "integration_direction": 1#positive flux goes from left to right
+                                               }]    
                         }
         
     def test_get_int_line(self):
         #ensure that we can retrieve the integration line object
         flux_engine = self._flux_engine(self.configs)   
         
-        int_line = flux_engine.get_integration_line()
+        int_lines = flux_engine.get_integration_lines()
         
-        self.assert_(isinstance(int_line, flux.IntegrationLine), "Failed to retrieve the integration line object from the flux engine")
+        self.assert_(isinstance(int_lines[0], flux.IntegrationLine), "Failed to retrieve the integration line object from the flux engine")
     
     
     def test_zero_flux(self):
@@ -68,21 +73,21 @@ class Simple1DFluxesTestCase(unittest.TestCase):
         
         flux_engine = self._flux_engine(self.configs)
         
-        f = flux_engine.compute_flux(self.image, flow, 1.0)
+        f, =flux_engine.compute_flux(self.image, flow, 1.0)
         
         self.assertEqual(f, 0.0, "Expecting zero flux, got %f"%f)
 
 
     def test_line_outside_of_image(self):
-        self.configs['integration_line'] = [[0,10],[20,10]]
+        self.configs['integration_lines'][0]['integration_points'] = [[0,10],[20,10]]
         
         flow = numpy.zeros((5, 5, 2), dtype='float')
         flow[..., 0] = 1.0
         
         flux_engine = self._flux_engine(self.configs)
-        f = flux_engine.compute_flux(self.image, flow, 1.0)
+        f, = flux_engine.compute_flux(self.image, flow, 1.0)
         
-        self.assertEqual(f, 0.0, "Expecting flux of 5, got %f"%f)
+        self.assertEqual(f, 0.0, "Expecting flux of 0.0, got %f"%f)
     
     
     def test_unity_motion_flux(self):
@@ -92,9 +97,57 @@ class Simple1DFluxesTestCase(unittest.TestCase):
         flow[..., 0] = 1.0
         
         flux_engine = self._flux_engine(self.configs)
-        f = flux_engine.compute_flux(self.image, flow, 1.0)
+        f, =flux_engine.compute_flux(self.image, flow, 1.0)
         
         self.assertEqual(f, 5.0, "Expecting flux of 5, got %f"%f)
+    
+    
+    def test_unity_motion_flux_multiple_int_lines(self):
+        #if the flow is unity in the positive x direction, then we would expect 
+        #a flux equal to the number of pixels in the y-direction of the image
+        #here we test that with three different integration lines
+        self.configs['integration_lines'] = [{
+                                               "name":"Integration Line 1",
+                                               "integration_points": [[3, 0], [3, 5]],#vertical line in centre of image
+                                               "integration_direction": 1#positive flux goes from left to right
+                                               },
+                                             {
+                                               "name":"Integration Line 2",
+                                               "integration_points": [[3, 0], [3, 5]],#vertical line in centre of image
+                                               "integration_direction": 1#positive flux goes from left to right
+                                               },
+                                             {
+                                               "name":"Integration Line 3",
+                                               "integration_points": [[3, 0], [3, 5]],#vertical line in centre of image
+                                               "integration_direction": -1#positive flux goes from left to right
+                                               }
+                                             ]
+        
+        flow = numpy.zeros((5, 5, 2), dtype='float')
+        flow[..., 0] = 1.0
+        
+        flux_engine = self._flux_engine(self.configs)
+        f = flux_engine.compute_flux(self.image, flow, 1.0)
+        
+        self.assertEqual(f[0], 5.0, "Expecting flux of 5, got %f"%f[0])
+        self.assertEqual(f[1], 5.0, "Expecting flux of 5, got %f"%f[1])
+        self.assertEqual(f[2], -5.0, "Expecting flux of -5, got %f"%f[2])
+    
+    
+    def test_unity_motion_flux_with_threshold(self):
+        #if the flow is unity in the positive x direction, then we would expect 
+        #a flux equal to the number of pixels in the y-direction of the image - 
+        #here we set one row of pixels to below the integration threshold
+        self.image[2,:] = 0.4
+        self.configs['integration_pix_threshold_low'] = 0.5
+        
+        flow = numpy.zeros((5, 5, 2), dtype='float')
+        flow[..., 0] = 1.0
+        
+        flux_engine = self._flux_engine(self.configs)
+        f, =flux_engine.compute_flux(self.image, flow, 1.0)
+        
+        self.assertEqual(f, 4.0, "Expecting flux of 4, got %f"%f)
     
     
     def test_unity_motion_flux_large_pixels(self):
@@ -107,7 +160,7 @@ class Simple1DFluxesTestCase(unittest.TestCase):
         flow[..., 0] = 1.0
         
         flux_engine = self._flux_engine(self.configs)
-        f = flux_engine.compute_flux(self.image, flow, 1.0)
+        f, =flux_engine.compute_flux(self.image, flow, 1.0)
         
         self.assertEqual(f, 2.3*2.3*5.0, "Expecting flux of %f, got %f"%(5.0*2.3**2,f))
 
@@ -122,7 +175,7 @@ class Simple1DFluxesTestCase(unittest.TestCase):
         flow[..., 0] = 1.0
         
         flux_engine = self._flux_engine(self.configs)
-        f = flux_engine.compute_flux(self.image, flow, 1.0)
+        f, =flux_engine.compute_flux(self.image, flow, 1.0)
         
         self.assertEqual(f, 0.57*5.0, "Expecting flux of %f, got %f"%(5.0*0.57,f))
     
@@ -134,10 +187,10 @@ class Simple1DFluxesTestCase(unittest.TestCase):
         flow = numpy.zeros((5, 5, 2), dtype='float')
         flow[..., 0] = 1.0
         
-        self.configs['integration_line'] = [[1.01,1],[4.01,4]]
+        self.configs['integration_lines'][0]['integration_points'] = [[1.01,1],[4.01,4]]
         
         flux_engine = self._flux_engine(self.configs)
-        f = flux_engine.compute_flux(self.image, flow, 1.0)
+        f, =flux_engine.compute_flux(self.image, flow, 1.0)
         
         self.assertEqual(f, 3.0, "Expecting flux of 3, got %f"%f)
     
@@ -154,7 +207,7 @@ class Simple1DFluxesTestCase(unittest.TestCase):
         flow[..., 0] = 1.0
         
         flux_engine = self._flux_engine(self.configs)
-        f = flux_engine.compute_flux(self.image, flow, 1.0)
+        f, =flux_engine.compute_flux(self.image, flow, 1.0)
         
         self.assertEqual(f, 5.0, "Expecting flux of 5, got %f"%f)
     
@@ -168,7 +221,7 @@ class Simple1DFluxesTestCase(unittest.TestCase):
         
         flux_engine = self._flux_engine(self.configs)
         
-        f = flux_engine.compute_flux(self.image, flow, 1.0)
+        f, =flux_engine.compute_flux(self.image, flow, 1.0)
         
         self.assertEqual(f, -5.0, "Expecting flux of -5, got %f"%f)
     
@@ -180,10 +233,10 @@ class Simple1DFluxesTestCase(unittest.TestCase):
         flow = numpy.zeros((5, 5, 2), dtype='float')
         flow[..., 0] = -1.0
         
-        self.configs['integration_line'] = [[1.01,1],[4.01,4]]
+        self.configs['integration_lines'][0]['integration_points'] = [[1.01,1],[4.01,4]]
         
         flux_engine = self._flux_engine(self.configs)
-        f = flux_engine.compute_flux(self.image, flow, 1.0)
+        f, =flux_engine.compute_flux(self.image, flow, 1.0)
         
         self.assertEqual(f, -3.0, "Expecting flux of -3, got %f"%f)
     
@@ -198,7 +251,7 @@ class Simple1DFluxesTestCase(unittest.TestCase):
         
         flux_engine = self._flux_engine(self.configs)
         
-        f = flux_engine.compute_flux(self.image, flow, 1.0)
+        f, =flux_engine.compute_flux(self.image, flow, 1.0)
         
         self.assertEqual(f, 0.0, "Expecting flux of 0, got %f"%f)
         
@@ -208,7 +261,7 @@ class Simple1DFluxesTestCase(unittest.TestCase):
         
         flux_engine = self._flux_engine(self.configs)
         
-        f = flux_engine.compute_flux(self.image, flow, 1.0)
+        f, =flux_engine.compute_flux(self.image, flow, 1.0)
         
         self.assertEqual(f, 0.0, "Expecting flux of 0, got %f"%f)
     
@@ -225,7 +278,7 @@ class Simple1DFluxesTestCase(unittest.TestCase):
             im = numpy.array(self.image) #copy of the array
             im[row, :] = 3.6
         
-            f = flux_engine.compute_flux(im, flow, 1.0)
+            f, =flux_engine.compute_flux(im, flow, 1.0)
         
             self.assertEqual(f, 7.6, "Expecting flux of 7.6, got %f when row=%d"%(f,row))
     
@@ -243,7 +296,7 @@ class Simple1DFluxesTestCase(unittest.TestCase):
         for row in range(5):
             im[row, :] = row
         
-        f = flux_engine.compute_flux(im, flow, 1.0)
+        f, =flux_engine.compute_flux(im, flow, 1.0)
         
         self.assertEqual(f, sum(range(5)), "Expecting flux of %d, got %f"%(sum(range(5)),f))
  
@@ -255,10 +308,15 @@ class MultiSegment1DFluxesTestCase(Simple1DFluxesTestCase):
     def setUp(self):
         self.image = numpy.ones((5, 5), dtype='float')
         self.configs = {
-                        'integration_line':[[3, 0], [3, 1],[3, 2],[3, 3],[3, 5]], #vertical line in centre of image
-                        'integration_direction': 1, #positive flux goes from left to right
                         'pixel_size': 1.0,
-                        'flux_conversion_factor': 1.0
+                        'integration_pix_threshold_low': -1,
+                        'flux_conversion_factor': 1.0,
+                        'downsizing_factor': 1.0,
+                        "integration_lines": [{
+                                               "name":"Integration Line 1",
+                                               "integration_points": [[3, 0], [3, 1],[3, 2],[3, 3],[3, 5]], #vertical line in centre of image
+                                               "integration_direction": 1#positive flux goes from left to right
+                                               }]
                         }
         
         
@@ -268,25 +326,25 @@ class MultiSegment1DFluxesTestCase(Simple1DFluxesTestCase):
         #here we allow the integration line to extend beyond the edges of the image
         
         #redefine integration line
-        self.configs['integration_line'] = [[3, -100], [3, -50], [3, -25], [3, 25], [3, 100]]
+        self.configs['integration_lines'][0]["integration_points"] = [[3, -100], [3, -50], [3, -25], [3, 25], [3, 100]]
         
         flow = numpy.zeros((5, 5, 2), dtype='float')
         flow[..., 0] = 1.0
         
         flux_engine = self._flux_engine(self.configs)
-        f = flux_engine.compute_flux(self.image, flow, 1.0)
+        f, =flux_engine.compute_flux(self.image, flow, 1.0)
         
         self.assertEqual(f, 5.0, "Expecting flux of 5, got %f"%f)
     
         
     def test_line_outside_of_image(self):
-        self.configs['integration_line'] = [[0,10],[3,10],[15,10],[20,10]]
+        self.configs['integration_lines'][0]["integration_points"] = [[0,10],[3,10],[15,10],[20,10]]
         
         flow = numpy.zeros((5, 5, 2), dtype='float')
         flow[..., 0] = 1.0
         
         flux_engine = self._flux_engine(self.configs)
-        f = flux_engine.compute_flux(self.image, flow, 1.0)
+        f, =flux_engine.compute_flux(self.image, flow, 1.0)
         
         self.assertEqual(f, 0.0, "Expecting flux of 5, got %f"%f)
             
@@ -297,10 +355,10 @@ class MultiSegment1DFluxesTestCase(Simple1DFluxesTestCase):
         flow = numpy.zeros((5, 5, 2), dtype='float')
         flow[..., 0] = 1.0
         
-        self.configs['integration_line'] = [[1.01,1],[2.01,2],[3.01,3],[4.01,4]]
+        self.configs['integration_lines'][0]["integration_points"] = [[1.01,1],[2.01,2],[3.01,3],[4.01,4]]
         
         flux_engine = self._flux_engine(self.configs)
-        f = flux_engine.compute_flux(self.image, flow, 1.0)
+        f, =flux_engine.compute_flux(self.image, flow, 1.0)
         
         self.assertEqual(f, 3.0, "Expecting flux of 3, got %f"%f)  
  
@@ -323,7 +381,7 @@ class Simple2DFluxesTestCase(Simple1DFluxesTestCase):
         flow[...,1] *= -1
         flux_engine = self._flux_engine(self.configs)
         
-        f = flux_engine.compute_flux(self.image, flow, 1.0)
+        f, =flux_engine.compute_flux(self.image, flow, 1.0)
         
         self.assertEqual(f, 4.0, "Expecting flux of 4, got %f"%f)
         
@@ -353,10 +411,15 @@ class ClosedLoopIntegration1D(unittest.TestCase):
     def setUp(self):
         self.image = numpy.ones((5, 10), dtype='float')
         self.configs = {
-                        'integration_line':[[3, 2], [7, 2],[7, 4],[3, 4],[3, 2]], #vertical line in centre of image
-                        'integration_direction': 1, #positive flux goes from left to right
                         'pixel_size': 1.0,
-                        'flux_conversion_factor': 1.0
+                        'downsizing_factor': 1.0,
+                        'integration_pix_threshold_low': -1,
+                        'flux_conversion_factor': 1.0,
+                        "integration_lines": [{
+                                               "name":"Integration Line 1",
+                                               "integration_points": [[3, 2], [7, 2],[7, 4],[3, 4],[3, 2]], 
+                                               "integration_direction": 1#positive flux goes from left to right
+                                               }]
                         }
     
     def test_unity_flow(self):
@@ -365,7 +428,7 @@ class ClosedLoopIntegration1D(unittest.TestCase):
         flow[..., 0] = 1.0
         
         flux_engine = self._flux_engine(self.configs)
-        f = flux_engine.compute_flux(self.image, flow, 1.0)
+        f, =flux_engine.compute_flux(self.image, flow, 1.0)
         #matshow(flux_engine.find_flux_contributions(flow))
         #colorbar()
         #show()
@@ -378,7 +441,7 @@ class ClosedLoopIntegration1D(unittest.TestCase):
         flow[..., 0] = 1.0
         flow[..., 1] = -1.0
         flux_engine = self._flux_engine(self.configs)
-        f = flux_engine.compute_flux(self.image, flow, 1.0)
+        f, = flux_engine.compute_flux(self.image, flow, 1.0)
         
         self.assertEqual(f, 0.0, "Expecting flux of 0, got %f"%f)
 

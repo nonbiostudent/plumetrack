@@ -19,7 +19,7 @@ import numpy
 
 
 class IntegrationLine:
-    def __init__(self, xpts, ypts, direction):
+    def __init__(self, name,xpts, ypts, direction):
         """
         Class to represent an integration line in an image. Note that the xpts and ypts
         are *not* in pixel coordinates, they are in line coordinates - which are pixel boundary
@@ -32,6 +32,7 @@ class IntegrationLine:
         Integration lines can extend beyond the boundaries of the image without 
         problems.
         """
+        self.name = name
         
         if len(xpts) != len(ypts):
             raise ValueError("xpts and ypts must contain the same number of elements")
@@ -122,19 +123,24 @@ def create_flux_engine(config):
 
 class FluxEngineBase(object):
     def __init__(self, config):
-        xpts, ypts = zip(*config['integration_line'])
         
-        xpts = [i/config['downsizing_factor'] for i in xpts]
-        ypts = [i/config['downsizing_factor'] for i in ypts]
+        self._int_lines = []
         
-        self._int_line = IntegrationLine(xpts, ypts, config['integration_direction'])
+        for int_line_cfg in config['integration_lines']:
+            xpts, ypts = zip(*int_line_cfg['integration_points'])
+            
+            xpts = [i/config['downsizing_factor'] for i in xpts]
+            ypts = [i/config['downsizing_factor'] for i in ypts]
+            
+            self._int_lines.append(IntegrationLine(int_line_cfg['name'], xpts, ypts, int_line_cfg['integration_direction']))
         
         self._pixel_size = config['pixel_size'] * config['downsizing_factor']
         self._conversion_factor = config['flux_conversion_factor']
+        self._low_pix_threshold = config['integration_pix_threshold_low']
     
     
-    def get_integration_line(self):
-        return self._int_line
+    def get_integration_lines(self):
+        return self._int_lines
     
     
     def compute_flux(self, current_image, flow, delta_t):
@@ -159,16 +165,6 @@ class FluxEngine1D(FluxEngineBase):
         #convert the displacements to velocities in m/s
         flow *= (self._pixel_size / delta_t)
         
-        #work out how many segments to split the integration line into, to get 
-        #approximately single pixel resolution
-        line_length = self._int_line.get_length()
-        number_of_segments = int(round(line_length, 0))
-        
-        int_pts, int_vecs, int_norms = self._int_line.get_poly_approx(n=number_of_segments) 
-        
-        #calculate the mid-points of each line segment
-        mid_points = int_pts + (0.5*int_vecs)
-        
         #interpolate the current image to find the pixel values at the points 
         #on the integration line
         image_interp = interp2d(numpy.arange(current_image.shape[1]), 
@@ -185,33 +181,53 @@ class FluxEngine1D(FluxEngineBase):
                                  numpy.arange(flow.shape[0]), 
                                  flow[...,1], copy=False, fill_value=0.0)
         
-        pix_vals = numpy.zeros((number_of_segments,), dtype='float')
-        velocities = numpy.zeros((number_of_segments,2), dtype='float')
-        
-        #note that we have to do this in a for loop rather than calling the 
-        #interpolator with arrays of values - because the mid-points may not be
-        #sorted (or even sortable - e.g. the x coordinates may increase as the 
-        #y coordinates decrease)
-        for i in range(number_of_segments):
-            x_coord = mid_points[i,0]
-            y_coord = mid_points[i,1]
-            pix_vals[i] = image_interp(x_coord, y_coord)        
-            velocities[i,0] = x_flow_interp(x_coord, y_coord)
-            velocities[i,1] = y_flow_interp(x_coord, y_coord)
-        
-        #find component of velocities perpendicular to integration line
-        perp_vel = numpy.diag(numpy.dot(velocities, int_norms.T))
-        
-        #caculate flux
-        line_length_metres = line_length * self._pixel_size
-        fluxes = pix_vals * self._conversion_factor * perp_vel * (line_length_metres / float(number_of_segments))#self._pixel_size
-        
-        #sanity check
-        assert fluxes.shape == (number_of_segments,),"incorrect shape for fluxes array %s, expecting %s"%(str(fluxes.shape), str((number_of_segments,)))
-        
-        total_flux = numpy.sum(fluxes)
-        
-        return total_flux
+        #now compute the flux for each integration line in the list
+        total_fluxes = []
+        for integration_line in self._int_lines:
+            
+            #work out how many segments to split the integration line into, to get 
+            #approximately single pixel resolution
+            line_length = integration_line.get_length()
+            number_of_segments = int(round(line_length, 0))
+            
+            int_pts, int_vecs, int_norms = integration_line.get_poly_approx(n=number_of_segments) 
+            
+            #calculate the mid-points of each line segment
+            mid_points = int_pts + (0.5*int_vecs)
+            
+            pix_vals = numpy.zeros((number_of_segments,), dtype='float')
+            velocities = numpy.zeros((number_of_segments,2), dtype='float')
+            
+            #note that we have to do this in a for loop rather than calling the 
+            #interpolator with arrays of values - because the mid-points may not be
+            #sorted (or even sortable - e.g. the x coordinates may increase as the 
+            #y coordinates decrease)
+            for i in range(number_of_segments):
+                x_coord = mid_points[i,0]
+                y_coord = mid_points[i,1]
+                pix_vals[i] = image_interp(x_coord, y_coord)        
+                velocities[i,0] = x_flow_interp(x_coord, y_coord)
+                velocities[i,1] = y_flow_interp(x_coord, y_coord)
+            
+            #find component of velocities perpendicular to integration line
+            perp_vel = numpy.diag(numpy.dot(velocities, int_norms.T))
+            
+            #caculate flux
+            line_length_metres = line_length * self._pixel_size
+            fluxes = pix_vals * self._conversion_factor * perp_vel * (line_length_metres / float(number_of_segments))#self._pixel_size
+            
+            #sanity check
+            assert fluxes.shape == (number_of_segments,),"incorrect shape for fluxes array %s, expecting %s"%(str(fluxes.shape), str((number_of_segments,)))
+            
+            #only sum the values with pixel values above the low pixel threshold
+            if self._low_pix_threshold > -1:
+                total_flux = numpy.sum(fluxes[numpy.where(pix_vals > self._low_pix_threshold)])
+            else:
+                total_flux = numpy.sum(fluxes)
+            
+            total_fluxes.append(total_flux)
+            
+        return tuple(total_fluxes)
         
         
            
@@ -229,22 +245,33 @@ class FluxEngine2D(FluxEngineBase):
         #convert the pixel values into mass of SO2
         so2_masses_kg = current_image * self._pixel_size**2 * self._conversion_factor
         
-        #find the pixels which contribute to the flux
-        contributing_pixels = self.find_flux_contributions(flow)
+        #now compute the flux for each integration line in the list
+        total_fluxes = []
+        for integration_line in self._int_lines:
+            #find the pixels which contribute to the flux
+            contributing_pixels = self.find_flux_contributions(flow, integration_line)
+            
+            #sum all the contributing pixels (taking into account whether they were
+            #a positive or negative contribution)
+            if self._low_pix_threshold > -1:
+                #only sum the values with pixel values above the low pixel threshold
+                contributing_pixels[numpy.where(current_image < self._low_pix_threshold)] = 0
+
+            total_so2_mass = numpy.sum(so2_masses_kg * contributing_pixels)
+            
+            #convert to flux
+            flux = total_so2_mass / delta_t
+            
+            total_fluxes.append(flux)
         
-        #sum all the contributing pixels (taking into account whether they were
-        #a positive or negative contribution)
-        total_so2_mass = numpy.sum(so2_masses_kg * contributing_pixels)
-        
-        #convert to flux
-        flux = total_so2_mass / delta_t
-        
-        return flux
+        #need to return a tuple NOT a list - since parallel processing using
+        #the flatten() function
+        return tuple(total_fluxes)
     
     
-    def find_flux_contributions(self, flow, poly_approx=-1):
+    def find_flux_contributions(self, flow, integration_line, poly_approx=-1):
     
-        int_pts, int_vecs, int_norms = self._int_line.get_poly_approx(n=poly_approx)
+        int_pts, int_vecs, int_norms = integration_line.get_poly_approx(n=poly_approx)
         
         xsize = flow.shape[0]
         ysize = flow.shape[1]

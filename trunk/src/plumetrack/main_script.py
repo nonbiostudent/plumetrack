@@ -76,7 +76,7 @@ def parallel_process(func, list_, *args, **kwargs):
         results.append(queues[i].get())
         processes[i].join()
      
-    return flatten(results)
+    return flatten(results, ltypes=(list, ))
  
 ############################################################################
 
@@ -296,15 +296,17 @@ def main():
              
             if current_image_fname is not None:
                 
-                so2flux = process_image_pair((current_image_fname, next_image_fname),
+                so2fluxes = process_image_pair((current_image_fname, next_image_fname),
                                              motion_engine, flux_engine, options,
                                              config)
                 
+                fluxes_str = '\t'.join(['%f'%i for i in so2fluxes])
                 if options.output_file is not None:
                     with open(options.output_file,'a') as ofp:
-                        ofp.write("%s\t%s\t%f\n"%(current_image_fname, str(time_from_fname(current_image_fname, config)),so2flux))
+                        
+                        ofp.write("%s\t%s\t%s\n"%(current_image_fname, str(time_from_fname(current_image_fname, config)),fluxes_str))
                 else:
-                    print "%s\t%s\t%f"%(current_image_fname, str(time_from_fname(current_image_fname, config)),so2flux)
+                    print "%s\t%s\t%s"%(current_image_fname, str(time_from_fname(current_image_fname, config)),fluxes_str)
                  
             current_image_fname = next_image_fname
      
@@ -319,9 +321,11 @@ def main():
         if options.output_file is not None:
             with open(options.output_file,'a') as ofp:
                 for i in range(len(fluxes)):
-                    ofp.write("%s\t%s\t%f\n"%(files[i], str(time_from_fname(files[i], config)),fluxes[i]))
+                    fluxes_str = '\t'.join(['%f'%j for j in fluxes[i]])
+                    ofp.write("%s\t%s\t%s\n"%(files[i], str(time_from_fname(files[i], config)),fluxes_str))
         else:
             for i in range(len(fluxes)):
-                print "%s\t%s\t%f"%(files[i], str(time_from_fname(files[i], config)),fluxes[i])
+                fluxes_str = '\t'.join(['%f'%j for j in fluxes[i]])
+                print "%s\t%s\t%s"%(files[i], str(time_from_fname(files[i], config)),fluxes_str)
         
         

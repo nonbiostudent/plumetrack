@@ -90,6 +90,8 @@ def write_output_file_header(filename, im_dir, config):
     
     config_str = json.dumps(config)
     
+    flux_headings = '\t\t'.join([i['name'] for i in config['integration_lines']])
+    
     with open(filename,'w') as ofp:
         
         ofp.write("# plumetrack results file\n")
@@ -99,6 +101,7 @@ def write_output_file_header(filename, im_dir, config):
         ofp.write("# Configuration = %s\n"%config_str)
         ofp.write("#\n")
         ofp.write("#\n")
-        ofp.write("# Filename\tTime\tFlux\n")
+        ofp.write("# Filename\t\tTime\t\t%s\n"%flux_headings)
+        ofp.write("#\n")
 
     
