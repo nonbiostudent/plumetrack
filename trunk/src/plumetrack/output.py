@@ -16,6 +16,7 @@
 #along with plumetrack.  If not, see <http://www.gnu.org/licenses/>.
 import datetime
 import json
+import os
 import matplotlib.pyplot as plt
 import scipy.misc
 
@@ -25,33 +26,12 @@ import plumetrack
 def resample_velocities(image, velocities, yn):
     x_size = int(round((float(yn)/image.shape[1]) * image.shape[0],0))
     
-    x_shifts = scipy.misc.imresize(velocities[...,0], (yn,x_size), 'nearest','F')
-    y_shifts = scipy.misc.imresize(velocities[...,1], (yn,x_size), 'nearest','F')
+    x_shifts = scipy.misc.imresize(velocities[...,0], (x_size, yn), 'nearest','F')
+    y_shifts = scipy.misc.imresize(velocities[...,1], (x_size, yn), 'nearest','F')
     
     extent = (0.0, float(yn-1), float(x_size-1), 0.0)
     
     return x_shifts, y_shifts, extent
-
-
-# def resample_velocities(image, velocities, yn):
-#     x_size = int(round((float(yn)/image.shape[1]) * image.shape[0],0))
-#     
-#     #plot the shift vectors (we interpolate onto a 50x50 grid so that there aren't too many vectors to plot)
-#     interp_x = numpy.linspace(0,image.shape[0],x_size)
-#     interp_y = numpy.linspace(0,image.shape[1],yn)
-#     
-#     orig_x = numpy.arange(image.shape[0])
-#     orig_y = numpy.arange(image.shape[1])
-#     
-#     x_shift_interp = scipy.interpolate.RectBivariateSpline(orig_x, orig_y, velocities[...,0])
-#     x_shifts = x_shift_interp(interp_x,interp_y)
-#     
-#     y_shift_interp = scipy.interpolate.RectBivariateSpline(orig_x, orig_y, velocities[...,1])
-#     y_shifts = y_shift_interp(interp_x,interp_y)
-#     
-#     extent = (0, yn-1, x_size-1, 0)
-#     
-#     return x_shifts, y_shifts, extent
 
 
 def create_motion_png(image, velocities, output_filename, integration_line):
@@ -86,22 +66,68 @@ def create_motion_png(image, velocities, output_filename, integration_line):
     plt.savefig(output_filename)
 
 
-def write_output_file_header(filename, im_dir, config):
+def create_output_file(filename, im_dir, config):
+    
+    try:
+        folder = os.path.dirname(filename)
+        if folder:
+            os.makedirs(folder)
+    except OSError:
+        #folder already exists
+        pass
     
     config_str = json.dumps(config)
     
     flux_headings = '\t\t'.join([i['name'] for i in config['integration_lines']])
     
-    with open(filename,'w') as ofp:
+    ofp = open(filename,'w')
         
-        ofp.write("# plumetrack results file\n")
-        ofp.write("# Created on %s using plumetrack version %s\n"%(datetime.datetime.now(), plumetrack.VERSION))
-        ofp.write("#\n")
-        ofp.write("# Image folder = %s\n"%im_dir)
-        ofp.write("# Configuration = %s\n"%config_str)
-        ofp.write("#\n")
-        ofp.write("#\n")
-        ofp.write("# Filename\t\tTime\t\t%s\n"%flux_headings)
-        ofp.write("#\n")
+    ofp.write("# plumetrack results file\n")
+    ofp.write("# Created on %s using plumetrack version %s\n"%(datetime.datetime.now(), plumetrack.VERSION))
+    ofp.write("#\n")
+    ofp.write("# Image folder = %s\n"%im_dir)
+    ofp.write("# Configuration = %s\n"%config_str)
+    ofp.write("#\n")
+    ofp.write("#\n")
+    ofp.write("# Filename\t\tTime\t\t%s\n"%flux_headings)
+    ofp.write("#\n")
+    
+    return ofp
+
+
+def write_output(options, config, image_dir, times, filenames, fluxes):
+        ofp = None
+        
+        for i in range(len(fluxes)):
+            
+            fluxes_str = '\t'.join(['%f'%j for j in fluxes[i]])
+            
+            output_str = "%s\t%s\t%s"%(filenames[i], times[i],fluxes_str)
+            
+            if options.output_file is None:
+                print output_str
+                continue
+            
+            new_fname = times[i].strftime(options.output_file)
+            
+            #check to see if we need to start a new file
+            if write_output.cur_output_filename != new_fname:
+                if ofp is not None:
+                    ofp.close()                
+                ofp = create_output_file(new_fname, image_dir, config)
+                write_output.cur_output_filename = new_fname
+            else:
+                if ofp is None:
+                    ofp = open(new_fname, "a")
+            
+            ofp.write(output_str)
+            ofp.write("\n")
+        
+        if ofp is not None:
+            ofp.close()
+    
+write_output.cur_output_filename = None    
+    
+
 
     

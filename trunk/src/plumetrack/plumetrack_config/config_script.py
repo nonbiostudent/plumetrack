@@ -957,8 +957,9 @@ class MainFrame(wx.Frame):
         top_sizer = wx.BoxSizer(wx.VERTICAL)
         top_panel = wx.ScrolledWindow(self, wx.ID_ANY)
         vsizer = wx.BoxSizer(wx.VERTICAL)
+        top_panel.SetSizer(vsizer)
         top_panel.SetScrollRate(8,8)
-        top_sizer.Add(top_panel, 1, wx.EXPAND| wx.ALIGN_TOP)
+        #top_sizer.Add(top_panel, 1, wx.EXPAND| wx.ALIGN_TOP)
         
         if prev_cfg_file is None:
             prev_cfg_file = os.path.join(plumetrack.get_plumetrack_rw_dir(),
@@ -1018,17 +1019,26 @@ class MainFrame(wx.Frame):
         buttons_sizer = wx.BoxSizer(wx.HORIZONTAL)
         
         self.test_button = wx.Button(self, wx.ID_ANY, "Test")
+        h_txt = ("Opens a viewer for the motion field created with this "
+                 "configuration. Configuration parameters can be edited and "
+                 "their effects viewed in realtime.")
+        self.test_button.SetToolTipString(h_txt)
         buttons_sizer.Add(self.test_button, 0, wx.ALIGN_BOTTOM|wx.ALIGN_RIGHT|wx.TOP|wx.BOTTOM, border=10)
         wx.EVT_BUTTON(self, self.test_button.GetId(), self.on_test)
         
         self.cancel_button = wx.Button(self, wx.ID_CANCEL, "Cancel")
+        h_txt = ("Exits the program.")
+        self.cancel_button.SetToolTipString(h_txt)
         buttons_sizer.Add(self.cancel_button, 0, wx.ALIGN_BOTTOM|wx.ALIGN_RIGHT|wx.TOP|wx.BOTTOM, border=10)
         wx.EVT_BUTTON(self, self.cancel_button.GetId(), self.on_cancel)
         
         self.save_button = wx.Button(self, wx.ID_SAVEAS, "Save As")
+        h_txt = ("Save the current configuration to a specified file.")
+        self.save_button.SetToolTipString(h_txt)
         buttons_sizer.Add(self.save_button, 0, wx.ALIGN_BOTTOM|wx.ALIGN_RIGHT|wx.TOP|wx.BOTTOM|wx.RIGHT, border=10)
         wx.EVT_BUTTON(self, self.save_button.GetId(), self.on_save)
         
+        top_sizer.Add(top_panel, 1, wx.EXPAND| wx.ALIGN_TOP)
         top_sizer.Add(buttons_sizer, 0, wx.ALIGN_BOTTOM|wx.ALIGN_RIGHT)
         
         #set the configs to those in the default config file (if we can - otherwise

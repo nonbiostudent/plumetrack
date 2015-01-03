@@ -78,12 +78,14 @@ class ConfigTestFrame(wx.Frame):
         
     
     
-    def set_status(self, pix_value,xvel, yvel):
+    def set_status(self, x, y,pix_value,xvel, yvel):
+        self.status_bar.SetStatusText("x,y = %0.2f, %0.2f"%(x,y),0)
         self.status_bar.SetStatusText("Pixel value: %0.2f"%pix_value, 1)
         self.status_bar.SetStatusText("Velocity: %0.2f m/s     (xvel: %0.2f m/s, yvel: %0.2f m/s)"%(math.sqrt((xvel*xvel) + (yvel*yvel)), xvel, yvel), 2)
     
     
     def clear_status(self):
+        self.status_bar.SetStatusText("", 0)
         self.status_bar.SetStatusText("", 1)
         self.status_bar.SetStatusText("", 2)
 
@@ -228,18 +230,27 @@ class MotionFigure(wx.Panel):
         
         else:
             x, y = evnt.xdata, evnt.ydata
-            x *= (self.cur_im_masked.shape[0] - 1) / self.extent[1]
-            y *= (self.cur_im_masked.shape[1] - 1) / self.extent[2]
+            x -= self.extent[3]
+            y -= self.extent[0]
+            
+            x *= (self.cur_im_masked.shape[1] - 1) / (self.extent[1] - self.extent[0]) 
+            y *= (self.cur_im_masked.shape[0] - 1) / (self.extent[2] - self.extent[3])
+            
             
             x = round(x)
             y = round(y)
-            try:
-                xvel, yvel = (self.__cur_flow[y, x] * self.__pix_size) / self.__delta_t
-            except IndexError:
-                #cursor is outside range of image - possible when the zoom tools have been used
+            
+            if x < 0 or x >= self.cur_im_masked.shape[1]:
                 self.main_frame.clear_status()
+                return
+            
+            if y < 0 or y >= self.cur_im_masked.shape[0]:
+                self.main_frame.clear_status()
+                return
 
-            self.main_frame.set_status(self.cur_im_masked[y, x], xvel, -yvel)
+            xvel, yvel = (self.__cur_flow[y, x] * self.__pix_size) / self.__delta_t
+
+            self.main_frame.set_status(x, y, self.cur_im_masked[y, x], xvel, -yvel)
         
              
     def set_config(self, config):
@@ -307,6 +318,9 @@ class MotionFigure(wx.Panel):
         #do the motion analysis
         self.__cur_flow = self.motion_engine.compute_flow(self.cur_im_masked, self.next_im_masked)
         
+        #make the size of the flow field vectors independent of the downsizing factor
+        self.__cur_flow *= self.config['downsizing_factor']
+        
         self.redraw_plot()
     
     
@@ -319,15 +333,18 @@ class MotionFigure(wx.Panel):
         else:
             self.masked_im_plot.remove()
             self.masked_im_plot = self.motion_ax.imshow(self.cur_im_masked, extent=self.extent)
-        
-        
-              
-        
+
         if self.quiver_plot is None:
-            self.quiver_plot = self.motion_ax.quiver(x_shifts, y_shifts, width=1.6, units='dots', scale_units='xy',angles='xy',scale=self.vector_scale)
+            self.quiver_plot = self.motion_ax.quiver(x_shifts, y_shifts, 
+                                                     width=1.6, units='dots', 
+                                                     scale_units='xy',angles='xy',
+                                                     scale=self.vector_scale)
         else:
             self.quiver_plot.remove()
-            self.quiver_plot = self.motion_ax.quiver(x_shifts, y_shifts, width=1.6, units='dots',scale_units='xy',angles='xy',scale=self.vector_scale)
+            self.quiver_plot = self.motion_ax.quiver(x_shifts, y_shifts, width=1.6, 
+                                                     units='dots',scale_units='xy',
+                                                     angles='xy',
+                                                     scale=self.vector_scale)
         
         #draw integration lines
         for p in self.int_line_plots:
@@ -337,8 +354,8 @@ class MotionFigure(wx.Panel):
         for l in self.config['integration_lines']:
             pts = numpy.array(l['integration_points'])
             
-            pts[:,0] *= self.extent[2]/float(self.cur_im_masked.shape[1])
-            pts[:,1] *= self.extent[1]/float(self.cur_im_masked.shape[0])
+            pts[:,0] *= self.extent[1]/float(self.cur_im.shape[1])
+            pts[:,1] *= self.extent[2]/float(self.cur_im.shape[0])
 
             p, =   self.motion_ax.plot(pts[:,0], pts[:,1], 'w-', linewidth=2)
             self.int_line_plots.append(p)

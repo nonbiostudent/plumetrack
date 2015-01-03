@@ -81,7 +81,7 @@ class MotionEngine(object):
             
             image.resize((new_x, new_y), refcheck=False)
             
-            cv2.resize(im_cpy, (new_x,new_y), image)
+            cv2.resize(im_cpy, (new_y, new_x), image)
         
         if self.__random_image is None:
             if self.random_sigma > 0:

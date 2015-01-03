@@ -231,6 +231,7 @@ process_image_pair.cached_im_name = None
 process_image_pair.cached_im = None
 process_image_pair.cached_mask = None
 
+
 ############################################################################
 
 def main():
@@ -282,10 +283,6 @@ def main():
         
         signal.signal(signal.SIGINT, _quit)
       
-    #create a blank output file which we later append to    
-    if options.output_file is not None:
-            output.write_output_file_header(options.output_file, image_dir, config)
-    
     
     if options.realtime or not options.parallel:
         
@@ -294,38 +291,33 @@ def main():
          
         for next_image_fname in image_iter:
              
-            if current_image_fname is not None:
+            if current_image_fname is None:
+                #should only be true on first iteration
+                current_image_fname = next_image_fname
+                continue
                 
-                so2fluxes = process_image_pair((current_image_fname, next_image_fname),
-                                             motion_engine, flux_engine, options,
-                                             config)
-                
-                fluxes_str = '\t'.join(['%f'%i for i in so2fluxes])
-                if options.output_file is not None:
-                    with open(options.output_file,'a') as ofp:
-                        
-                        ofp.write("%s\t%s\t%s\n"%(current_image_fname, str(time_from_fname(current_image_fname, config)),fluxes_str))
-                else:
-                    print "%s\t%s\t%s"%(current_image_fname, str(time_from_fname(current_image_fname, config)),fluxes_str)
+            so2fluxes = process_image_pair((current_image_fname, next_image_fname),
+                                         motion_engine, flux_engine, options,
+                                         config)
+            
+            current_im_time = time_from_fname(current_image_fname, config)
+            
+            output.write_output(options, config, image_dir, [current_im_time], [current_image_fname], [so2fluxes])
                  
             current_image_fname = next_image_fname
+        
      
     else:
         #main loop for parallel processing
         files = [f for f in image_iter]
+        times = [time_from_fname(f, config) for f in files[:-1]]
         file_pairs = zip(files[:-1], files[1:])
          
         fluxes = parallel_process(process_image_pair, file_pairs, motion_engine, 
                                   flux_engine, options, config)
         
-        if options.output_file is not None:
-            with open(options.output_file,'a') as ofp:
-                for i in range(len(fluxes)):
-                    fluxes_str = '\t'.join(['%f'%j for j in fluxes[i]])
-                    ofp.write("%s\t%s\t%s\n"%(files[i], str(time_from_fname(files[i], config)),fluxes_str))
-        else:
-            for i in range(len(fluxes)):
-                fluxes_str = '\t'.join(['%f'%j for j in fluxes[i]])
-                print "%s\t%s\t%s"%(files[i], str(time_from_fname(files[i], config)),fluxes_str)
+
+        output.write_output(options, config, image_dir, times, files[:-1], fluxes)
+        
         
         
