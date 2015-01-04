@@ -1,0 +1,587 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>plumetrack.plumetrack_config.config_test_frame &mdash; plumetrack 15.01 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '15.01',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="plumetrack 15.01 documentation" href="../../../index.html" />
+    <link rel="up" title="plumetrack" href="../../plumetrack.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">plumetrack 15.01 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../plumetrack.html" accesskey="U">plumetrack</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for plumetrack.plumetrack_config.config_test_frame</h1><div class="highlight"><pre>
+<span class="c">#Copyright (C) Nial Peters 2014</span>
+<span class="c">#</span>
+<span class="c">#This file is part of plumetrack.</span>
+<span class="c">#</span>
+<span class="c">#plumetrack is free software: you can redistribute it and/or modify</span>
+<span class="c">#it under the terms of the GNU General Public License as published by</span>
+<span class="c">#the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c">#(at your option) any later version.</span>
+<span class="c">#</span>
+<span class="c">#_plumetrack is distributed in the hope that it will be useful,</span>
+<span class="c">#but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c">#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c">#GNU General Public License for more details.</span>
+<span class="c">#</span>
+<span class="c">#You should have received a copy of the GNU General Public License</span>
+<span class="c">#along with plumetrack.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+<span class="kn">from</span> <span class="nn">matplotlib.backends.backend_wxagg</span> <span class="kn">import</span> <span class="n">FigureCanvasWxAgg</span>
+<span class="kn">from</span> <span class="nn">matplotlib.backends.backend_wx</span> <span class="kn">import</span> <span class="n">NavigationToolbar2Wx</span>
+<span class="kn">from</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">import</span> <span class="n">subplot</span><span class="p">,</span> <span class="n">figure</span>
+<span class="kn">import</span> <span class="nn">wx</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">plumetrack</span> <span class="kn">import</span> <span class="n">dir_iter</span>
+<span class="kn">from</span> <span class="nn">plumetrack</span> <span class="kn">import</span> <span class="n">persist</span>
+<span class="kn">from</span> <span class="nn">plumetrack</span> <span class="kn">import</span> <span class="n">motion</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">main_script</span>
+<span class="kn">import</span> <span class="nn">cv2</span>
+
+
+<div class="viewcode-block" id="ConfigTestFrame"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_test_frame.ConfigTestFrame">[docs]</a><span class="k">class</span> <span class="nc">ConfigTestFrame</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">Frame</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">image_dir</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ConfigTestFrame</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="s">&quot;Configuration test - plumetrack&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_dir</span> <span class="o">=</span> <span class="n">image_dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
+        
+        <span class="n">vsizer</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">BoxSizer</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">VERTICAL</span><span class="p">)</span>
+        
+        <span class="n">splitter</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">SplitterWindow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">motion_figure</span> <span class="o">=</span> <span class="n">MotionFigure</span><span class="p">(</span><span class="n">splitter</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_list</span> <span class="o">=</span> <span class="n">ImageFileList</span><span class="p">(</span><span class="n">splitter</span><span class="p">,</span> <span class="n">image_dir</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">motion_figure</span><span class="p">)</span>
+        <span class="n">splitter</span><span class="o">.</span><span class="n">SplitVertically</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_list</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">motion_figure</span><span class="p">,</span> <span class="n">sashPosition</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">file_list</span><span class="o">.</span><span class="n">GetBestSizeTuple</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+        
+        <span class="n">vsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">splitter</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">EXPAND</span><span class="p">)</span>
+        
+        <span class="n">wx</span><span class="o">.</span><span class="n">EVT_CLOSE</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span><span class="p">)</span>
+        
+        <span class="c">#create a status bar to show the velocity values </span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status_bar</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">StatusBar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">vsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">status_bar</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_BOTTOM</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status_bar</span><span class="o">.</span><span class="n">SetFieldsCount</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">SetSizer</span><span class="p">(</span><span class="n">vsizer</span><span class="p">)</span>
+        <span class="n">vsizer</span><span class="o">.</span><span class="n">Fit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">Show</span><span class="p">()</span>
+    
+    
+<div class="viewcode-block" id="ConfigTestFrame.on_close"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_test_frame.ConfigTestFrame.on_close">[docs]</a>    <span class="k">def</span> <span class="nf">on_close</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evnt</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Parent</span><span class="o">.</span><span class="n">_on_config_test_frame_close</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">motion_figure</span><span class="o">.</span><span class="n">Destroy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_list</span><span class="o">.</span><span class="n">Destroy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Destroy</span><span class="p">()</span>
+        
+    
+    </div>
+<div class="viewcode-block" id="ConfigTestFrame.set_config"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_test_frame.ConfigTestFrame.set_config">[docs]</a>    <span class="k">def</span> <span class="nf">set_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_list</span><span class="o">.</span><span class="n">set_config</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
+            <span class="k">return</span>
+        
+        <span class="c">#this is a horrible hack to force the motion figure to update its stored</span>
+        <span class="c">#filenames on config updates</span>
+        <span class="n">cur_im</span><span class="p">,</span> <span class="n">next_im</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_list</span><span class="o">.</span><span class="n">get_current_selection</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">motion_figure</span><span class="o">.</span><span class="n">cur_filename</span> <span class="o">=</span> <span class="n">cur_im</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">motion_figure</span><span class="o">.</span><span class="n">next_filename</span> <span class="o">=</span> <span class="n">next_im</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">motion_figure</span><span class="o">.</span><span class="n">set_config</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+    
+</div>
+<div class="viewcode-block" id="ConfigTestFrame.set_status"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_test_frame.ConfigTestFrame.set_status">[docs]</a>    <span class="k">def</span> <span class="nf">set_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span><span class="n">pix_value</span><span class="p">,</span><span class="n">xvel</span><span class="p">,</span> <span class="n">yvel</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status_bar</span><span class="o">.</span><span class="n">SetStatusText</span><span class="p">(</span><span class="s">&quot;x,y = </span><span class="si">%0.2f</span><span class="s">, </span><span class="si">%0.2f</span><span class="s">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">),</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status_bar</span><span class="o">.</span><span class="n">SetStatusText</span><span class="p">(</span><span class="s">&quot;Pixel value: </span><span class="si">%0.2f</span><span class="s">&quot;</span><span class="o">%</span><span class="n">pix_value</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status_bar</span><span class="o">.</span><span class="n">SetStatusText</span><span class="p">(</span><span class="s">&quot;Velocity: </span><span class="si">%0.2f</span><span class="s"> m/s     (xvel: </span><span class="si">%0.2f</span><span class="s"> m/s, yvel: </span><span class="si">%0.2f</span><span class="s"> m/s)&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">xvel</span><span class="o">*</span><span class="n">xvel</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">yvel</span><span class="o">*</span><span class="n">yvel</span><span class="p">)),</span> <span class="n">xvel</span><span class="p">,</span> <span class="n">yvel</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+    
+    </div>
+<div class="viewcode-block" id="ConfigTestFrame.clear_status"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_test_frame.ConfigTestFrame.clear_status">[docs]</a>    <span class="k">def</span> <span class="nf">clear_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status_bar</span><span class="o">.</span><span class="n">SetStatusText</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status_bar</span><span class="o">.</span><span class="n">SetStatusText</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status_bar</span><span class="o">.</span><span class="n">SetStatusText</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+</div></div>
+<div class="viewcode-block" id="NavBar"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_test_frame.NavBar">[docs]</a><span class="k">class</span> <span class="nc">NavBar</span><span class="p">(</span><span class="n">NavigationToolbar2Wx</span><span class="p">):</span>
+    <span class="n">toolitems</span> <span class="o">=</span> <span class="p">((</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span> <span class="c">#divider</span>
+                 <span class="p">(</span><span class="s">&#39;Home&#39;</span><span class="p">,</span> <span class="s">&#39;Reset original view&#39;</span><span class="p">,</span> <span class="s">&#39;home&#39;</span><span class="p">,</span> <span class="s">&#39;home&#39;</span><span class="p">),</span> 
+                 <span class="p">(</span><span class="s">&#39;Back&#39;</span><span class="p">,</span> <span class="s">&#39;Back to  previous view&#39;</span><span class="p">,</span> <span class="s">&#39;back&#39;</span><span class="p">,</span> <span class="s">&#39;back&#39;</span><span class="p">),</span> 
+                 <span class="p">(</span><span class="s">&#39;Forward&#39;</span><span class="p">,</span> <span class="s">&#39;Forward to next view&#39;</span><span class="p">,</span> <span class="s">&#39;forward&#39;</span><span class="p">,</span> <span class="s">&#39;forward&#39;</span><span class="p">),</span> 
+                 <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span> 
+                 <span class="p">(</span><span class="s">&#39;Pan&#39;</span><span class="p">,</span> <span class="s">&#39;Pan axes with left mouse, zoom with right&#39;</span><span class="p">,</span> <span class="s">&#39;move&#39;</span><span class="p">,</span> <span class="s">&#39;pan&#39;</span><span class="p">),</span> 
+                 <span class="p">(</span><span class="s">&#39;Zoom&#39;</span><span class="p">,</span> <span class="s">&#39;Zoom to rectangle&#39;</span><span class="p">,</span> <span class="s">&#39;zoom_to_rect&#39;</span><span class="p">,</span> <span class="s">&#39;zoom&#39;</span><span class="p">),</span> 
+                 <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span> 
+                 <span class="p">(</span><span class="s">&#39;Save&#39;</span><span class="p">,</span> <span class="s">&#39;Save the figure&#39;</span><span class="p">,</span> <span class="s">&#39;filesave&#39;</span><span class="p">,</span> <span class="s">&#39;save_figure&#39;</span><span class="p">))</span>
+
+</div>
+<div class="viewcode-block" id="MotionFigureControls"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_test_frame.MotionFigureControls">[docs]</a><span class="k">class</span> <span class="nc">MotionFigureControls</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">Panel</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MotionFigureControls</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+        
+        <span class="n">hsizer</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">BoxSizer</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">HORIZONTAL</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">show_intline_chkbx</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">CheckBox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Show integration lines&quot;</span><span class="p">)</span>
+        <span class="n">wx</span><span class="o">.</span><span class="n">EVT_CHECKBOX</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">show_intline_chkbx</span><span class="o">.</span><span class="n">GetId</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_int_line_chkbx</span><span class="p">)</span>
+        
+        <span class="n">hsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">show_intline_chkbx</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_TOP</span><span class="p">)</span>
+        <span class="n">hsizer</span><span class="o">.</span><span class="n">AddSpacer</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+        <span class="n">sizer</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">GridSizer</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+        
+        <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">StaticText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Vector density&quot;</span><span class="p">),</span><span class="mi">0</span><span class="p">,</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_HORIZONTAL</span><span class="p">)</span>
+        <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">StaticText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Vector scale&quot;</span><span class="p">),</span><span class="mi">0</span><span class="p">,</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_HORIZONTAL</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">density_slider</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">Slider</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+        <span class="n">h_txt</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;Change the number of motion vectors that are plotted. This &quot;</span>
+                 <span class="s">&quot;has no effect on the accuracy of the motion field calculated &quot;</span>
+                 <span class="s">&quot;- it only effects the visualisation.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">density_slider</span><span class="o">.</span><span class="n">SetToolTipString</span><span class="p">(</span><span class="n">h_txt</span><span class="p">)</span>
+        <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">density_slider</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">EXPAND</span><span class="p">)</span>
+        
+        <span class="n">hsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">sizer</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">wx</span><span class="o">.</span><span class="n">EXPAND</span><span class="p">)</span>
+        <span class="n">hsizer</span><span class="o">.</span><span class="n">AddSpacer</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+        <span class="n">wx</span><span class="o">.</span><span class="n">EVT_COMMAND_SCROLL_CHANGED</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">density_slider</span><span class="o">.</span><span class="n">GetId</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_density</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">scale_slider</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">Slider</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="o">-</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+        <span class="n">h_txt</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;Change the length of the plotted motion vectors.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scale_slider</span><span class="o">.</span><span class="n">SetToolTipString</span><span class="p">(</span><span class="n">h_txt</span><span class="p">)</span>
+        <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scale_slider</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">EXPAND</span><span class="p">)</span>
+        <span class="n">wx</span><span class="o">.</span><span class="n">EVT_COMMAND_SCROLL_CHANGED</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_slider</span><span class="o">.</span><span class="n">GetId</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_scale</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">SetSizer</span><span class="p">(</span><span class="n">hsizer</span><span class="p">)</span>
+        <span class="n">hsizer</span><span class="o">.</span><span class="n">Fit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+    
+    
+<div class="viewcode-block" id="MotionFigureControls.on_scale"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_test_frame.MotionFigureControls.on_scale">[docs]</a>    <span class="k">def</span> <span class="nf">on_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evnt</span><span class="p">):</span>
+        <span class="n">new_scale</span> <span class="o">=</span> <span class="mi">50</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_slider</span><span class="o">.</span><span class="n">GetValue</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Parent</span><span class="o">.</span><span class="n">vector_scale</span> <span class="o">=</span> <span class="p">(</span><span class="n">new_scale</span><span class="o">/</span><span class="mf">25.0</span><span class="p">)</span><span class="o">*</span><span class="mf">1.5</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Parent</span><span class="o">.</span><span class="n">redraw_plot</span><span class="p">()</span>
+    
+    </div>
+<div class="viewcode-block" id="MotionFigureControls.on_density"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_test_frame.MotionFigureControls.on_density">[docs]</a>    <span class="k">def</span> <span class="nf">on_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evnt</span><span class="p">):</span>
+        
+        <span class="n">new_density</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">density_slider</span><span class="o">.</span><span class="n">GetValue</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Parent</span><span class="o">.</span><span class="n">_quiver_density</span> <span class="o">=</span> <span class="n">new_density</span>
+        
+        <span class="c">#clear the zoom history - otherwise it causes problems</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Parent</span><span class="o">.</span><span class="n">tb</span><span class="o">.</span><span class="n">_views</span><span class="o">.</span><span class="n">_elements</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Parent</span><span class="o">.</span><span class="n">tb</span><span class="o">.</span><span class="n">_views</span><span class="o">.</span><span class="n">_pos</span> <span class="o">=</span> <span class="mi">0</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">Parent</span><span class="o">.</span><span class="n">redraw_plot</span><span class="p">()</span>
+    
+    </div>
+<div class="viewcode-block" id="MotionFigureControls.on_int_line_chkbx"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_test_frame.MotionFigureControls.on_int_line_chkbx">[docs]</a>    <span class="k">def</span> <span class="nf">on_int_line_chkbx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evnt</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Parent</span><span class="o">.</span><span class="n">int_line_plots</span><span class="p">:</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">show_intline_chkbx</span><span class="o">.</span><span class="n">IsChecked</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Parent</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+        
+
+</div></div>
+<div class="viewcode-block" id="MotionFigure"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_test_frame.MotionFigure">[docs]</a><span class="k">class</span> <span class="nc">MotionFigure</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">Panel</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">main_frame</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MotionFigure</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+          
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mpl_figure</span> <span class="o">=</span> <span class="n">figure</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span> <span class="o">=</span> <span class="n">FigureCanvasWxAgg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mpl_figure</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">main_frame</span> <span class="o">=</span> <span class="n">main_frame</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_quiver_density</span> <span class="o">=</span> <span class="mi">64</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vector_scale</span> <span class="o">=</span> <span class="mf">1.5</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extent</span> <span class="o">=</span> <span class="bp">None</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">cur_im</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">next_im</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cur_im_masked</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">next_im_masked</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__cur_flow</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__delta_t</span> <span class="o">=</span> <span class="bp">None</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">cur_filename</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">next_filename</span> <span class="o">=</span> <span class="bp">None</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_config</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">controls</span> <span class="o">=</span> <span class="n">MotionFigureControls</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        
+        <span class="c">#setup the subplot</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">motion_ax</span> <span class="o">=</span> <span class="n">subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+        
+        <span class="c">#turn off all the tick marks</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">motion_ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">([])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">motion_ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([])</span>
+        
+        <span class="c">#setup the callback handler for mouse move events</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">motion_ax</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">mpl_connect</span><span class="p">(</span><span class="s">&#39;motion_notify_event&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_mouse_move</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">masked_im_plot</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">quiver_plot</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">int_line_plots</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="c">#create the matplotlib toolbar</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tb</span> <span class="o">=</span> <span class="n">NavBar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">motion_ax</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">canvas</span><span class="p">)</span>
+        
+        <span class="n">vsizer</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">BoxSizer</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">VERTICAL</span><span class="p">)</span>
+        <span class="n">vsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tb</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">wx</span><span class="o">.</span><span class="n">EXPAND</span><span class="p">)</span>
+        <span class="n">vsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">EXPAND</span><span class="p">)</span>
+        <span class="n">vsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">controls</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">EXPAND</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">SetSizer</span><span class="p">(</span><span class="n">vsizer</span><span class="p">)</span>
+        <span class="n">vsizer</span><span class="o">.</span><span class="n">Fit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        
+    
+<div class="viewcode-block" id="MotionFigure.clear_plot"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_test_frame.MotionFigure.clear_plot">[docs]</a>    <span class="k">def</span> <span class="nf">clear_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__visible</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">masked_im_plot</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">masked_im_plot</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">quiver_plot</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">quiver_plot</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span> 
+        
+    </div>
+<div class="viewcode-block" id="MotionFigure.on_mouse_move"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_test_frame.MotionFigure.on_mouse_move">[docs]</a>    <span class="k">def</span> <span class="nf">on_mouse_move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evnt</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">evnt</span><span class="o">.</span><span class="n">inaxes</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">motion_ax</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">__cur_flow</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__visible</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">main_frame</span><span class="o">.</span><span class="n">clear_status</span><span class="p">()</span>
+        
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">evnt</span><span class="o">.</span><span class="n">xdata</span><span class="p">,</span> <span class="n">evnt</span><span class="o">.</span><span class="n">ydata</span>
+            <span class="n">x</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extent</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+            <span class="n">y</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extent</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            
+            <span class="n">x</span> <span class="o">*=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cur_im_masked</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extent</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">extent</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> 
+            <span class="n">y</span> <span class="o">*=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cur_im_masked</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extent</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">extent</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+            
+            
+            <span class="n">x</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">x</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cur_im_masked</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">main_frame</span><span class="o">.</span><span class="n">clear_status</span><span class="p">()</span>
+                <span class="k">return</span>
+            
+            <span class="k">if</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">y</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cur_im_masked</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">main_frame</span><span class="o">.</span><span class="n">clear_status</span><span class="p">()</span>
+                <span class="k">return</span>
+
+            <span class="n">xvel</span><span class="p">,</span> <span class="n">yvel</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__cur_flow</span><span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">__pix_size</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">__delta_t</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">main_frame</span><span class="o">.</span><span class="n">set_status</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cur_im_masked</span><span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">],</span> <span class="n">xvel</span><span class="p">,</span> <span class="o">-</span><span class="n">yvel</span><span class="p">)</span>
+        
+             </div>
+<div class="viewcode-block" id="MotionFigure.set_config"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_test_frame.MotionFigure.set_config">[docs]</a>    <span class="k">def</span> <span class="nf">set_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
+        <span class="c">#try:</span>
+        <span class="c">#    self.motion_engine = motion.GPUMotionEngine(config)</span>
+        <span class="c">#except AttributeError:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">motion_engine</span> <span class="o">=</span> <span class="n">motion</span><span class="o">.</span><span class="n">MotionEngine</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">__pix_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;pixel_size&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;downsizing_factor&#39;</span><span class="p">]</span>
+        
+        <span class="c">#now update the plots to reflect the new config</span>
+        <span class="c">#clear cached images</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extent</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cur_im</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">next_im</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cur_im_masked</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">next_im_masked</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__cur_flow</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__delta_t</span> <span class="o">=</span> <span class="bp">None</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cur_filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_images</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cur_filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_filename</span><span class="p">)</span>
+    
+    </div>
+    <span class="k">def</span> <span class="nf">__new_cur_im</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cur_filename</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cur_im</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">cur_filename</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">IMREAD_UNCHANGED</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cur_filename</span> <span class="o">=</span> <span class="n">cur_filename</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cur_im_masked</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cur_im</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">motion_engine</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cur_im_masked</span><span class="p">)</span>
+    
+    
+    <span class="k">def</span> <span class="nf">__new_next_im</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">next_filename</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">next_im</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">next_filename</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">IMREAD_UNCHANGED</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">next_filename</span> <span class="o">=</span> <span class="n">next_filename</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">next_im_masked</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_im</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">motion_engine</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">next_im_masked</span><span class="p">)</span>
+    
+    
+<div class="viewcode-block" id="MotionFigure.set_images"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_test_frame.MotionFigure.set_images">[docs]</a>    <span class="k">def</span> <span class="nf">set_images</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cur_filename</span><span class="p">,</span> <span class="n">next_filename</span><span class="p">):</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">__visible</span> <span class="o">=</span> <span class="bp">True</span>
+        
+        <span class="k">if</span> <span class="n">cur_filename</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_filename</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cur_filename</span> <span class="o">=</span> <span class="n">cur_filename</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cur_im</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_im</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cur_im_masked</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_im_masked</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">__new_next_im</span><span class="p">(</span><span class="n">next_filename</span><span class="p">)</span>
+            
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">cur_filename</span> <span class="o">==</span> <span class="n">next_filename</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">next_filename</span> <span class="o">=</span> <span class="n">next_filename</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">next_im</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cur_im</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">next_im_masked</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cur_im_masked</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">__new_cur_im</span><span class="p">(</span><span class="n">cur_filename</span><span class="p">)</span>
+        
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__new_next_im</span><span class="p">(</span><span class="n">next_filename</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__new_cur_im</span><span class="p">(</span><span class="n">cur_filename</span><span class="p">)</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">__delta_t</span> <span class="o">=</span> <span class="p">(</span><span class="n">main_script</span><span class="o">.</span><span class="n">date2secs</span><span class="p">(</span><span class="n">main_script</span><span class="o">.</span><span class="n">time_from_fname</span><span class="p">(</span><span class="n">next_filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">))</span> <span class="o">-</span> 
+                          <span class="n">main_script</span><span class="o">.</span><span class="n">date2secs</span><span class="p">(</span><span class="n">main_script</span><span class="o">.</span><span class="n">time_from_fname</span><span class="p">(</span><span class="n">cur_filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)))</span>
+          
+        <span class="c">#do the motion analysis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__cur_flow</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">motion_engine</span><span class="o">.</span><span class="n">compute_flow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cur_im_masked</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_im_masked</span><span class="p">)</span>
+        
+        <span class="c">#make the size of the flow field vectors independent of the downsizing factor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__cur_flow</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;downsizing_factor&#39;</span><span class="p">]</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">redraw_plot</span><span class="p">()</span>
+    
+    </div>
+<div class="viewcode-block" id="MotionFigure.redraw_plot"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_test_frame.MotionFigure.redraw_plot">[docs]</a>    <span class="k">def</span> <span class="nf">redraw_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        
+        <span class="n">x_shifts</span><span class="p">,</span> <span class="n">y_shifts</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">extent</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">resample_velocities</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cur_im_masked</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__cur_flow</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quiver_density</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">masked_im_plot</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">masked_im_plot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">motion_ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cur_im_masked</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">extent</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">masked_im_plot</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">masked_im_plot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">motion_ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cur_im_masked</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">extent</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">quiver_plot</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">quiver_plot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">motion_ax</span><span class="o">.</span><span class="n">quiver</span><span class="p">(</span><span class="n">x_shifts</span><span class="p">,</span> <span class="n">y_shifts</span><span class="p">,</span> 
+                                                     <span class="n">width</span><span class="o">=</span><span class="mf">1.6</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s">&#39;dots&#39;</span><span class="p">,</span> 
+                                                     <span class="n">scale_units</span><span class="o">=</span><span class="s">&#39;xy&#39;</span><span class="p">,</span><span class="n">angles</span><span class="o">=</span><span class="s">&#39;xy&#39;</span><span class="p">,</span>
+                                                     <span class="n">scale</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">vector_scale</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">quiver_plot</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">quiver_plot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">motion_ax</span><span class="o">.</span><span class="n">quiver</span><span class="p">(</span><span class="n">x_shifts</span><span class="p">,</span> <span class="n">y_shifts</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">1.6</span><span class="p">,</span> 
+                                                     <span class="n">units</span><span class="o">=</span><span class="s">&#39;dots&#39;</span><span class="p">,</span><span class="n">scale_units</span><span class="o">=</span><span class="s">&#39;xy&#39;</span><span class="p">,</span>
+                                                     <span class="n">angles</span><span class="o">=</span><span class="s">&#39;xy&#39;</span><span class="p">,</span>
+                                                     <span class="n">scale</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">vector_scale</span><span class="p">)</span>
+        
+        <span class="c">#draw integration lines</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">int_line_plots</span><span class="p">:</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">int_line_plots</span> <span class="o">=</span> <span class="p">[]</span>    
+        
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;integration_lines&#39;</span><span class="p">]:</span>
+            <span class="n">pts</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="s">&#39;integration_points&#39;</span><span class="p">])</span>
+            
+            <span class="n">pts</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extent</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cur_im</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">pts</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extent</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cur_im</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+            <span class="n">p</span><span class="p">,</span> <span class="o">=</span>   <span class="bp">self</span><span class="o">.</span><span class="n">motion_ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pts</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">pts</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="s">&#39;w-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">int_line_plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+            
+            <span class="n">p</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">controls</span><span class="o">.</span><span class="n">show_intline_chkbx</span><span class="o">.</span><span class="n">IsChecked</span><span class="p">())</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">masked_im_plot</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extent</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">masked_im_plot</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extent</span><span class="p">[</span><span class="mi">2</span><span class="p">:])</span>    
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">masked_im_plot</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">quiver_plot</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+
+        
+
+
+</div></div>
+<div class="viewcode-block" id="ImageFileList"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_test_frame.ImageFileList">[docs]</a><span class="k">class</span> <span class="nc">ImageFileList</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">Panel</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">image_dir</span><span class="p">,</span><span class="n">config</span><span class="p">,</span> <span class="n">plot_panel</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ImageFileList</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_extension</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s">&#39;file_extension&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename_format</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s">&#39;filename_format&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_panel</span> <span class="o">=</span> <span class="n">plot_panel</span>
+        <span class="n">vsizer</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">BoxSizer</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">VERTICAL</span><span class="p">)</span>
+        
+        <span class="n">hsizer</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">BoxSizer</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">HORIZONTAL</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">im_dir_box</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">TextCtrl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">image_dir</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">browse_button</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Browse&quot;</span><span class="p">)</span>
+        <span class="n">h_txt</span> <span class="o">=</span> <span class="s">&quot;Select a directory containing images to test the configuration on.&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">im_dir_box</span><span class="o">.</span><span class="n">SetToolTipString</span><span class="p">(</span><span class="n">h_txt</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">browse_button</span><span class="o">.</span><span class="n">SetToolTipString</span><span class="p">(</span><span class="n">h_txt</span><span class="p">)</span>
+        <span class="n">wx</span><span class="o">.</span><span class="n">EVT_BUTTON</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">browse_button</span><span class="o">.</span><span class="n">GetId</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_browse</span><span class="p">)</span>
+        
+        <span class="n">hsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">im_dir_box</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">EXPAND</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_LEFT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span> <span class="n">border</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+        <span class="n">hsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">browse_button</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_LEFT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
+        <span class="n">hsizer</span><span class="o">.</span><span class="n">AddSpacer</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+        
+        <span class="n">vsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">hsizer</span><span class="p">,</span> <span class="mi">0</span> <span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">EXPAND</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">im_list_box</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">ListBox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="p">[])</span>
+        <span class="n">vsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">im_list_box</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">EXPAND</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">LEFT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">RIGHT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">TOP</span><span class="p">,</span> <span class="n">border</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+        <span class="n">wx</span><span class="o">.</span><span class="n">EVT_LISTBOX</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">im_list_box</span><span class="o">.</span><span class="n">GetId</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_select_image</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_image_dir</span><span class="p">(</span><span class="n">image_dir</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">SetSizer</span><span class="p">(</span><span class="n">vsizer</span><span class="p">)</span>
+        <span class="n">vsizer</span><span class="o">.</span><span class="n">Fit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+    
+    
+<div class="viewcode-block" id="ImageFileList.on_browse"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_test_frame.ImageFileList.on_browse">[docs]</a>    <span class="k">def</span> <span class="nf">on_browse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evnt</span><span class="p">):</span>
+        
+        
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">prev_dir</span> <span class="o">=</span> <span class="n">persist</span><span class="o">.</span><span class="n">PersistentStorage</span><span class="p">()</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s">&quot;config_test_frame_image_dir&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">prev_dir</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+        
+        <span class="n">im_dir</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">DirSelector</span><span class="p">(</span><span class="s">&quot;Select directory containing images to test the &quot;</span>
+                                <span class="s">&quot;configuration on&quot;</span><span class="p">,</span> <span class="n">defaultPath</span><span class="o">=</span><span class="n">prev_dir</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">im_dir</span> <span class="o">==</span> <span class="s">&quot;&quot;</span><span class="p">:</span>
+            <span class="k">return</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">im_dir_box</span><span class="o">.</span><span class="n">SetValue</span><span class="p">(</span><span class="n">im_dir</span><span class="p">)</span>
+            
+        <span class="n">persist</span><span class="o">.</span><span class="n">PersistentStorage</span><span class="p">()</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="s">&quot;config_test_frame_image_dir&quot;</span><span class="p">,</span> <span class="n">im_dir</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_image_dir</span><span class="p">(</span><span class="n">im_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
+    
+    </div>
+<div class="viewcode-block" id="ImageFileList.set_config"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_test_frame.ImageFileList.set_config">[docs]</a>    <span class="k">def</span> <span class="nf">set_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
+        <span class="k">if</span> <span class="n">config</span><span class="p">[</span><span class="s">&#39;file_extension&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_extension</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_image_dir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">im_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">file_extension</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s">&#39;file_extension&#39;</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="n">config</span><span class="p">[</span><span class="s">&#39;filename_format&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename_format</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">filename_format</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s">&#39;filename_format&#39;</span><span class="p">]</span>
+            
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_select_image</span><span class="p">(</span><span class="bp">None</span><span class="p">):</span>
+                <span class="k">return</span> <span class="mi">1</span>
+                      
+        <span class="n">wx</span><span class="o">.</span><span class="n">Yield</span><span class="p">()</span>
+        
+    </div>
+<div class="viewcode-block" id="ImageFileList.set_image_dir"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_test_frame.ImageFileList.set_image_dir">[docs]</a>    <span class="k">def</span> <span class="nf">set_image_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">im_dir</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">images</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">dir_iter</span><span class="o">.</span><span class="n">find_files</span><span class="p">(</span><span class="n">im_dir</span><span class="p">,</span> <span class="n">pattern</span><span class="o">=</span><span class="s">&#39;*&#39;</span><span class="o">+</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;file_extension&#39;</span><span class="p">]))</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">im_list_box</span><span class="o">.</span><span class="n">SetItems</span><span class="p">([</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span> 
+        
+        <span class="c">#select the first image in the directory</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">im_list_box</span><span class="o">.</span><span class="n">SetSelection</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_select_image</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">im_dir</span> <span class="o">=</span> <span class="n">im_dir</span>
+        
+    </div>
+<div class="viewcode-block" id="ImageFileList.get_current_selection"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_test_frame.ImageFileList.get_current_selection">[docs]</a>    <span class="k">def</span> <span class="nf">get_current_selection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">filename_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">im_list_box</span><span class="o">.</span><span class="n">GetSelection</span><span class="p">()</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="n">filename_idx</span><span class="p">]</span>
+            <span class="n">next_filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="n">filename_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">filename</span><span class="p">,</span> <span class="n">next_filename</span>
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span><span class="p">,</span><span class="bp">None</span>
+    
+           </div>
+<div class="viewcode-block" id="ImageFileList.on_select_image"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_test_frame.ImageFileList.on_select_image">[docs]</a>    <span class="k">def</span> <span class="nf">on_select_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evnt</span><span class="p">):</span>
+        
+        <span class="n">filename</span><span class="p">,</span> <span class="n">next_filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_current_selection</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">next_filename</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">plot_panel</span><span class="o">.</span><span class="n">clear_plot</span><span class="p">()</span>
+            <span class="k">return</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">main_script</span><span class="o">.</span><span class="n">is_uv_image_file</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">):</span>
+            <span class="n">wx</span><span class="o">.</span><span class="n">Yield</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">plot_panel</span><span class="o">.</span><span class="n">clear_plot</span><span class="p">()</span>
+            <span class="n">wx</span><span class="o">.</span><span class="n">MessageBox</span><span class="p">(</span><span class="s">&quot;Filename </span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s">does not match the filename format specified.&quot;</span><span class="o">%</span><span class="n">filename</span><span class="p">,</span><span class="s">&quot;&quot;</span><span class="p">,</span><span class="n">wx</span><span class="o">.</span><span class="n">ICON_WARNING</span><span class="p">)</span>
+            <span class="k">return</span> <span class="mi">1</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">main_script</span><span class="o">.</span><span class="n">is_uv_image_file</span><span class="p">(</span><span class="n">next_filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">):</span>
+            <span class="n">wx</span><span class="o">.</span><span class="n">Yield</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">plot_panel</span><span class="o">.</span><span class="n">clear_plot</span><span class="p">()</span>
+            <span class="n">wx</span><span class="o">.</span><span class="n">MessageBox</span><span class="p">(</span><span class="s">&quot;Filename </span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s">does not match the filename format specified.&quot;</span><span class="o">%</span><span class="n">next_filename</span><span class="p">,</span><span class="s">&quot;&quot;</span><span class="p">,</span><span class="n">wx</span><span class="o">.</span><span class="n">ICON_WARNING</span><span class="p">)</span>
+            <span class="k">return</span> <span class="mi">1</span>
+        
+        <span class="k">if</span> <span class="n">evnt</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">plot_panel</span><span class="o">.</span><span class="n">set_config</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
+        
+        <span class="c">#use CallAfter to get better response on the selection updating</span>
+        <span class="n">wx</span><span class="o">.</span><span class="n">CallAfter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_panel</span><span class="o">.</span><span class="n">set_images</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">next_filename</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="mi">0</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">plumetrack 15.01 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../plumetrack.html" >plumetrack</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Nial Peters.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

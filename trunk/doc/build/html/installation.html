@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Installation &mdash; plumetrack 14.11 documentation</title>
+    <title>Installation &mdash; plumetrack 15.01 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '14.11',
+        VERSION:     '15.01',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="plumetrack 14.11 documentation" href="index.html" />
+    <link rel="top" title="plumetrack 15.01 documentation" href="index.html" />
     <link rel="next" title="Quickstart" href="quickstart.html" />
     <link rel="prev" title="Welcome to plumetrack’s documentation!" href="index.html" /> 
   </head>
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="index.html" title="Welcome to plumetrack’s documentation!"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">plumetrack 14.11 documentation</a> &raquo;</li> 
+        <li><a href="index.html">plumetrack 15.01 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -56,6 +56,47 @@
   <div class="section" id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
 <p>Since plumetrack is still in a fairly early stage of development, installation (especially on Windows) might be a little tricky. Hopefully, this will be gradually improved on in the future. In the meantime, please help to improve useability by reporting any installation problems you have.</p>
+<div class="section" id="linux">
+<h2>Linux<a class="headerlink" href="#linux" title="Permalink to this headline">¶</a></h2>
+<p>These instructions are for Ubuntu Linux, other distributions should be similar, but the package names may be slightly different.</p>
+<blockquote>
+<div><ol class="arabic">
+<li><p class="first">Use your package manager (e.g. Synaptic, apt-get etc.) to install the following packages: python-numpy, python-scipy, python-opencv, python-matplotlib, python-wxgtk2.8, python-pyinotify. For example (if you are using apt-get):</p>
+<div class="highlight-python"><div class="highlight"><pre>sudo apt-get install python-numpy python-scipy python-opencv python-matplotlib python-wxgtk2.8 python-pyinotify
+</pre></div>
+</div>
+</li>
+<li><p class="first">Download the plumetrack distribution package (a .zip file) from <a class="reference external" href="http://ccpforge.cse.rl.ac.uk/gf/project/plumetrack/frs">here</a>.</p>
+</li>
+<li><p class="first">Right-click on the zip file and select &#8220;Extract here&#8221;, or open a terminal and use the command:</p>
+<div class="highlight-python"><div class="highlight"><pre>unzip plumetrack-x.x.zip
+</pre></div>
+</div>
+</li>
+</ol>
+<blockquote>
+<div>(where x.x is the version number).</div></blockquote>
+<ol class="arabic">
+<li><p class="first">Open a terminal and navigate to the unpacked plumetrack folder:</p>
+<div class="highlight-python"><div class="highlight"><pre>cd plumetrack-15.01
+</pre></div>
+</div>
+</li>
+<li><p class="first">Then run the commands:</p>
+<div class="highlight-python"><div class="highlight"><pre>python setup.py build
+sudo python setup.py install
+</pre></div>
+</div>
+</li>
+<li><p class="first">Plumetrack should now be installed. You can test the installation using:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">plumetrack</span> <span class="o">-</span><span class="n">h</span>
+</pre></div>
+</div>
+<p>If plumetrack has installed correctly then the above command should print a list of command-line options that can be used with plumetrack and their meanings.</p>
+</li>
+</ol>
+</div></blockquote>
+</div>
 <div class="section" id="windows">
 <h2>Windows<a class="headerlink" href="#windows" title="Permalink to this headline">¶</a></h2>
 <p>If you do not already have Python installed on your system then it is recommended to use Anaconda. Anaconda is a version of Python which already includes many of the common Python packages (including most of the dependencies for plumetrack), which makes installation of plumetrack easier!</p>
@@ -179,6 +220,7 @@ python setup.py install
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Installation</a><ul>
+<li><a class="reference internal" href="#linux">Linux</a></li>
 <li><a class="reference internal" href="#windows">Windows</a><ul>
 <li><a class="reference internal" href="#prerequisites-using-anaconda">Prerequisites - Using Anaconda</a></li>
 <li><a class="reference internal" href="#prerequisites-using-an-existing-python-installation">Prerequisites - Using an Existing Python Installation</a></li>
@@ -234,7 +276,7 @@ python setup.py install
         <li class="right" >
           <a href="index.html" title="Welcome to plumetrack’s documentation!"
              >previous</a> |</li>
-        <li><a href="index.html">plumetrack 14.11 documentation</a> &raquo;</li> 
+        <li><a href="index.html">plumetrack 15.01 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

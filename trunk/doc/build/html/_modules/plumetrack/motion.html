@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>plumetrack.motion &mdash; plumetrack 14.11 documentation</title>
+    <title>plumetrack.motion &mdash; plumetrack 15.01 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '14.11',
+        VERSION:     '15.01',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="plumetrack 14.11 documentation" href="../../index.html" />
+    <link rel="top" title="plumetrack 15.01 documentation" href="../../index.html" />
     <link rel="up" title="plumetrack" href="../plumetrack.html" /> 
   </head>
   <body>
@@ -37,7 +37,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">plumetrack 14.11 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">plumetrack 15.01 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li>
           <li><a href="../plumetrack.html" accesskey="U">plumetrack</a> &raquo;</li> 
       </ul>
@@ -80,15 +80,22 @@
 <span class="sd">        one image to pixels in a consecutive image. The config argument should be</span>
 <span class="sd">        a dict of configuration options (as returned from settings.load_config_file()).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">low_thresh</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s">&#39;threshold_low&#39;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">high_thresh</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s">&#39;threshold_high&#39;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pix_size</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s">&#39;pixel_size&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">low_thresh</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s">&#39;motion_pix_threshold_low&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">high_thresh</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s">&#39;motion_pix_threshold_high&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__random_image</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">random_mean</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s">&#39;random_mean&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">random_sigma</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s">&#39;random_sigma&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">downsizing_factor</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s">&#39;downsizing_factor&#39;</span><span class="p">]</span>
         
         <span class="k">if</span> <span class="n">config</span><span class="p">[</span><span class="s">&#39;mask_image&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&quot;&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__mask_im</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;mask_image&#39;</span><span class="p">],</span> <span class="n">cv2</span><span class="o">.</span><span class="n">IMREAD_GRAYSCALE</span><span class="p">)</span>
+            
+            <span class="c">#if we are using downsizing - then rescale the mask image</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">downsizing_factor</span> <span class="o">!=</span> <span class="mf">1.0</span><span class="p">:</span>
+                <span class="n">new_x</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__mask_im</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">downsizing_factor</span><span class="p">))</span>
+                <span class="n">new_y</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__mask_im</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">downsizing_factor</span><span class="p">))</span>
+                
+                <span class="bp">self</span><span class="o">.</span><span class="n">__mask_im</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__mask_im</span><span class="p">,</span> <span class="p">(</span><span class="n">new_x</span><span class="p">,</span><span class="n">new_y</span><span class="p">))</span>
             
             <span class="c">#ensure the loaded mask has the correct data type</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__mask_im</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__mask_im</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">uint8</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
@@ -101,7 +108,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s">&#39;farneback_iterations&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">poly_n</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s">&#39;farneback_poly_n&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">poly_sigma</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s">&#39;farneback_poly_sigma&#39;</span><span class="p">]</span>
-        
     
     
 <div class="viewcode-block" id="MotionEngine.preprocess"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.motion.MotionEngine.preprocess">[docs]</a>    <span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
@@ -111,8 +117,23 @@
 <span class="sd">        preprocessing tasks may include thresholding the image and applying </span>
 <span class="sd">        random noise masking.</span>
 <span class="sd">         </span>
-<span class="sd">        The image argument should be a numpy array.</span>
+<span class="sd">        The image argument should be a numpy array. Note that the preprocessing</span>
+<span class="sd">        is done in-place - modifying the array that is passed in.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns the mask array (boolean) showing which array elements were </span>
+<span class="sd">        replaced with random noise.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c">#if we are using downsizing - then rescale the image</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">downsizing_factor</span> <span class="o">!=</span> <span class="mf">1.0</span><span class="p">:</span>
+            <span class="n">new_x</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">downsizing_factor</span><span class="p">))</span>
+            <span class="n">new_y</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">downsizing_factor</span><span class="p">))</span>
+            
+            <span class="n">im_cpy</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            
+            <span class="n">image</span><span class="o">.</span><span class="n">resize</span><span class="p">((</span><span class="n">new_x</span><span class="p">,</span> <span class="n">new_y</span><span class="p">),</span> <span class="n">refcheck</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+            
+            <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">im_cpy</span><span class="p">,</span> <span class="p">(</span><span class="n">new_y</span><span class="p">,</span> <span class="n">new_x</span><span class="p">),</span> <span class="n">image</span><span class="p">)</span>
+        
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__random_image</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">random_sigma</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__random_image</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">random_mean</span><span class="p">,</span> 
@@ -126,28 +147,31 @@
                 <span class="k">print</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__random_image</span><span class="o">.</span><span class="n">shape</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Image is a different size to previously &quot;</span>
                                  <span class="s">&quot;preprocessed images.&quot;</span><span class="p">)</span>
-        
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">high_thresh</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">high_thresh</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+            <span class="n">h_thresh</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">h_thresh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">high_thresh</span>
         
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">low_thresh</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">low_thresh</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+            <span class="n">l_thresh</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">l_thresh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">low_thresh</span>
         
-        <span class="n">thresh_criteria</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">image</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">low_thresh</span><span class="p">,</span> 
-                                           <span class="n">image</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">high_thresh</span><span class="p">)</span>
+        <span class="n">thresh_criteria</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">image</span> <span class="o">&lt;</span> <span class="n">l_thresh</span><span class="p">,</span> 
+                                           <span class="n">image</span> <span class="o">&gt;</span> <span class="n">h_thresh</span><span class="p">)</span>
         
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__mask_im</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">mask_criteria</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__mask_im</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">mask_criteria</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
         
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">thresh_criteria</span><span class="p">,</span> <span class="n">mask_criteria</span><span class="p">)</span>
+        <span class="n">mask_idx</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
         
-        <span class="n">mask_idx</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">thresh_criteria</span><span class="p">,</span> <span class="n">mask_criteria</span><span class="p">))</span>
-        <span class="n">masked_im</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+        <span class="n">image</span><span class="p">[</span><span class="n">mask_idx</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__random_image</span><span class="p">[</span><span class="n">mask_idx</span><span class="p">]</span>
         
-        <span class="n">masked_im</span><span class="p">[</span><span class="n">mask_idx</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__random_image</span><span class="p">[</span><span class="n">mask_idx</span><span class="p">]</span>
-        
-        <span class="k">return</span> <span class="n">masked_im</span>
+        <span class="k">return</span> <span class="n">mask</span>
 
 
 </div>
@@ -168,10 +192,9 @@
     
         </div></div>
 <span class="k">if</span> <span class="n">plumetrack</span><span class="o">.</span><span class="n">have_gpu</span><span class="p">():</span>
-    
     <span class="kn">from</span> <span class="nn">plumetrack</span> <span class="kn">import</span> <span class="n">gpu_motion</span>
     
-    <span class="k">class</span> <span class="nc">GPUMotionEngine</span><span class="p">(</span><span class="n">MotionEngine</span><span class="p">):</span>
+<div class="viewcode-block" id="GPUMotionEngine"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.motion.GPUMotionEngine">[docs]</a>    <span class="k">class</span> <span class="nc">GPUMotionEngine</span><span class="p">(</span><span class="n">MotionEngine</span><span class="p">):</span>
         
         <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot;</span>
@@ -183,15 +206,15 @@
 <span class="sd">            &quot;&quot;&quot;</span>
             <span class="nb">super</span><span class="p">(</span><span class="n">GPUMotionEngine</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
             
-            <span class="bp">self</span><span class="o">.</span><span class="n">__gpu_interface</span> <span class="o">=</span> <span class="n">gpu_motion</span><span class="o">.</span><span class="n">GPUInterface</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s">&quot;farneback_pyr_scale&quot;</span><span class="p">],</span>
-                                                           <span class="n">config</span><span class="p">[</span><span class="s">&quot;farneback_levels&quot;</span><span class="p">],</span>
-                                                           <span class="n">config</span><span class="p">[</span><span class="s">&quot;farneback_winsize&quot;</span><span class="p">],</span>
-                                                           <span class="n">config</span><span class="p">[</span><span class="s">&quot;farneback_iterations&quot;</span><span class="p">],</span>
-                                                           <span class="n">config</span><span class="p">[</span><span class="s">&quot;farneback_poly_n&quot;</span><span class="p">],</span>
-                                                           <span class="n">config</span><span class="p">[</span><span class="s">&quot;farneback_poly_sigma&quot;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__gpu_interface</span> <span class="o">=</span> <span class="n">gpu_motion</span><span class="o">.</span><span class="n">GPUInterface</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pyr_scale</span><span class="p">,</span> 
+                                                               <span class="bp">self</span><span class="o">.</span><span class="n">levels</span><span class="p">,</span>
+                                                               <span class="bp">self</span><span class="o">.</span><span class="n">winsize</span><span class="p">,</span>
+                                                               <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">,</span>
+                                                               <span class="bp">self</span><span class="o">.</span><span class="n">poly_n</span><span class="p">,</span>
+                                                               <span class="bp">self</span><span class="o">.</span><span class="n">poly_sigma</span><span class="p">)</span>
+
             
-            
-        <span class="k">def</span> <span class="nf">compute_flow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_image</span><span class="p">,</span> <span class="n">next_image</span><span class="p">):</span>
+<div class="viewcode-block" id="GPUMotionEngine.compute_flow"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.motion.GPUMotionEngine.compute_flow">[docs]</a>        <span class="k">def</span> <span class="nf">compute_flow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_image</span><span class="p">,</span> <span class="n">next_image</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Uses the Farneback algorithm to compute the flow field that maps pixels</span>
 <span class="sd">            in current_image, to pixels in next_image. Both image arguments should be</span>
@@ -213,7 +236,7 @@
                 
         
         
-        
+        </div></div>
 </pre></div>
 
           </div>
@@ -247,7 +270,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">plumetrack 14.11 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">plumetrack 15.01 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li>
           <li><a href="../plumetrack.html" >plumetrack</a> &raquo;</li> 
       </ul>

@@ -5,6 +5,39 @@ Installation
 Since plumetrack is still in a fairly early stage of development, installation (especially on Windows) might be a little tricky. Hopefully, this will be gradually improved on in the future. In the meantime, please help to improve useability by reporting any installation problems you have.
 
 
+Linux
+-----
+
+These instructions are for Ubuntu Linux, other distributions should be similar, but the package names may be slightly different.
+
+  #. Use your package manager (e.g. Synaptic, apt-get etc.) to install the following packages: python-numpy, python-scipy, python-opencv, python-matplotlib, python-wxgtk2.8, python-pyinotify. For example (if you are using apt-get)::
+  
+      sudo apt-get install python-numpy python-scipy python-opencv python-matplotlib python-wxgtk2.8 python-pyinotify
+
+  #. Download the plumetrack distribution package (a .zip file) from `here <http://ccpforge.cse.rl.ac.uk/gf/project/plumetrack/frs>`_.
+  
+  #. Right-click on the zip file and select "Extract here", or open a terminal and use the command::
+  
+      unzip plumetrack-x.x.zip 
+      
+    (where x.x is the version number).
+  
+  #. Open a terminal and navigate to the unpacked plumetrack folder:: 
+  
+      cd plumetrack-15.01
+  
+  #. Then run the commands::
+    
+      python setup.py build
+      sudo python setup.py install
+  
+  #. Plumetrack should now be installed. You can test the installation using::
+  
+      plumetrack -h
+     
+     If plumetrack has installed correctly then the above command should print a list of command-line options that can be used with plumetrack and their meanings.
+
+
 Windows
 -------
 

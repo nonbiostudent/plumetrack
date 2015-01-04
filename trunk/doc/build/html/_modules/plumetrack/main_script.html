@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>plumetrack.main_script &mdash; plumetrack 14.11 documentation</title>
+    <title>plumetrack.main_script &mdash; plumetrack 15.01 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '14.11',
+        VERSION:     '15.01',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="plumetrack 14.11 documentation" href="../../index.html" />
+    <link rel="top" title="plumetrack 15.01 documentation" href="../../index.html" />
     <link rel="up" title="plumetrack" href="../plumetrack.html" /> 
   </head>
   <body>
@@ -37,7 +37,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">plumetrack 14.11 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">plumetrack 15.01 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li>
           <li><a href="../plumetrack.html" accesskey="U">plumetrack</a> &raquo;</li> 
       </ul>
@@ -71,7 +71,6 @@
 <span class="kn">import</span> <span class="nn">numpy</span>
 <span class="kn">import</span> <span class="nn">cv2</span>
 <span class="kn">import</span> <span class="nn">multiprocessing</span>
-<span class="kn">import</span> <span class="nn">itertools</span>
 <span class="kn">import</span> <span class="nn">calendar</span>
 
 <span class="kn">import</span> <span class="nn">plumetrack</span>
@@ -117,7 +116,7 @@
     <span class="n">processes</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">queues</span> <span class="o">=</span> <span class="p">[]</span>
      
-    <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">unsplice</span><span class="p">(</span><span class="n">list_</span><span class="p">,</span><span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()):</span>
+    <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">split</span><span class="p">(</span><span class="n">list_</span><span class="p">,</span><span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()):</span>
         <span class="n">q</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Queue</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">__run_func</span><span class="p">,</span><span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">func</span><span class="p">,</span><span class="n">q</span><span class="p">,</span><span class="n">l</span><span class="p">,</span><span class="n">args</span><span class="p">,</span><span class="n">kwargs</span><span class="p">))</span>
         <span class="n">p</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
@@ -128,41 +127,73 @@
         <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">queues</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
         <span class="n">processes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
      
-    <span class="k">return</span> <span class="n">splice</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">flatten</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">ltypes</span><span class="o">=</span><span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="p">))</span>
  
 <span class="c">############################################################################</span>
- </div>
-<div class="viewcode-block" id="splice"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.main_script.splice">[docs]</a><span class="k">def</span> <span class="nf">splice</span><span class="p">(</span><span class="n">l</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="split"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.main_script.split">[docs]</a><span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="n">l</span><span class="p">,</span><span class="n">n</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Performs a round-robin joining of iterables.</span>
-<span class="sd">     </span>
-<span class="sd">    &gt;&gt;&gt; print splice([[1, 2, 3],[&#39;a&#39;, &#39;b&#39;],[100, 300, 400, 500]])</span>
-<span class="sd">    [1, &#39;a&#39;, 100, 2, &#39;b&#39;, 300, 3, 400, 500]</span>
+<span class="sd">    splits the list l into n approximately equal length lists and returns</span>
+<span class="sd">    them in a tuple. if n &gt; len(l) then the returned tuple may contain</span>
+<span class="sd">    less than n elements.</span>
+<span class="sd">    &gt;&gt;&gt; split([1,2,3],2)</span>
+<span class="sd">    ([1, 2], [3])</span>
+<span class="sd">    &gt;&gt;&gt; split([1,2],3)</span>
+<span class="sd">    ([1], [2])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">sentinel</span> <span class="o">=</span> <span class="nb">object</span><span class="p">()</span>
-    <span class="n">it</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">izip_longest</span><span class="p">(</span><span class="o">*</span><span class="n">l</span><span class="p">,</span><span class="n">fillvalue</span><span class="o">=</span><span class="n">sentinel</span><span class="p">))</span>
-    <span class="k">return</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">it</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">sentinel</span><span class="p">]</span>
- 
+    <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+        
+    <span class="c">#can&#39;t split into more pieces than there are elements!</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="n">length</span><span class="p">:</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">length</span>
+    
+    <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="s">&quot;n must be a positive integer&quot;</span>
+    
+    <span class="n">inc</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">length</span><span class="p">)</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">split_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">split_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="n">inc</span><span class="p">:</span><span class="n">i</span> <span class="o">*</span> <span class="n">inc</span> <span class="o">+</span> <span class="n">inc</span><span class="p">])</span>
+        
+    <span class="n">split_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="n">n</span> <span class="o">*</span> <span class="n">inc</span> <span class="o">-</span> <span class="n">inc</span><span class="p">:])</span>
+    
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">split_list</span><span class="p">)</span>
+
 <span class="c">############################################################################</span>
- </div>
-<div class="viewcode-block" id="unsplice"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.main_script.unsplice">[docs]</a><span class="k">def</span> <span class="nf">unsplice</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="flatten"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.main_script.flatten">[docs]</a><span class="k">def</span> <span class="nf">flatten</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">ltypes</span><span class="o">=</span><span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Splits a list into n sublists in the following way:</span>
-<span class="sd">     </span>
-<span class="sd">    &gt;&gt;&gt; print unsplice(range(10), 3)</span>
-<span class="sd">    [[0, 3, 6, 9], [1, 4, 7], [2, 5, 8]]</span>
-<span class="sd">    &gt;&gt;&gt; print splice(unsplice(range(10), 3)) == range(10)</span>
-<span class="sd">    True</span>
-<span class="sd">    &gt;&gt;&gt; print unsplice([0, 1], 3)</span>
-<span class="sd">    [[0], [1]]</span>
-<span class="sd">    &gt;&gt;&gt; print unsplice([], 2)</span>
-<span class="sd">    []</span>
-<span class="sd">     </span>
-<span class="sd">    This operation can be undone using the splice() function.</span>
+<span class="sd">    Reduces any iterable containing other iterables into a single list</span>
+<span class="sd">    of non-iterable items. The ltypes option allows control over what </span>
+<span class="sd">    element types will be flattened. This algorithm is taken from:</span>
+<span class="sd">    http://rightfootin.blogspot.com/2006/09/more-on-python-flatten.html</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; print flatten([range(3),range(3,6)])</span>
+<span class="sd">    [0, 1, 2, 3, 4, 5]</span>
+<span class="sd">    &gt;&gt;&gt; print flatten([1,2,(3,4)])</span>
+<span class="sd">    [1, 2, 3, 4]</span>
+<span class="sd">    &gt;&gt;&gt; print flatten([1,[2,3,[4,5,[6,[7,8,[9,[10]]]]]]])</span>
+<span class="sd">    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]</span>
+<span class="sd">    &gt;&gt;&gt; print flatten([1,[2,3,[4,5,[6,[7,8,[9,[10]]]]]]], ltypes=())</span>
+<span class="sd">    [1, [2, 3, [4, 5, [6, [7, 8, [9, [10]]]]]]]</span>
+<span class="sd">    &gt;&gt;&gt; print flatten([1,2,(3,4)],ltypes=(list))</span>
+<span class="sd">    [1, 2, (3, 4)]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">n</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">))</span>
-    <span class="k">return</span> <span class="p">[</span><span class="n">l</span><span class="p">[</span><span class="n">i</span><span class="p">::</span><span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
- 
+    <span class="n">ltype</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+    <span class="n">l</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">):</span>
+        <span class="k">while</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ltypes</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">l</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                <span class="n">l</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="n">i</span> <span class="o">-=</span> <span class="mi">1</span>
+                <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">l</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">l</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">ltype</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+
 <span class="c">############################################################################</span>
 </div>
 <div class="viewcode-block" id="time_from_fname"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.main_script.time_from_fname">[docs]</a><span class="k">def</span> <span class="nf">time_from_fname</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
@@ -174,7 +205,6 @@
     
     <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">fname</span><span class="p">),</span> 
                                       <span class="n">config</span><span class="p">[</span><span class="s">&#39;filename_format&#39;</span><span class="p">])</span>
-
 
 <span class="c">############################################################################</span>
 </div>
@@ -197,29 +227,36 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Performs the motion tracking and flux calculation on a single image pair.</span>
 <span class="sd">    This is split into a separate function to make facilitate parallel execution.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    
+<span class="sd">    &quot;&quot;&quot;</span>  
     <span class="n">im1</span> <span class="o">=</span> <span class="n">im_pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">im2</span> <span class="o">=</span> <span class="n">im_pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
     
     <span class="n">current_capture_time</span> <span class="o">=</span> <span class="n">time_from_fname</span><span class="p">(</span><span class="n">im1</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
-    <span class="n">current_image</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">im1</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">IMREAD_UNCHANGED</span><span class="p">)</span> 
-    <span class="n">current_masked_im</span> <span class="o">=</span> <span class="n">motion_engine</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">current_image</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">im1</span> <span class="o">==</span> <span class="n">process_image_pair</span><span class="o">.</span><span class="n">cached_im_name</span><span class="p">:</span>
+        <span class="n">current_masked_im</span> <span class="o">=</span> <span class="n">process_image_pair</span><span class="o">.</span><span class="n">cached_im</span>
+        <span class="n">integration_mask</span> <span class="o">=</span> <span class="n">process_image_pair</span><span class="o">.</span><span class="n">cached_mask</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">current_masked_im</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">im1</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">IMREAD_UNCHANGED</span><span class="p">)</span> 
+        <span class="n">integration_mask</span> <span class="o">=</span> <span class="n">motion_engine</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">current_masked_im</span><span class="p">)</span>
     
     <span class="n">next_capture_time</span> <span class="o">=</span> <span class="n">time_from_fname</span><span class="p">(</span><span class="n">im2</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
-    <span class="n">next_image</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">im2</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">IMREAD_UNCHANGED</span><span class="p">)</span> 
-    <span class="n">next_masked_im</span> <span class="o">=</span> <span class="n">motion_engine</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">next_image</span><span class="p">)</span>
+    <span class="n">next_masked_im</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">im2</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">IMREAD_UNCHANGED</span><span class="p">)</span> 
+    <span class="n">process_image_pair</span><span class="o">.</span><span class="n">cached_mask</span> <span class="o">=</span> <span class="n">motion_engine</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">next_masked_im</span><span class="p">)</span>
+    
+    <span class="c">#update cached values</span>
+    <span class="n">process_image_pair</span><span class="o">.</span><span class="n">cached_im_name</span> <span class="o">=</span> <span class="n">im2</span>
+    <span class="n">process_image_pair</span><span class="o">.</span><span class="n">cached_im</span> <span class="o">=</span> <span class="n">next_masked_im</span>
     
     <span class="c">#images must be the same size for motion estimation</span>
-    <span class="k">if</span> <span class="n">current_image</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">next_image</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">current_masked_im</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">next_masked_im</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Images </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s"> and </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s"> are different sizes </span><span class="si">%s</span><span class="s"> and &quot;</span>
-                         <span class="s">&quot;</span><span class="si">%s</span><span class="s"> respectively&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">im1</span><span class="p">,</span> <span class="n">im2</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">current_image</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span> 
-                                            <span class="nb">str</span><span class="p">(</span><span class="n">next_image</span><span class="o">.</span><span class="n">shape</span><span class="p">)))</span>
+                         <span class="s">&quot;</span><span class="si">%s</span><span class="s"> respectively&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">im1</span><span class="p">,</span> <span class="n">im2</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">current_masked_im</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span> 
+                                            <span class="nb">str</span><span class="p">(</span><span class="n">next_masked_im</span><span class="o">.</span><span class="n">shape</span><span class="p">)))</span>
     
     
     <span class="n">delta_t</span> <span class="o">=</span> <span class="n">date2secs</span><span class="p">(</span><span class="n">next_capture_time</span><span class="p">)</span> <span class="o">-</span> <span class="n">date2secs</span><span class="p">(</span><span class="n">current_capture_time</span><span class="p">)</span>
-    
-    
+     
     <span class="n">flow</span> <span class="o">=</span> <span class="n">motion_engine</span><span class="o">.</span><span class="n">compute_flow</span><span class="p">(</span><span class="n">current_masked_im</span><span class="p">,</span> <span class="n">next_masked_im</span><span class="p">)</span>
     
          
@@ -231,17 +268,23 @@
                                        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">im1</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="s">&#39;.png&#39;</span><span class="p">)</span>
          
         <span class="n">output</span><span class="o">.</span><span class="n">create_motion_png</span><span class="p">(</span><span class="n">current_masked_im</span><span class="p">,</span> <span class="n">flow</span><span class="p">,</span> <span class="n">output_filename</span><span class="p">,</span> 
-                                 <span class="n">flux_engine</span><span class="o">.</span><span class="n">get_integration_line</span><span class="p">())</span>
+                                 <span class="n">flux_engine</span><span class="o">.</span><span class="n">get_integration_lines</span><span class="p">())</span>
     
     <span class="c">#only include pixels in the non-masked regions in the flux calculation</span>
-    <span class="n">current_image</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">current_image</span> <span class="o">!=</span> <span class="n">current_masked_im</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">0.0</span>
-     
-    <span class="n">so2_flux</span> <span class="o">=</span> <span class="n">flux_engine</span><span class="o">.</span><span class="n">compute_flux</span><span class="p">(</span><span class="n">current_image</span><span class="p">,</span> <span class="n">flow</span><span class="p">,</span> <span class="n">delta_t</span><span class="p">)</span> 
+    <span class="n">current_masked_im</span> <span class="o">*=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">integration_mask</span><span class="p">)</span> 
+    
+    <span class="n">so2_flux</span> <span class="o">=</span> <span class="n">flux_engine</span><span class="o">.</span><span class="n">compute_flux</span><span class="p">(</span><span class="n">current_masked_im</span><span class="p">,</span> <span class="n">flow</span><span class="p">,</span> <span class="n">delta_t</span><span class="p">)</span> 
     
     <span class="k">return</span> <span class="n">so2_flux</span>
 
+<span class="c">#define the cache for the process_image_pair function</span></div>
+<span class="n">process_image_pair</span><span class="o">.</span><span class="n">cached_im_name</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="n">process_image_pair</span><span class="o">.</span><span class="n">cached_im</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="n">process_image_pair</span><span class="o">.</span><span class="n">cached_mask</span> <span class="o">=</span> <span class="bp">None</span>
+
+
 <span class="c">############################################################################</span>
-</div>
+
 <div class="viewcode-block" id="main"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.main_script.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calling this function executes the main plumetrack program. This is set as </span>
@@ -272,19 +315,14 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">motion_engine</span> <span class="o">=</span> <span class="n">motion</span><span class="o">.</span><span class="n">MotionEngine</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
     
-    <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">integration_method</span> <span class="o">==</span> <span class="s">&#39;2d&#39;</span><span class="p">:</span> 
-        <span class="n">flux_engine</span> <span class="o">=</span> <span class="n">flux</span><span class="o">.</span><span class="n">FluxEngine2D</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">options</span><span class="o">.</span><span class="n">integration_method</span> <span class="o">==</span> <span class="s">&#39;1d&#39;</span><span class="p">:</span>
-        <span class="n">flux_engine</span> <span class="o">=</span> <span class="n">flux</span><span class="o">.</span><span class="n">FluxEngine1D</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Unexpected value </span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s">for integration_method. &quot;</span>
-                         <span class="s">&quot;Expected either &#39;1d&#39; or &#39;2d&#39;&quot;</span><span class="o">%</span><span class="n">options</span><span class="o">.</span><span class="n">integration_method</span><span class="p">)</span>
+    <span class="n">flux_engine</span> <span class="o">=</span> <span class="n">flux</span><span class="o">.</span><span class="n">create_flux_engine</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
      
-    <span class="n">image_iter</span> <span class="o">=</span> <span class="n">dir_iter</span><span class="o">.</span><span class="n">DirFileIter</span><span class="p">(</span><span class="n">image_dir</span><span class="p">,</span> <span class="n">realtime</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">realtime</span><span class="p">,</span> 
+    <span class="n">image_iter</span> <span class="o">=</span> <span class="n">dir_iter</span><span class="o">.</span><span class="n">ListDirIter</span><span class="p">(</span><span class="n">image_dir</span><span class="p">,</span> <span class="n">realtime</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">realtime</span><span class="p">,</span> 
                                       <span class="n">skip_existing</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">skip_existing</span><span class="p">,</span> 
                                       <span class="n">recursive</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">recursive</span><span class="p">,</span> 
                                       <span class="n">sort_func</span><span class="o">=</span><span class="n">compare_by_time</span><span class="p">,</span> 
-                                      <span class="n">test_func</span><span class="o">=</span><span class="n">is_uv_image</span><span class="p">)</span> 
+                                      <span class="n">test_func</span><span class="o">=</span><span class="n">is_uv_image</span><span class="p">,</span>
+                                      <span class="n">max_n</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">max_n</span><span class="p">)</span> 
     
     <span class="c">#set an exit handler if we are working in realtime - otherwise it can hang</span>
     <span class="c">#forever.</span>
@@ -295,48 +333,43 @@
             <span class="n">image_iter</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         
         <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span><span class="p">,</span> <span class="n">_quit</span><span class="p">)</span>
-        
+      
     
     <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">realtime</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">options</span><span class="o">.</span><span class="n">parallel</span><span class="p">:</span>
+        
         <span class="c">#main loop for realtime processing</span>
         <span class="n">current_image_fname</span> <span class="o">=</span> <span class="bp">None</span>
-        
-        <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">output_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="c">#create a blank file which we later append to</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">output_file</span><span class="p">,</span><span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ofp</span><span class="p">:</span>
-                <span class="k">pass</span>
          
         <span class="k">for</span> <span class="n">next_image_fname</span> <span class="ow">in</span> <span class="n">image_iter</span><span class="p">:</span>
              
-            <span class="k">if</span> <span class="n">current_image_fname</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">current_image_fname</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="c">#should only be true on first iteration</span>
+                <span class="n">current_image_fname</span> <span class="o">=</span> <span class="n">next_image_fname</span>
+                <span class="k">continue</span>
                 
-                <span class="n">so2flux</span> <span class="o">=</span> <span class="n">process_image_pair</span><span class="p">((</span><span class="n">current_image_fname</span><span class="p">,</span> <span class="n">next_image_fname</span><span class="p">),</span>
-                                             <span class="n">motion_engine</span><span class="p">,</span> <span class="n">flux_engine</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span>
-                                             <span class="n">config</span><span class="p">)</span>
-                
-                <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">output_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-                    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">output_file</span><span class="p">,</span><span class="s">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ofp</span><span class="p">:</span>
-                        <span class="n">ofp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="se">\t</span><span class="si">%f</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">%</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">time_from_fname</span><span class="p">(</span><span class="n">current_image_fname</span><span class="p">,</span> <span class="n">config</span><span class="p">)),</span><span class="n">so2flux</span><span class="p">))</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">print</span> <span class="s">&quot;</span><span class="si">%s</span><span class="se">\t</span><span class="si">%f</span><span class="s">&quot;</span><span class="o">%</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">time_from_fname</span><span class="p">(</span><span class="n">current_image_fname</span><span class="p">,</span> <span class="n">config</span><span class="p">)),</span><span class="n">so2flux</span><span class="p">)</span>
+            <span class="n">so2fluxes</span> <span class="o">=</span> <span class="n">process_image_pair</span><span class="p">((</span><span class="n">current_image_fname</span><span class="p">,</span> <span class="n">next_image_fname</span><span class="p">),</span>
+                                         <span class="n">motion_engine</span><span class="p">,</span> <span class="n">flux_engine</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span>
+                                         <span class="n">config</span><span class="p">)</span>
+            
+            <span class="n">current_im_time</span> <span class="o">=</span> <span class="n">time_from_fname</span><span class="p">(</span><span class="n">current_image_fname</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+            
+            <span class="n">output</span><span class="o">.</span><span class="n">write_output</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">image_dir</span><span class="p">,</span> <span class="p">[</span><span class="n">current_im_time</span><span class="p">],</span> <span class="p">[</span><span class="n">current_image_fname</span><span class="p">],</span> <span class="p">[</span><span class="n">so2fluxes</span><span class="p">])</span>
                  
             <span class="n">current_image_fname</span> <span class="o">=</span> <span class="n">next_image_fname</span>
+        
      
     <span class="k">else</span><span class="p">:</span>
         <span class="c">#main loop for parallel processing</span>
         <span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">image_iter</span><span class="p">]</span>
+        <span class="n">times</span> <span class="o">=</span> <span class="p">[</span><span class="n">time_from_fname</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
         <span class="n">file_pairs</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">files</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">files</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
          
         <span class="n">fluxes</span> <span class="o">=</span> <span class="n">parallel_process</span><span class="p">(</span><span class="n">process_image_pair</span><span class="p">,</span> <span class="n">file_pairs</span><span class="p">,</span> <span class="n">motion_engine</span><span class="p">,</span> 
                                   <span class="n">flux_engine</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
         
-        <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">output_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">output_file</span><span class="p">,</span><span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ofp</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">fluxes</span><span class="p">)):</span>
-                    <span class="n">ofp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="se">\t</span><span class="si">%f</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">%</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">time_from_fname</span><span class="p">(</span><span class="n">files</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">config</span><span class="p">)),</span><span class="n">fluxes</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">fluxes</span><span class="p">)):</span>
-                <span class="k">print</span> <span class="s">&quot;</span><span class="si">%s</span><span class="se">\t</span><span class="si">%f</span><span class="s">&quot;</span><span class="o">%</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">time_from_fname</span><span class="p">(</span><span class="n">files</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">config</span><span class="p">)),</span><span class="n">fluxes</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+        <span class="n">output</span><span class="o">.</span><span class="n">write_output</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">image_dir</span><span class="p">,</span> <span class="n">times</span><span class="p">,</span> <span class="n">files</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">fluxes</span><span class="p">)</span>
+        
         
         </div>
 </pre></div>
@@ -372,7 +405,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">plumetrack 14.11 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">plumetrack 15.01 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li>
           <li><a href="../plumetrack.html" >plumetrack</a> &raquo;</li> 
       </ul>

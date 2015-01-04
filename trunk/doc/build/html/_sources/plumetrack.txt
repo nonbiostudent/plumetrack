@@ -1,16 +1,15 @@
 plumetrack package
 ==================
 
+Subpackages
+-----------
+
+.. toctree::
+
+    plumetrack.plumetrack_config
+
 Submodules
 ----------
-
-plumetrack.config_script module
--------------------------------
-
-.. automodule:: plumetrack.config_script
-    :members:
-    :undoc-members:
-    :show-inheritance:
 
 plumetrack.dir_iter module
 --------------------------
@@ -24,14 +23,6 @@ plumetrack.flux module
 ----------------------
 
 .. automodule:: plumetrack.flux
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-plumetrack.gpu_motion module
-----------------------------
-
-.. automodule:: plumetrack.gpu_motion
     :members:
     :undoc-members:
     :show-inheritance:
@@ -56,6 +47,14 @@ plumetrack.output module
 ------------------------
 
 .. automodule:: plumetrack.output
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+plumetrack.persist module
+-------------------------
+
+.. automodule:: plumetrack.persist
     :members:
     :undoc-members:
     :show-inheritance:

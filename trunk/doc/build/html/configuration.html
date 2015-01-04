@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Configuration &mdash; plumetrack 14.11 documentation</title>
+    <title>Configuration &mdash; plumetrack 15.01 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '14.11',
+        VERSION:     '15.01',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="plumetrack 14.11 documentation" href="index.html" />
+    <link rel="top" title="plumetrack 15.01 documentation" href="index.html" />
     <link rel="next" title="API" href="API.html" />
     <link rel="prev" title="Quickstart" href="quickstart.html" /> 
   </head>
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="quickstart.html" title="Quickstart"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">plumetrack 14.11 documentation</a> &raquo;</li> 
+        <li><a href="index.html">plumetrack 15.01 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -70,20 +70,29 @@
 </div>
 <div class="section" id="the-plumetrack-config-program">
 <h2>The plumetrack-config Program<a class="headerlink" href="#the-plumetrack-config-program" title="Permalink to this headline">¶</a></h2>
-<p>The plumetrack-config program is a graphical application for creating configuration files. To launch the configuration program run the following command:</p>
+<p>By far the easiest way to configure plumetrack is using the plumetrack-config program. This is an interactive, graphical application for creating configuration files. To launch the configuration program run the following command:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">plumetrack</span><span class="o">-</span><span class="n">config</span>
 </pre></div>
 </div>
-<p>If you have not used plumetrack before, then it is recomended to load and edit the default configuration file (see above) rather than creating your own from scratch. The parameters in this file should give <em>reasonable</em> results, and so will give you a good starting point for your own configuration.</p>
+<p>You can pass the filename of an existing configuration file to edit on the commandline, e.g.:</p>
+<div class="highlight-python"><div class="highlight"><pre>plumetrack-config villarrica.cfg
+</pre></div>
+</div>
+<p>As well as the .cfg configuration files, every output file produced by plumetrack contains a copy of the configuration used to create it. Results files may therefore be used interchangably with configuration files (results files can even be passed to the plumetrack program as configuration files using the <tt class="docutils literal"><span class="pre">-f</span></tt> option).</p>
+<p>The plumetrack-config program has two main components. The first is the editor window (which opens when the program is first run) allows all of the configuration settings for the program to be set. The second is the configuration test window, which shows a plot of the motion field calculated using the current settings in the editor window. The configuration can be trialled on different images and the effects of changing different parameters can be viewed in realtime. To open the test window click on the Test button at the bottom of the editor window.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The realtime display of the motion field requires the recomputation of the motion field each time a parameter is changed. On old hardware, or for very large images this may be rather slow, making the program unresponsive. Increasing the downsizing factor will help to improve performance - but keep in mind that this will also affect the accuracy of the plotted motion field.</p>
+</div>
 </div>
 <div class="section" id="configuration-options">
 <h2>Configuration Options<a class="headerlink" href="#configuration-options" title="Permalink to this headline">¶</a></h2>
 <p>All of the following options <em>must</em> be declared in the configuration file. More information about the Farneback algorithm parameters can be found in the <a class="reference external" href="http://docs.opencv.org/trunk/modules/video/doc/motion_analysis_and_object_tracking.html?highlight=farneback#cv2.calcOpticalFlowFarneback">OpenCV documentation</a>.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="23%" />
-<col width="8%" />
-<col width="70%" />
+<col width="28%" />
+<col width="7%" />
+<col width="65%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Name</th>
@@ -102,17 +111,17 @@ format is specified using the Python <a class="reference external" href="https:/
 <td>String</td>
 <td>The filename extension used for the image files e.g. <cite>&#8221;.png&#8221;</cite>.</td>
 </tr>
-<tr class="row-even"><td><strong>threshold_low</strong></td>
+<tr class="row-even"><td><strong>motion_pix_threshold_low</strong></td>
 <td>Float</td>
 <td>Any pixels that are below this threshold will be masked using random noise and
 will be excluded from the flux calculation. Set to -1.0 to prevent low-value
-thresholding.</td>
+thresholding. Note that the threshold refers to the pixel values in the raw image.</td>
 </tr>
-<tr class="row-odd"><td><strong>threshold_high</strong></td>
+<tr class="row-odd"><td><strong>motion_pix_threshold_high</strong></td>
 <td>Float</td>
 <td>Any pixels that are above this threshold will be masked using random noise and
 will be excluded from the flux calculation. Set to -1.0 to prevent high-value
-thresholding.</td>
+thresholding. Note that the threshold refers to the pixel values in the raw image.</td>
 </tr>
 <tr class="row-even"><td><strong>random_mean</strong></td>
 <td>Float</td>
@@ -141,7 +150,16 @@ an empty string if you do not wish to use a mask image.</td>
 <td>The size (either the width or the height) of the pixels in the images in meters.
 Note that this is <em>not</em> the area of the pixels.</td>
 </tr>
-<tr class="row-even"><td><strong>flux_conversion_factor</strong></td>
+<tr class="row-even"><td><strong>downsizing_factor</strong></td>
+<td>Float</td>
+<td>Computation time scales approximately linearly with the number of pixels in the
+images. Large speed increases can therefore be achieved by downscaling the images
+prior to computing the flux. Setting the this parameter to a value &gt;1.0 will
+result in the images being scaled/resized (e.g. if downsizing_factor=2.0, then
+images will be halved in size) by this amount prior to be processed. This will
+increase the speed of computation, but will result in coarser flux estimates.</td>
+</tr>
+<tr class="row-odd"><td><strong>flux_conversion_factor</strong></td>
 <td>Float</td>
 <td>This is used in conjunction with the pixel_size parameter to convert
 the pixel values in your images into SO2 masses. You need to select a value for
@@ -149,47 +167,90 @@ this parameter such that <cite>SO2_mass = pixel_value x pixel_size^2 x
 flux_conversion_factor</cite>. The fluxes returned will then have units of
 SO2-mass-units per second.</td>
 </tr>
-<tr class="row-odd"><td><strong>farneback_pyr_scale</strong></td>
+<tr class="row-even"><td><strong>farneback_pyr_scale</strong></td>
 <td>Float</td>
 <td>Farneback algorithm parameter: the image scale (&lt;1.0) to build pyramids for each
 image; <tt class="docutils literal"><span class="pre">farneback_pyr_scale=0.5</span></tt> means a classical pyramid, where each next
 layer is twice smaller than the previous one.</td>
 </tr>
-<tr class="row-even"><td><strong>farneback_levels</strong></td>
+<tr class="row-odd"><td><strong>farneback_levels</strong></td>
 <td>Integer</td>
 <td>Farneback algorithm parameter: number of pyramid layers including the initial
 image; <tt class="docutils literal"><span class="pre">farneback_levels=1</span></tt> means that no extra layers are created and only the
 original images are used.</td>
 </tr>
-<tr class="row-odd"><td><strong>farneback_winsize</strong></td>
+<tr class="row-even"><td><strong>farneback_winsize</strong></td>
 <td>Integer</td>
 <td>Farneback algorithm parameter: averaging window size; larger values increase the
 algorithm robustness to image noise and give more chances for fast motion
 detection, but yield more blurred motion field.</td>
 </tr>
-<tr class="row-even"><td><strong>farneback_iterations</strong></td>
+<tr class="row-odd"><td><strong>farneback_iterations</strong></td>
 <td>Integer</td>
 <td>Farneback algorithm parameter: number of iterations the algorithm does at each
 pyramid level.</td>
 </tr>
-<tr class="row-odd"><td><strong>farneback_poly_n</strong></td>
+<tr class="row-even"><td><strong>farneback_poly_n</strong></td>
 <td>Integer</td>
 <td>Farneback algorithm parameter: size of the pixel neighborhood used to find
 polynomial expansion in each pixel; larger values mean that the image will be
 approximated with smoother surfaces, yielding more robust algorithm and more
 blurred  motion field, typically <tt class="docutils literal"><span class="pre">farneback_poly_n</span></tt> =5 or 7.</td>
 </tr>
-<tr class="row-even"><td><strong>farneback_poly_sigma</strong></td>
+<tr class="row-odd"><td><strong>farneback_poly_sigma</strong></td>
 <td>Float</td>
 <td>Farneback algorithm parameter: standard deviation of the Gaussian that is used to
 smooth derivatives used as a basis for the polynomial expansion; for
 <tt class="docutils literal"><span class="pre">farneback_poly_n=5</span></tt>, you can set <tt class="docutils literal"><span class="pre">farneback_poly_sigma=1.1</span></tt>, for
 <tt class="docutils literal"><span class="pre">farneback_poly_n=7</span></tt>, a good value would be <tt class="docutils literal"><span class="pre">farneback_poly_sigma=1.5</span></tt>.</td>
 </tr>
-<tr class="row-odd"><td><strong>integration_line</strong></td>
+<tr class="row-even"><td><strong>integration_method</strong></td>
+<td>String</td>
+<td>The integration method may be either &#8216;1d&#8217; or &#8216;2d&#8217;. The &#8216;1d&#8217; method computes flux
+by multiplying each pixel on the the integration line by its corresponding
+velocity and then integrating along the line&#8217;s length. The &#8216;2d&#8217; method considers
+every pixel in the image and its corresponding velocity to compute which regions
+of the image cross the integration line between frames. The &#8216;1d&#8217; method is
+marginally faster, but the &#8216;2d&#8217; method is more robust, especially for images
+which have large time gap between them, or for highly dynamic plumes.</td>
+</tr>
+<tr class="row-odd"><td><strong>integration_pix_threshold_low</strong></td>
+<td>Float</td>
+<td>Any pixels that are below this threshold will be excluded from the flux
+calculation. However, it does not change the visibility of the pixels to the
+motion estimtion algorithm (unlike the thresholds above).</td>
+</tr>
+<tr class="row-even"><td><strong>integration_lines</strong></td>
 <td>List</td>
-<td>List of [x, y] points defining the integration line for the flux calculation. x
-and y are in pixel coordinates.</td>
+<td>List of dicts of integration line parameters, one for each integration line. See
+table below for details of what integration line parameters must be set.</td>
+</tr>
+</tbody>
+</table>
+<p>Integration line configuration parameters:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="28%" />
+<col width="7%" />
+<col width="65%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>name</strong></td>
+<td>String</td>
+<td>A descriptive name to identify the integration line. This will appear as a column
+heading in results files.</td>
+</tr>
+<tr class="row-odd"><td><strong>integration_points</strong></td>
+<td>List</td>
+<td>A list of [x, y] points (e.g. [[x1, y1], [x2, y2],...] defining the integration
+line for the flux calculation. x and y are in pixel coordinates - the origin is in
+the top left of n image.</td>
 </tr>
 <tr class="row-even"><td><strong>integration_direction</strong></td>
 <td>Integer</td>
@@ -262,7 +323,7 @@ line.</td>
         <li class="right" >
           <a href="quickstart.html" title="Quickstart"
              >previous</a> |</li>
-        <li><a href="index.html">plumetrack 14.11 documentation</a> &raquo;</li> 
+        <li><a href="index.html">plumetrack 15.01 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>plumetrack.dir_iter &mdash; plumetrack 14.11 documentation</title>
+    <title>plumetrack.dir_iter &mdash; plumetrack 15.01 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '14.11',
+        VERSION:     '15.01',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="plumetrack 14.11 documentation" href="../../index.html" />
+    <link rel="top" title="plumetrack 15.01 documentation" href="../../index.html" />
     <link rel="up" title="plumetrack" href="../plumetrack.html" /> 
   </head>
   <body>
@@ -37,7 +37,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">plumetrack 14.11 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">plumetrack 15.01 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li>
           <li><a href="../plumetrack.html" accesskey="U">plumetrack</a> &raquo;</li> 
       </ul>
@@ -83,9 +83,9 @@
 <span class="sd">The following code shows how the dir_iter module can be used to print the names</span>
 <span class="sd">of any new files created in a directory:</span>
 
-<span class="sd">    from _plumetrack import dir_iter</span>
+<span class="sd">    from plumetrack import dir_iter</span>
 <span class="sd">    </span>
-<span class="sd">    for filename in dir_iter.DirFileIter(&quot;my_directory&quot;, realtime=True):</span>
+<span class="sd">    for filename in dir_iter.ListDirIter(&quot;my_directory&quot;, realtime=True):</span>
 <span class="sd">        print filename</span>
 <span class="sd">    </span>
 <span class="sd">&quot;&quot;&quot;</span>
@@ -104,85 +104,177 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="s">&quot;</span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s"> is not a recognised folder&quot;</span> <span class="o">%</span><span class="n">path</span>
     
-    <span class="n">found_files</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob1</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="n">pattern</span><span class="p">)]</span>
-    <span class="n">path_contents</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">path</span><span class="p">)]</span>
-    
-    <span class="k">if</span> <span class="n">skip_links</span><span class="p">:</span>
-        <span class="n">path_contents</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">ifilterfalse</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">islink</span><span class="p">,</span> <span class="n">path_contents</span><span class="p">)]</span>
-    
-    <span class="n">dirs</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">ifilter</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">,</span> <span class="n">path_contents</span><span class="p">)]</span>
-    <span class="n">found_files</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">ifilterfalse</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">,</span> <span class="n">found_files</span><span class="p">)]</span> <span class="c">#now with no dirs in it  </span>
-
-    <span class="k">if</span> <span class="n">recursive</span><span class="p">:</span>
-        <span class="n">found_files</span> <span class="o">+=</span> <span class="p">[</span><span class="n">find_files</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">recursive</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">skip_links</span><span class="p">,</span> <span class="n">full_paths</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">dirs</span><span class="p">]</span>
+    <span class="n">found_files</span> <span class="o">=</span> <span class="p">[]</span>
         
-    <span class="k">if</span> <span class="n">full_paths</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">flatten</span><span class="p">(</span><span class="n">found_files</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span><span class="p">]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">flatten</span><span class="p">(</span><span class="n">found_files</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span><span class="p">]</span>
-
+    <span class="k">for</span> <span class="n">folder</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">topdown</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">followlinks</span><span class="o">=</span><span class="ow">not</span> <span class="n">skip_links</span><span class="p">):</span>
+        
+        <span class="k">if</span> <span class="n">full_paths</span><span class="p">:</span>
+            <span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span><span class="n">f</span><span class="p">))</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">]</span>
+            
+        <span class="k">if</span> <span class="n">pattern</span> <span class="o">!=</span> <span class="s">&#39;*&#39;</span><span class="p">:</span>
+            <span class="n">found_files</span> <span class="o">+=</span> <span class="n">glob</span><span class="o">.</span><span class="n">fnmatch</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">pattern</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">found_files</span> <span class="o">+=</span> <span class="n">files</span>
+                
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">recursive</span><span class="p">:</span>
+            <span class="k">break</span>
+    
+    <span class="k">return</span> <span class="n">found_files</span>
 
 </div>
-<div class="viewcode-block" id="flatten"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.dir_iter.flatten">[docs]</a><span class="k">def</span> <span class="nf">flatten</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">ltypes</span><span class="o">=</span><span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Reduces any iterable containing other iterables into a single list</span>
-<span class="sd">    of non-iterable items. The ltypes option allows control over what </span>
-<span class="sd">    element types will be flattened. This algorithm is taken from:</span>
-<span class="sd">    http://rightfootin.blogspot.com/2006/09/more-on-python-flatten.html</span>
-<span class="sd">    </span>
-<span class="sd">    &gt;&gt;&gt; print flatten([range(3),range(3,6)])</span>
-<span class="sd">    [0, 1, 2, 3, 4, 5]</span>
-<span class="sd">    &gt;&gt;&gt; print flatten([1,2,(3,4)])</span>
-<span class="sd">    [1, 2, 3, 4]</span>
-<span class="sd">    &gt;&gt;&gt; print flatten([1,[2,3,[4,5,[6,[7,8,[9,[10]]]]]]])</span>
-<span class="sd">    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]</span>
-<span class="sd">    &gt;&gt;&gt; print flatten([1,[2,3,[4,5,[6,[7,8,[9,[10]]]]]]], ltypes=())</span>
-<span class="sd">    [1, [2, 3, [4, 5, [6, [7, 8, [9, [10]]]]]]]</span>
-<span class="sd">    &gt;&gt;&gt; print flatten([1,2,(3,4)],ltypes=(list))</span>
-<span class="sd">    [1, 2, (3, 4)]</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ltype</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
-    <span class="n">l</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
-    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">):</span>
-        <span class="k">while</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ltypes</span><span class="p">):</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">l</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
-                <span class="n">l</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-                <span class="n">i</span> <span class="o">-=</span> <span class="mi">1</span>
-                <span class="k">break</span>
+<div class="viewcode-block" id="AsyncFileFinder"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.dir_iter.AsyncFileFinder">[docs]</a><span class="k">class</span> <span class="nc">AsyncFileFinder</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">pattern</span><span class="o">=</span><span class="s">&#39;*&#39;</span><span class="p">,</span> <span class="n">skip_links</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> 
+                 <span class="n">full_paths</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Asynchronous version of the find_files function. The AsyncFileFinder is </span>
+<span class="sd">        an iterator which starts returning filenames as soon as it has them </span>
+<span class="sd">        (rather than waiting until the full file search is completed).</span>
+<span class="sd">        </span>
+<span class="sd">        * path - the directory to search for files</span>
+<span class="sd">        * recursive - boolean controls whether to search sub-directories or not</span>
+<span class="sd">        * pattern - Unix &quot;glob&quot; type pattern to match for filenames.</span>
+<span class="sd">        * skip_links - boolean controls whether links are followed or not</span>
+<span class="sd">        * full_paths - boolean controls whether the filenames returned are full</span>
+<span class="sd">                       paths or relative paths.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_recursive</span> <span class="o">=</span> <span class="n">recursive</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pattern</span> <span class="o">=</span> <span class="n">pattern</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_follow_links</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">skip_links</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_full_paths</span> <span class="o">=</span> <span class="n">full_paths</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">=</span> <span class="n">path</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_output_q</span> <span class="o">=</span> <span class="n">Queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stay_alive</span> <span class="o">=</span> <span class="bp">True</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_worker_thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_find_files</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_worker_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    
+    
+    <span class="k">def</span> <span class="nf">_find_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recursive</span><span class="p">:</span>
+            <span class="n">topdown</span><span class="o">=</span><span class="bp">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">topdown</span><span class="o">=</span><span class="bp">True</span>
+        
+        <span class="k">for</span> <span class="n">folder</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">,</span> <span class="n">topdown</span><span class="o">=</span><span class="n">topdown</span><span class="p">,</span> <span class="n">followlinks</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_follow_links</span><span class="p">):</span>
+            
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_full_paths</span><span class="p">:</span>
+                <span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span><span class="n">f</span><span class="p">))</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">l</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">l</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
-    <span class="k">return</span> <span class="n">ltype</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+                <span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">]</span>
+            
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pattern</span> <span class="o">!=</span> <span class="s">&#39;*&#39;</span><span class="p">:</span>
+                <span class="n">files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">fnmatch</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pattern</span><span class="p">)</span>
+            
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_output_q</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>            
+                    
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recursive</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stay_alive</span><span class="p">:</span>
+                <span class="k">break</span>
+        
+        <span class="c">#signal that this is all the files</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_output_q</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
 
+    
+<div class="viewcode-block" id="AsyncFileFinder.close"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.dir_iter.AsyncFileFinder.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Stops the search for files and causes any calls to next() to raise</span>
+<span class="sd">        StopIteration</span>
+<span class="sd">        &quot;&quot;&quot;</span>       
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stay_alive</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_worker_thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+    
+    </div>
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method required by iterator protocol. Allows iterator to be used in </span>
+<span class="sd">        for loops.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span>
+    
 
-</div>
-<div class="viewcode-block" id="DirFileIter"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.dir_iter.DirFileIter">[docs]</a><span class="k">class</span> <span class="nc">DirFileIter</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c">#needed for Py3k compatibility</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+        
+        
+<div class="viewcode-block" id="AsyncFileFinder.next"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.dir_iter.AsyncFileFinder.next">[docs]</a>    <span class="k">def</span> <span class="nf">next</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method required by iterator protocol. Returns the next filename found</span>
+<span class="sd">        or raises StopIteration if there are no files left to list (or if </span>
+<span class="sd">        close() has been called on the iterator.</span>
+<span class="sd">        </span>
+<span class="sd">        Note that if the iterator was created with the realtime option set to </span>
+<span class="sd">        True, then this method will block until a new file is detected (or until</span>
+<span class="sd">        close() is called).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="c">#we do the get() call in a loop so that signals can be recieved by the </span>
+        <span class="c">#thread calling next() even if no items come into the filename queue     </span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_q</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">timeout</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="k">break</span>
+            <span class="k">except</span> <span class="n">Queue</span><span class="o">.</span><span class="n">Empty</span><span class="p">:</span>
+                <span class="k">continue</span>
+        
+        <span class="k">if</span> <span class="n">s</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stay_alive</span><span class="p">:</span>
+            
+            <span class="k">raise</span> <span class="ne">StopIteration</span>
+        
+        <span class="k">return</span> <span class="n">s</span>
+    
+    
+</div></div>
+<div class="viewcode-block" id="ListDirIter"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.dir_iter.ListDirIter">[docs]</a><span class="k">class</span> <span class="nc">ListDirIter</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">realtime</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">skip_existing</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> 
-                 <span class="n">recursive</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">sort_func</span><span class="o">=</span><span class="nb">cmp</span><span class="p">,</span> <span class="n">test_func</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+                 <span class="n">recursive</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">sort_func</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">test_func</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">max_n</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">pattern</span><span class="o">=</span><span class="s">&#39;*&#39;</span><span class="p">,</span> <span class="n">full_paths</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">skip_links</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Iterator class which returns the filenames in a directory structure, with</span>
 <span class="sd">        the option of monitoring for new files in realtime.</span>
 <span class="sd">        </span>
 <span class="sd">            * directory - the directory to list the files in</span>
 <span class="sd">            * realtime - boolean controls whether to continuously monitor the</span>
-<span class="sd">                         directory for new files</span>
+<span class="sd">                         directory for new files. Use of this option requires </span>
+<span class="sd">                         you have either pyinotify or pywin32 installed on your</span>
+<span class="sd">                         system.</span>
 <span class="sd">            * skip_existing - boolean controls whether to return the files that</span>
 <span class="sd">                              already exist in the directory (if set to False, </span>
 <span class="sd">                              then only files created after the iterator will be</span>
 <span class="sd">                              returned).</span>
 <span class="sd">            * recursive - boolean controls whether to list files in sub-directories</span>
-<span class="sd">            * sort_func - a comparator function used to sort the list of exisiting</span>
+<span class="sd">            * sort_func - a comparator function used to sort the list of existing</span>
 <span class="sd">                          files before they are returned. Default is that they </span>
 <span class="sd">                          are sorted by name. Note that once all the existing </span>
 <span class="sd">                          filenames have been returned, filenames will be </span>
 <span class="sd">                          returned in the order that they are created regardless</span>
-<span class="sd">                          of what sort_func is set to.</span>
+<span class="sd">                          of what sort_func is set to. If the sort function is </span>
+<span class="sd">                          set to None, then filenames will be returned </span>
+<span class="sd">                          asynchronously (i.e. the first filenames will be </span>
+<span class="sd">                          returned whilst the search is still running) which may </span>
+<span class="sd">                          improve performance.</span>
 <span class="sd">            * test_func - optional test function which should take a filename as</span>
 <span class="sd">                          its only argument and return True or False. Only filenames</span>
 <span class="sd">                          which evaluate to True with the test function will</span>
 <span class="sd">                          be returned from the iterator. Setting this to None </span>
 <span class="sd">                          results in all filenames being returned.</span>
+<span class="sd">            * max_n     - Return at most max_n filenames (regardless of how many</span>
+<span class="sd">                          files are in the directory). Default is None, return</span>
+<span class="sd">                          all filenames.</span>
+<span class="sd">            * pattern   - A UNIX &#39;glob&#39; style pattern string. Only filenames </span>
+<span class="sd">                          matching this pattern will be returned. If full_paths</span>
+<span class="sd">                          is specified then the pattern matching is done against</span>
+<span class="sd">                          the absolute paths of the files found.</span>
+<span class="sd">            * full_paths- boolean controls whether absolute (full) or relative </span>
+<span class="sd">                          paths to files are returned.</span>
+<span class="sd">            * skip_links- boolean specifies whether to follow links or not. </span>
+<span class="sd">                          Default is to ignore links.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
@@ -196,18 +288,24 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">__dir</span> <span class="o">=</span> <span class="n">directory</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__sort_func</span> <span class="o">=</span> <span class="n">sort_func</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__test_func</span> <span class="o">=</span> <span class="n">test_func</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__pattern</span> <span class="o">=</span> <span class="n">pattern</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__full_paths</span> <span class="o">=</span> <span class="n">full_paths</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__skip_links</span> <span class="o">=</span> <span class="n">skip_links</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_filename_q</span> <span class="o">=</span> <span class="n">Queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__realtime_filename_q</span> <span class="o">=</span> <span class="n">Queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_stay_alive</span> <span class="o">=</span> <span class="bp">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__existing_loader_thread</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_realtime_loader_thread</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__async_file_iter</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_finished_loading_existing_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_finished_loading_existing_lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__existing_files_found</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__recursive</span> <span class="o">=</span> <span class="n">recursive</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__max_n</span> <span class="o">=</span> <span class="n">max_n</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__return_count</span> <span class="o">=</span> <span class="mi">0</span>
         
         <span class="c">#note that we start the realtime loader thread BEFORE the existing loader thread</span>
-        <span class="c">#this is to prevent spectra that are created during the find_files() call being </span>
+        <span class="c">#this is to prevent files that are created during the find_files() call being </span>
         <span class="c">#skipped.</span>
         <span class="k">if</span> <span class="n">realtime</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">can_watch_directories</span><span class="p">():</span>
@@ -217,7 +315,10 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_realtime_loader_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
               
         <span class="k">if</span> <span class="ow">not</span> <span class="n">skip_existing</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__existing_loader_thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__load_existing</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">sort_func</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__existing_loader_thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__load_existing_async</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__existing_loader_thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__load_existing</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__existing_loader_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_finished_loading_existing_lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
@@ -236,7 +337,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
         
         
-<div class="viewcode-block" id="DirFileIter.next"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.dir_iter.DirFileIter.next">[docs]</a>    <span class="k">def</span> <span class="nf">next</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ListDirIter.next"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.dir_iter.ListDirIter.next">[docs]</a>    <span class="k">def</span> <span class="nf">next</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method required by iterator protocol. Returns the next filename found</span>
 <span class="sd">        or raises StopIteration if there are no files left to list (or if </span>
@@ -249,6 +350,11 @@
         
         <span class="c">#we do the get() call in a loop so that signals can be recieved by the </span>
         <span class="c">#thread calling next() even if no items come into the filename queue</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__return_count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__max_n</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">__return_count</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">__max_n</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="ne">StopIteration</span>
+        
         <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filename_q</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">timeout</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -263,13 +369,16 @@
         <span class="k">return</span> <span class="n">s</span>
 
     </div>
-<div class="viewcode-block" id="DirFileIter.close"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.dir_iter.DirFileIter.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ListDirIter.close"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.dir_iter.ListDirIter.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This is only needed if the iterator was created with the realtime option</span>
 <span class="sd">        set to True. Calling close() stops the iterator from waiting for new</span>
 <span class="sd">        files and causes any pending calls to next() to raise StopIteration.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_stay_alive</span> <span class="o">=</span> <span class="bp">False</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__async_file_iter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__async_file_iter</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         
         <span class="c">#the loader threads may be blocking waiting to put something into the queue</span>
         <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
@@ -296,21 +405,40 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_realtime_loader_thread</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_realtime_loader_thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
                
+    </div>
+    <span class="k">def</span> <span class="nf">__load_existing_async</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__async_file_iter</span> <span class="o">=</span> <span class="n">AsyncFileFinder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__dir</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__recursive</span><span class="p">,</span>
+                                     <span class="n">full_paths</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__full_paths</span><span class="p">,</span> 
+                                     <span class="n">skip_links</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__skip_links</span><span class="p">,</span>
+                                     <span class="n">pattern</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__pattern</span><span class="p">)</span>
+            
+            <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__async_file_iter</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__test_func</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__test_func</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+                    <span class="k">continue</span>
+                
+                <span class="bp">self</span><span class="o">.</span><span class="n">__existing_files_found</span><span class="p">[</span><span class="n">filename</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_filename_q</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+             
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_finished_loading_existing_lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+            
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_realtime_loader_thread</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>        
+            <span class="c">#put None into the queue so that the iteration finishes when the q is emptied</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_filename_q</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>    
     
-       </div>
+       
     <span class="k">def</span> <span class="nf">__load_existing</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        
         <span class="k">try</span><span class="p">:</span> 
-            <span class="c">#find_files is slow so use listdir if we don&#39;t need to be recursive</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__recursive</span><span class="p">:</span>
-                <span class="n">existing_files</span> <span class="o">=</span> <span class="n">find_files</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__dir</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">existing_files</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__dir</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__dir</span><span class="p">)]</span>
+            <span class="n">existing_files</span> <span class="o">=</span> <span class="n">find_files</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__dir</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__recursive</span><span class="p">,</span>
+                                        <span class="n">full_paths</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__full_paths</span><span class="p">,</span> 
+                                        <span class="n">skip_links</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__skip_links</span><span class="p">,</span>
+                                        <span class="n">pattern</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__pattern</span><span class="p">)</span>
             
             <span class="c">#if a test function was specified, then only keep the filenames which satisfy it</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__test_func</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
                 <span class="n">existing_files</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">ifilter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__test_func</span><span class="p">,</span> <span class="n">existing_files</span><span class="p">)]</span>
-                
+             
             <span class="c">#sort the filenames using the comparator function specified in the </span>
             <span class="c">#kwargs to the constructor of the DirFilesIter object</span>
             <span class="n">existing_files</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="nb">cmp</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__sort_func</span><span class="p">)</span>
@@ -350,6 +478,12 @@
             <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
                 <span class="k">break</span>
             
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__full_paths</span><span class="p">:</span>
+                <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__pattern</span> <span class="o">!=</span> <span class="s">&#39;*&#39;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">glob</span><span class="o">.</span><span class="n">fnmatch</span><span class="o">.</span><span class="n">fnmatch</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__pattern</span><span class="p">):</span>
+                    <span class="k">continue</span>
+            
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__test_func</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__test_func</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
                 <span class="k">continue</span>
             
@@ -364,6 +498,9 @@
 
             <span class="k">try</span><span class="p">:</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__test_func</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__test_func</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+                    <span class="k">continue</span>
+                
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__pattern</span> <span class="o">!=</span> <span class="s">&#39;*&#39;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">glob</span><span class="o">.</span><span class="n">fnmatch</span><span class="o">.</span><span class="n">fnmatch</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__pattern</span><span class="p">):</span>
                     <span class="k">continue</span>
                 
                 <span class="bp">self</span><span class="o">.</span><span class="n">_filename_q</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
@@ -409,7 +546,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">plumetrack 14.11 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">plumetrack 15.01 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li>
           <li><a href="../plumetrack.html" >plumetrack</a> &raquo;</li> 
       </ul>

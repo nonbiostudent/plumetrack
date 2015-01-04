@@ -14,6 +14,8 @@ plumetrack is a `Python <http://www.python.org>`_ program for computing sulphur 
 
 It is designed with volcanic monitoring in mind and can perform both real-time and batch processing of images.
 
+The main plumetrack program is a command-line program, to facilitate easy integration of plumetrack with existing UV image processing toolchains and simple automation of flux calculations. However, plumetrack also ships with a graphical configuration utility which allows program settings to be adjusted whilst viewing in realtime the effects that the changes have on the computed motion field.
+
 
 
 

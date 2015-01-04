@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>plumetrack.flux &mdash; plumetrack 14.11 documentation</title>
+    <title>plumetrack.flux &mdash; plumetrack 15.01 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '14.11',
+        VERSION:     '15.01',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="plumetrack 14.11 documentation" href="../../index.html" />
+    <link rel="top" title="plumetrack 15.01 documentation" href="../../index.html" />
     <link rel="up" title="plumetrack" href="../plumetrack.html" /> 
   </head>
   <body>
@@ -37,7 +37,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">plumetrack 14.11 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">plumetrack 15.01 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li>
           <li><a href="../plumetrack.html" accesskey="U">plumetrack</a> &raquo;</li> 
       </ul>
@@ -70,7 +70,7 @@
 
 
 <div class="viewcode-block" id="IntegrationLine"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.flux.IntegrationLine">[docs]</a><span class="k">class</span> <span class="nc">IntegrationLine</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xpts</span><span class="p">,</span> <span class="n">ypts</span><span class="p">,</span> <span class="n">direction</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span><span class="n">xpts</span><span class="p">,</span> <span class="n">ypts</span><span class="p">,</span> <span class="n">direction</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Class to represent an integration line in an image. Note that the xpts and ypts</span>
 <span class="sd">        are *not* in pixel coordinates, they are in line coordinates - which are pixel boundary</span>
@@ -83,6 +83,7 @@
 <span class="sd">        Integration lines can extend beyond the boundaries of the image without </span>
 <span class="sd">        problems.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">xpts</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ypts</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;xpts and ypts must contain the same number of elements&quot;</span><span class="p">)</span>
@@ -157,20 +158,40 @@
         
         <span class="k">return</span> <span class="n">pts</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">vectors</span><span class="p">,</span> <span class="n">normals</span>
 
-
 </div></div>
+<div class="viewcode-block" id="create_flux_engine"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.flux.create_flux_engine">[docs]</a><span class="k">def</span> <span class="nf">create_flux_engine</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a flux engine based on the values in config.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">config</span><span class="p">[</span><span class="s">&#39;integration_method&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;2d&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">FluxEngine2D</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">config</span><span class="p">[</span><span class="s">&#39;integration_method&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;1d&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">FluxEngine1D</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Unknown integration method </span><span class="se">\&quot;\&quot;</span><span class="s">. Expecting either </span><span class="se">\&quot;</span><span class="s">1d</span><span class="se">\&quot;</span><span class="s"> or </span><span class="se">\&quot;</span><span class="s">2d</span><span class="se">\&quot;</span><span class="s">.&quot;</span><span class="p">)</span>
+
+
+</div>
 <div class="viewcode-block" id="FluxEngineBase"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.flux.FluxEngineBase">[docs]</a><span class="k">class</span> <span class="nc">FluxEngineBase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
-        <span class="n">xpts</span><span class="p">,</span> <span class="n">ypts</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;integration_line&#39;</span><span class="p">])</span>
         
-        <span class="bp">self</span><span class="o">.</span><span class="n">_int_line</span> <span class="o">=</span> <span class="n">IntegrationLine</span><span class="p">(</span><span class="n">xpts</span><span class="p">,</span> <span class="n">ypts</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="s">&#39;integration_direction&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_int_lines</span> <span class="o">=</span> <span class="p">[]</span>
         
-        <span class="bp">self</span><span class="o">.</span><span class="n">_pixel_size</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s">&#39;pixel_size&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">int_line_cfg</span> <span class="ow">in</span> <span class="n">config</span><span class="p">[</span><span class="s">&#39;integration_lines&#39;</span><span class="p">]:</span>
+            <span class="n">xpts</span><span class="p">,</span> <span class="n">ypts</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">int_line_cfg</span><span class="p">[</span><span class="s">&#39;integration_points&#39;</span><span class="p">])</span>
+            
+            <span class="n">xpts</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="o">/</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;downsizing_factor&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xpts</span><span class="p">]</span>
+            <span class="n">ypts</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="o">/</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;downsizing_factor&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ypts</span><span class="p">]</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">_int_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">IntegrationLine</span><span class="p">(</span><span class="n">int_line_cfg</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">],</span> <span class="n">xpts</span><span class="p">,</span> <span class="n">ypts</span><span class="p">,</span> <span class="n">int_line_cfg</span><span class="p">[</span><span class="s">&#39;integration_direction&#39;</span><span class="p">]))</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pixel_size</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s">&#39;pixel_size&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">config</span><span class="p">[</span><span class="s">&#39;downsizing_factor&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_conversion_factor</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s">&#39;flux_conversion_factor&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_low_pix_threshold</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s">&#39;integration_pix_threshold_low&#39;</span><span class="p">]</span>
     
     
-<div class="viewcode-block" id="FluxEngineBase.get_integration_line"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.flux.FluxEngineBase.get_integration_line">[docs]</a>    <span class="k">def</span> <span class="nf">get_integration_line</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_int_line</span>
+<div class="viewcode-block" id="FluxEngineBase.get_integration_lines"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.flux.FluxEngineBase.get_integration_lines">[docs]</a>    <span class="k">def</span> <span class="nf">get_integration_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_int_lines</span>
     
     </div>
 <div class="viewcode-block" id="FluxEngineBase.compute_flux"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.flux.FluxEngineBase.compute_flux">[docs]</a>    <span class="k">def</span> <span class="nf">compute_flux</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_image</span><span class="p">,</span> <span class="n">flow</span><span class="p">,</span> <span class="n">delta_t</span><span class="p">):</span>
@@ -195,16 +216,6 @@
         <span class="c">#convert the displacements to velocities in m/s</span>
         <span class="n">flow</span> <span class="o">*=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pixel_size</span> <span class="o">/</span> <span class="n">delta_t</span><span class="p">)</span>
         
-        <span class="c">#work out how many segments to split the integration line into, to get </span>
-        <span class="c">#approximately single pixel resolution</span>
-        <span class="n">line_length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_int_line</span><span class="o">.</span><span class="n">get_length</span><span class="p">()</span>
-        <span class="n">number_of_segments</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">line_length</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
-        
-        <span class="n">int_pts</span><span class="p">,</span> <span class="n">int_vecs</span><span class="p">,</span> <span class="n">int_norms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_int_line</span><span class="o">.</span><span class="n">get_poly_approx</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">number_of_segments</span><span class="p">)</span> 
-        
-        <span class="c">#calculate the mid-points of each line segment</span>
-        <span class="n">mid_points</span> <span class="o">=</span> <span class="n">int_pts</span> <span class="o">+</span> <span class="p">(</span><span class="mf">0.5</span><span class="o">*</span><span class="n">int_vecs</span><span class="p">)</span>
-        
         <span class="c">#interpolate the current image to find the pixel values at the points </span>
         <span class="c">#on the integration line</span>
         <span class="n">image_interp</span> <span class="o">=</span> <span class="n">interp2d</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">current_image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> 
@@ -221,33 +232,53 @@
                                  <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">flow</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> 
                                  <span class="n">flow</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="n">copy</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
         
-        <span class="n">pix_vals</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">number_of_segments</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;float&#39;</span><span class="p">)</span>
-        <span class="n">velocities</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">number_of_segments</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;float&#39;</span><span class="p">)</span>
-        
-        <span class="c">#note that we have to do this in a for loop rather than calling the </span>
-        <span class="c">#interpolator with arrays of values - because the mid-points may not be</span>
-        <span class="c">#sorted (or even sortable - e.g. the x coordinates may increase as the </span>
-        <span class="c">#y coordinates decrease)</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">number_of_segments</span><span class="p">):</span>
-            <span class="n">x_coord</span> <span class="o">=</span> <span class="n">mid_points</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">y_coord</span> <span class="o">=</span> <span class="n">mid_points</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">pix_vals</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">image_interp</span><span class="p">(</span><span class="n">x_coord</span><span class="p">,</span> <span class="n">y_coord</span><span class="p">)</span>        
-            <span class="n">velocities</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_flow_interp</span><span class="p">(</span><span class="n">x_coord</span><span class="p">,</span> <span class="n">y_coord</span><span class="p">)</span>
-            <span class="n">velocities</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_flow_interp</span><span class="p">(</span><span class="n">x_coord</span><span class="p">,</span> <span class="n">y_coord</span><span class="p">)</span>
-        
-        <span class="c">#find component of velocities perpendicular to integration line</span>
-        <span class="n">perp_vel</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">velocities</span><span class="p">,</span> <span class="n">int_norms</span><span class="o">.</span><span class="n">T</span><span class="p">))</span>
-        
-        <span class="c">#caculate flux</span>
-        <span class="n">line_length_metres</span> <span class="o">=</span> <span class="n">line_length</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pixel_size</span>
-        <span class="n">fluxes</span> <span class="o">=</span> <span class="n">pix_vals</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_conversion_factor</span> <span class="o">*</span> <span class="n">perp_vel</span> <span class="o">*</span> <span class="p">(</span><span class="n">line_length_metres</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">number_of_segments</span><span class="p">))</span><span class="c">#self._pixel_size</span>
-        
-        <span class="c">#sanity check</span>
-        <span class="k">assert</span> <span class="n">fluxes</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">number_of_segments</span><span class="p">,),</span><span class="s">&quot;incorrect shape for fluxes array </span><span class="si">%s</span><span class="s">, expecting </span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">fluxes</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span> <span class="nb">str</span><span class="p">((</span><span class="n">number_of_segments</span><span class="p">,)))</span>
-        
-        <span class="n">total_flux</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">fluxes</span><span class="p">)</span>
-        
-        <span class="k">return</span> <span class="n">total_flux</span>
+        <span class="c">#now compute the flux for each integration line in the list</span>
+        <span class="n">total_fluxes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">integration_line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_int_lines</span><span class="p">:</span>
+            
+            <span class="c">#work out how many segments to split the integration line into, to get </span>
+            <span class="c">#approximately single pixel resolution</span>
+            <span class="n">line_length</span> <span class="o">=</span> <span class="n">integration_line</span><span class="o">.</span><span class="n">get_length</span><span class="p">()</span>
+            <span class="n">number_of_segments</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">line_length</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+            
+            <span class="n">int_pts</span><span class="p">,</span> <span class="n">int_vecs</span><span class="p">,</span> <span class="n">int_norms</span> <span class="o">=</span> <span class="n">integration_line</span><span class="o">.</span><span class="n">get_poly_approx</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">number_of_segments</span><span class="p">)</span> 
+            
+            <span class="c">#calculate the mid-points of each line segment</span>
+            <span class="n">mid_points</span> <span class="o">=</span> <span class="n">int_pts</span> <span class="o">+</span> <span class="p">(</span><span class="mf">0.5</span><span class="o">*</span><span class="n">int_vecs</span><span class="p">)</span>
+            
+            <span class="n">pix_vals</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">number_of_segments</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;float&#39;</span><span class="p">)</span>
+            <span class="n">velocities</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">number_of_segments</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;float&#39;</span><span class="p">)</span>
+            
+            <span class="c">#note that we have to do this in a for loop rather than calling the </span>
+            <span class="c">#interpolator with arrays of values - because the mid-points may not be</span>
+            <span class="c">#sorted (or even sortable - e.g. the x coordinates may increase as the </span>
+            <span class="c">#y coordinates decrease)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">number_of_segments</span><span class="p">):</span>
+                <span class="n">x_coord</span> <span class="o">=</span> <span class="n">mid_points</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">y_coord</span> <span class="o">=</span> <span class="n">mid_points</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">pix_vals</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">image_interp</span><span class="p">(</span><span class="n">x_coord</span><span class="p">,</span> <span class="n">y_coord</span><span class="p">)</span>        
+                <span class="n">velocities</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_flow_interp</span><span class="p">(</span><span class="n">x_coord</span><span class="p">,</span> <span class="n">y_coord</span><span class="p">)</span>
+                <span class="n">velocities</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_flow_interp</span><span class="p">(</span><span class="n">x_coord</span><span class="p">,</span> <span class="n">y_coord</span><span class="p">)</span>
+            
+            <span class="c">#find component of velocities perpendicular to integration line</span>
+            <span class="n">perp_vel</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">velocities</span><span class="p">,</span> <span class="n">int_norms</span><span class="o">.</span><span class="n">T</span><span class="p">))</span>
+            
+            <span class="c">#caculate flux</span>
+            <span class="n">line_length_metres</span> <span class="o">=</span> <span class="n">line_length</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pixel_size</span>
+            <span class="n">fluxes</span> <span class="o">=</span> <span class="n">pix_vals</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_conversion_factor</span> <span class="o">*</span> <span class="n">perp_vel</span> <span class="o">*</span> <span class="p">(</span><span class="n">line_length_metres</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">number_of_segments</span><span class="p">))</span><span class="c">#self._pixel_size</span>
+            
+            <span class="c">#sanity check</span>
+            <span class="k">assert</span> <span class="n">fluxes</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">number_of_segments</span><span class="p">,),</span><span class="s">&quot;incorrect shape for fluxes array </span><span class="si">%s</span><span class="s">, expecting </span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">fluxes</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span> <span class="nb">str</span><span class="p">((</span><span class="n">number_of_segments</span><span class="p">,)))</span>
+            
+            <span class="c">#only sum the values with pixel values above the low pixel threshold</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_low_pix_threshold</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="n">total_flux</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">fluxes</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">pix_vals</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_low_pix_threshold</span><span class="p">)])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">total_flux</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">fluxes</span><span class="p">)</span>
+            
+            <span class="n">total_fluxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">total_flux</span><span class="p">)</span>
+            
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">total_fluxes</span><span class="p">)</span>
         
         
            </div></div>
@@ -265,22 +296,33 @@
         <span class="c">#convert the pixel values into mass of SO2</span>
         <span class="n">so2_masses_kg</span> <span class="o">=</span> <span class="n">current_image</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pixel_size</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_conversion_factor</span>
         
-        <span class="c">#find the pixels which contribute to the flux</span>
-        <span class="n">contributing_pixels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_flux_contributions</span><span class="p">(</span><span class="n">flow</span><span class="p">)</span>
+        <span class="c">#now compute the flux for each integration line in the list</span>
+        <span class="n">total_fluxes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">integration_line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_int_lines</span><span class="p">:</span>
+            <span class="c">#find the pixels which contribute to the flux</span>
+            <span class="n">contributing_pixels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_flux_contributions</span><span class="p">(</span><span class="n">flow</span><span class="p">,</span> <span class="n">integration_line</span><span class="p">)</span>
+            
+            <span class="c">#sum all the contributing pixels (taking into account whether they were</span>
+            <span class="c">#a positive or negative contribution)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_low_pix_threshold</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="c">#only sum the values with pixel values above the low pixel threshold</span>
+                <span class="n">contributing_pixels</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">current_image</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_low_pix_threshold</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="n">total_so2_mass</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">so2_masses_kg</span> <span class="o">*</span> <span class="n">contributing_pixels</span><span class="p">)</span>
+            
+            <span class="c">#convert to flux</span>
+            <span class="n">flux</span> <span class="o">=</span> <span class="n">total_so2_mass</span> <span class="o">/</span> <span class="n">delta_t</span>
+            
+            <span class="n">total_fluxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">flux</span><span class="p">)</span>
         
-        <span class="c">#sum all the contributing pixels (taking into account whether they were</span>
-        <span class="c">#a positive or negative contribution)</span>
-        <span class="n">total_so2_mass</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">so2_masses_kg</span> <span class="o">*</span> <span class="n">contributing_pixels</span><span class="p">)</span>
-        
-        <span class="c">#convert to flux</span>
-        <span class="n">flux</span> <span class="o">=</span> <span class="n">total_so2_mass</span> <span class="o">/</span> <span class="n">delta_t</span>
-        
-        <span class="k">return</span> <span class="n">flux</span>
+        <span class="c">#need to return a tuple NOT a list - since parallel processing using</span>
+        <span class="c">#the flatten() function</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">total_fluxes</span><span class="p">)</span>
     
     </div>
-<div class="viewcode-block" id="FluxEngine2D.find_flux_contributions"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.flux.FluxEngine2D.find_flux_contributions">[docs]</a>    <span class="k">def</span> <span class="nf">find_flux_contributions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flow</span><span class="p">,</span> <span class="n">poly_approx</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="FluxEngine2D.find_flux_contributions"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.flux.FluxEngine2D.find_flux_contributions">[docs]</a>    <span class="k">def</span> <span class="nf">find_flux_contributions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flow</span><span class="p">,</span> <span class="n">integration_line</span><span class="p">,</span> <span class="n">poly_approx</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
     
-        <span class="n">int_pts</span><span class="p">,</span> <span class="n">int_vecs</span><span class="p">,</span> <span class="n">int_norms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_int_line</span><span class="o">.</span><span class="n">get_poly_approx</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">poly_approx</span><span class="p">)</span>
+        <span class="n">int_pts</span><span class="p">,</span> <span class="n">int_vecs</span><span class="p">,</span> <span class="n">int_norms</span> <span class="o">=</span> <span class="n">integration_line</span><span class="o">.</span><span class="n">get_poly_approx</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">poly_approx</span><span class="p">)</span>
         
         <span class="n">xsize</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">ysize</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
@@ -372,7 +414,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">plumetrack 14.11 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">plumetrack 15.01 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li>
           <li><a href="../plumetrack.html" >plumetrack</a> &raquo;</li> 
       </ul>
