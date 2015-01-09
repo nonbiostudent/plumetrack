@@ -126,7 +126,7 @@ class MotionFigureControls(wx.Panel):
         hsizer.AddSpacer(10)
         wx.EVT_COMMAND_SCROLL_CHANGED(self, self.density_slider.GetId(), self.on_density)
         
-        self.scale_slider = wx.Slider(self, -1, 25, -50, 50)
+        self.scale_slider = wx.Slider(self, -1, 25, -50, 49)
         h_txt = ("Change the length of the plotted motion vectors.")
         self.scale_slider.SetToolTipString(h_txt)
         sizer.Add(self.scale_slider, 1, wx.EXPAND)
