@@ -21,7 +21,7 @@ import sys
 ####################################################################
 #                     Program Information
 ####################################################################
-VERSION = "14.11" #year.month of release
+VERSION = "15.01" #year.month of release
 
 AUTHOR = 'Nial Peters'
 

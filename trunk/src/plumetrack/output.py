@@ -23,51 +23,72 @@ import scipy.misc
 import plumetrack
 
 
-def resample_velocities(image, velocities, yn):
-    x_size = int(round((float(yn)/image.shape[1]) * image.shape[0],0))
+def resample_velocities(velocities, yn):
+    """
+    Downsamples the velocities array (an MxNx2 array) such that N=yn and M is 
+    such that the downsampled array has the same aspect ratio as the original.
     
-    x_shifts = scipy.misc.imresize(velocities[...,0], (x_size, yn), 'nearest','F')
-    y_shifts = scipy.misc.imresize(velocities[...,1], (x_size, yn), 'nearest','F')
+    For efficiency, nearest neighbour interpolation is used.
+    """
+    xvel = velocities[...,0]
+    yvel = velocities[...,1]
+    
+    if yn > xvel.shape[1]:
+        raise ValueError("Cannot resample velocities to higher resolution than the original.")
+    
+    x_size = int(round((float(yn)/xvel.shape[1]) * xvel.shape[0], 0))
+    
+    x_shifts = scipy.misc.imresize(xvel, (x_size, yn), 'nearest','F')
+    y_shifts = scipy.misc.imresize(yvel, (x_size, yn), 'nearest','F')
     
     extent = (0.0, float(yn-1), float(x_size-1), 0.0)
     
     return x_shifts, y_shifts, extent
 
 
-def create_motion_png(image, velocities, output_filename, integration_line):
+
+def create_motion_png(image, velocities, output_filename, integration_lines):
     """
     Creates and saves a PNG image showing the original image with the computed 
     motion vectors and the integration line superimposed on the top. Note that 
     the motion field will be downsampled to make the vectors visible on the plot.
     """
-    x_shifts, y_shifts, extent = resample_velocities(image, velocities, 64)
+    x_shifts, y_shifts, extent = resample_velocities(velocities, 64)
     plt.close()
     plt.quiver(x_shifts, -y_shifts, units='xy', scale_units='xy',scale=1.5)
 
     plt.imshow(image, extent=extent)
     
-    x_size = int(round((64/image.shape[1]) * image.shape[0],0))
-    
     #plot the integration line
-    scale_factor_x = float(x_size-1) / image.shape[0]
-    scale_factor_y = 63.0 / image.shape[1]
-    pts = integration_line.get_n_points()
-
-    pts[:,0] *= scale_factor_x
-    pts[:,1] *= scale_factor_y
+    for l in integration_lines:
+        pts = l.get_n_points()
     
-    plt.plot(pts[:,0], pts[:,1], 'w-')
+        pts[:,0] *= extent[1]/float(image.shape[1])
+        pts[:,1] *= extent[2]/float(image.shape[0])
+        
+        plt.plot(pts[:,0], pts[:,1], 'w-')
     
-    plt.xlim((0,63))
-    plt.ylim((x_size-1,0))
+    plt.xlim(extent[:2])
+    plt.ylim(extent[2:])
     plt.xticks([])
     plt.yticks([])
     plt.colorbar()
     plt.savefig(output_filename)
 
 
+
 def create_output_file(filename, im_dir, config):
+    """
+    Creates a new output file and writes the header data to it. Returns an open
+    file object.
     
+      * filename - the path of the new file. Subfolders required to create the
+                   file will be created automatically.
+      * im_dir   - the image directory used in this plumtrack run (this is written
+                   into the file header)
+      * config   - the configuration used for this plumetrack run (this also 
+                   gets written into the file header)
+    """
     try:
         folder = os.path.dirname(filename)
         if folder:
@@ -95,7 +116,13 @@ def create_output_file(filename, im_dir, config):
     return ofp
 
 
+
 def write_output(options, config, image_dir, times, filenames, fluxes):
+        """
+        If an output file was specified, then writes the image filename, time and
+        one SO2 flux entry for each integration line that was defined to the file.
+        If no output file was specified then writes this information to stdout.
+        """
         ofp = None
         
         for i in range(len(fluxes)):

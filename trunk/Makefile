@@ -30,7 +30,7 @@ build:
 install: build
 	python setup.py install
 
-dist: docs icons
+dist: docs
 	@echo "Creating source dist"
 	python setup.py sdist
 #	@echo "Creating Windows installer"

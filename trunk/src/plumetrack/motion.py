@@ -178,8 +178,6 @@ if plumetrack.have_gpu():
             self.__gpu_interface.computeFlow(current_image, next_image, xflow, yflow)
             
             flow = numpy.dstack((xflow,yflow))
-            if numpy.all(flow == 0):
-                print "All zeros!"
             
             return flow
                 

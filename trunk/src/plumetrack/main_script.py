@@ -217,7 +217,7 @@ def process_image_pair(im_pair, motion_engine, flux_engine, options, config):
                                        os.path.splitext(os.path.basename(im1))[0]+'.png')
          
         output.create_motion_png(current_masked_im, flow, output_filename, 
-                                 flux_engine.get_integration_line())
+                                 flux_engine.get_integration_lines())
     
     #only include pixels in the non-masked regions in the flux calculation
     current_masked_im *= numpy.logical_not(integration_mask) 

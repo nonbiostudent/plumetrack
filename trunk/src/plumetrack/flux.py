@@ -227,6 +227,8 @@ class FluxEngine1D(FluxEngineBase):
             
             total_fluxes.append(total_flux)
             
+        #need to return a tuple NOT a list - since parallel processing uses
+        #the flatten() function    
         return tuple(total_fluxes)
         
         
@@ -264,7 +266,7 @@ class FluxEngine2D(FluxEngineBase):
             
             total_fluxes.append(flux)
         
-        #need to return a tuple NOT a list - since parallel processing using
+        #need to return a tuple NOT a list - since parallel processing uses
         #the flatten() function
         return tuple(total_fluxes)
     

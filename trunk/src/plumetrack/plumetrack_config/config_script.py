@@ -793,7 +793,7 @@ class FluxCalculationConfig(wx.Panel):
         self.low_thresh_box.Enable(self.low_thresh_chkbx.IsChecked())
         h_txt = ("Any pixels that are below this threshold will be excluded "
                  "from the flux calculation. However, this does not affect their"
-                 "visibility to the motion estimation algorithm (unlike the "
+                 " visibility to the motion estimation algorithm (unlike the "
                  "threshold in the Image Masking section above).")
         self.low_thresh_chkbx.SetToolTipString(h_txt)
         self.low_thresh_box.SetToolTipString(h_txt)

@@ -225,25 +225,32 @@ def parse_cmd_line():
     
     parser.add_option( "--no_gpu", dest="no_gpu", action="store_true", 
                       default=False,
-                      help="Stops plumetrack from using the GPU for processing")
+                      help="Stops plumetrack from using the GPU for processing. "
+                      "Note that it may not be using the GPU anyway.")
 
-    
     parser.add_option("-o","--output_file", dest="output_file", action="store", 
                       default=None, type='string',
                       help="Output file to write computed fluxes to. If no file "
                            "is specified then fluxes will be written to "
-                           "standard output")
+                           "standard output. The specified filename may contain "
+                           "Python date/time format specifiers to enable "
+                           "automatic splitting of output data into multiple "
+                           "files. For example a filename of %Y/%m/%d_fluxes.txt "
+                           "would split the output into daily files organised by "
+                           "month and year.")
     
     parser.add_option("--output_pngs", dest="png_output_folder", action="store", 
                       default=None, type='string',
                       help="Output PNG files of the motion field into this "
-                           "folder. Default is no PNG output.")
+                           "folder. The folder (and any subfolders) will be "
+                           "created automatically if it does not already exist. "
+                           "Default is no PNG output.")
           
     parser.add_option("--max_n", dest="max_n", action="store", 
                       default=None, type='int', help="Sets the maximum number "
                       "of images to process. Note that you will get max_n - 1 "
                       "flux measurements returned (since each flux requires "
-                      "two images.")
+                      "two images.)")
                       
     parser.add_option("-s", "--skip_existing", dest="skip_existing", 
                       action="store_true", default=False,

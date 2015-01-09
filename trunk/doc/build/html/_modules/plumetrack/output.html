@@ -74,15 +74,28 @@
 <span class="kn">import</span> <span class="nn">plumetrack</span>
 
 
-<div class="viewcode-block" id="resample_velocities"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.output.resample_velocities">[docs]</a><span class="k">def</span> <span class="nf">resample_velocities</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">velocities</span><span class="p">,</span> <span class="n">yn</span><span class="p">):</span>
-    <span class="n">x_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">((</span><span class="nb">float</span><span class="p">(</span><span class="n">yn</span><span class="p">)</span><span class="o">/</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">0</span><span class="p">))</span>
+<div class="viewcode-block" id="resample_velocities"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.output.resample_velocities">[docs]</a><span class="k">def</span> <span class="nf">resample_velocities</span><span class="p">(</span><span class="n">velocities</span><span class="p">,</span> <span class="n">yn</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Downsamples the velocities array (an MxNx2 array) such that N=yn and M is </span>
+<span class="sd">    such that the downsampled array has the same aspect ratio as the original.</span>
+<span class="sd">    </span>
+<span class="sd">    For efficiency, nearest neighbour interpolation is used.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">xvel</span> <span class="o">=</span> <span class="n">velocities</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">yvel</span> <span class="o">=</span> <span class="n">velocities</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
     
-    <span class="n">x_shifts</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">misc</span><span class="o">.</span><span class="n">imresize</span><span class="p">(</span><span class="n">velocities</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="n">x_size</span><span class="p">,</span> <span class="n">yn</span><span class="p">),</span> <span class="s">&#39;nearest&#39;</span><span class="p">,</span><span class="s">&#39;F&#39;</span><span class="p">)</span>
-    <span class="n">y_shifts</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">misc</span><span class="o">.</span><span class="n">imresize</span><span class="p">(</span><span class="n">velocities</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="p">(</span><span class="n">x_size</span><span class="p">,</span> <span class="n">yn</span><span class="p">),</span> <span class="s">&#39;nearest&#39;</span><span class="p">,</span><span class="s">&#39;F&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">yn</span> <span class="o">&gt;</span> <span class="n">xvel</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Cannot resample velocities to higher resolution than the original.&quot;</span><span class="p">)</span>
+    
+    <span class="n">x_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">((</span><span class="nb">float</span><span class="p">(</span><span class="n">yn</span><span class="p">)</span><span class="o">/</span><span class="n">xvel</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">xvel</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">))</span>
+    
+    <span class="n">x_shifts</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">misc</span><span class="o">.</span><span class="n">imresize</span><span class="p">(</span><span class="n">xvel</span><span class="p">,</span> <span class="p">(</span><span class="n">x_size</span><span class="p">,</span> <span class="n">yn</span><span class="p">),</span> <span class="s">&#39;nearest&#39;</span><span class="p">,</span><span class="s">&#39;F&#39;</span><span class="p">)</span>
+    <span class="n">y_shifts</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">misc</span><span class="o">.</span><span class="n">imresize</span><span class="p">(</span><span class="n">yvel</span><span class="p">,</span> <span class="p">(</span><span class="n">x_size</span><span class="p">,</span> <span class="n">yn</span><span class="p">),</span> <span class="s">&#39;nearest&#39;</span><span class="p">,</span><span class="s">&#39;F&#39;</span><span class="p">)</span>
     
     <span class="n">extent</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">yn</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">x_size</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">)</span>
     
     <span class="k">return</span> <span class="n">x_shifts</span><span class="p">,</span> <span class="n">y_shifts</span><span class="p">,</span> <span class="n">extent</span>
+
 
 </div>
 <div class="viewcode-block" id="create_motion_png"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.output.create_motion_png">[docs]</a><span class="k">def</span> <span class="nf">create_motion_png</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">velocities</span><span class="p">,</span> <span class="n">output_filename</span><span class="p">,</span> <span class="n">integration_lines</span><span class="p">):</span>
@@ -91,17 +104,13 @@
 <span class="sd">    motion vectors and the integration line superimposed on the top. Note that </span>
 <span class="sd">    the motion field will be downsampled to make the vectors visible on the plot.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">x_shifts</span><span class="p">,</span> <span class="n">y_shifts</span><span class="p">,</span> <span class="n">extent</span> <span class="o">=</span> <span class="n">resample_velocities</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">velocities</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>
+    <span class="n">x_shifts</span><span class="p">,</span> <span class="n">y_shifts</span><span class="p">,</span> <span class="n">extent</span> <span class="o">=</span> <span class="n">resample_velocities</span><span class="p">(</span><span class="n">velocities</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">quiver</span><span class="p">(</span><span class="n">x_shifts</span><span class="p">,</span> <span class="o">-</span><span class="n">y_shifts</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s">&#39;xy&#39;</span><span class="p">,</span> <span class="n">scale_units</span><span class="o">=</span><span class="s">&#39;xy&#39;</span><span class="p">,</span><span class="n">scale</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
 
     <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="n">extent</span><span class="p">)</span>
     
-    <span class="n">x_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">((</span><span class="mi">64</span><span class="o">/</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">0</span><span class="p">))</span>
-    
     <span class="c">#plot the integration line</span>
-    <span class="c">#scale_factor_x = float(x_size-1) / image.shape[0]</span>
-    <span class="c">#scale_factor_y = 63.0 / image.shape[1]</span>
     <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">integration_lines</span><span class="p">:</span>
         <span class="n">pts</span> <span class="o">=</span> <span class="n">l</span><span class="o">.</span><span class="n">get_n_points</span><span class="p">()</span>
     
@@ -117,9 +126,20 @@
     <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">output_filename</span><span class="p">)</span>
 
+
 </div>
 <div class="viewcode-block" id="create_output_file"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.output.create_output_file">[docs]</a><span class="k">def</span> <span class="nf">create_output_file</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">im_dir</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
-    
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a new output file and writes the header data to it. Returns an open</span>
+<span class="sd">    file object.</span>
+<span class="sd">    </span>
+<span class="sd">      * filename - the path of the new file. Subfolders required to create the</span>
+<span class="sd">                   file will be created automatically.</span>
+<span class="sd">      * im_dir   - the image directory used in this plumtrack run (this is written</span>
+<span class="sd">                   into the file header)</span>
+<span class="sd">      * config   - the configuration used for this plumetrack run (this also </span>
+<span class="sd">                   gets written into the file header)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">folder</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">folder</span><span class="p">:</span>
@@ -146,8 +166,14 @@
     
     <span class="k">return</span> <span class="n">ofp</span>
 
+
 </div>
 <div class="viewcode-block" id="write_output"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.output.write_output">[docs]</a><span class="k">def</span> <span class="nf">write_output</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">image_dir</span><span class="p">,</span> <span class="n">times</span><span class="p">,</span> <span class="n">filenames</span><span class="p">,</span> <span class="n">fluxes</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        If an output file was specified, then writes the image filename, time and</span>
+<span class="sd">        one SO2 flux entry for each integration line that was defined to the file.</span>
+<span class="sd">        If no output file was specified then writes this information to stdout.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ofp</span> <span class="o">=</span> <span class="bp">None</span>
         
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">fluxes</span><span class="p">)):</span>

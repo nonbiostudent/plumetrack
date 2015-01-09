@@ -358,17 +358,47 @@ the motion field will be downsampled to make the vectors visible on the plot.</p
 <dl class="function">
 <dt id="plumetrack.output.create_output_file">
 <tt class="descclassname">plumetrack.output.</tt><tt class="descname">create_output_file</tt><big>(</big><em>filename</em>, <em>im_dir</em>, <em>config</em><big>)</big><a class="reference internal" href="_modules/plumetrack/output.html#create_output_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.output.create_output_file" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Creates a new output file and writes the header data to it. Returns an open
+file object.</p>
+<blockquote>
+<div><ul>
+<li><dl class="first docutils">
+<dt>filename - the path of the new file. Subfolders required to create the</dt>
+<dd><p class="first last">file will be created automatically.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>im_dir   - the image directory used in this plumtrack run (this is written</dt>
+<dd><p class="first last">into the file header)</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>config   - the configuration used for this plumetrack run (this also </dt>
+<dd><p class="first last">gets written into the file header)</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</dd></dl>
 
 <dl class="function">
 <dt id="plumetrack.output.resample_velocities">
-<tt class="descclassname">plumetrack.output.</tt><tt class="descname">resample_velocities</tt><big>(</big><em>image</em>, <em>velocities</em>, <em>yn</em><big>)</big><a class="reference internal" href="_modules/plumetrack/output.html#resample_velocities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.output.resample_velocities" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<tt class="descclassname">plumetrack.output.</tt><tt class="descname">resample_velocities</tt><big>(</big><em>velocities</em>, <em>yn</em><big>)</big><a class="reference internal" href="_modules/plumetrack/output.html#resample_velocities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.output.resample_velocities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Downsamples the velocities array (an MxNx2 array) such that N=yn and M is 
+such that the downsampled array has the same aspect ratio as the original.</p>
+<p>For efficiency, nearest neighbour interpolation is used.</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="plumetrack.output.write_output">
 <tt class="descclassname">plumetrack.output.</tt><tt class="descname">write_output</tt><big>(</big><em>options</em>, <em>config</em>, <em>image_dir</em>, <em>times</em>, <em>filenames</em>, <em>fluxes</em><big>)</big><a class="reference internal" href="_modules/plumetrack/output.html#write_output"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.output.write_output" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>If an output file was specified, then writes the image filename, time and
+one SO2 flux entry for each integration line that was defined to the file.
+If no output file was specified then writes this information to stdout.</p>
+</dd></dl>
 
 </div>
 <div class="section" id="module-plumetrack.persist">

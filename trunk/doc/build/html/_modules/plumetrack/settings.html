@@ -276,25 +276,32 @@
     
     <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span> <span class="s">&quot;--no_gpu&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&quot;no_gpu&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s">&quot;store_true&quot;</span><span class="p">,</span> 
                       <span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-                      <span class="n">help</span><span class="o">=</span><span class="s">&quot;Stops plumetrack from using the GPU for processing&quot;</span><span class="p">)</span>
+                      <span class="n">help</span><span class="o">=</span><span class="s">&quot;Stops plumetrack from using the GPU for processing. &quot;</span>
+                      <span class="s">&quot;Note that it may not be using the GPU anyway.&quot;</span><span class="p">)</span>
 
-    
     <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&quot;-o&quot;</span><span class="p">,</span><span class="s">&quot;--output_file&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&quot;output_file&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s">&quot;store&quot;</span><span class="p">,</span> 
                       <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s">&#39;string&#39;</span><span class="p">,</span>
                       <span class="n">help</span><span class="o">=</span><span class="s">&quot;Output file to write computed fluxes to. If no file &quot;</span>
                            <span class="s">&quot;is specified then fluxes will be written to &quot;</span>
-                           <span class="s">&quot;standard output&quot;</span><span class="p">)</span>
+                           <span class="s">&quot;standard output. The specified filename may contain &quot;</span>
+                           <span class="s">&quot;Python date/time format specifiers to enable &quot;</span>
+                           <span class="s">&quot;automatic splitting of output data into multiple &quot;</span>
+                           <span class="s">&quot;files. For example a filename of %Y/%m/</span><span class="si">%d</span><span class="s">_fluxes.txt &quot;</span>
+                           <span class="s">&quot;would split the output into daily files organised by &quot;</span>
+                           <span class="s">&quot;month and year.&quot;</span><span class="p">)</span>
     
     <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&quot;--output_pngs&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&quot;png_output_folder&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s">&quot;store&quot;</span><span class="p">,</span> 
                       <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s">&#39;string&#39;</span><span class="p">,</span>
                       <span class="n">help</span><span class="o">=</span><span class="s">&quot;Output PNG files of the motion field into this &quot;</span>
-                           <span class="s">&quot;folder. Default is no PNG output.&quot;</span><span class="p">)</span>
+                           <span class="s">&quot;folder. The folder (and any subfolders) will be &quot;</span>
+                           <span class="s">&quot;created automatically if it does not already exist. &quot;</span>
+                           <span class="s">&quot;Default is no PNG output.&quot;</span><span class="p">)</span>
           
     <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&quot;--max_n&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&quot;max_n&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s">&quot;store&quot;</span><span class="p">,</span> 
                       <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s">&#39;int&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&quot;Sets the maximum number &quot;</span>
                       <span class="s">&quot;of images to process. Note that you will get max_n - 1 &quot;</span>
                       <span class="s">&quot;flux measurements returned (since each flux requires &quot;</span>
-                      <span class="s">&quot;two images.&quot;</span><span class="p">)</span>
+                      <span class="s">&quot;two images.)&quot;</span><span class="p">)</span>
                       
     <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&quot;-s&quot;</span><span class="p">,</span> <span class="s">&quot;--skip_existing&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&quot;skip_existing&quot;</span><span class="p">,</span> 
                       <span class="n">action</span><span class="o">=</span><span class="s">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>

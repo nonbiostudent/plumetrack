@@ -194,7 +194,7 @@
 <span class="k">if</span> <span class="n">plumetrack</span><span class="o">.</span><span class="n">have_gpu</span><span class="p">():</span>
     <span class="kn">from</span> <span class="nn">plumetrack</span> <span class="kn">import</span> <span class="n">gpu_motion</span>
     
-<div class="viewcode-block" id="GPUMotionEngine"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.motion.GPUMotionEngine">[docs]</a>    <span class="k">class</span> <span class="nc">GPUMotionEngine</span><span class="p">(</span><span class="n">MotionEngine</span><span class="p">):</span>
+    <span class="k">class</span> <span class="nc">GPUMotionEngine</span><span class="p">(</span><span class="n">MotionEngine</span><span class="p">):</span>
         
         <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot;</span>
@@ -214,7 +214,7 @@
                                                                <span class="bp">self</span><span class="o">.</span><span class="n">poly_sigma</span><span class="p">)</span>
 
             
-<div class="viewcode-block" id="GPUMotionEngine.compute_flow"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.motion.GPUMotionEngine.compute_flow">[docs]</a>        <span class="k">def</span> <span class="nf">compute_flow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_image</span><span class="p">,</span> <span class="n">next_image</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">compute_flow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_image</span><span class="p">,</span> <span class="n">next_image</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Uses the Farneback algorithm to compute the flow field that maps pixels</span>
 <span class="sd">            in current_image, to pixels in next_image. Both image arguments should be</span>
@@ -229,14 +229,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">__gpu_interface</span><span class="o">.</span><span class="n">computeFlow</span><span class="p">(</span><span class="n">current_image</span><span class="p">,</span> <span class="n">next_image</span><span class="p">,</span> <span class="n">xflow</span><span class="p">,</span> <span class="n">yflow</span><span class="p">)</span>
             
             <span class="n">flow</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dstack</span><span class="p">((</span><span class="n">xflow</span><span class="p">,</span><span class="n">yflow</span><span class="p">))</span>
-            <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">flow</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
-                <span class="k">print</span> <span class="s">&quot;All zeros!&quot;</span>
             
             <span class="k">return</span> <span class="n">flow</span>
                 
         
         
-        </div></div>
+        
 </pre></div>
 
           </div>

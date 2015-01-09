@@ -75,9 +75,7 @@ class ConfigTestFrame(wx.Frame):
         
         self.motion_figure.set_config(config)
     
-        
-    
-    
+
     def set_status(self, x, y,pix_value,xvel, yvel):
         self.status_bar.SetStatusText("x,y = %0.2f, %0.2f"%(x,y),0)
         self.status_bar.SetStatusText("Pixel value: %0.2f"%pix_value, 1)
@@ -326,7 +324,7 @@ class MotionFigure(wx.Panel):
     
     def redraw_plot(self):
         
-        x_shifts, y_shifts, self.extent = output.resample_velocities(self.cur_im_masked, self.__cur_flow, self._quiver_density)
+        x_shifts, y_shifts, self.extent = output.resample_velocities(self.__cur_flow, self._quiver_density)
         
         if self.masked_im_plot is None:
             self.masked_im_plot = self.motion_ax.imshow(self.cur_im_masked, extent=self.extent)

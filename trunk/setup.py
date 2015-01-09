@@ -25,6 +25,11 @@ import os
 import json
 import StringIO
 
+#set this to true to enable CUDA-capable GPU support - this is still very much 
+#under development and almost certainly won't work under Windows.
+enable_gpu_support = False
+
+
 ####################################################################
 #                    CONFIGURATION
 ####################################################################
@@ -103,13 +108,14 @@ default_config = {
 ####################################################################
 extension_modules = []
 
-numpyincludedirs = numpy.get_include()
-gpu_extension = Extension("plumetrack._gpu_motion",
-                   ["src/swig/gpu_motion_wrap.cxx", "src/swig/gpu_motion.cxx", "src/swig/traceback.cxx"],
-                   include_dirs=[numpyincludedirs] + ['/usr/local/include/opencv', '/usr/local/include'],
-                   libraries=['opencv_core','opencv_gpu', 'cudart' ])
- 
-extension_modules.append(gpu_extension)
+if enable_gpu_support:
+    numpyincludedirs = numpy.get_include()
+    gpu_extension = Extension("plumetrack._gpu_motion",
+                       ["src/swig/gpu_motion_wrap.cxx", "src/swig/gpu_motion.cxx", "src/swig/traceback.cxx"],
+                       include_dirs=[numpyincludedirs] + ['/usr/local/include/opencv', '/usr/local/include'],
+                       libraries=['opencv_core','opencv_gpu', 'cudart' ])
+     
+    extension_modules.append(gpu_extension)
 
 
 ####################################################################
