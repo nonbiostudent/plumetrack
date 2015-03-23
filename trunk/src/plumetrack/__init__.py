@@ -18,6 +18,8 @@
 import os
 import sys
 
+from plumetrack import image_loader
+
 ####################################################################
 #                     Program Information
 ####################################################################
@@ -93,6 +95,13 @@ def get_plumetrack_rw_dir():
     else:
         return os.path.join(os.path.expanduser('~'),".%s"%PROG_SHORT_NAME)
 
+####################################################################
+
+#make some important classes which are scattered throughout the source code
+#available here to make finding them easier for the user
+ImageLoader = image_loader.ImageLoader
+
+####################################################################
 
 #make sure that all the directories that we are expecting to exist actually do.
 try:

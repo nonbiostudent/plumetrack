@@ -244,7 +244,8 @@ class InputFilesConfig(wx.Panel):
         sizer = wx.FlexGridSizer(2, 5, 10, 0)
         sizer.AddGrowableCol(1,1)
         
-        self.filename_format_box = AutoUpdateTextCtrl(self, -1, size=(250,-1), style=wx.TE_PROCESS_ENTER)
+        self.filename_format_box = AutoUpdateTextCtrl(self, -1, size=(250,-1), 
+                                                      style=wx.TE_PROCESS_ENTER)
         h_txt = ("The format of the filenames of the images to be processed. "
                  "The filenames must include the capture time of the images, "
                  "and the format must be described using the Python strftime "
@@ -264,9 +265,31 @@ class InputFilesConfig(wx.Panel):
         vsizer.Add(hsizer, 0, wx.EXPAND | wx.ALIGN_LEFT | wx.ALIGN_CENTRE_VERTICAL)
         wx.EVT_BUTTON(self, format_help_button.GetId(), self.on_help)
         
+        vsizer.AddSpacer(10)
+        
+        self.custom_loader_box = AutoUpdateTextCtrl(self, -1, size=(250,-1), 
+                                                    style=wx.TE_PROCESS_ENTER)
+        h_txt = ("")
+        self.custom_loader_box.SetToolTipString(h_txt)
+        self.custom_loader_chkbox = AutoUpdateCheckbox(self, -1, "Custom image loader:")
+        wx.EVT_CHECKBOX(self, self.custom_loader_chkbox.GetId(), self.on_custom_loader_chkbox)
+        
+        hsizer2 = wx.BoxSizer(wx.HORIZONTAL)
+        hsizer2.Add(self.custom_loader_chkbox, 0, 
+                    wx.ALIGN_RIGHT | wx.ALIGN_CENTRE_VERTICAL)
+        hsizer2.Add(self.custom_loader_box, 1, 
+                    wx.EXPAND | wx.ALIGN_LEFT | wx.ALIGN_CENTRE_VERTICAL)
+        
+        self.custom_loader_browse_button = wx.Button(self, -1, "Browse")
+        hsizer2.Add(self.custom_loader_browse_button, 0, wx.ALIGN_LEFT | wx.ALIGN_CENTRE_VERTICAL)
+        vsizer.Add(hsizer2, 0, wx.EXPAND | wx.ALIGN_LEFT | wx.ALIGN_CENTRE_VERTICAL)
+        wx.EVT_BUTTON(self, self.custom_loader_browse_button.GetId(), self.on_browse)
+        self.on_custom_loader_chkbox(None)
+        
         sizer.Add(wx.StaticText(self, -1, "File extension:"), 0, 
                   wx.ALIGN_RIGHT | wx.ALIGN_CENTRE_VERTICAL)
-        self.file_extension_box = AutoUpdateTextCtrl(self, -1, size=(100,-1), style=wx.TE_PROCESS_ENTER)
+        self.file_extension_box = AutoUpdateTextCtrl(self, -1, size=(100,-1), 
+                                                     style=wx.TE_PROCESS_ENTER)
         h_txt = ("The file extension of your image files to be processed e.g. "
                  "'.png' or '.jpg'. This may be specified with or without the "
                  "preceding dot. It must match the file extension given in the "
@@ -324,6 +347,18 @@ class InputFilesConfig(wx.Panel):
         w.SetPage(html_help_str)
         help_frame.Show()
     
+    
+    def on_browse(self, evnt):
+        filename = wx.FileSelector("Select Python module containing custom loader class",
+                                   wildcard="*.py")
+        if filename != "":
+            self.custom_loader_box.SetValue(filename)
+    
+    
+    def on_custom_loader_chkbox(self, event):
+        self.custom_loader_box.Enable(self.custom_loader_chkbox.IsChecked())
+        self.custom_loader_browse_button.Enable(self.custom_loader_chkbox.IsChecked())
+     
      
     def get_configs(self):
         
@@ -337,8 +372,9 @@ class InputFilesConfig(wx.Panel):
             file_extension = '.'+file_extension
         
         filename_format = self.filename_format_box.GetValue()
-        if filename_format.isspace() or filename_format == "":
-            raise settings.ConfigError("Filename format not specified")
+        if not self.custom_loader_chkbox.IsChecked():
+            if filename_format.isspace() or filename_format == "":
+                raise settings.ConfigError("Filename format not specified")
         
         flux_conversion_factor = self.flux_conversion_factor.GetValue()
         if flux_conversion_factor.isspace() or flux_conversion_factor == "":
@@ -348,9 +384,15 @@ class InputFilesConfig(wx.Panel):
         
         downsizing_factor = self.downsizing_factor.GetValue()
         
+        if self.custom_loader_chkbox.IsChecked():
+            custom_loader = self.custom_loader_box.GetValue()
+        else:
+            custom_loader = u""
+        
         return {
                 'filename_format':filename_format,
                 'file_extension':file_extension,
+                'custom_image_loader':custom_loader,
                 'pixel_size':self.pixel_size_box.GetValue(),
                 'flux_conversion_factor':flux_conversion_factor,
                 'downsizing_factor': downsizing_factor
@@ -360,6 +402,15 @@ class InputFilesConfig(wx.Panel):
     def set_configs(self, configs):
         self.filename_format_box.SetValue(configs['filename_format'])
         self.file_extension_box.SetValue(configs['file_extension'])
+        self.custom_loader_box.SetValue(configs['custom_image_loader'])
+        
+        if configs['custom_image_loader'] != "":
+            self.custom_loader_chkbox.SetValue(True)
+            self.on_custom_loader_chkbox(None)
+        else:
+            self.custom_loader_chkbox.SetValue(False)
+            self.on_custom_loader_chkbox(None)
+        
         self.pixel_size_box.SetValue(configs['pixel_size'])
         self.flux_conversion_factor.SetValue("%0.3e"%configs['flux_conversion_factor'])
         self.downsizing_factor.SetValue(configs['downsizing_factor'])
@@ -1018,7 +1069,7 @@ class MainFrame(wx.Frame):
         #create the save and cancel button
         buttons_sizer = wx.BoxSizer(wx.HORIZONTAL)
         
-        self.test_button = wx.Button(self, wx.ID_ANY, "Test")
+        self.test_button = wx.Button(top_panel, wx.ID_ANY, "Test")
         h_txt = ("Opens a viewer for the motion field created with this "
                  "configuration. Configuration parameters can be edited and "
                  "their effects viewed in realtime.")
@@ -1026,20 +1077,21 @@ class MainFrame(wx.Frame):
         buttons_sizer.Add(self.test_button, 0, wx.ALIGN_BOTTOM|wx.ALIGN_RIGHT|wx.TOP|wx.BOTTOM, border=10)
         wx.EVT_BUTTON(self, self.test_button.GetId(), self.on_test)
         
-        self.cancel_button = wx.Button(self, wx.ID_CANCEL, "Cancel")
+        self.cancel_button = wx.Button(top_panel, wx.ID_CANCEL, "Cancel")
         h_txt = ("Exits the program.")
         self.cancel_button.SetToolTipString(h_txt)
         buttons_sizer.Add(self.cancel_button, 0, wx.ALIGN_BOTTOM|wx.ALIGN_RIGHT|wx.TOP|wx.BOTTOM, border=10)
         wx.EVT_BUTTON(self, self.cancel_button.GetId(), self.on_cancel)
         
-        self.save_button = wx.Button(self, wx.ID_SAVEAS, "Save As")
+        self.save_button = wx.Button(top_panel, wx.ID_SAVEAS, "Save As")
         h_txt = ("Save the current configuration to a specified file.")
         self.save_button.SetToolTipString(h_txt)
         buttons_sizer.Add(self.save_button, 0, wx.ALIGN_BOTTOM|wx.ALIGN_RIGHT|wx.TOP|wx.BOTTOM|wx.RIGHT, border=10)
         wx.EVT_BUTTON(self, self.save_button.GetId(), self.on_save)
         
+        vsizer.Add(buttons_sizer, 0, wx.ALIGN_BOTTOM|wx.ALIGN_RIGHT)
         top_sizer.Add(top_panel, 1, wx.EXPAND| wx.ALIGN_TOP)
-        top_sizer.Add(buttons_sizer, 0, wx.ALIGN_BOTTOM|wx.ALIGN_RIGHT)
+        
         
         #set the configs to those in the default config file (if we can - otherwise
         #they are just left blank)
@@ -1048,7 +1100,7 @@ class MainFrame(wx.Frame):
         except settings.ConfigError:
             #if this configuration is unloadable, then just give up
             pass
-            
+        
         #do the layout       
         top_panel.SetSizer(vsizer)
         top_panel.SetAutoLayout(True)
@@ -1056,6 +1108,7 @@ class MainFrame(wx.Frame):
         
         self.SetSizer(top_sizer)
         self.SetAutoLayout(True)
+        top_sizer.Layout() #this fixes the problem of the frame being created too small
         top_sizer.Fit(top_panel)
         
         wx.EVT_CLOSE(self, self.on_close)
@@ -1238,7 +1291,7 @@ class IntegrationLineSelectDialog(wx.Dialog):
         wx.EVT_BUTTON(self, self.clear_button.GetId(), self.on_clear)
         
         self.direction_chkbx = wx.CheckBox(self, -1, "Reverse integration direction")
-        buttons_sizer.Add(self.direction_chkbx, 0,wx.ALIGN_BOTTOM|wx.ALIGN_LEFT)
+        buttons_sizer.Add(self.direction_chkbx, 0,wx.ALIGN_CENTRE_VERTICAL|wx.ALIGN_LEFT)
         wx.EVT_CHECKBOX(self, self.direction_chkbx.GetId(), self.on_reverse)
         
         if self.int_direction == -1:
@@ -1262,12 +1315,14 @@ class IntegrationLineSelectDialog(wx.Dialog):
         #set up the event handling for the line drawing
         self.canvas.mpl_connect('button_press_event', self.on_click)
         
-        
+        #self.SetSize(self.Parent.GetSize())
+        #self.SendSizeEvent()
+    
         fig_panel.SetSizer(fig_sizer)
         fig_sizer.Fit(fig_panel)
         self.SetSizer(top_sizer)
         top_sizer.Fit(self)
-        self.SetSize(self.Parent.GetSize())
+        self.SetSize(wx.GetApp().GetTopWindow().GetSize())
         
     
     def redraw_integration_lines(self):

@@ -15,10 +15,8 @@
 #You should have received a copy of the GNU General Public License
 #along with plumetrack.  If not, see <http://www.gnu.org/licenses/>.
 
-import datetime
 import os.path
 import numpy
-import cv2
 import multiprocessing
 import calendar
 
@@ -28,6 +26,7 @@ from plumetrack import dir_iter
 from plumetrack import motion
 from plumetrack import flux
 from plumetrack import output
+from plumetrack import image_loader
 
 
 ############################################################################
@@ -142,37 +141,10 @@ def flatten(l, ltypes=(list, tuple)):
                 l[i:i + 1] = l[i]
         i += 1
     return ltype(l)
-
-############################################################################
-
-def time_from_fname(fname, config):
-    """
-    Returns the capture time of an image file based on its filename.
-        * fname - filename of the image
-        * config - dictionary of config values (as returned by settings.load_config_file()
-    """
-    
-    return datetime.datetime.strptime(os.path.basename(fname), 
-                                      config['filename_format'])
-
-############################################################################
-
-def is_uv_image_file(filename, config):
-    """
-    Function returns True if the filename has the format which we expect for a 
-    UV image.
-    """
-    if not filename.endswith(config['file_extension']):
-        return False
-    try:
-        time_from_fname(filename, config)
-    except:
-        return False
-    return True
     
 ############################################################################
  
-def process_image_pair(im_pair, motion_engine, flux_engine, options, config):
+def process_image_pair(im_pair, image_loader, motion_engine, flux_engine, options, config):
     """
     Performs the motion tracking and flux calculation on a single image pair.
     This is split into a separate function to make facilitate parallel execution.
@@ -180,21 +152,20 @@ def process_image_pair(im_pair, motion_engine, flux_engine, options, config):
     im1 = im_pair[0]
     im2 = im_pair[1]
     
-    current_capture_time = time_from_fname(im1, config)
-    
     if im1 == process_image_pair.cached_im_name:
+        current_capture_time = process_image_pair.cached_im_time
         current_masked_im = process_image_pair.cached_im
         integration_mask = process_image_pair.cached_mask
-    else:
-        current_masked_im = cv2.imread(im1, cv2.IMREAD_UNCHANGED) 
+    else:      
+        current_masked_im, current_capture_time = image_loader._load_and_check(im1)
         integration_mask = motion_engine.preprocess(current_masked_im)
     
-    next_capture_time = time_from_fname(im2, config)
-    next_masked_im = cv2.imread(im2, cv2.IMREAD_UNCHANGED) 
+    next_masked_im, next_capture_time = image_loader._load_and_check(im2)
     process_image_pair.cached_mask = motion_engine.preprocess(next_masked_im)
     
     #update cached values
     process_image_pair.cached_im_name = im2
+    process_image_pair.cached_im_time = next_capture_time
     process_image_pair.cached_im = next_masked_im
     
     #images must be the same size for motion estimation
@@ -202,7 +173,6 @@ def process_image_pair(im_pair, motion_engine, flux_engine, options, config):
         raise ValueError("Images \'%s\' and \'%s\' are different sizes %s and "
                          "%s respectively"%(im1, im2,str(current_masked_im.shape), 
                                             str(next_masked_im.shape)))
-    
     
     delta_t = date2secs(next_capture_time) - date2secs(current_capture_time)
      
@@ -222,12 +192,13 @@ def process_image_pair(im_pair, motion_engine, flux_engine, options, config):
     #only include pixels in the non-masked regions in the flux calculation
     current_masked_im *= numpy.logical_not(integration_mask) 
     
-    so2_flux = flux_engine.compute_flux(current_masked_im, flow, delta_t) 
+    so2_flux = flux_engine.compute_flux(current_masked_im, next_masked_im, flow, delta_t) 
     
     return so2_flux
 
 #define the cache for the process_image_pair function
 process_image_pair.cached_im_name = None
+process_image_pair.cached_im_time = None
 process_image_pair.cached_im = None
 process_image_pair.cached_mask = None
 
@@ -252,12 +223,12 @@ def main():
         print "plumetrack: Configuration file error!"
         print ex.args[0]
         return
+    
+    #create the image loader object
+    im_loader = image_loader.get_image_loader(config)
      
     #define a comparator function for ordering UV images by capture time 
-    compare_by_time = lambda f1,f2: cmp(time_from_fname(f1, config), time_from_fname(f2, config))
-    
-    #define a test function for excluding files which are not uv images
-    is_uv_image = lambda fname: is_uv_image_file(fname, config)
+    compare_by_time = lambda f1,f2: cmp(im_loader.time_from_fname(f1), im_loader.time_from_fname(f2))
     
     if plumetrack.have_gpu() and not options.no_gpu:
         motion_engine = motion.GPUMotionEngine(config)
@@ -270,7 +241,7 @@ def main():
                                       skip_existing=options.skip_existing, 
                                       recursive=options.recursive, 
                                       sort_func=compare_by_time, 
-                                      test_func=is_uv_image,
+                                      test_func=im_loader.can_load,
                                       max_n=options.max_n) 
     
     #set an exit handler if we are working in realtime - otherwise it can hang
@@ -297,23 +268,22 @@ def main():
                 continue
                 
             so2fluxes = process_image_pair((current_image_fname, next_image_fname),
-                                         motion_engine, flux_engine, options,
-                                         config)
+                                         im_loader, motion_engine, flux_engine, 
+                                         options, config)
             
-            current_im_time = time_from_fname(current_image_fname, config)
+            current_im_time = im_loader.time_from_fname(current_image_fname)
             
             output.write_output(options, config, image_dir, [current_im_time], [current_image_fname], [so2fluxes])
                  
             current_image_fname = next_image_fname
         
-     
     else:
         #main loop for parallel processing
         files = [f for f in image_iter]
-        times = [time_from_fname(f, config) for f in files[:-1]]
+        times = [im_loader.time_from_fname(f) for f in files[:-1]]
         file_pairs = zip(files[:-1], files[1:])
          
-        fluxes = parallel_process(process_image_pair, file_pairs, motion_engine, 
+        fluxes = parallel_process(process_image_pair, file_pairs, im_loader, motion_engine, 
                                   flux_engine, options, config)
         
 

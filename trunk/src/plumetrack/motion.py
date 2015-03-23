@@ -44,7 +44,7 @@ class MotionEngine(object):
                 new_x = int(round(self.__mask_im.shape[0] / self.downsizing_factor))
                 new_y = int(round(self.__mask_im.shape[1] / self.downsizing_factor))
                 
-                self.__mask_im = cv2.resize(self.__mask_im, (new_x,new_y))
+                self.__mask_im = cv2.resize(self.__mask_im, (new_y,new_x))
             
             #ensure the loaded mask has the correct data type
             self.__mask_im = self.__mask_im.astype(numpy.uint8, copy=False)

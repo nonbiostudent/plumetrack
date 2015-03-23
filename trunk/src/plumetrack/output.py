@@ -99,7 +99,7 @@ def create_output_file(filename, im_dir, config):
     
     config_str = json.dumps(config)
     
-    flux_headings = '\t\t'.join([i['name'] for i in config['integration_lines']])
+    flux_headings = '\t\t'.join([i['name']+'\tError' for i in config['integration_lines']])
     
     ofp = open(filename,'w')
         
@@ -127,7 +127,7 @@ def write_output(options, config, image_dir, times, filenames, fluxes):
         
         for i in range(len(fluxes)):
             
-            fluxes_str = '\t'.join(['%f'%j for j in fluxes[i]])
+            fluxes_str = '\t'.join(['%f\t%f'%(j.value,j.error) for j in fluxes[i]])
             
             output_str = "%s\t%s\t%s"%(filenames[i], times[i],fluxes_str)
             

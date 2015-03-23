@@ -16,6 +16,11 @@
 #along with plumetrack.  If not, see <http://www.gnu.org/licenses/>.
 from scipy.interpolate import interp1d, interp2d
 import numpy
+import math
+import collections
+
+#new data type to hold a value and its associated error
+ValueAndError = collections.namedtuple('ValueAndError', ('value','error'))
 
 
 class IntegrationLine:
@@ -147,7 +152,93 @@ class FluxEngineBase(object):
         raise TypeError("FluxEngineBase must be subclassed, and the "
                         "compute_flux() method should be defined in the "
                         "subclass.")
+    
 
+def compute_error_map(current_image, next_image, flow):
+    flat_len = numpy.prod(current_image.shape)
+    
+    flat_error_map = numpy.zeros(flat_len, dtype='float')
+    
+    src_coords = numpy.dstack(numpy.meshgrid(numpy.arange(current_image.shape[0]),numpy.arange(current_image.shape[1]), indexing='ij'))
+
+    primary_dest_coords = src_coords + flow[...,::-1] #reverse x and y flows since we are dealing with row and columns now
+    
+    #calculate the fractional contribution to each destination pixel
+    fraction = ((primary_dest_coords + 1).astype('int') - primary_dest_coords)
+    
+    #convert the destination coordinates into coordinates for a flattened image
+    flat_dest_coords = (primary_dest_coords[...,1].astype('int').ravel() + 
+                        primary_dest_coords[...,0].astype('int').ravel() * current_image.shape[1])
+    
+    #add up the various contributions. Note that this is slightly complicated by the fact 
+    #that multiple pixels in the current image can contribute to the pixels in the next
+    #image. This means that our dest_coords array can contain duplicate entries, and so
+    #we have to use the bincount function to add it to our error map.
+    
+    #11 contribution
+    dest_coords = flat_dest_coords
+    valid_mask = numpy.where(numpy.logical_and(dest_coords > 0, dest_coords < flat_len))
+    contribution = (current_image * fraction[...,0] * fraction[...,1]).ravel()
+    flat_error_map += numpy.bincount(dest_coords[valid_mask],weights=contribution[valid_mask], minlength=flat_len)
+    
+    #12 contribution
+    dest_coords = flat_dest_coords + 1 #plus one column
+    valid_mask = numpy.where(numpy.logical_and(dest_coords > 0, dest_coords < flat_len))
+    contribution = (current_image * fraction[...,0] * (1.0 - fraction[...,1])).ravel()
+    flat_error_map += numpy.bincount(dest_coords[valid_mask], weights=contribution[valid_mask], minlength=flat_len)
+    
+    #21 contribution
+    dest_coords = flat_dest_coords + current_image.shape[1] #plus one row
+    valid_mask = numpy.where(numpy.logical_and(dest_coords > 0, dest_coords < flat_len))
+    contribution = (current_image * (1.0 - fraction[...,0]) * fraction[...,1]).ravel()
+    flat_error_map += numpy.bincount(dest_coords[valid_mask], weights=contribution[valid_mask], minlength=flat_len)
+    
+    #22 contribution
+    dest_coords = flat_dest_coords + current_image.shape[1] + 1#plus one row and one col
+    valid_mask = numpy.where(numpy.logical_and(dest_coords > 0, dest_coords < flat_len))
+    contribution = (current_image * (1.0 - fraction[...,0]) * (1.0 - fraction[...,1])).ravel()
+    flat_error_map += numpy.bincount(dest_coords[valid_mask], weights=contribution[valid_mask], minlength=flat_len)
+    
+    error_map = flat_error_map.reshape(current_image.shape)
+    
+    error_map -= next_image
+    
+    percentage_errors = numpy.zeros_like(error_map)
+    valid_mask = numpy.where(next_image != 0)
+    percentage_errors[valid_mask] = numpy.abs(100 * error_map[valid_mask] / next_image[valid_mask])
+    
+    #error map now contains the computed error in next_image following the motion
+    #however, what we want is a map of where this error originated from (i.e. 
+    #the error in current_image). So, we now invert the error map, splitting the
+    #error in each pixel in next_image between the pixels in current_image that
+    #contributed to it. 
+    flat_err_map = percentage_errors.ravel()
+    
+    flat_inverted_error_map = numpy.zeros_like(flat_err_map)
+    
+    #11 contribution
+    dest_coords = flat_dest_coords
+    valid_mask = numpy.where(numpy.logical_and(dest_coords > 0, dest_coords < flat_len))
+    flat_inverted_error_map[valid_mask] += (fraction[...,0] * fraction[...,1]).ravel()[valid_mask] * flat_err_map[dest_coords[valid_mask]]
+    
+    #12 contribution
+    dest_coords = flat_dest_coords + 1 #plus one column
+    valid_mask = numpy.where(numpy.logical_and(dest_coords > 0, dest_coords < flat_len))
+    flat_inverted_error_map[valid_mask] += (fraction[...,0] * (1.0 - fraction[...,1])).ravel()[valid_mask] * flat_err_map[dest_coords[valid_mask]]
+
+    #21 contribution
+    dest_coords = flat_dest_coords + current_image.shape[1] #plus one row
+    valid_mask = numpy.where(numpy.logical_and(dest_coords > 0, dest_coords < flat_len))
+    flat_inverted_error_map[valid_mask] += ((1.0 - fraction[...,0]) * fraction[...,1]).ravel()[valid_mask] * flat_err_map[dest_coords[valid_mask]]
+
+    #22 contribution
+    dest_coords = flat_dest_coords + current_image.shape[1] + 1#plus one row and one col
+    valid_mask = numpy.where(numpy.logical_and(dest_coords > 0, dest_coords < flat_len))
+    flat_inverted_error_map[valid_mask] += ((1.0 - fraction[...,0]) * (1.0 - fraction[...,1])).ravel()[valid_mask] * flat_err_map[dest_coords[valid_mask]]
+
+    
+    return flat_inverted_error_map.reshape(current_image.shape)
+    
 
 
 class FluxEngine1D(FluxEngineBase):
@@ -156,20 +247,27 @@ class FluxEngine1D(FluxEngineBase):
         super(FluxEngine1D, self).__init__(config)
     
     
-    def compute_flux(self, current_image, flow, delta_t):
+    def compute_flux(self, current_image, next_image,flow, delta_t):
         
         if flow[...,0].shape != current_image.shape:
             raise ValueError("The image has a different shape %s to the flow "
                              "array %s"%(str(current_image.shape), str(flow[...,0].shape)))
                
+        #calculate the errors associated with the image pair and flow field
+        pix_errors = compute_error_map(current_image, next_image, flow)
+        
         #convert the displacements to velocities in m/s
         flow *= (self._pixel_size / delta_t)
         
-        #interpolate the current image to find the pixel values at the points 
-        #on the integration line
+        #interpolate the current image and error values to find the values at 
+        #the points on the integration line
         image_interp = interp2d(numpy.arange(current_image.shape[1]), 
                                 numpy.arange(current_image.shape[0]), 
                                 current_image, copy=False, fill_value=0.0)
+        
+        errors_interp = interp2d(numpy.arange(current_image.shape[1]), 
+                                numpy.arange(current_image.shape[0]), 
+                                pix_errors, copy=False, fill_value=0.0)
                
         #interpolate the flow field to find the velocities on the integration
         #line
@@ -196,6 +294,7 @@ class FluxEngine1D(FluxEngineBase):
             mid_points = int_pts + (0.5*int_vecs)
             
             pix_vals = numpy.zeros((number_of_segments,), dtype='float')
+            err_vals = numpy.zeros((number_of_segments,), dtype='float')
             velocities = numpy.zeros((number_of_segments,2), dtype='float')
             
             #note that we have to do this in a for loop rather than calling the 
@@ -205,7 +304,8 @@ class FluxEngine1D(FluxEngineBase):
             for i in range(number_of_segments):
                 x_coord = mid_points[i,0]
                 y_coord = mid_points[i,1]
-                pix_vals[i] = image_interp(x_coord, y_coord)        
+                pix_vals[i] = image_interp(x_coord, y_coord) 
+                err_vals[i] = errors_interp(x_coord, y_coord)       
                 velocities[i,0] = x_flow_interp(x_coord, y_coord)
                 velocities[i,1] = y_flow_interp(x_coord, y_coord)
             
@@ -219,13 +319,24 @@ class FluxEngine1D(FluxEngineBase):
             #sanity check
             assert fluxes.shape == (number_of_segments,),"incorrect shape for fluxes array %s, expecting %s"%(str(fluxes.shape), str((number_of_segments,)))
             
+            #TODO - the errors need to be added in quadrature.
+            
             #only sum the values with pixel values above the low pixel threshold
             if self._low_pix_threshold > -1:
-                total_flux = numpy.sum(fluxes[numpy.where(pix_vals > self._low_pix_threshold)])
+                mask = numpy.where(pix_vals > self._low_pix_threshold)
+                total_flux = numpy.sum(fluxes[mask])
+                
+                #total error is quadrature sum of pixel errors
+                error = math.sqrt(numpy.sum(((err_vals[mask]/100.0) * fluxes[mask])**2))
+                error = (error/total_flux) * 100.0
+                #error = 100.0 * numpy.sum(0.01*err_vals[mask]*pix_vals[mask])/numpy.sum(pix_vals[mask])
             else:
                 total_flux = numpy.sum(fluxes)
+                error = math.sqrt(numpy.sum(((err_vals/100.0) * fluxes)**2))
+                error = (error/total_flux) * 100.0
+                #error = 100.0 * numpy.sum(0.01*err_vals*pix_vals)/numpy.sum(pix_vals)
             
-            total_fluxes.append(total_flux)
+            total_fluxes.append(ValueAndError(total_flux, error))
             
         #need to return a tuple NOT a list - since parallel processing uses
         #the flatten() function    
@@ -239,13 +350,17 @@ class FluxEngine2D(FluxEngineBase):
         super(FluxEngine2D, self).__init__(config)
         
         
-    def compute_flux(self, current_image, flow, delta_t):
+    def compute_flux(self, current_image, next_image, flow, delta_t):
         if flow[...,0].shape != current_image.shape:
             raise ValueError("The image has a different shape %s to the flow "
                              "array %s"%(str(current_image.shape), str(flow[...,0].shape)))
             
         #convert the pixel values into mass of SO2
         so2_masses_kg = current_image * self._pixel_size**2 * self._conversion_factor
+        
+        #calculate the errors associated with the image pair and flow field
+        percent_pix_errors = compute_error_map(current_image, next_image, flow)
+        pix_errors = (percent_pix_errors/100.0) * so2_masses_kg
         
         #now compute the flux for each integration line in the list
         total_fluxes = []
@@ -259,12 +374,19 @@ class FluxEngine2D(FluxEngineBase):
                 #only sum the values with pixel values above the low pixel threshold
                 contributing_pixels[numpy.where(current_image < self._low_pix_threshold)] = 0
 
+            #TODO - use contributing_pixels along with the error map to compute the
+            #error in the flux.
+            
             total_so2_mass = numpy.sum(so2_masses_kg * contributing_pixels)
+            
+            error = math.sqrt(numpy.sum((contributing_pixels * pix_errors)**2))
+            
+            error = 100 * (error/total_so2_mass)
             
             #convert to flux
             flux = total_so2_mass / delta_t
             
-            total_fluxes.append(flux)
+            total_fluxes.append(ValueAndError(flux, error))
         
         #need to return a tuple NOT a list - since parallel processing uses
         #the flatten() function

@@ -14,17 +14,21 @@
 #
 #You should have received a copy of the GNU General Public License
 #along with plumetrack.  If not, see <http://www.gnu.org/licenses/>.
-from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg
-from matplotlib.backends.backend_wx import NavigationToolbar2Wx
-from matplotlib.pyplot import subplot, figure
 import wx
 import math
 import numpy
 import os
+
+from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg
+from matplotlib.backends.backend_wx import NavigationToolbar2Wx
+from matplotlib.pyplot import subplot, figure, colorbar
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+
 from plumetrack import dir_iter
+from plumetrack import image_loader
 from plumetrack import persist
 from plumetrack import motion, output, main_script
-import cv2
+from plumetrack import flux
 
 
 class ConfigTestFrame(wx.Frame):
@@ -46,7 +50,7 @@ class ConfigTestFrame(wx.Frame):
         
         #create a status bar to show the velocity values 
         self.status_bar = wx.StatusBar(self, -1)
-        vsizer.Add(self.status_bar,0,wx.ALIGN_BOTTOM)
+        vsizer.Add(self.status_bar, 0, wx.ALIGN_BOTTOM | wx.EXPAND)
         self.status_bar.SetFieldsCount(3)
         
         self.SetSizer(vsizer)
@@ -62,7 +66,6 @@ class ConfigTestFrame(wx.Frame):
         self.Destroy()
         
     
-    
     def set_config(self, config):
         if self.file_list.set_config(config):
             return
@@ -76,10 +79,16 @@ class ConfigTestFrame(wx.Frame):
         self.motion_figure.set_config(config)
     
 
-    def set_status(self, x, y,pix_value,xvel, yvel):
+    def set_vel_status(self, x, y,pix_value,xvel, yvel):
         self.status_bar.SetStatusText("x,y = %0.2f, %0.2f"%(x,y),0)
         self.status_bar.SetStatusText("Pixel value: %0.2f"%pix_value, 1)
         self.status_bar.SetStatusText("Velocity: %0.2f m/s     (xvel: %0.2f m/s, yvel: %0.2f m/s)"%(math.sqrt((xvel*xvel) + (yvel*yvel)), xvel, yvel), 2)
+    
+    
+    def set_err_status(self, x,y, error_val):
+        self.status_bar.SetStatusText("x,y = %0.2f, %0.2f"%(x,y),0)
+        self.status_bar.SetStatusText("%% Error: %0.2f"%error_val, 1)
+        self.status_bar.SetStatusText("", 2)
     
     
     def clear_status(self):
@@ -105,16 +114,27 @@ class MotionFigureControls(wx.Panel):
         super(MotionFigureControls, self).__init__(parent)
         
         hsizer = wx.BoxSizer(wx.HORIZONTAL)
+        vsizer = wx.BoxSizer(wx.VERTICAL)
+        
+        self.show_error_chkbx = wx.CheckBox(self, -1, "Show error plot")
+        wx.EVT_CHECKBOX(self, self.show_error_chkbx.GetId(), self.on_error_plot_chkbx)
         
         self.show_intline_chkbx = wx.CheckBox(self, -1, "Show integration lines")
         wx.EVT_CHECKBOX(self, self.show_intline_chkbx.GetId(), self.on_int_line_chkbx)
         
-        hsizer.Add(self.show_intline_chkbx, 0, wx.ALIGN_TOP)
-        hsizer.AddSpacer(10)
-        sizer = wx.GridSizer(2,2,0,5)
+        vsizer.Add(self.show_error_chkbx,0, wx.ALL, border=5)
+        vsizer.Add(self.show_intline_chkbx,0, wx.ALL, border=5)
         
-        sizer.Add(wx.StaticText(self, -1, "Vector density"),0,wx.ALIGN_CENTRE_HORIZONTAL)
-        sizer.Add(wx.StaticText(self, -1, "Vector scale"),0,wx.ALIGN_CENTRE_HORIZONTAL)
+        hsizer.Add(vsizer, 0, wx.ALIGN_TOP)
+        hsizer.AddSpacer(10)
+        sizer = wx.GridSizer(2,3,0,5)
+        
+        sizer.Add(wx.StaticText(self, -1, "Vector density"),0,wx.ALIGN_CENTRE_HORIZONTAL|wx.ALIGN_TOP)
+        sizer.Add(wx.StaticText(self, -1, "Vector scale"),0,wx.ALIGN_CENTRE_HORIZONTAL|wx.ALIGN_TOP)
+        self.err_sat_txt = wx.StaticText(self, -1, "Error saturation")
+        self.err_sat_txt.Enable(False)
+        sizer.Add(self.err_sat_txt,0,wx.ALIGN_CENTRE_HORIZONTAL|wx.ALIGN_TOP)
+        
         self.density_slider = wx.Slider(self, -1, 64, 10, 100)
         h_txt = ("Change the number of motion vectors that are plotted. This "
                  "has no effect on the accuracy of the motion field calculated "
@@ -131,6 +151,13 @@ class MotionFigureControls(wx.Panel):
         self.scale_slider.SetToolTipString(h_txt)
         sizer.Add(self.scale_slider, 1, wx.EXPAND)
         wx.EVT_COMMAND_SCROLL_CHANGED(self, self.scale_slider.GetId(), self.on_scale)
+        
+        self.err_sat_slider = wx.Slider(self, -1, self.Parent.cb_clip_limit, 50, 600)
+        self.err_sat_slider.Enable(False)
+        h_txt = ("Change the value at which the error plot colour palette saturates.")
+        self.err_sat_slider.SetToolTipString(h_txt)
+        sizer.Add(self.err_sat_slider, 1, wx.EXPAND)
+        wx.EVT_COMMAND_SCROLL_CHANGED(self, self.err_sat_slider.GetId(), self.on_err_sat)
         
         self.SetSizer(hsizer)
         hsizer.Fit(self)
@@ -154,12 +181,24 @@ class MotionFigureControls(wx.Panel):
         self.Parent.redraw_plot()
     
     
+    def on_err_sat(self, evnt):
+        new_sat = self.err_sat_slider.GetValue()
+        self.Parent.cb_clip_limit = new_sat
+        self.Parent.redraw_plot()
+    
+    
     def on_int_line_chkbx(self, evnt):
         for p in self.Parent.int_line_plots:
             p.set_visible(self.show_intline_chkbx.IsChecked())
         self.Parent.canvas.draw()
         
-
+    
+    def on_error_plot_chkbx(self, evnt):
+        self.err_sat_txt.Enable(self.show_error_chkbx.IsChecked())
+        self.err_sat_slider.Enable(self.show_error_chkbx.IsChecked())
+        self.Parent.show_error_plot(self.show_error_chkbx.IsChecked())
+        
+        
 
 class MotionFigure(wx.Panel):
     def __init__(self, parent, main_frame, config):
@@ -169,6 +208,7 @@ class MotionFigure(wx.Panel):
         self.canvas = FigureCanvasWxAgg(self, -1, self._mpl_figure)
         self.main_frame = main_frame
         
+        self.cb_clip_limit = 500
         self._quiver_density = 64
         self.vector_scale = 1.5
         self.extent = None
@@ -183,16 +223,28 @@ class MotionFigure(wx.Panel):
         self.cur_filename = None
         self.next_filename = None
         
+        self.error_plot = None
+        self.errors = None
+        self.show_errors = False
+        
         self.set_config(config)
         
         self.controls = MotionFigureControls(self)
         
-        #setup the subplot
-        self.motion_ax = subplot(111)
+        #setup the subplots - this needs to be done in this order in order for 
+        #inaxes events to be received correctly
+        self.error_ax = subplot(122)
+        divider = make_axes_locatable(self.error_ax)
+        self.error_cb_ax = divider.append_axes("right", size="5%", pad=0.05)
+        self.motion_ax = subplot(121)
         
         #turn off all the tick marks
         self.motion_ax.set_xticks([])
         self.motion_ax.set_yticks([])
+        self.error_ax.set_xticks([])
+        self.error_ax.set_yticks([])
+        
+        self.show_error_plot(False)
         
         #setup the callback handler for mouse move events
         self.motion_ax.figure.canvas.mpl_connect('motion_notify_event', self.on_mouse_move)
@@ -213,6 +265,28 @@ class MotionFigure(wx.Panel):
         vsizer.Fit(self)
         
     
+    def show_error_plot(self, state):
+        self.show_errors = state
+        if state:
+            self.motion_ax.change_geometry(1,2,1)
+            self.error_ax.set_visible(True)
+            self.error_cb_ax.set_visible(True)
+            
+            self.redraw_plot()
+            
+        else:
+            self.motion_ax.change_geometry(1,1,1)
+            self.error_ax.set_visible(False)
+            self.error_cb_ax.set_visible(False)
+            self.error_cb_ax.clear()
+            
+            if self.error_plot is not None:
+                self.error_plot.remove()
+                self.error_plot = None
+        
+            self.canvas.draw() 
+    
+    
     def clear_plot(self):
         self.__visible = False
         if self.masked_im_plot is not None:
@@ -223,17 +297,19 @@ class MotionFigure(wx.Panel):
         
     
     def on_mouse_move(self, evnt):
-        if evnt.inaxes != self.motion_ax or self.__cur_flow is None or not self.__visible:
+        if ((evnt.inaxes != self.motion_ax and evnt.inaxes != self.error_ax) or
+            self.__cur_flow is None or not self.__visible):
             self.main_frame.clear_status()
+            return
         
-        else:
-            x, y = evnt.xdata, evnt.ydata
-            x -= self.extent[3]
-            y -= self.extent[0]
-            
+        
+        x, y = evnt.xdata, evnt.ydata
+        x -= self.extent[3]
+        y -= self.extent[0]
+        
+        if evnt.inaxes == self.motion_ax:     
             x *= (self.cur_im_masked.shape[1] - 1) / (self.extent[1] - self.extent[0]) 
             y *= (self.cur_im_masked.shape[0] - 1) / (self.extent[2] - self.extent[3])
-            
             
             x = round(x)
             y = round(y)
@@ -248,15 +324,28 @@ class MotionFigure(wx.Panel):
 
             xvel, yvel = (self.__cur_flow[y, x] * self.__pix_size) / self.__delta_t
 
-            self.main_frame.set_status(x, y, self.cur_im_masked[y, x], xvel, -yvel)
+            self.main_frame.set_vel_status(x, y, self.cur_im_masked[y, x], xvel, -yvel)
         
+        else:
+            x = round(x)
+            y = round(y)
+            if x < 0 or x >= self.cur_im_masked.shape[1]:
+                self.main_frame.clear_status()
+                return
+            
+            if y < 0 or y >= self.cur_im_masked.shape[0]:
+                self.main_frame.clear_status()
+                return
+            self.main_frame.set_err_status(x, y, self.errors[y, x])
              
     def set_config(self, config):
         self.config = config
-        #try:
-        #    self.motion_engine = motion.GPUMotionEngine(config)
-        #except AttributeError:
-        self.motion_engine = motion.MotionEngine(config)
+        self.im_loader = image_loader.get_image_loader(config)
+        
+        try:
+            self.motion_engine = motion.GPUMotionEngine(config)
+        except AttributeError:
+            self.motion_engine = motion.MotionEngine(config)
         
         self.__pix_size = self.config['pixel_size'] * self.config['downsizing_factor']
         
@@ -264,25 +353,28 @@ class MotionFigure(wx.Panel):
         #clear cached images
         self.extent = None
         self.cur_im = None
+        self.cur_time = None
         self.next_im = None
+        self.next_time = None
         self.cur_im_masked = None
         self.next_im_masked = None
         self.__cur_flow = None
         self.__delta_t = None
+        self.errors = None
         
         if self.cur_filename is not None:
             self.set_images(self.cur_filename, self.next_filename)
     
     
     def __new_cur_im(self, cur_filename):
-        self.cur_im = cv2.imread(cur_filename, cv2.IMREAD_UNCHANGED)
+        self.cur_im, self.cur_time = self.im_loader._load_and_check(cur_filename)
         self.cur_filename = cur_filename
         self.cur_im_masked = self.cur_im.copy()
         self.motion_engine.preprocess(self.cur_im_masked)
     
     
     def __new_next_im(self, next_filename):
-        self.next_im = cv2.imread(next_filename, cv2.IMREAD_UNCHANGED)
+        self.next_im, self.next_time = self.im_loader._load_and_check(next_filename)
         self.next_filename = next_filename
         self.next_im_masked = self.next_im.copy()
         self.motion_engine.preprocess(self.next_im_masked)
@@ -296,35 +388,35 @@ class MotionFigure(wx.Panel):
             self.cur_filename = cur_filename
             self.cur_im = self.next_im
             self.cur_im_masked = self.next_im_masked
-            
+            self.cur_time = self.next_time
             self.__new_next_im(next_filename)
             
         elif self.cur_filename == next_filename:
             self.next_filename = next_filename
             self.next_im = self.cur_im
             self.next_im_masked = self.cur_im_masked
-            
+            self.next_time = self.cur_time
             self.__new_cur_im(cur_filename)
         
         else:
             self.__new_next_im(next_filename)
             self.__new_cur_im(cur_filename)
             
-        self.__delta_t = (main_script.date2secs(main_script.time_from_fname(next_filename, self.config)) - 
-                          main_script.date2secs(main_script.time_from_fname(cur_filename, self.config)))
-          
+        self.__delta_t = (main_script.date2secs(self.next_time) - 
+                          main_script.date2secs(self.cur_time))
+        
         #do the motion analysis
         self.__cur_flow = self.motion_engine.compute_flow(self.cur_im_masked, self.next_im_masked)
         
-        #make the size of the flow field vectors independent of the downsizing factor
-        self.__cur_flow *= self.config['downsizing_factor']
+        #reset the stored error map
+        self.errors = None
         
         self.redraw_plot()
     
     
     def redraw_plot(self):
         
-        x_shifts, y_shifts, self.extent = output.resample_velocities(self.__cur_flow, self._quiver_density)
+        x_shifts, y_shifts, self.extent = output.resample_velocities(self.__cur_flow * self.config['downsizing_factor'], self._quiver_density)
         
         if self.masked_im_plot is None:
             self.masked_im_plot = self.motion_ax.imshow(self.cur_im_masked, extent=self.extent)
@@ -366,9 +458,18 @@ class MotionFigure(wx.Panel):
         self.masked_im_plot.set_visible(True)
         self.quiver_plot.set_visible(True)
         
+        #draw the error plot
+        if self.show_errors:
+            if self.error_plot is not None:
+                self.error_plot.remove()
+            if self.errors is None:
+                self.errors = flux.compute_error_map(self.cur_im_masked, self.next_im_masked, self.__cur_flow)
+            self.error_plot = self.error_ax.imshow(numpy.clip(self.errors,0,self.cb_clip_limit))
+            self.error_cb_ax.clear()
+            cb = colorbar(self.error_plot, cax=self.error_cb_ax)
+            cb.set_label('Error (%)')
+            
         self.canvas.draw()
-
-        
 
 
 
@@ -376,6 +477,7 @@ class ImageFileList(wx.Panel):
     def __init__(self, parent, image_dir,config, plot_panel):
         super(ImageFileList, self).__init__(parent)
         self.config = config
+        self.im_loader = image_loader.get_image_loader(config)
         self.file_extension = config['file_extension']
         self.filename_format = config['filename_format']
         self.plot_panel = plot_panel
@@ -407,7 +509,6 @@ class ImageFileList(wx.Panel):
     
     
     def on_browse(self, evnt):
-        
         
         try:
             prev_dir = persist.PersistentStorage().get_value("config_test_frame_image_dir")
@@ -471,16 +572,16 @@ class ImageFileList(wx.Panel):
             self.plot_panel.clear_plot()
             return
         
-        if not main_script.is_uv_image_file(filename, self.config):
+        if not self.im_loader.can_load(filename):
             wx.Yield()
             self.plot_panel.clear_plot()
-            wx.MessageBox("Filename \"%s\"does not match the filename format specified."%filename,"",wx.ICON_WARNING)
+            wx.MessageBox("Image \"%s\" cannot be loaded using the current image loader class."%filename,"",wx.ICON_WARNING)
             return 1
         
-        if not main_script.is_uv_image_file(next_filename, self.config):
+        if not self.im_loader.can_load(next_filename):
             wx.Yield()
             self.plot_panel.clear_plot()
-            wx.MessageBox("Filename \"%s\"does not match the filename format specified."%next_filename,"",wx.ICON_WARNING)
+            wx.MessageBox("Image \"%s\" cannot be loaded using the current image loader class."%next_filename,"",wx.ICON_WARNING)
             return 1
         
         if evnt is None:

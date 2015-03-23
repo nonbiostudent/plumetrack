@@ -20,7 +20,9 @@ import json
 from types import FloatType, ListType, IntType, UnicodeType, DictType
 from optparse import OptionParser
 
-
+#note that this has to be a relative import - since this module is imported by
+#the setup script prior to installation
+import image_loader
 
 
 def load_config_file(filename=None):
@@ -79,8 +81,9 @@ def validate_config(config, filename=None):
     they have the correct data type and that they are within sensible limits.
     """
     expected_configs = [
-                        ("filename_format", UnicodeType, lambda x: x != "" and not x.isspace(), "\'filename_format\' cannot be an empty string."),
-                        ("file_extension", UnicodeType, lambda x: config["filename_format"].endswith(x), "Mismatch between file extension specified in \'filename_format\' and \'file_extension\'."),
+                        ("custom_image_loader",UnicodeType, lambda x: image_loader.validate_loader(config), "Invalid value for \'custom_image_loader\'. Either the file does not exist, is not a valid Python source file, or does not define a subclass of the ImageLoader class."),
+                        ("filename_format", UnicodeType, lambda x: config["custom_image_loader"] != "" or (x != "" and not x.isspace()), "\'filename_format\' cannot be an empty string (unless you are using a custom image loader)."),
+                        ("file_extension", UnicodeType, lambda x: config["filename_format"]=="" or config["filename_format"].endswith(x), "Mismatch between file extension specified in \'filename_format\' and \'file_extension\'."),
                         ("motion_pix_threshold_low", FloatType, lambda x: (config["motion_pix_threshold_high"] == -1 or x < config["motion_pix_threshold_high"]) and (x == -1 or x >= 0), "\'threshold_low\' must be either -1 or greater than or equal to 0 and must be less than \'threshold_high\'." ),
                         ("motion_pix_threshold_high", FloatType, lambda x: x == -1 or x > 0, "\'threshold_high\' must be either -1 or greater than 0." ),
                         ("random_mean", FloatType, lambda x: True, "" ),
