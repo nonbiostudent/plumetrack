@@ -74,8 +74,9 @@ default_config = {
                   
 "filename_format": "%Y%m%d_%H%M%S.png",
 "file_extension": ".png",
+"custom_image_loader":"",
 
-"motion_pix_threshold_low": 0.0,
+"motion_pix_threshold_low": -1.0,
 "motion_pix_threshold_high": -1.0,
 "random_mean": 0.0,
 "random_sigma":0.0,
@@ -158,6 +159,19 @@ class CustomInstall(install):
         os.chmod(config_filename, 0777)
 
 
+#populate the list of data files to be installed
+dirs = [d for d in os.listdir(os.path.join('src','plumetrack','icons')) if os.path.isdir(os.path.join('src','plumetrack','icons',d))]
+icon_files_to_install = []
+for d in dirs:
+    if d.startswith('.'):
+        continue
+    
+    icon_files = os.listdir(os.path.join('src','plumetrack','icons',d))
+    for f in icon_files:
+        if f.startswith('.'):
+            continue #skip the .svn folder
+        icon_files_to_install.append(os.path.join('icons', d,f))
+
 
 import src.plumetrack as plumetrack_preinstall
 import src.plumetrack.settings as settings_preinstall
@@ -178,9 +192,10 @@ setup(cmdclass={'install':CustomInstall},
       url              = plumetrack_preinstall.URL,
       license          = plumetrack_preinstall.LICENSE_SHORT,  
       package_dir      = {'':'src'},
-      packages         = ['plumetrack', 'plumetrack.plumetrack_config'],
+      package_data     = {'plumetrack':icon_files_to_install},
+      packages         = ['plumetrack', 'plumetrack.gui'],
       ext_modules      = extension_modules,
       install_requires = install_dependencies,
       entry_points     = {'console_scripts': ['plumetrack = plumetrack.main_script:main'],
-                          'gui_scripts': ['plumetrack-config = plumetrack.plumetrack_config.config_script:main']}
+                          'gui_scripts': ['plumetrack-gui = plumetrack.gui.main:main']}
       )

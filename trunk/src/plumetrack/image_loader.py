@@ -141,7 +141,7 @@ def get_image_loader(config):
     #set the system path to the folder where the module lives
     old_sys_path = sys.path
     if folder != "":
-        sys.path = [folder]
+        sys.path = [folder] + sys.path
     
     try:
         #import the module

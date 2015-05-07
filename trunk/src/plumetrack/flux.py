@@ -319,8 +319,6 @@ class FluxEngine1D(FluxEngineBase):
             #sanity check
             assert fluxes.shape == (number_of_segments,),"incorrect shape for fluxes array %s, expecting %s"%(str(fluxes.shape), str((number_of_segments,)))
             
-            #TODO - the errors need to be added in quadrature.
-            
             #only sum the values with pixel values above the low pixel threshold
             if self._low_pix_threshold > -1:
                 mask = numpy.where(pix_vals > self._low_pix_threshold)
@@ -328,13 +326,12 @@ class FluxEngine1D(FluxEngineBase):
                 
                 #total error is quadrature sum of pixel errors
                 error = math.sqrt(numpy.sum(((err_vals[mask]/100.0) * fluxes[mask])**2))
-                error = (error/total_flux) * 100.0
-                #error = 100.0 * numpy.sum(0.01*err_vals[mask]*pix_vals[mask])/numpy.sum(pix_vals[mask])
+                error = (error/total_flux) * 100.0 #convert to percentage
             else:
                 total_flux = numpy.sum(fluxes)
                 error = math.sqrt(numpy.sum(((err_vals/100.0) * fluxes)**2))
-                error = (error/total_flux) * 100.0
-                #error = 100.0 * numpy.sum(0.01*err_vals*pix_vals)/numpy.sum(pix_vals)
+                error = (error/total_flux) * 100.0 #convert to percentage
+                
             
             total_fluxes.append(ValueAndError(total_flux, error))
             
@@ -373,9 +370,6 @@ class FluxEngine2D(FluxEngineBase):
             if self._low_pix_threshold > -1:
                 #only sum the values with pixel values above the low pixel threshold
                 contributing_pixels[numpy.where(current_image < self._low_pix_threshold)] = 0
-
-            #TODO - use contributing_pixels along with the error map to compute the
-            #error in the flux.
             
             total_so2_mass = numpy.sum(so2_masses_kg * contributing_pixels)
             

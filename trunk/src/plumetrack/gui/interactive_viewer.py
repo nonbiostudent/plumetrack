@@ -31,9 +31,9 @@ from plumetrack import motion, output, main_script
 from plumetrack import flux
 
 
-class ConfigTestFrame(wx.Frame):
+class InteractiveViewerFrame(wx.Frame):
     def __init__(self, parent, image_dir, config):
-        super(ConfigTestFrame, self).__init__(parent, -1,"Configuration test - plumetrack")
+        super(InteractiveViewerFrame, self).__init__(parent, -1,"Configuration test - plumetrack")
         self.image_dir = image_dir
         self.config = config
         
@@ -463,7 +463,8 @@ class MotionFigure(wx.Panel):
             if self.error_plot is not None:
                 self.error_plot.remove()
             if self.errors is None:
-                self.errors = flux.compute_error_map(self.cur_im_masked, self.next_im_masked, self.__cur_flow)
+                self.errors = numpy.fabs(flux.compute_error_map(self.cur_im_masked, self.next_im_masked, self.__cur_flow))
+            print "error range = ",numpy.min(self.errors),numpy.max(self.errors)
             self.error_plot = self.error_ax.imshow(numpy.clip(self.errors,0,self.cb_clip_limit))
             self.error_cb_ax.clear()
             cb = colorbar(self.error_plot, cax=self.error_cb_ax)
@@ -511,7 +512,7 @@ class ImageFileList(wx.Panel):
     def on_browse(self, evnt):
         
         try:
-            prev_dir = persist.PersistentStorage().get_value("config_test_frame_image_dir")
+            prev_dir = persist.PersistentStorage().get_value("prev_image_dir")
         except KeyError:
             prev_dir = ""
         
@@ -523,7 +524,7 @@ class ImageFileList(wx.Panel):
         
         self.im_dir_box.SetValue(im_dir)
             
-        persist.PersistentStorage().set_value("config_test_frame_image_dir", im_dir)
+        persist.PersistentStorage().set_value("prev_image_dir", im_dir)
         
         self.set_image_dir(im_dir, self.config)
     

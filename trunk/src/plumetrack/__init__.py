@@ -18,7 +18,7 @@
 import os
 import sys
 
-from plumetrack import image_loader
+import image_loader
 
 ####################################################################
 #                     Program Information
@@ -94,6 +94,23 @@ def get_plumetrack_rw_dir():
         return os.path.join(os.path.expanduser('~'),"%s"%PROG_SHORT_NAME)
     else:
         return os.path.join(os.path.expanduser('~'),".%s"%PROG_SHORT_NAME)
+
+
+def get_plumetrack_sys_dir():
+    """
+    Returns the path used by Plumetrack to store user independent 
+    files
+    """
+    return __path__[0]
+
+
+def get_plumetrack_icons_dir():
+    """
+    Returns the full path to the directory where the Plumetrack icons
+    are stored.
+    """
+    return os.path.join(get_plumetrack_sys_dir(),'icons')
+
 
 ####################################################################
 

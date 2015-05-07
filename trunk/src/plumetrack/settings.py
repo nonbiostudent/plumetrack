@@ -58,7 +58,7 @@ def load_config_file(filename=None):
             try:
                 config = json.loads(config_str)
             except ValueError:
-                raise IOError("File \"%s\" does not contain a valid plumetrack configuration")
+                raise IOError("File \"%s\" does not contain a valid plumetrack configuration"%filename)
       
     validate_config(config, filename)
     

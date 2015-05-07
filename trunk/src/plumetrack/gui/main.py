@@ -32,9 +32,8 @@ from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg
 from matplotlib.figure import Figure
 
 import plumetrack
-from plumetrack import plumetrack_config
 from plumetrack import settings, flux,  persist
-from plumetrack.plumetrack_config import config_test_frame
+from plumetrack.gui import artwork, batch_processor, interactive_viewer
 
 
 def main():
@@ -43,7 +42,7 @@ def main():
     utility in the setup.py file.
     """
     
-    app = PlumetrackConfigApp()
+    app = PlumetrackApp()
     app.MainLoop()
     
 
@@ -51,7 +50,7 @@ def main():
 ###############################################################
 # Here we subclass a bunch of wx widgets so that when their values
 # change they call the on_config_change method of the main frame to trigger
-# an update to the config_test_frame (if it exists).
+# an update to the interactive_viewer (if it exists).
 class AutoUpdate:
     def on_change(self, evnt):
         wx.GetApp().main_frame.on_config_change()
@@ -62,6 +61,12 @@ class AutoUpdateCheckbox(wx.CheckBox, AutoUpdate):
     def __init__(self,*args, **kwargs):
         super(AutoUpdateCheckbox, self).__init__(*args, **kwargs)
         wx.EVT_CHECKBOX(self, self.GetId(), self.on_change)
+
+
+class AutoUpdateChoice(wx.Choice, AutoUpdate):
+    def __init__(self, *args, **kwargs):
+        super(AutoUpdateChoice, self).__init__(*args, **kwargs)
+        wx.EVT_CHOICE(self, self.GetId(), self.on_change)
 
 
 class AutoUpdateFloatspin(floatspin.FloatSpin, AutoUpdate):
@@ -81,50 +86,52 @@ class AutoUpdateTextCtrl(wx.TextCtrl, AutoUpdate):
         super(AutoUpdateTextCtrl, self).__init__(*args, **kwargs)
         self._text_updated = False
         wx.EVT_TEXT_ENTER(self, self.GetId(), self.on_change)
-        wx.EVT_KILL_FOCUS(self, self.on_lose_focus)
+        wx.EVT_KILL_FOCUS(self, self.on_change)
         wx.EVT_TEXT(self, self.GetId(), self.on_text_change)
     
     def on_change(self, evnt):
-        self._text_updated = False
-        AutoUpdate.on_change(self, evnt)
-    
-    def on_lose_focus(self, evnt):
         if self._text_updated:
-            self.on_change(evnt)
+            self._text_updated = False
+            AutoUpdate.on_change(self, evnt)
     
     def on_text_change(self, evnt):
         self._text_updated=True
+    
+    def SetValue(self,val):
+        """
+        Override the base class method so that using SetValue does not make the 
+        control think that something has changed. Otherwise newly loaded config
+        files will look as though they need to be saved before they are edited.
+        """
+        wx.TextCtrl.SetValue(self,val)
+        self._text_updated = False
 
 ########################################################################
 
 
-class PlumetrackConfigApp(wx.App):
+class PlumetrackApp(wx.App):
     def __init__(self):
         """
         wxApp for the plumetrack configuration program. 
         """
         self.main_frame = None
         
-        super(PlumetrackConfigApp, self).__init__()
+        super(PlumetrackApp, self).__init__()
     
     
     def OnInit(self):
         
         options, args = self._parse_cmd_line()
         
+        #register our art provider to serve the Plumetrack icons
+        wx.ArtProvider.Insert(artwork.PlumetrackArtProvider())
+        
         #launch the GUI!
         self.main_frame = MainFrame()
         self.SetTopWindow(self.main_frame)
         
         if len(args) == 0:
-            try:
-                prev_cfg_file = persist.PersistentStorage().get_value("config_script_prev_file")
-                
-                if not os.path.exists(prev_cfg_file):
-                    prev_cfg_file = None
-                     
-            except KeyError:
-                prev_cfg_file = None
+            prev_cfg_file = None
         else:
             prev_cfg_file = os.path.abspath(args[0])
             
@@ -142,9 +149,9 @@ class PlumetrackConfigApp(wx.App):
         
         parser = OptionParser()
         
-        parser.prog = plumetrack_config.PROG_SHORT_NAME
+        parser.prog = plumetrack.PROG_SHORT_NAME
         parser.usage = usage
-        parser.description = plumetrack_config.LONG_DESCRIPTION
+        parser.description = plumetrack.LONG_DESCRIPTION
         
         parser.add_option("", "--version", action="callback", 
                   callback=self.__print_version_and_exit, help=("Print plumetrack"
@@ -169,69 +176,12 @@ class PlumetrackConfigApp(wx.App):
         """
         Prints the version number and license information for plumetrack.
         """
-        print "%s (version %s)"%(plumetrack_config.PROG_SHORT_NAME, plumetrack_config.VERSION)
-        print plumetrack_config.COPYRIGHT
-        print plumetrack_config.LICENSE_SHORT
+        print "%s (version %s)"%(plumetrack.PROG_SHORT_NAME, plumetrack.VERSION)
+        print plumetrack.COPYRIGHT
+        print plumetrack.LICENSE_SHORT
         print ""
-        print "Written by %s."%plumetrack_config.AUTHOR
+        print "Written by %s."%plumetrack.AUTHOR
         sys.exit(0)
-
-
-
-class ConfigFileSelect(wx.Panel):
-    def __init__(self, parent, main_frame, filename):
-        super(ConfigFileSelect, self).__init__(parent)
-        
-        self.main_frame = main_frame
-        vsizer = wx.BoxSizer(wx.VERTICAL)
-        hsizer = wx.BoxSizer(wx.HORIZONTAL)
-        
-        self.im_dir_box = wx.TextCtrl(self, -1, size=(250,-1))
-        self.browse_button = wx.Button(self, -1, "Browse")
-        h_txt = ("Select an existing configuration file to load parameters from."
-                 " This can be either a \'.cfg\' configuration file, or a "
-                 "results file produced by a previous plumetrack run.")
-        self.im_dir_box.SetToolTipString(h_txt)
-        self.browse_button.SetToolTipString(h_txt)
-        wx.EVT_BUTTON(self, self.browse_button.GetId(), self.on_browse)
-        
-        hsizer.Add(self.im_dir_box, 1, wx.EXPAND|wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
-        hsizer.AddSpacer(5)
-        hsizer.Add(self.browse_button, 0, wx.ALIGN_LEFT|wx.ALIGN_CENTRE_VERTICAL)
-        
-        self.load_button = wx.Button(self, -1, "Load")
-        h_txt = ("Load the configuration parameters from the currently "
-                 "selected file. This will overwrite any parameters already "
-                 "defined below.")
-        self.load_button.SetToolTipString(h_txt)
-        wx.EVT_BUTTON(self, self.load_button.GetId(), self.on_load)
-        
-        #set the default config file to load
-        self.im_dir_box.SetValue(filename)
-        
-        vsizer.Add(hsizer, 0, wx.EXPAND)
-        vsizer.AddSpacer(5)
-        vsizer.Add(self.load_button, 0, wx.ALIGN_BOTTOM|wx.ALIGN_RIGHT)
-        self.SetSizer(vsizer)
-        vsizer.Fit(self)
-    
-    
-    def on_browse(self, evnt):
-        filename = wx.FileSelector("Select configuration file")
-        if filename != "":
-            self.im_dir_box.SetValue(filename)
-    
-    
-    def on_load(self, evnt):
-        filename = self.im_dir_box.GetValue()
-        
-        try:
-            config = settings.load_config_file(filename)
-            self.main_frame.set_configs(config)
-        except settings.ConfigError, ex:
-            wx.MessageBox(ex.args[0])
-        except IOError, ex:
-            wx.MessageBox(ex.args[0])
 
 
 
@@ -269,7 +219,11 @@ class InputFilesConfig(wx.Panel):
         
         self.custom_loader_box = AutoUpdateTextCtrl(self, -1, size=(250,-1), 
                                                     style=wx.TE_PROCESS_ENTER)
-        h_txt = ("")
+        h_txt = ("Custom image loaders allow Plumetrack to be used with image "
+                 "formats that are not natively supported, or that require "
+                 "customised preprocessing. Enter the filename of your image "
+                 "loader here. See the Plumetrack documentation for details.")
+        
         self.custom_loader_box.SetToolTipString(h_txt)
         self.custom_loader_chkbox = AutoUpdateCheckbox(self, -1, "Custom image loader:")
         wx.EVT_CHECKBOX(self, self.custom_loader_chkbox.GetId(), self.on_custom_loader_chkbox)
@@ -542,8 +496,8 @@ class MaskingConfig(wx.Panel):
         self.random_mean_box.SetValue(configs['random_mean'])
         self.random_sigma_box.SetValue(configs['random_sigma'])
         
-        self.low_thresh_chkbx.SetValue(configs['motion_pix_threshold_low']!=0)
-        self.low_thresh_box.Enable(configs['motion_pix_threshold_low']!=0)
+        self.low_thresh_chkbx.SetValue(configs['motion_pix_threshold_low']!=-1)
+        self.low_thresh_box.Enable(configs['motion_pix_threshold_low']!=-1)
                                    
         self.high_thresh_chkbx.SetValue(configs['motion_pix_threshold_high']!=-1)
         self.high_thresh_box.Enable(configs['motion_pix_threshold_high']!=-1)
@@ -693,7 +647,7 @@ class IntegrationLineConfig(wx.Panel):
         
         hsizer.Add(wx.StaticText(self, -1, "Name:"),0,
                    wx.ALIGN_CENTER_VERTICAL|wx.ALIGN_RIGHT)
-        self.name_box = wx.TextCtrl(self, -1, style=wx.TE_PROCESS_ENTER)
+        self.name_box = AutoUpdateTextCtrl(self, -1, style=wx.TE_PROCESS_ENTER)
         self.name_box.SetValue("Integration Line %d"%num)
         
         h_txt =  ("Descriptive name for this integration line. This will appear"
@@ -797,8 +751,8 @@ class IntegrationLineConfig(wx.Panel):
         
         int_line_str = self.integration_line_box.GetValue()
         if int_line_str == "" or int_line_str.isspace():
-           raise settings.ConfigError("No points specified for integration "
-                                      "line %d."%self._num)
+            raise settings.ConfigError("No points specified for integration "
+                                       "line %d."%self._num)
         
         try:
             integration_points = json.loads(int_line_str)
@@ -828,7 +782,7 @@ class FluxCalculationConfig(wx.Panel):
         
         gsizer.Add(wx.StaticText(self, -1, "Integration method:"),0,
                          wx.ALIGN_CENTER_VERTICAL|wx.ALIGN_RIGHT)
-        self.integration_method_choice = wx.Choice(self, -1, choices=self.__integration_methods)
+        self.integration_method_choice = AutoUpdateChoice(self, -1, choices=self.__integration_methods)
         h_txt = ("Method used to calculate the flux. '1d' is marginally faster,"
                  " but '2d' is more robust, especially for images with a large "
                  "time gaps between them.")
@@ -969,8 +923,10 @@ class FluxCalculationConfig(wx.Panel):
         if configs['integration_pix_threshold_low'] >= 0:
             self.low_thresh_chkbx.SetValue(True)
             self.low_thresh_box.SetValue(configs['integration_pix_threshold_low'])
+            self.low_thresh_box.Enable(True)
         else:
             self.low_thresh_chkbx.SetValue(False)
+            self.low_thresh_box.Enable(False)
         
         #now set the configs for all the integration lines that are defined
         
@@ -989,6 +945,43 @@ class FluxCalculationConfig(wx.Panel):
  
  
  
+class MainToolbar(wx.ToolBar):
+    """
+    Main program toolbar
+    """
+    def __init__(self,parent):
+        self.main_frame = parent
+        
+        self.__active_figure = None
+        self.__all_figures = set()
+        
+        wx.ToolBar.__init__(self,parent, wx.ID_ANY)
+        
+        #file tools    
+        self.new_tool = self.AddTool(-1, wx.ArtProvider.GetBitmap(wx.ART_NEW, wx.ART_TOOLBAR), shortHelpString="New configuration")    
+        self.open_tool = self.AddTool(-1, wx.ArtProvider.GetBitmap(wx.ART_FILE_OPEN, wx.ART_TOOLBAR), shortHelpString="Open an existing configuration file or import a configuration from a results file.")
+        self.save_tool = self.AddTool(-1, wx.ArtProvider.GetBitmap(wx.ART_FILE_SAVE, wx.ART_TOOLBAR), shortHelpString="Save configuration")
+        self.saveas_tool = self.AddTool(-1, wx.ArtProvider.GetBitmap(wx.ART_FILE_SAVE_AS, wx.ART_TOOLBAR), shortHelpString="Save configuration with a new file name")
+        
+        self.AddSeparator()
+        
+        self.interactive_tool = self.AddTool(-1, wx.ArtProvider.GetBitmap("plumetrack_interactive", wx.ART_TOOLBAR), shortHelpString="Open the interactive inspection window")
+        self.process_tool = self.AddTool(-1, wx.ArtProvider.GetBitmap("plumetrack_process", wx.ART_TOOLBAR), shortHelpString="Batch process images using the current configuration")
+
+        self.Realize()
+        
+
+        #register events
+        wx.EVT_TOOL(parent, self.new_tool.GetId(), parent.on_new)
+        wx.EVT_TOOL(parent, self.save_tool.GetId(), parent.on_save)        
+        wx.EVT_TOOL(parent, self.saveas_tool.GetId(), parent.on_saveas)
+        wx.EVT_TOOL(parent, self.open_tool.GetId(), parent.on_open_file)
+        wx.EVT_TOOL(parent, self.interactive_tool.GetId(), parent.on_interactive_viewer)
+        wx.EVT_TOOL(parent, self.process_tool.GetId(), parent.on_process)
+        
+    
+
+ 
 class MainFrame(wx.Frame):
     """
     Main frame of the configuration utility GUI.
@@ -996,7 +989,13 @@ class MainFrame(wx.Frame):
     def __init__(self):
         wx.Frame.__init__(self, None, wx.ID_ANY, " Configuration Utility - "+plumetrack.PROG_SHORT_NAME)
         self.config_panels = []
-        self.config_test_frame = None
+        self.interactive_viewer_frame = None
+        
+        self.__current_file = None
+        self.__needs_saving = False
+        
+        self.toolbar = MainToolbar(self)
+        self.SetToolBar(self.toolbar)
     
     
     def launch(self, prev_cfg_file):
@@ -1010,23 +1009,9 @@ class MainFrame(wx.Frame):
         vsizer = wx.BoxSizer(wx.VERTICAL)
         top_panel.SetSizer(vsizer)
         top_panel.SetScrollRate(8,8)
-        #top_sizer.Add(top_panel, 1, wx.EXPAND| wx.ALIGN_TOP)
-        
-        if prev_cfg_file is None:
-            prev_cfg_file = os.path.join(plumetrack.get_plumetrack_rw_dir(),
-                                         "plumetrack.cfg")
         
         #create the configuration panels and add them to the top panel using a 
-        #box sizer to control the layout
-        config_select_static_szr = wx.StaticBoxSizer(wx.StaticBox(top_panel, wx.ID_ANY, 'Load Existing Configuration'), wx.VERTICAL)
-        self.config_file_chooser = ConfigFileSelect(top_panel, self, prev_cfg_file)
-        config_select_static_szr.Add(self.config_file_chooser, 0 , wx.EXPAND|wx.ALIGN_TOP|wx.ALIGN_RIGHT)
-        vsizer.Add(config_select_static_szr, 0, wx.EXPAND|wx.ALL, border=5)
-        config_select_static_szr.Layout()
-        
-        vsizer.AddSpacer(10)
-        vsizer.AddStretchSpacer()
-        
+        #box sizer to control the layout 
         input_files_static_szr = wx.StaticBoxSizer(wx.StaticBox(top_panel, wx.ID_ANY, 'Input Files'), wx.VERTICAL)
         self.input_files_config = InputFilesConfig(top_panel)
         input_files_static_szr.Add(self.input_files_config, 0 , wx.EXPAND|wx.ALIGN_TOP|wx.ALIGN_RIGHT)
@@ -1066,40 +1051,17 @@ class MainFrame(wx.Frame):
         
         vsizer.AddSpacer(10)
         
-        #create the save and cancel button
-        buttons_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        
-        self.test_button = wx.Button(top_panel, wx.ID_ANY, "Test")
-        h_txt = ("Opens a viewer for the motion field created with this "
-                 "configuration. Configuration parameters can be edited and "
-                 "their effects viewed in realtime.")
-        self.test_button.SetToolTipString(h_txt)
-        buttons_sizer.Add(self.test_button, 0, wx.ALIGN_BOTTOM|wx.ALIGN_RIGHT|wx.TOP|wx.BOTTOM, border=10)
-        wx.EVT_BUTTON(self, self.test_button.GetId(), self.on_test)
-        
-        self.cancel_button = wx.Button(top_panel, wx.ID_CANCEL, "Cancel")
-        h_txt = ("Exits the program.")
-        self.cancel_button.SetToolTipString(h_txt)
-        buttons_sizer.Add(self.cancel_button, 0, wx.ALIGN_BOTTOM|wx.ALIGN_RIGHT|wx.TOP|wx.BOTTOM, border=10)
-        wx.EVT_BUTTON(self, self.cancel_button.GetId(), self.on_cancel)
-        
-        self.save_button = wx.Button(top_panel, wx.ID_SAVEAS, "Save As")
-        h_txt = ("Save the current configuration to a specified file.")
-        self.save_button.SetToolTipString(h_txt)
-        buttons_sizer.Add(self.save_button, 0, wx.ALIGN_BOTTOM|wx.ALIGN_RIGHT|wx.TOP|wx.BOTTOM|wx.RIGHT, border=10)
-        wx.EVT_BUTTON(self, self.save_button.GetId(), self.on_save)
-        
-        vsizer.Add(buttons_sizer, 0, wx.ALIGN_BOTTOM|wx.ALIGN_RIGHT)
         top_sizer.Add(top_panel, 1, wx.EXPAND| wx.ALIGN_TOP)
         
         
-        #set the configs to those in the default config file (if we can - otherwise
-        #they are just left blank)
-        try:
-            self.set_configs(settings.load_config_file(prev_cfg_file))
-        except settings.ConfigError:
-            #if this configuration is unloadable, then just give up
-            pass
+        #create a new configuration or load the specified configuration
+        if prev_cfg_file is None:
+            self.on_new(None)
+        else:
+            try:
+                self.set_current_file(prev_cfg_file)
+            except (IOError, settings.ConfigError):
+                self.on_new(None)
         
         #do the layout       
         top_panel.SetSizer(vsizer)
@@ -1115,7 +1077,42 @@ class MainFrame(wx.Frame):
             
         self.Show()
 
-
+    
+    def set_current_file(self, filename):
+        
+        try:
+            config = settings.load_config_file(filename)
+            self.set_configs(config)
+            
+            self.__current_file = filename
+            
+            if filename is None:
+                self.SetTitle("New Configuration - "+plumetrack.PROG_SHORT_NAME)
+            else:
+                self.SetTitle(os.path.basename(filename)+" - "+plumetrack.PROG_SHORT_NAME)
+                
+                #store the last file opened
+                persist.PersistentStorage().set_value("config_script_prev_file", filename)
+            
+            self.set_needs_saving(False)
+                
+        except (IOError, settings.ConfigError), ex:
+            wx.MessageBox(ex.args[0])
+            raise ex     
+        
+    
+    def set_needs_saving(self, val):
+        if val == self.__needs_saving:
+            return
+        
+        if val:
+            self.SetTitle("*" + self.GetTitle())
+        else:
+            self.SetTitle(self.GetTitle().lstrip('*'))
+        
+        self.__needs_saving = val
+            
+            
     def get_configs(self):
         configs = {}
         for p in self.config_panels:
@@ -1131,8 +1128,9 @@ class MainFrame(wx.Frame):
     
     
     def on_config_change(self):
+        self.set_needs_saving(True)
         
-        if self.config_test_frame is not None:
+        if self.interactive_viewer_frame is not None:
             try:
                 #read the configs from the various input panels        
                 configs = self.get_configs() 
@@ -1144,14 +1142,71 @@ class MainFrame(wx.Frame):
                 wx.CallAfter(wx.MessageBox,str(ex.args[0]), plumetrack.PROG_SHORT_NAME, wx.ICON_ERROR)
                 return
             
-            self.config_test_frame.set_config(configs)
+            self.interactive_viewer_frame.set_config(configs)
     
     
-    def on_test(self, evnt):
+    def save_unsaved_work(self):
+        if self.__current_file is None:
+            message = ("Would you like to save your changes "
+                       "to \'New Configuration\'")
+        else:
+            message = ("Would you like to save your changes "
+                       "to \'%s\'"%os.path.basename(self.__current_file))
+        
+        ret_val = wx.MessageBox(message, style=wx.YES_NO)
+        
+        if ret_val == wx.YES:
+            self.on_save(None)
+        
+    
+    def on_new(self, evnt):
+        
+        if self.__needs_saving:
+            self.save_unsaved_work()
+            
+        try:
+            config = settings.load_config_file(None)
+            self.set_configs(config)
+        except settings.ConfigError, ex:
+            wx.MessageBox(ex.args[0])
+        except IOError, ex:
+            wx.MessageBox(ex.args[0])
+        
+        self.set_current_file(None)
+    
+    
+    def on_open_file(self, evnt):
+        
+        #try to get the name of the last config file opened
+        try:
+            last_path = persist.PersistentStorage().get_value("config_script_prev_file")
+        except KeyError:
+            last_path=""
+        
+        filename = wx.FileSelector("Select configuration file", 
+                                   default_path=os.path.dirname(last_path))
+        
+        #load the configuration parameters from the file
+        if filename != "":
+            if self.__needs_saving:
+                self.save_unsaved_work()
+            
+            self.set_current_file(filename)
+        
+            
+    def on_process(self, evnt):
         """
-        Event handler for Test button events. Opens a directory choice dialog
+        Event handler for batch process toolbar events. Opens the batch 
+        processing dialog"""
+        config = self.get_configs()
+        batch_processor.BatchProcessor(self, config)
+        
+    
+    def on_interactive_viewer(self, evnt):
+        """
+        Event handler for interactive toolbar events. Opens a directory choice dialog
         to choose an image directory to test the configs on and then launches 
-        a config_test_frame. Note that if a config test frame already exists
+        a interactive_viewer_frame. Note that if a config test frame already exists
         then clicking test simply updates the configuration that the config test
         frame is displaying
         """
@@ -1167,7 +1222,7 @@ class MainFrame(wx.Frame):
             return
         
         try:
-            prev_dir = persist.PersistentStorage().get_value("config_test_frame_image_dir")
+            prev_dir = persist.PersistentStorage().get_value("prev_image_dir")
         except KeyError:
             prev_dir = ""
         
@@ -1176,15 +1231,15 @@ class MainFrame(wx.Frame):
         if im_dir == "":
             return
         
-        persist.PersistentStorage().set_value("config_test_frame_image_dir", im_dir)
-        self.test_button.Enable(False)
-        self.config_test_frame = config_test_frame.ConfigTestFrame(self, im_dir, configs)
+        persist.PersistentStorage().set_value("prev_image_dir", im_dir)
+        self.toolbar.interactive_tool.Enable(False)
+        self.interactive_viewer_frame = interactive_viewer.InteractiveViewerFrame(self, im_dir, configs)
     
     
     def _on_config_test_frame_close(self):
         #called from inside the on_close handler of the config test frame
-        self.config_test_frame = None
-        self.test_button.Enable(True)
+        self.interactive_viewer_frame = None
+        self.toolbar.interactive_tool.Enable(True)
         wx.Yield()
     
     
@@ -1199,8 +1254,11 @@ class MainFrame(wx.Frame):
         """
         Event handler for close events - exits the program.
         """
+        if self.__needs_saving:
+            self.save_unsaved_work()
+        
         #this is a hack for now, since I can't figure out what component of the 
-        #ConfigTestFrame is not being destroyed properly and is preventing the
+        #InteractiveViewerFrame is not being destroyed properly and is preventing the
         #main application from closing.
         wx.GetApp().ExitMainLoop()
     
@@ -1211,7 +1269,24 @@ class MainFrame(wx.Frame):
         reads the configs from the various panels and saves them to the selected
         file.
         """
-         
+        if self.__current_file is None:
+            self.on_saveas(evnt)
+        else:
+            self.save_to_file(self.__current_file)
+        
+    
+    def on_saveas(self, evnt):
+        
+        filename = wx.FileSelector("Select file to save configuration to", 
+                                   flags=wx.FD_SAVE|wx.FD_OVERWRITE_PROMPT)
+        
+        if filename.isspace() or filename == "":
+            return
+        
+        self.save_to_file(filename)
+        
+    
+    def save_to_file(self, filename):     
         try:
             #read the configs from the various input panels        
             configs = self.get_configs() 
@@ -1222,16 +1297,13 @@ class MainFrame(wx.Frame):
         except settings.ConfigError, ex:
             wx.MessageBox(str(ex.args[0]), plumetrack.PROG_SHORT_NAME, wx.ICON_ERROR)
             return
-                
-        filename = wx.FileSelector("Select file to save configuration to", flags=wx.FD_SAVE|wx.FD_OVERWRITE_PROMPT)
-        
-        if filename.isspace() or filename == "":
-            return
-                
+                      
         with open(filename, 'w') as ofp:
             json.dump(configs, ofp, indent=2)
         
         persist.PersistentStorage().set_value("config_script_prev_file", filename)
+        self.set_current_file(filename)
+        self.set_needs_saving(False)
         
         
 
