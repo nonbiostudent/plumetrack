@@ -316,7 +316,20 @@ class ListDirIter:
             raise StopIteration
         
         return s
-
+    
+    
+    def get_current_position(self):
+        """
+        Returns a tuple of number of filenames already returned and number of 
+        filenames remaining to be returned. Note that due to the asynchronous
+        nature of the iterator the latter of these numbers may be entirely
+        fictional.
+        """
+        if self.__max_n is None:
+            return (self.__return_count, self._filename_q.qsize())
+        else:
+            return (self.__return_count, self.__max_n - self.__return_count)
+        
     
     def close(self):
         """

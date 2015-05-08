@@ -73,9 +73,9 @@ class Simple1DFluxesTestCase(unittest.TestCase):
         
         flux_engine = self._flux_engine(self.configs)
         
-        f, =flux_engine.compute_flux(self.image, flow, 1.0)
+        f, =flux_engine.compute_flux(self.image, self.image, flow, 1.0)
         
-        self.assertEqual(f, 0.0, "Expecting zero flux, got %f"%f)
+        self.assertEqual(f.value, 0.0, "Expecting zero flux, got %f"%f.value)
 
 
     def test_line_outside_of_image(self):
@@ -85,9 +85,9 @@ class Simple1DFluxesTestCase(unittest.TestCase):
         flow[..., 0] = 1.0
         
         flux_engine = self._flux_engine(self.configs)
-        f, = flux_engine.compute_flux(self.image, flow, 1.0)
+        f, = flux_engine.compute_flux(self.image, self.image, flow, 1.0)
         
-        self.assertEqual(f, 0.0, "Expecting flux of 0.0, got %f"%f)
+        self.assertEqual(f.value, 0.0, "Expecting flux of 0.0, got %f"%f.value)
     
     
     def test_unity_motion_flux(self):
@@ -97,9 +97,9 @@ class Simple1DFluxesTestCase(unittest.TestCase):
         flow[..., 0] = 1.0
         
         flux_engine = self._flux_engine(self.configs)
-        f, =flux_engine.compute_flux(self.image, flow, 1.0)
+        f, =flux_engine.compute_flux(self.image, self.image, flow, 1.0)
         
-        self.assertEqual(f, 5.0, "Expecting flux of 5, got %f"%f)
+        self.assertEqual(f.value, 5.0, "Expecting flux of 5, got %f"%f.value)
     
     
     def test_unity_motion_flux_multiple_int_lines(self):
@@ -127,11 +127,11 @@ class Simple1DFluxesTestCase(unittest.TestCase):
         flow[..., 0] = 1.0
         
         flux_engine = self._flux_engine(self.configs)
-        f = flux_engine.compute_flux(self.image, flow, 1.0)
+        f = flux_engine.compute_flux(self.image, self.image, flow, 1.0)
         
-        self.assertEqual(f[0], 5.0, "Expecting flux of 5, got %f"%f[0])
-        self.assertEqual(f[1], 5.0, "Expecting flux of 5, got %f"%f[1])
-        self.assertEqual(f[2], -5.0, "Expecting flux of -5, got %f"%f[2])
+        self.assertEqual(f[0].value, 5.0, "Expecting flux of 5, got %f"%f[0].value)
+        self.assertEqual(f[1].value, 5.0, "Expecting flux of 5, got %f"%f[1].value)
+        self.assertEqual(f[2].value, -5.0, "Expecting flux of -5, got %f"%f[2].value)
     
     
     def test_unity_motion_flux_with_threshold(self):
@@ -145,9 +145,9 @@ class Simple1DFluxesTestCase(unittest.TestCase):
         flow[..., 0] = 1.0
         
         flux_engine = self._flux_engine(self.configs)
-        f, =flux_engine.compute_flux(self.image, flow, 1.0)
+        f, =flux_engine.compute_flux(self.image, self.image, flow, 1.0)
         
-        self.assertEqual(f, 4.0, "Expecting flux of 4, got %f"%f)
+        self.assertEqual(f.value, 4.0, "Expecting flux of 4, got %f"%f.value)
     
     
     def test_unity_motion_flux_large_pixels(self):
@@ -160,9 +160,9 @@ class Simple1DFluxesTestCase(unittest.TestCase):
         flow[..., 0] = 1.0
         
         flux_engine = self._flux_engine(self.configs)
-        f, =flux_engine.compute_flux(self.image, flow, 1.0)
+        f, =flux_engine.compute_flux(self.image, self.image, flow, 1.0)
         
-        self.assertEqual(f, 2.3*2.3*5.0, "Expecting flux of %f, got %f"%(5.0*2.3**2,f))
+        self.assertEqual(f.value, 2.3*2.3*5.0, "Expecting flux of %f, got %f"%(5.0*2.3**2,f.value))
 
 
     def test_unity_motion_flux_with_conversion(self):
@@ -175,9 +175,9 @@ class Simple1DFluxesTestCase(unittest.TestCase):
         flow[..., 0] = 1.0
         
         flux_engine = self._flux_engine(self.configs)
-        f, =flux_engine.compute_flux(self.image, flow, 1.0)
+        f, =flux_engine.compute_flux(self.image, self.image, flow, 1.0)
         
-        self.assertEqual(f, 0.57*5.0, "Expecting flux of %f, got %f"%(5.0*0.57,f))
+        self.assertEqual(f.value, 0.57*5.0, "Expecting flux of %f, got %f"%(5.0*0.57,f.value))
     
     
     def test_unity_motion_diagonal_line_flux(self):
@@ -190,9 +190,9 @@ class Simple1DFluxesTestCase(unittest.TestCase):
         self.configs['integration_lines'][0]['integration_points'] = [[1.01,1],[4.01,4]]
         
         flux_engine = self._flux_engine(self.configs)
-        f, =flux_engine.compute_flux(self.image, flow, 1.0)
+        f, =flux_engine.compute_flux(self.image, self.image, flow, 1.0)
         
-        self.assertEqual(f, 3.0, "Expecting flux of 3, got %f"%f)
+        self.assertEqual(f.value, 3.0, "Expecting flux of 3, got %f"%f.value)
     
     
     def test_unity_motion_oversizeline_flux(self):
@@ -207,9 +207,9 @@ class Simple1DFluxesTestCase(unittest.TestCase):
         flow[..., 0] = 1.0
         
         flux_engine = self._flux_engine(self.configs)
-        f, =flux_engine.compute_flux(self.image, flow, 1.0)
+        f, =flux_engine.compute_flux(self.image, self.image, flow, 1.0)
         
-        self.assertEqual(f, 5.0, "Expecting flux of 5, got %f"%f)
+        self.assertEqual(f.value, 5.0, "Expecting flux of 5, got %f"%f.value)
     
     
     def test_negativeunity_motion_flux(self):
@@ -221,9 +221,9 @@ class Simple1DFluxesTestCase(unittest.TestCase):
         
         flux_engine = self._flux_engine(self.configs)
         
-        f, =flux_engine.compute_flux(self.image, flow, 1.0)
+        f, =flux_engine.compute_flux(self.image, self.image, flow, 1.0)
         
-        self.assertEqual(f, -5.0, "Expecting flux of -5, got %f"%f)
+        self.assertEqual(f.value, -5.0, "Expecting flux of -5, got %f"%f.value)
     
     
     def test_negativeunity_motion_diagonal_line_flux(self):
@@ -236,9 +236,9 @@ class Simple1DFluxesTestCase(unittest.TestCase):
         self.configs['integration_lines'][0]['integration_points'] = [[1.01,1],[4.01,4]]
         
         flux_engine = self._flux_engine(self.configs)
-        f, =flux_engine.compute_flux(self.image, flow, 1.0)
+        f, =flux_engine.compute_flux(self.image, self.image, flow, 1.0)
         
-        self.assertEqual(f, -3.0, "Expecting flux of -3, got %f"%f)
+        self.assertEqual(f.value, -3.0, "Expecting flux of -3, got %f"%f.value)
     
     
     def test_parallel_motion_flux(self):
@@ -251,9 +251,9 @@ class Simple1DFluxesTestCase(unittest.TestCase):
         
         flux_engine = self._flux_engine(self.configs)
         
-        f, =flux_engine.compute_flux(self.image, flow, 1.0)
+        f, =flux_engine.compute_flux(self.image, self.image, flow, 1.0)
         
-        self.assertEqual(f, 0.0, "Expecting flux of 0, got %f"%f)
+        self.assertEqual(f.value, 0.0, "Expecting flux of 0, got %f"%f.value)
         
         #now the negative y direction
         flow = numpy.zeros((5, 5, 2), dtype='float')
@@ -261,9 +261,9 @@ class Simple1DFluxesTestCase(unittest.TestCase):
         
         flux_engine = self._flux_engine(self.configs)
         
-        f, =flux_engine.compute_flux(self.image, flow, 1.0)
+        f, =flux_engine.compute_flux(self.image, self.image, flow, 1.0)
         
-        self.assertEqual(f, 0.0, "Expecting flux of 0, got %f"%f)
+        self.assertEqual(f.value, 0.0, "Expecting flux of 0, got %f"%f.value)
     
     
     def test_nonuniform_image(self):
@@ -278,9 +278,9 @@ class Simple1DFluxesTestCase(unittest.TestCase):
             im = numpy.array(self.image) #copy of the array
             im[row, :] = 3.6
         
-            f, =flux_engine.compute_flux(im, flow, 1.0)
+            f, =flux_engine.compute_flux(im, im, flow, 1.0)
         
-            self.assertEqual(f, 7.6, "Expecting flux of 7.6, got %f when row=%d"%(f,row))
+            self.assertEqual(f.value, 7.6, "Expecting flux of 7.6, got %f when row=%d"%(f.value,row))
     
     
     def test_nonuniform_image2(self):
@@ -296,9 +296,9 @@ class Simple1DFluxesTestCase(unittest.TestCase):
         for row in range(5):
             im[row, :] = row
         
-        f, =flux_engine.compute_flux(im, flow, 1.0)
+        f, =flux_engine.compute_flux(im, im, flow, 1.0)
         
-        self.assertEqual(f, sum(range(5)), "Expecting flux of %d, got %f"%(sum(range(5)),f))
+        self.assertEqual(f.value, sum(range(5)), "Expecting flux of %d, got %f"%(sum(range(5)),f.value))
  
         
     
@@ -332,9 +332,9 @@ class MultiSegment1DFluxesTestCase(Simple1DFluxesTestCase):
         flow[..., 0] = 1.0
         
         flux_engine = self._flux_engine(self.configs)
-        f, =flux_engine.compute_flux(self.image, flow, 1.0)
+        f, =flux_engine.compute_flux(self.image, self.image, flow, 1.0)
         
-        self.assertEqual(f, 5.0, "Expecting flux of 5, got %f"%f)
+        self.assertEqual(f.value, 5.0, "Expecting flux of 5, got %f"%f.value)
     
         
     def test_line_outside_of_image(self):
@@ -344,9 +344,9 @@ class MultiSegment1DFluxesTestCase(Simple1DFluxesTestCase):
         flow[..., 0] = 1.0
         
         flux_engine = self._flux_engine(self.configs)
-        f, =flux_engine.compute_flux(self.image, flow, 1.0)
+        f, =flux_engine.compute_flux(self.image, self.image, flow, 1.0)
         
-        self.assertEqual(f, 0.0, "Expecting flux of 5, got %f"%f)
+        self.assertEqual(f.value, 0.0, "Expecting flux of 5, got %f"%f.value)
             
     def test_unity_motion_diagonal_line_flux(self):
         #if the flow is unity in the positive x direction, then we would expect 
@@ -358,9 +358,9 @@ class MultiSegment1DFluxesTestCase(Simple1DFluxesTestCase):
         self.configs['integration_lines'][0]["integration_points"] = [[1.01,1],[2.01,2],[3.01,3],[4.01,4]]
         
         flux_engine = self._flux_engine(self.configs)
-        f, =flux_engine.compute_flux(self.image, flow, 1.0)
+        f, =flux_engine.compute_flux(self.image, self.image, flow, 1.0)
         
-        self.assertEqual(f, 3.0, "Expecting flux of 3, got %f"%f)  
+        self.assertEqual(f.value, 3.0, "Expecting flux of 3, got %f"%f.value)  
  
 
 class Simple2DFluxesTestCase(Simple1DFluxesTestCase):
@@ -381,9 +381,9 @@ class Simple2DFluxesTestCase(Simple1DFluxesTestCase):
         flow[...,1] *= -1
         flux_engine = self._flux_engine(self.configs)
         
-        f, =flux_engine.compute_flux(self.image, flow, 1.0)
+        f, =flux_engine.compute_flux(self.image, self.image, flow, 1.0)
         
-        self.assertEqual(f, 4.0, "Expecting flux of 4, got %f"%f)
+        self.assertEqual(f.value, 4.0, "Expecting flux of 4, got %f"%f.value)
         
         
 class MultiSegment2DFluxesTestCase(Simple2DFluxesTestCase, MultiSegment1DFluxesTestCase):
@@ -428,11 +428,11 @@ class ClosedLoopIntegration1D(unittest.TestCase):
         flow[..., 0] = 1.0
         
         flux_engine = self._flux_engine(self.configs)
-        f, =flux_engine.compute_flux(self.image, flow, 1.0)
+        f, =flux_engine.compute_flux(self.image, self.image, flow, 1.0)
         #matshow(flux_engine.find_flux_contributions(flow))
         #colorbar()
         #show()
-        self.assertEqual(f, 0.0, "Expecting flux of 0, got %f"%f)  
+        self.assertEqual(f.value, 0.0, "Expecting flux of 0, got %f"%f.value)  
         
                
     def test_diagonal_flow(self):
@@ -441,9 +441,9 @@ class ClosedLoopIntegration1D(unittest.TestCase):
         flow[..., 0] = 1.0
         flow[..., 1] = -1.0
         flux_engine = self._flux_engine(self.configs)
-        f, = flux_engine.compute_flux(self.image, flow, 1.0)
+        f, = flux_engine.compute_flux(self.image, self.image, flow, 1.0)
         
-        self.assertEqual(f, 0.0, "Expecting flux of 0, got %f"%f)
+        self.assertEqual(f.value, 0.0, "Expecting flux of 0, got %f"%f.value)
 
 
 #now perform the closed loop tests for the 2D flux engine

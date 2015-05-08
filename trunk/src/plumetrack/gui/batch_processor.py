@@ -18,12 +18,14 @@
 import wx
 import os
 import plumetrack
-from plumetrack import persist
+from plumetrack import persist, settings, main_script
 
 class BatchProcessor(wx.Dialog):
-    def __init__(self, parent, config):
+    def __init__(self, parent, config_file):
         super(BatchProcessor, self).__init__(parent, -1, "Batch Process Images "
                                              "- %s"%plumetrack.PROG_SHORT_NAME)
+        
+        self.config_file = config_file
         
         top_panel = wx.Panel(self, wx.ID_ANY)
         vsizer = wx.BoxSizer(wx.VERTICAL)
@@ -124,8 +126,18 @@ class BatchProcessor(wx.Dialog):
             except KeyError:
                 prev_dir = ""
         
+        if current_filename != "" and os.path.exists(current_dir):
+            prev_filename = current_filename
+        
+        else:
+            try:
+                prev_filename = persist.PersistentStorage().get_value("prev_output_file")
+            except KeyError:
+                prev_filename = ""
+        
         output_file = wx.FileSelector("Select output file", default_path=prev_dir, 
-                                 default_filename=current_filename)
+                                 default_filename=prev_filename,
+                                 flags=wx.FD_SAVE|wx.FD_OVERWRITE_PROMPT)
         
         if output_file == "":
             return
@@ -134,13 +146,39 @@ class BatchProcessor(wx.Dialog):
             
         persist.PersistentStorage().set_value("prev_output_dir", 
                                               os.path.dirname(output_file))
+        persist.PersistentStorage().set_value("prev_output_file",
+                                              os.path.basename(output_file))
     
     
     def on_process(self, evnt):
-        pass
+        
+        cmd_args = ["-f", self.config_file, 
+                    "-p", #parallel process by default
+                    "-o", self.output_file_bx.GetValue(),
+                    self.im_dir_box.GetValue()]
+        
+        try:
+            options, args = settings.parse_cmd_line(cmd_args, exception_on_error=True)
+        except settings.OptionError,ex:
+            wx.MessageBox(ex.args[0],plumetrack.PROG_SHORT_NAME,wx.ICON_ERROR)
+            return
+        
+        dialog = wx.ProgressDialog("Processing... - Plumetrack", 
+                                   "Processing images. Please Wait.", 
+                                   parent=self, style=wx.PD_CAN_ABORT | wx.PD_REMAINING_TIME | wx.PD_AUTO_HIDE)
+        
+        progress_handler = lambda x: dialog.Update(100*x)[0]
+        success = main_script.run_mainloop(options, args, progress_handler)
+        dialog.Destroy()
+        wx.Yield()
+        
+        if success:
+            self.EndModal(wx.CANCEL)
+            wx.MessageBox("Finished processing. Results saved to %s"%self.output_file_bx.GetValue())
+            self.Destroy()
         
     
     def on_cancel(self, evnt):
-        self.EndModal(wx.ID_CANCEL)
+        self.EndModal(wx.CANCEL)
         
         

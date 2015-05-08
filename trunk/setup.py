@@ -122,24 +122,30 @@ if enable_gpu_support:
 ####################################################################
 #                    BUILD/INSTALL
 ####################################################################
-def supermakedirs(path, mode):
-    """
-    Create a directory structure and with a certain set of access permissions
-    (ignoring the umask - unlike os.makedirs()). This function is copied from 
-    http://stackoverflow.com/questions/5231901/permission-problems-when-creating-a-dir-with-os-makedirs-python
-    """
-    if not path or os.path.exists(path):
-        return []
-    (head, tail) = os.path.split(path)
-    res = supermakedirs(head, mode)
-    os.mkdir(path)
-    os.chmod(path, mode)
-    res += [path]
-    return res
+
 
 
 
 class CustomInstall(install):
+    def __init__(self,*args, **kwargs):
+        install.__init__(self,*args, **kwargs)
+        self.install_paths = {}
+    
+    
+    def finalize_options (self):
+        """
+        Override the finalize_options method to record the install paths so that
+        we can copy them into the build_info.py file during post-install
+        """
+        install.finalize_options(self)
+        
+        #note that these MUST be absolute paths
+        self.install_paths['prefix'] = os.path.abspath(self.install_base)
+        self.install_paths['install_data'] = os.path.abspath(self.install_data)
+        self.install_paths['lib_dir'] = os.path.abspath(self.install_lib)
+        self.install_paths['script_dir'] = os.path.abspath(self.install_scripts)
+    
+    
     def run(self):
         """
         Override the run function to also create the rw directory and create the 
@@ -151,12 +157,61 @@ class CustomInstall(install):
         
         print "Writing default configuration to \'%s\'"%config_filename
         
-        if not os.path.isdir(os.path.dirname(config_filename)):
-            supermakedirs(os.path.dirname(config_filename), 0777)
+        #note that the rw folder is created automatically when we import plumetrack
         
         with open(config_filename, 'w') as ofp:
             json.dump(default_config, ofp, indent=2)
-        os.chmod(config_filename, 0777)
+        os.chmod(config_filename, 0o777)
+        
+        self.execute(self.run_post_install_tasks, (), 
+                     msg="Running post install tasks")
+        
+        
+    def run_post_install_tasks(self):
+        """
+        Executes any tasks required after the installation is completed, e.g.
+        creating .desktop files etc.
+        """
+        #create a desktop file (if we are in Linux)
+        if sys.platform == "linux2":
+            create_desktop_file(self.install_paths)
+
+
+def create_desktop_file(install_paths):
+    """
+    Function to create the .desktop file for Linux installations.
+    """
+    import plumetrack
+    apps_folder = os.path.join(install_paths['prefix'],'share','applications')
+    
+    if not os.path.isdir(apps_folder):
+        try:
+            os.makedirs(apps_folder)
+        except OSError:
+            print ("Warning! Failed to create plumetrack.desktop file. Unable to "
+                   "create folder \'%s\'."%apps_folder)
+            return
+    
+    desktop_file_path = os.path.join(apps_folder,'plumetrack.desktop')
+    
+    with open(desktop_file_path,'w') as ofp:
+        ofp.write('[Desktop Entry]\n')
+        ofp.write('Version=%s\n'%plumetrack.VERSION)
+        ofp.write('Type=Application\n')
+        ofp.write('Exec=plumetrack-gui\n')
+        ofp.write('Comment=%s\n'%plumetrack.SHORT_DESCRIPTION)
+        ofp.write('NoDisplay=false\n')
+        ofp.write('Categories=Science;Education;\n')
+        ofp.write('Name=%s\n'%plumetrack.PROG_SHORT_NAME)
+        ofp.write('Icon=%s\n'%os.path.join(plumetrack.get_plumetrack_icons_dir(),
+                                           '64x64','plumetrack.png'))
+    
+    return_code = os.system("chmod 644 " + os.path.join(apps_folder, 
+                                                        'plumetrack.desktop'))
+    if return_code != 0:
+        print ("Error! Failed to change permissions on \'" + 
+               os.path.join(apps_folder, 'plumetrack.desktop') + "\'")
+
 
 
 #populate the list of data files to be installed

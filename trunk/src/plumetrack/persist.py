@@ -61,6 +61,7 @@ class __PersistentStorage:
             with open(self.__cache_file,"wb") as ofp:
                 json.dump(self.__settings, ofp)
         except Exception,e:
+            print "%s: Failed to save cache file \"%s\"."%(plumetrack.PROG_SHORT_NAME, self.__cache_file)
             print e.args
             pass
 

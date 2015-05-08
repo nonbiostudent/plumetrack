@@ -31,9 +31,9 @@ AUTHOR_EMAIL = 'nonbiostudent@hotmail.com'
 
 URL = 'http://ccpforge.cse.rl.ac.uk/gf/project/plumetrack/'
 
-PROG_SHORT_NAME = 'plumetrack'
+PROG_SHORT_NAME = 'Plumetrack'
 
-PROG_LONG_NAME = 'plumetrack SO2 flux calculator'
+PROG_LONG_NAME = 'Plumetrack SO2 flux calculator'
 
 SHORT_DESCRIPTION = 'Calculates SO2 fluxes from UV camera images'
 
@@ -120,9 +120,24 @@ ImageLoader = image_loader.ImageLoader
 
 ####################################################################
 
+def supermakedirs(path, mode):
+    """
+    Create a directory structure and with a certain set of access permissions
+    (ignoring the umask - unlike os.makedirs()). This function is copied from 
+    http://stackoverflow.com/questions/5231901/permission-problems-when-creating-a-dir-with-os-makedirs-python
+    """
+    if not path or os.path.exists(path):
+        return []
+    (head, tail) = os.path.split(path)
+    res = supermakedirs(head, mode)
+    os.mkdir(path)
+    os.chmod(path, mode)
+    res += [path]
+    return res
+
 #make sure that all the directories that we are expecting to exist actually do.
 try:
-    os.makedirs(get_plumetrack_rw_dir())
+    supermakedirs(get_plumetrack_rw_dir(),0o777)
     
 except OSError:
     #dir already exists

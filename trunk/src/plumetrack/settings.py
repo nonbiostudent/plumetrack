@@ -24,6 +24,26 @@ from optparse import OptionParser
 #the setup script prior to installation
 import image_loader
 
+def is_config_file(filename):
+    """
+    Returns True if filename looks like a config file (i.e. is a JSON file) and 
+    returns False otherwise. This function is used to determine if we are loading
+    configs from a results file or a config file.
+    """
+    if filename is None:
+        return False
+    
+    if not os.path.exists(filename):
+        return False
+    
+    with open(filename,'r') as ifp:
+        try:
+            json.load(ifp)
+        except ValueError:
+            return False
+    
+    return True
+
 
 def load_config_file(filename=None):
     """
@@ -191,16 +211,32 @@ def __validate_config(config, expected_configs, filename=None, subsection=None):
             raise ConfigError(message)
     
 
+class OptionError(ValueError):
+    pass
 
-def parse_cmd_line():
+class CustomOptionParser(OptionParser):
+    def __init__(self, exception_on_error):
+        self.exception_on_error = exception_on_error
+        OptionParser.__init__(self)
+    
+    def error(self, message):
+        if self.exception_on_error:
+            raise OptionError(message)
+        else:
+            OptionParser.error(self, message)
+        
+
+
+def parse_cmd_line(args=None, exception_on_error=False):
     """
     Function parses the command line input and returns a tuple
-    of (options, args)
+    of (options, args). By default this function parses the sys.vargs, but a list
+    of command line arguments may be passed in using the args kwarg instead.
     """
     import plumetrack
     usage = ("%prog [options] image_folder")
     
-    parser = OptionParser()
+    parser = CustomOptionParser(exception_on_error)
     
     
     parser.prog = plumetrack.PROG_SHORT_NAME
@@ -265,7 +301,7 @@ def parse_cmd_line():
                       " version number and license information and exit."))
 
     
-    (options, args) = parser.parse_args()
+    (options, args) = parser.parse_args(args=args)
 
     if len(args) < 1:
         parser.error("No input folder specified")

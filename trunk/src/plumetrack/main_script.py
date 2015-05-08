@@ -19,6 +19,7 @@ import os.path
 import numpy
 import multiprocessing
 import calendar
+import time
 
 import plumetrack
 from plumetrack import settings
@@ -78,6 +79,74 @@ def parallel_process(func, list_, *args, **kwargs):
     return flatten(results, ltypes=(list, ))
  
 ############################################################################
+
+def __run_func_with_progress(progress, stay_alive, func,q,l,args,kwargs):
+    total = float(len(l))
+    results = []
+    
+    for current, i in enumerate(l):
+        if not stay_alive:
+            return
+        
+        results.append(func(i,*args,**kwargs))
+        
+        progress.value = (current+1.0)/total
+    
+    q.put(results)
+
+############################################################################
+
+def parallel_process_with_progress(progress_handler, func, list_, *args, **kwargs):
+    if len(list_) == 0:
+        return []
+     
+    results = []
+    processes = []
+    queues = []
+    progress_indicators = []
+    stay_alive_flags = []
+     
+    for l in split(list_,multiprocessing.cpu_count()):
+        q = multiprocessing.Queue(0)
+        
+        progress = multiprocessing.RawValue('f')
+        progress.value = 0
+        
+        stay_alive = multiprocessing.RawValue('b')
+        stay_alive.value = 1
+        
+        p = multiprocessing.Process(target=__run_func_with_progress,
+                                    args=(progress, stay_alive, func,q,l,args,kwargs))
+        
+        p.start()
+        processes.append(p)
+        queues.append(q)
+        progress_indicators.append(progress)
+        stay_alive_flags.append(stay_alive)
+    
+    total_progress = 0
+    while total_progress < 1:
+        total_progress = sum([p.value for p in progress_indicators])/float(len(progress_indicators))
+        
+        if not progress_handler(total_progress):
+            #user has clicked cancel
+            for flag in stay_alive_flags:
+                flag.value = 0
+            
+            for p in processes:
+                p.join()
+            
+            return None
+
+        time.sleep(0.1)
+                
+    for i in range(len(processes)):        
+        results.append(queues[i].get())
+        processes[i].join()
+     
+    return flatten(results, ltypes=(list, ))
+
+############################################################################    
 
 def split(l,n):
     """
@@ -213,16 +282,25 @@ def main():
     """
     #read the user supplied values from the command line
     options, args = settings.parse_cmd_line()
-    image_dir = args[0]
-     
-    #load all the settings from the configuration file
+    
     try:
-        config = settings.load_config_file(filename=options.config_file)
+        run_mainloop(options, args)
+        
     except settings.ConfigError, ex:
         #print a friendly error message rather than a scary looking traceback
         print "plumetrack: Configuration file error!"
         print ex.args[0]
-        return
+        
+
+############################################################################
+
+def run_mainloop(options, args, progress_handler=None):    
+    
+    image_dir = args[0]
+     
+    #load all the settings from the configuration file
+
+    config = settings.load_config_file(filename=options.config_file)
     
     #create the image loader object
     im_loader = image_loader.get_image_loader(config)
@@ -276,18 +354,35 @@ def main():
             output.write_output(options, config, image_dir, [current_im_time], [current_image_fname], [so2fluxes])
                  
             current_image_fname = next_image_fname
+            
+            if progress_handler is not None:
+                done,todo = image_iter.get_current_position()
+                if not progress_handler(float(done)/float(todo+done)):
+                    image_iter.close()
+                    return False
+                    
         
     else:
         #main loop for parallel processing
         files = [f for f in image_iter]
         times = [im_loader.time_from_fname(f) for f in files[:-1]]
         file_pairs = zip(files[:-1], files[1:])
+        
+        if progress_handler is not None:
+            fluxes = parallel_process_with_progress(progress_handler, process_image_pair, 
+                                                    file_pairs, im_loader, motion_engine, 
+                                                    flux_engine, options, config)
+            
+            if fluxes is None:
+                return False #user clicked cancel
+        
+        else:
          
-        fluxes = parallel_process(process_image_pair, file_pairs, im_loader, motion_engine, 
-                                  flux_engine, options, config)
+            fluxes = parallel_process(process_image_pair, file_pairs, im_loader, motion_engine, 
+                                      flux_engine, options, config)
         
 
         output.write_output(options, config, image_dir, times, files[:-1], fluxes)
         
-        
+    return True
         

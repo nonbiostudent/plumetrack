@@ -965,7 +965,7 @@ class MainToolbar(wx.ToolBar):
         
         self.AddSeparator()
         
-        self.interactive_tool = self.AddTool(-1, wx.ArtProvider.GetBitmap("plumetrack_interactive", wx.ART_TOOLBAR), shortHelpString="Open the interactive inspection window")
+        self.interactive_tool = self.AddTool(-1, wx.ArtProvider.GetBitmap("plumetrack_interactive", wx.ART_TOOLBAR), shortHelpString="Open the interactive viewer window")
         self.process_tool = self.AddTool(-1, wx.ArtProvider.GetBitmap("plumetrack_process", wx.ART_TOOLBAR), shortHelpString="Batch process images using the current configuration")
 
         self.Realize()
@@ -1084,20 +1084,27 @@ class MainFrame(wx.Frame):
             config = settings.load_config_file(filename)
             self.set_configs(config)
             
+            if not settings.is_config_file(filename):
+                #we are importing settings from a results file. Since we don't 
+                #want to overwrite the results file with a config file, we set the 
+                #filename to None - forcing the user to do a "save as".
+                filename = None
+                
             self.__current_file = filename
             
             if filename is None:
-                self.SetTitle("New Configuration - "+plumetrack.PROG_SHORT_NAME)
+                self.SetTitle("*New Configuration - "+plumetrack.PROG_SHORT_NAME)
+                self.set_needs_saving(True)
             else:
                 self.SetTitle(os.path.basename(filename)+" - "+plumetrack.PROG_SHORT_NAME)
                 
                 #store the last file opened
                 persist.PersistentStorage().set_value("config_script_prev_file", filename)
             
-            self.set_needs_saving(False)
+                self.set_needs_saving(False)
                 
         except (IOError, settings.ConfigError), ex:
-            wx.MessageBox(ex.args[0])
+            wx.MessageBox(ex.args[0], plumetrack.PROG_SHORT_NAME, wx.ICON_ERROR)
             raise ex     
         
     
@@ -1106,7 +1113,7 @@ class MainFrame(wx.Frame):
             return
         
         if val:
-            self.SetTitle("*" + self.GetTitle())
+            self.SetTitle("*" + self.GetTitle().lstrip('*'))
         else:
             self.SetTitle(self.GetTitle().lstrip('*'))
         
@@ -1198,8 +1205,14 @@ class MainFrame(wx.Frame):
         """
         Event handler for batch process toolbar events. Opens the batch 
         processing dialog"""
-        config = self.get_configs()
-        batch_processor.BatchProcessor(self, config)
+        if self.__needs_saving:
+            ret_val = wx.MessageBox("You must save your changes first. Save changes now?",style=wx.OK|wx.CANCEL)
+            if ret_val != wx.OK:
+                return
+            
+            self.on_save(None)
+        
+        batch_processor.BatchProcessor(self, self.__current_file)
         
     
     def on_interactive_viewer(self, evnt):

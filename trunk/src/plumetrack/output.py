@@ -84,7 +84,7 @@ def create_output_file(filename, im_dir, config):
     
       * filename - the path of the new file. Subfolders required to create the
                    file will be created automatically.
-      * im_dir   - the image directory used in this plumtrack run (this is written
+      * im_dir   - the image directory used in this plumetrack run (this is written
                    into the file header)
       * config   - the configuration used for this plumetrack run (this also 
                    gets written into the file header)
@@ -103,14 +103,14 @@ def create_output_file(filename, im_dir, config):
     
     ofp = open(filename,'w')
         
-    ofp.write("# plumetrack results file\n")
-    ofp.write("# Created on %s using plumetrack version %s\n"%(datetime.datetime.now(), plumetrack.VERSION))
+    ofp.write("# %s results file\n"%plumetrack.PROG_SHORT_NAME)
+    ofp.write("# Created on %s using %s version %s\n"%(datetime.datetime.now(),plumetrack.PROG_SHORT_NAME, plumetrack.VERSION))
     ofp.write("#\n")
     ofp.write("# Image folder = %s\n"%im_dir)
     ofp.write("# Configuration = %s\n"%config_str)
     ofp.write("#\n")
     ofp.write("#\n")
-    ofp.write("# Filename\t\tTime\t\t%s\n"%flux_headings)
+    ofp.write("# Filename\t\tDate\t\tTime\t\t%s\n"%flux_headings)
     ofp.write("#\n")
     
     return ofp

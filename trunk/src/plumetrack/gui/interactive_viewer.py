@@ -24,6 +24,7 @@ from matplotlib.backends.backend_wx import NavigationToolbar2Wx
 from matplotlib.pyplot import subplot, figure, colorbar
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
+import plumetrack
 from plumetrack import dir_iter
 from plumetrack import image_loader
 from plumetrack import persist
@@ -33,7 +34,7 @@ from plumetrack import flux
 
 class InteractiveViewerFrame(wx.Frame):
     def __init__(self, parent, image_dir, config):
-        super(InteractiveViewerFrame, self).__init__(parent, -1,"Configuration test - plumetrack")
+        super(InteractiveViewerFrame, self).__init__(parent, -1,"Interactive viewer - %s"%plumetrack.PROG_SHORT_NAME)
         self.image_dir = image_dir
         self.config = config
         
