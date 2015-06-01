@@ -115,12 +115,14 @@ class IntegrationLine:
 
 def create_flux_engine(config):
     """
-    Returns a flux engine based on the values in config.
+    Returns a flux engine object based on the values in config.
     """
     if config['integration_method'] == '2d':
         return FluxEngine2D(config)
+    
     elif config['integration_method'] == '1d':
         return FluxEngine1D(config)
+    
     else:
         raise ValueError("Unknown integration method \"\". Expecting either \"1d\" or \"2d\".")
 
@@ -128,7 +130,10 @@ def create_flux_engine(config):
 
 class FluxEngineBase(object):
     def __init__(self, config):
-        
+        """
+        Base class for flux engine classes. Creates integration lines based on 
+        the values in config. Subclasses must override the compute_flux method.
+        """
         self._int_lines = []
         
         for int_line_cfg in config['integration_lines']:
@@ -145,16 +150,31 @@ class FluxEngineBase(object):
     
     
     def get_integration_lines(self):
+        """
+        Returns a list of IntegrationLine objects that were defined in the config.
+        """
         return self._int_lines
     
     
     def compute_flux(self, current_image, flow, delta_t):
+        """
+        Should be implemented by subclasses.
+        """
         raise TypeError("FluxEngineBase must be subclassed, and the "
                         "compute_flux() method should be defined in the "
                         "subclass.")
     
 
 def compute_error_map(current_image, next_image, flow):
+    """
+    This function attempts to estimate the error associated with an image pair 
+    and their corresponding motion field. It works by considering conservation of
+    mass. For each pixel in current_image, it uses the motion vector to compute
+    where the mass of SO2 in the pixel should end up - eventually creating a 
+    "modelled next image". This is then compared to the real next image to 
+    estimate the error. The motion field is then used to map the errors back 
+    onto their source pixels in current_image.
+    """
     flat_len = numpy.prod(current_image.shape)
     
     flat_error_map = numpy.zeros(flat_len, dtype='float')
@@ -237,6 +257,7 @@ def compute_error_map(current_image, next_image, flow):
     flat_inverted_error_map[valid_mask] += ((1.0 - fraction[...,0]) * (1.0 - fraction[...,1])).ravel()[valid_mask] * flat_err_map[dest_coords[valid_mask]]
 
     
+    #returns % errors.
     return flat_inverted_error_map.reshape(current_image.shape)
     
 
@@ -244,11 +265,20 @@ def compute_error_map(current_image, next_image, flow):
 class FluxEngine1D(FluxEngineBase):
     
     def __init__(self, config):
+        """
+        One dimensional flux calculation engine. This works by multiplying each 
+        pixel on the integration line by its corresponding velocity and then 
+        integrating along the line. This is the "traditional" flux calculation 
+        method.
+        """
         super(FluxEngine1D, self).__init__(config)
     
     
     def compute_flux(self, current_image, next_image,flow, delta_t):
-        
+        """
+        Returns the fluxes and associated errors across each defined integration 
+        line.
+        """
         if flow[...,0].shape != current_image.shape:
             raise ValueError("The image has a different shape %s to the flow "
                              "array %s"%(str(current_image.shape), str(flow[...,0].shape)))
@@ -344,10 +374,21 @@ class FluxEngine1D(FluxEngineBase):
 class FluxEngine2D(FluxEngineBase):    
     
     def __init__(self, config):
+        """
+        Two dimensional flux calculation engine. This works by considering the 
+        motion of every pixel in the image and computing whether it crosses the 
+        integration line or not. This is a more robust method of flux computation
+        particularly for images with a large time step between them, or for 
+        rapidly moving plumes.
+        """
         super(FluxEngine2D, self).__init__(config)
         
         
     def compute_flux(self, current_image, next_image, flow, delta_t):
+        """
+        Returns the fluxes and associated errors across each defined integration 
+        line.
+        """
         if flow[...,0].shape != current_image.shape:
             raise ValueError("The image has a different shape %s to the flow "
                              "array %s"%(str(current_image.shape), str(flow[...,0].shape)))
@@ -388,7 +429,13 @@ class FluxEngine2D(FluxEngineBase):
     
     
     def find_flux_contributions(self, flow, integration_line, poly_approx=-1):
-    
+        """
+        For every pixel in the image, computes whether its motion vector 
+        crosses the integration line and whether it crosses in a positive or 
+        negative direction. Returns an array the same size as the image, where 
+        each element is either 1 (positive contribution to flux), 0 (no 
+        contribution) or -1 (negative contribution to flux).
+        """
         int_pts, int_vecs, int_norms = integration_line.get_poly_approx(n=poly_approx)
         
         xsize = flow.shape[0]

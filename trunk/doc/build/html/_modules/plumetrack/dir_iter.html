@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>plumetrack.dir_iter &mdash; plumetrack 15.01 documentation</title>
+    <title>plumetrack.dir_iter &mdash; Plumetrack 15.01 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -24,7 +24,8 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="plumetrack 15.01 documentation" href="../../index.html" />
+    <link rel="shortcut icon" href="../../_static/plumetrack_32.ico"/>
+    <link rel="top" title="Plumetrack 15.01 documentation" href="../../index.html" />
     <link rel="up" title="plumetrack" href="../plumetrack.html" /> 
   </head>
   <body>
@@ -37,7 +38,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">plumetrack 15.01 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">Plumetrack 15.01 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li>
           <li><a href="../plumetrack.html" accesskey="U">plumetrack</a> &raquo;</li> 
       </ul>
@@ -367,7 +368,20 @@
             <span class="k">raise</span> <span class="ne">StopIteration</span>
         
         <span class="k">return</span> <span class="n">s</span>
-
+    
+    </div>
+<div class="viewcode-block" id="ListDirIter.get_current_position"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.dir_iter.ListDirIter.get_current_position">[docs]</a>    <span class="k">def</span> <span class="nf">get_current_position</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a tuple of number of filenames already returned and number of </span>
+<span class="sd">        filenames remaining to be returned. Note that due to the asynchronous</span>
+<span class="sd">        nature of the iterator the latter of these numbers may be entirely</span>
+<span class="sd">        fictional.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__max_n</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__return_count</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filename_q</span><span class="o">.</span><span class="n">qsize</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__return_count</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__max_n</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">__return_count</span><span class="p">)</span>
+        
     </div>
 <div class="viewcode-block" id="ListDirIter.close"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.dir_iter.ListDirIter.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -520,6 +534,9 @@
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/plumetrack.png" alt="Logo"/>
+            </a></p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
@@ -546,7 +563,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">plumetrack 15.01 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">Plumetrack 15.01 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li>
           <li><a href="../plumetrack.html" >plumetrack</a> &raquo;</li> 
       </ul>

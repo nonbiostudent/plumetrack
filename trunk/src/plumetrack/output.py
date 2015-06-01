@@ -99,7 +99,7 @@ def create_output_file(filename, im_dir, config):
     
     config_str = json.dumps(config)
     
-    flux_headings = '\t\t'.join([i['name']+'\tError' for i in config['integration_lines']])
+    flux_headings = '\t\t'.join([i['name']+'\tError (%)' for i in config['integration_lines']])
     
     ofp = open(filename,'w')
         

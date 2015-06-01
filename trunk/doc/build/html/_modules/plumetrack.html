@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>plumetrack &mdash; plumetrack 15.01 documentation</title>
+    <title>plumetrack &mdash; Plumetrack 15.01 documentation</title>
     
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -24,7 +24,8 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="plumetrack 15.01 documentation" href="../index.html" />
+    <link rel="shortcut icon" href="../_static/plumetrack_32.ico"/>
+    <link rel="top" title="Plumetrack 15.01 documentation" href="../index.html" />
     <link rel="up" title="Module code" href="index.html" /> 
   </head>
   <body>
@@ -37,7 +38,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">plumetrack 15.01 documentation</a> &raquo;</li>
+        <li><a href="../index.html">Plumetrack 15.01 documentation</a> &raquo;</li>
           <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -79,9 +80,9 @@
 
 <span class="n">URL</span> <span class="o">=</span> <span class="s">&#39;http://ccpforge.cse.rl.ac.uk/gf/project/plumetrack/&#39;</span>
 
-<span class="n">PROG_SHORT_NAME</span> <span class="o">=</span> <span class="s">&#39;plumetrack&#39;</span>
+<span class="n">PROG_SHORT_NAME</span> <span class="o">=</span> <span class="s">&#39;Plumetrack&#39;</span>
 
-<span class="n">PROG_LONG_NAME</span> <span class="o">=</span> <span class="s">&#39;plumetrack SO2 flux calculator&#39;</span>
+<span class="n">PROG_LONG_NAME</span> <span class="o">=</span> <span class="s">&#39;Plumetrack SO2 flux calculator&#39;</span>
 
 <span class="n">SHORT_DESCRIPTION</span> <span class="o">=</span> <span class="s">&#39;Calculates SO2 fluxes from UV camera images&#39;</span>
 
@@ -113,7 +114,9 @@
                        <span class="n">COPY_PERMISSION</span><span class="p">))</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">,</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">#&#39;</span><span class="p">)</span>
 
 <span class="c">####################################################################</span>
-
+<span class="c">#for now GPU support is disabled by default - some hacking is needed to get</span>
+<span class="c">#this working properly. Please get in touch if you are interested in using</span>
+<span class="c">#GPU support with Plumetrack.</span>
 <span class="n">__have_gpu</span> <span class="o">=</span> <span class="bp">False</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">plumetrack</span> <span class="kn">import</span> <span class="n">gpu_motion</span>
@@ -143,10 +146,58 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s">&#39;~&#39;</span><span class="p">),</span><span class="s">&quot;.</span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="n">PROG_SHORT_NAME</span><span class="p">)</span>
 
+</div>
+<div class="viewcode-block" id="get_plumetrack_sys_dir"><a class="viewcode-back" href="../plumetrack.html#plumetrack.get_plumetrack_sys_dir">[docs]</a><span class="k">def</span> <span class="nf">get_plumetrack_sys_dir</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the path used by Plumetrack to store user independent </span>
+<span class="sd">    files</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">__path__</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+</div>
+<div class="viewcode-block" id="get_plumetrack_icons_dir"><a class="viewcode-back" href="../plumetrack.html#plumetrack.get_plumetrack_icons_dir">[docs]</a><span class="k">def</span> <span class="nf">get_plumetrack_icons_dir</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the full path to the directory where the Plumetrack icons</span>
+<span class="sd">    are stored.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">get_plumetrack_sys_dir</span><span class="p">(),</span><span class="s">&#39;icons&#39;</span><span class="p">)</span>
+
+
+<span class="c">####################################################################</span>
+
+<span class="c">#make some important classes which are scattered throughout the source code</span>
+<span class="c">#available here to make finding them easier for the user</span></div>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">image_loader</span>
+    <span class="n">ImageLoader</span> <span class="o">=</span> <span class="n">image_loader</span><span class="o">.</span><span class="n">ImageLoader</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="c">#since this __init__.py file is imported by the setup.py script, we ignore</span>
+    <span class="c">#import errors here to prevent cv2,numpy etc. from having to be installed</span>
+    <span class="c">#on the machine building the distrobutions/packages.</span>
+    <span class="k">pass</span>
+<span class="c">####################################################################</span>
+
+<div class="viewcode-block" id="supermakedirs"><a class="viewcode-back" href="../plumetrack.html#plumetrack.supermakedirs">[docs]</a><span class="k">def</span> <span class="nf">supermakedirs</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a directory structure and with a certain set of access permissions</span>
+<span class="sd">    (ignoring the umask - unlike os.makedirs()). This function is copied from </span>
+<span class="sd">    http://stackoverflow.com/questions/5231901/permission-problems-when-creating-a-dir-with-os-makedirs-python</span>
+<span class="sd">    </span>
+<span class="sd">    IMPORTANT: &quot;mode&quot; must be specified as an octal. So mode 777 should be passed</span>
+<span class="sd">    as 0777 or 0o777.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[]</span>
+    <span class="p">(</span><span class="n">head</span><span class="p">,</span> <span class="n">tail</span><span class="p">)</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">supermakedirs</span><span class="p">(</span><span class="n">head</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+    <span class="n">res</span> <span class="o">+=</span> <span class="p">[</span><span class="n">path</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">res</span>
 
 <span class="c">#make sure that all the directories that we are expecting to exist actually do.</span></div>
 <span class="k">try</span><span class="p">:</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">get_plumetrack_rw_dir</span><span class="p">())</span>
+    <span class="n">supermakedirs</span><span class="p">(</span><span class="n">get_plumetrack_rw_dir</span><span class="p">(),</span><span class="mi">0</span><span class="n">o777</span><span class="p">)</span>
     
 <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
     <span class="c">#dir already exists</span>
@@ -158,6 +209,9 @@
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/plumetrack.png" alt="Logo"/>
+            </a></p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
@@ -184,7 +238,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">plumetrack 15.01 documentation</a> &raquo;</li>
+        <li><a href="../index.html">Plumetrack 15.01 documentation</a> &raquo;</li>
           <li><a href="index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

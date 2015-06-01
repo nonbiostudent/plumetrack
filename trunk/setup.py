@@ -19,7 +19,6 @@ from ez_setup import use_setuptools
 use_setuptools()
 from setuptools import setup, Extension
 from setuptools.command.install import install
-import numpy
 import sys
 import os
 import json
@@ -33,75 +32,53 @@ enable_gpu_support = False
 ####################################################################
 #                    CONFIGURATION
 ####################################################################
+data_files_to_install = []
+install_dependencies = []
+scripts_to_install = []
+icon_files_to_install = []
 
+#note that we put wx in here even though it is in PyPi. The problem is that the 
+#standard wx installer does not create a egg file so setuptools does not correctly
+#recognise that it is already installed.
 required_modules = [
                     ("cv2","OpenCV (including Python bindings)"),
+                    ("wx","wxPython")
                    ]
 
-data_files_to_install = []
 
 #check that all the required modules are available
-print "Checking for required Python modules not available through PyPi..."
-for mod, name in required_modules:
-    try:
-        print "importing %s..."%mod
-        __import__(mod)
-    except ImportError:
-        print ("Failed to import \'%s\'. Please ensure that %s "
-               "is correctly installed, then re-run this "
-               "installer."%(mod,name))
-        sys.exit(1)
+if sys.argv.count("skip_checks") == 0:
+    print "Checking for required Python modules not available through PyPi..."
+    for mod, name in required_modules:
+        try:
+            print "importing %s..."%mod
+            __import__(mod)
+        except ImportError:
+            print ("Failed to import \'%s\'. Please ensure that %s "
+                   "is correctly installed, then re-run this "
+                   "installer."%(mod,name))
+            sys.exit(1)
+else:
+   print "Skipping checks for required Python modules not available through PyPi."
+   sys.argv.remove("skip_checks") 
 
 #list of dependencies that are in PyPi
 install_dependencies = [
                         'numpy>=1.6', 
                         'matplotlib>=0.9', 
                         'scipy',
-                        'wxPython>=2.8.10'
                         ]
-
+  
 if sys.platform == 'win32':
     install_dependencies.append('pywin32')
+    
+    #on windows we need to install the post-installation script too
+    scripts_to_install.append('plumetrack_win32_postinstall.py')
+    
+    icon_files_to_install.append(os.path.join('icons','plumetrack.ico'))
+    
 else:
     install_dependencies.append('pyinotify')
-
-
-####################################################################
-#                        DEFAULTS
-####################################################################
-#define a default configuration which gets written to file on installation
-default_config = {
-                  
-"filename_format": "%Y%m%d_%H%M%S.png",
-"file_extension": ".png",
-"custom_image_loader":"",
-
-"motion_pix_threshold_low": -1.0,
-"motion_pix_threshold_high": -1.0,
-"random_mean": 0.0,
-"random_sigma":0.0,
-"mask_image": "", 
-
-"pixel_size": 1.0,
-"flux_conversion_factor": 1.0,
-"downsizing_factor": 1.0,
-
-"farneback_pyr_scale": 0.5,
-"farneback_levels": 4,
-"farneback_winsize": 20,
-"farneback_iterations": 10,
-"farneback_poly_n": 7,
-"farneback_poly_sigma": 1.5,
-
-"integration_method": "2d",
-"integration_pix_threshold_low" : -1,
-"integration_lines": [{
-                       "name":"Integration Line 1",
-                       "integration_points": [[0, 0],[1, 1]],
-                       "integration_direction": 1
-                       }]             
-                  
-}
 
 
 ####################################################################
@@ -110,6 +87,7 @@ default_config = {
 extension_modules = []
 
 if enable_gpu_support:
+    import numpy
     numpyincludedirs = numpy.get_include()
     gpu_extension = Extension("plumetrack._gpu_motion",
                        ["src/swig/gpu_motion_wrap.cxx", "src/swig/gpu_motion.cxx", "src/swig/traceback.cxx"],
@@ -122,9 +100,6 @@ if enable_gpu_support:
 ####################################################################
 #                    BUILD/INSTALL
 ####################################################################
-
-
-
 
 class CustomInstall(install):
     def __init__(self,*args, **kwargs):
@@ -148,20 +123,9 @@ class CustomInstall(install):
     
     def run(self):
         """
-        Override the run function to also create the rw directory and create the 
-        default config file there
+        Override the run function to also run post install operations
         """
         install.run(self)
-        config_filename = os.path.join(plumetrack_preinstall.get_plumetrack_rw_dir(), 
-                                       "plumetrack.cfg")
-        
-        print "Writing default configuration to \'%s\'"%config_filename
-        
-        #note that the rw folder is created automatically when we import plumetrack
-        
-        with open(config_filename, 'w') as ofp:
-            json.dump(default_config, ofp, indent=2)
-        os.chmod(config_filename, 0o777)
         
         self.execute(self.run_post_install_tasks, (), 
                      msg="Running post install tasks")
@@ -216,7 +180,7 @@ def create_desktop_file(install_paths):
 
 #populate the list of data files to be installed
 dirs = [d for d in os.listdir(os.path.join('src','plumetrack','icons')) if os.path.isdir(os.path.join('src','plumetrack','icons',d))]
-icon_files_to_install = []
+
 for d in dirs:
     if d.startswith('.'):
         continue
@@ -233,6 +197,7 @@ import src.plumetrack.settings as settings_preinstall
 
 #ensure that the default config that we are installing is valid (i.e. up to date
 #with the version of plumetrack)
+default_config = settings_preinstall.get_default_config()
 decoded_default_config = json.loads(json.dumps(default_config))
 settings_preinstall.validate_config(decoded_default_config, "setup.py")
 
@@ -252,5 +217,6 @@ setup(cmdclass={'install':CustomInstall},
       ext_modules      = extension_modules,
       install_requires = install_dependencies,
       entry_points     = {'console_scripts': ['plumetrack = plumetrack.main_script:main'],
-                          'gui_scripts': ['plumetrack-gui = plumetrack.gui.main:main']}
+                          'gui_scripts': ['plumetrack-gui = plumetrack.gui.main:main']},
+      scripts          = scripts_to_install
       )

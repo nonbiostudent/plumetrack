@@ -18,12 +18,10 @@
 import os
 import sys
 
-import image_loader
-
 ####################################################################
 #                     Program Information
 ####################################################################
-VERSION = "15.01" #year.month of release
+VERSION = "15.06" #year.month of release
 
 AUTHOR = 'Nial Peters'
 
@@ -65,7 +63,9 @@ SRC_FILE_HEADER = ('#%s\n\nThis file is part of %s.\n\n%s'
                        COPY_PERMISSION)).replace('\n','\n#')
 
 ####################################################################
-
+#for now GPU support is disabled by default - some hacking is needed to get
+#this working properly. Please get in touch if you are interested in using
+#GPU support with Plumetrack.
 __have_gpu = False
 try:
     from plumetrack import gpu_motion
@@ -116,8 +116,14 @@ def get_plumetrack_icons_dir():
 
 #make some important classes which are scattered throughout the source code
 #available here to make finding them easier for the user
-ImageLoader = image_loader.ImageLoader
-
+try:
+    import image_loader
+    ImageLoader = image_loader.ImageLoader
+except ImportError:
+    #since this __init__.py file is imported by the setup.py script, we ignore
+    #import errors here to prevent cv2,numpy etc. from having to be installed
+    #on the machine building the distrobutions/packages.
+    pass
 ####################################################################
 
 def supermakedirs(path, mode):
@@ -125,6 +131,9 @@ def supermakedirs(path, mode):
     Create a directory structure and with a certain set of access permissions
     (ignoring the umask - unlike os.makedirs()). This function is copied from 
     http://stackoverflow.com/questions/5231901/permission-problems-when-creating-a-dir-with-os-makedirs-python
+    
+    IMPORTANT: "mode" must be specified as an octal. So mode 777 should be passed
+    as 0777 or 0o777.
     """
     if not path or os.path.exists(path):
         return []

@@ -111,6 +111,9 @@ class ImageLoader(object):
 
 
 class ImageLoaderError(Exception):
+    """
+    Exception raised when a specified image loader cannot be found/loaded.
+    """
     pass
 
 

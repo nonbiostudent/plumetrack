@@ -20,9 +20,40 @@ import json
 from types import FloatType, ListType, IntType, UnicodeType, DictType
 from optparse import OptionParser
 
-#note that this has to be a relative import - since this module is imported by
-#the setup script prior to installation
-import image_loader
+
+__default_config = {                  
+                    "filename_format": "%Y%m%d_%H%M%S.png",
+                    "file_extension": ".png",
+                    "custom_image_loader":"",
+                    
+                    "motion_pix_threshold_low": -1.0,
+                    "motion_pix_threshold_high": -1.0,
+                    "random_mean": 0.0,
+                    "random_sigma":0.0,
+                    "mask_image": "", 
+                    
+                    "pixel_size": 1.0,
+                    "flux_conversion_factor": 1.0,
+                    "downsizing_factor": 1.0,
+                    
+                    "farneback_pyr_scale": 0.5,
+                    "farneback_levels": 4,
+                    "farneback_winsize": 20,
+                    "farneback_iterations": 10,
+                    "farneback_poly_n": 7,
+                    "farneback_poly_sigma": 1.5,
+                    
+                    "integration_method": "2d",
+                    "integration_pix_threshold_low" : -1,
+                    "integration_lines": [{
+                                           "name":"Integration Line 1",
+                                           "integration_points": [[0, 0],[1, 1]],
+                                           "integration_direction": 1
+                                           }]             
+                  
+                    }
+
+
 
 def is_config_file(filename):
     """
@@ -30,8 +61,6 @@ def is_config_file(filename):
     returns False otherwise. This function is used to determine if we are loading
     configs from a results file or a config file.
     """
-    if filename is None:
-        return False
     
     if not os.path.exists(filename):
         return False
@@ -45,20 +74,23 @@ def is_config_file(filename):
     return True
 
 
-def load_config_file(filename=None):
+def get_default_config():
+    """
+    Returns a default working config which can be used as a template for 
+    customisation.
+    """
+    return __default_config
+
+
+def load_config_file(filename):
     """
     Load the configuration file and returns a dictionary of name:value pairs
-    that were specified in the file. If filename is not specified, then loads
-    the default configuration file. This function calls validate_config on the 
+    that were specified in the file. This function calls validate_config on the 
     configuration before returning it.
     
     Configurations may be loaded either from config files, or from plumetrack
     results files.
     """
-    
-    if filename is None:
-        import plumetrack
-        filename = os.path.join(plumetrack.get_plumetrack_rw_dir(), "plumetrack.cfg")
     
     if not os.path.exists(filename):
         raise IOError("Failed to open config file \'%s\'. No such file."%filename)
@@ -92,6 +124,14 @@ class ConfigError(ValueError):
     """
     pass
      
+
+def __validate_im_loader(config):
+    """
+    wrapper function used to prevent the setup.py script having to import 
+    the image_loader module.
+    """
+    from plumetrack import image_loader
+    return image_loader.validate_loader(config)
      
 
 def validate_config(config, filename=None):
@@ -101,7 +141,7 @@ def validate_config(config, filename=None):
     they have the correct data type and that they are within sensible limits.
     """
     expected_configs = [
-                        ("custom_image_loader",UnicodeType, lambda x: image_loader.validate_loader(config), "Invalid value for \'custom_image_loader\'. Either the file does not exist, is not a valid Python source file, or does not define a subclass of the ImageLoader class."),
+                        ("custom_image_loader",UnicodeType, lambda x: x=="" or __validate_im_loader(config), "Invalid value for \'custom_image_loader\'. Either the file does not exist, is not a valid Python source file, or does not define a subclass of the ImageLoader class."),
                         ("filename_format", UnicodeType, lambda x: config["custom_image_loader"] != "" or (x != "" and not x.isspace()), "\'filename_format\' cannot be an empty string (unless you are using a custom image loader)."),
                         ("file_extension", UnicodeType, lambda x: config["filename_format"]=="" or config["filename_format"].endswith(x), "Mismatch between file extension specified in \'filename_format\' and \'file_extension\'."),
                         ("motion_pix_threshold_low", FloatType, lambda x: (config["motion_pix_threshold_high"] == -1 or x < config["motion_pix_threshold_high"]) and (x == -1 or x >= 0), "\'threshold_low\' must be either -1 or greater than or equal to 0 and must be less than \'threshold_high\'." ),
@@ -245,9 +285,7 @@ def parse_cmd_line(args=None, exception_on_error=False):
     
     parser.add_option("-f", "--config_file", dest="config_file", action='store', 
                       type='string', default=None,
-                      help="Specifies the configuration file to use. If no "
-                           "config file is specified then the default config "
-                           "file is used.")
+                      help="Specifies the configuration file to use.")
     
     parser.add_option("-r", "--recursive", dest="recursive", 
                       action="store_true", default=False,
@@ -297,7 +335,7 @@ def parse_cmd_line(args=None, exception_on_error=False):
                            "of this option implies --realtime")
     
     parser.add_option("", "--version", action="callback", 
-                      callback=__print_version_and_exit, help=("Print plumetrack"
+                      callback=__print_version_and_exit, help=("Print Plumetrack"
                       " version number and license information and exit."))
 
     
@@ -312,6 +350,11 @@ def parse_cmd_line(args=None, exception_on_error=False):
     
     elif not os.path.isdir(args[0]):
         parser.error("Cannot open images in \'%s\'. No such directory."%(args[0]))
+    
+    #a config file must be specified
+    if options.config_file is None:
+        parser.error("No configuration file specified. You must use the \'-f\' "
+                     "option to specify a configuration file to use.")
         
     #use of the skip_existing option implies the use of the realtime option
     if options.skip_existing and not options.realtime:

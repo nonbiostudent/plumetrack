@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>plumetrack.plumetrack_config package &mdash; plumetrack 15.01 documentation</title>
+    <title>plumetrack.plumetrack_config package &mdash; Plumetrack 15.01 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -24,9 +24,8 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="plumetrack 15.01 documentation" href="index.html" />
-    <link rel="up" title="plumetrack package" href="plumetrack.html" />
-    <link rel="prev" title="plumetrack package" href="plumetrack.html" /> 
+    <link rel="shortcut icon" href="_static/plumetrack_32.ico"/>
+    <link rel="top" title="Plumetrack 15.01 documentation" href="index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -38,12 +37,7 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="plumetrack.html" title="plumetrack package"
-             accesskey="P">previous</a> |</li>
-        <li><a href="index.html">plumetrack 15.01 documentation</a> &raquo;</li>
-          <li><a href="API.html" >API</a> &raquo;</li>
-          <li><a href="plumetrack.html" accesskey="U">plumetrack package</a> &raquo;</li> 
+        <li><a href="index.html">Plumetrack 15.01 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -76,6 +70,12 @@
 </dd></dl>
 
 <dl class="class">
+<dt id="plumetrack.plumetrack_config.config_script.AutoUpdateChoice">
+<em class="property">class </em><tt class="descclassname">plumetrack.plumetrack_config.config_script.</tt><tt class="descname">AutoUpdateChoice</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_script.html#AutoUpdateChoice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_script.AutoUpdateChoice" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">wx._controls.Choice</span></tt>, <a class="reference internal" href="#plumetrack.plumetrack_config.config_script.AutoUpdate" title="plumetrack.plumetrack_config.config_script.AutoUpdate"><tt class="xref py py-class docutils literal"><span class="pre">plumetrack.plumetrack_config.config_script.AutoUpdate</span></tt></a></p>
+</dd></dl>
+
+<dl class="class">
 <dt id="plumetrack.plumetrack_config.config_script.AutoUpdateFloatspin">
 <em class="property">class </em><tt class="descclassname">plumetrack.plumetrack_config.config_script.</tt><tt class="descname">AutoUpdateFloatspin</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_script.html#AutoUpdateFloatspin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_script.AutoUpdateFloatspin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">wx.lib.agw.floatspin.FloatSpin</span></tt>, <a class="reference internal" href="#plumetrack.plumetrack_config.config_script.AutoUpdate" title="plumetrack.plumetrack_config.config_script.AutoUpdate"><tt class="xref py py-class docutils literal"><span class="pre">plumetrack.plumetrack_config.config_script.AutoUpdate</span></tt></a></p>
@@ -92,34 +92,21 @@
 <em class="property">class </em><tt class="descclassname">plumetrack.plumetrack_config.config_script.</tt><tt class="descname">AutoUpdateTextCtrl</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_script.html#AutoUpdateTextCtrl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_script.AutoUpdateTextCtrl" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">wx._controls.TextCtrl</span></tt>, <a class="reference internal" href="#plumetrack.plumetrack_config.config_script.AutoUpdate" title="plumetrack.plumetrack_config.config_script.AutoUpdate"><tt class="xref py py-class docutils literal"><span class="pre">plumetrack.plumetrack_config.config_script.AutoUpdate</span></tt></a></p>
 <dl class="method">
+<dt id="plumetrack.plumetrack_config.config_script.AutoUpdateTextCtrl.SetValue">
+<tt class="descname">SetValue</tt><big>(</big><em>val</em><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_script.html#AutoUpdateTextCtrl.SetValue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_script.AutoUpdateTextCtrl.SetValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Override the base class method so that using SetValue does not make the 
+control think that something has changed. Otherwise newly loaded config
+files will look as though they need to be saved before they are edited.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="plumetrack.plumetrack_config.config_script.AutoUpdateTextCtrl.on_change">
 <tt class="descname">on_change</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_script.html#AutoUpdateTextCtrl.on_change"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_script.AutoUpdateTextCtrl.on_change" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="plumetrack.plumetrack_config.config_script.AutoUpdateTextCtrl.on_lose_focus">
-<tt class="descname">on_lose_focus</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_script.html#AutoUpdateTextCtrl.on_lose_focus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_script.AutoUpdateTextCtrl.on_lose_focus" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
 <dt id="plumetrack.plumetrack_config.config_script.AutoUpdateTextCtrl.on_text_change">
 <tt class="descname">on_text_change</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_script.html#AutoUpdateTextCtrl.on_text_change"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_script.AutoUpdateTextCtrl.on_text_change" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="plumetrack.plumetrack_config.config_script.ConfigFileSelect">
-<em class="property">class </em><tt class="descclassname">plumetrack.plumetrack_config.config_script.</tt><tt class="descname">ConfigFileSelect</tt><big>(</big><em>parent</em>, <em>main_frame</em>, <em>filename</em><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_script.html#ConfigFileSelect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_script.ConfigFileSelect" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">wx._windows.Panel</span></tt></p>
-<dl class="method">
-<dt id="plumetrack.plumetrack_config.config_script.ConfigFileSelect.on_browse">
-<tt class="descname">on_browse</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_script.html#ConfigFileSelect.on_browse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_script.ConfigFileSelect.on_browse" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="plumetrack.plumetrack_config.config_script.ConfigFileSelect.on_load">
-<tt class="descname">on_load</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_script.html#ConfigFileSelect.on_load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_script.ConfigFileSelect.on_load" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -168,6 +155,16 @@
 <dl class="method">
 <dt id="plumetrack.plumetrack_config.config_script.InputFilesConfig.get_configs">
 <tt class="descname">get_configs</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_script.html#InputFilesConfig.get_configs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_script.InputFilesConfig.get_configs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plumetrack.plumetrack_config.config_script.InputFilesConfig.on_browse">
+<tt class="descname">on_browse</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_script.html#InputFilesConfig.on_browse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_script.InputFilesConfig.on_browse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plumetrack.plumetrack_config.config_script.InputFilesConfig.on_custom_loader_chkbox">
+<tt class="descname">on_custom_loader_chkbox</tt><big>(</big><em>event</em><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_script.html#InputFilesConfig.on_custom_loader_chkbox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_script.InputFilesConfig.on_custom_loader_chkbox" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -290,6 +287,33 @@ level window for wx before calling launch().</p>
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="plumetrack.plumetrack_config.config_script.MainFrame.on_interactive_viewer">
+<tt class="descname">on_interactive_viewer</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_script.html#MainFrame.on_interactive_viewer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_script.MainFrame.on_interactive_viewer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Event handler for interactive toolbar events. Opens a directory choice dialog
+to choose an image directory to test the configs on and then launches 
+a interactive_viewer_frame. Note that if a config test frame already exists
+then clicking test simply updates the configuration that the config test
+frame is displaying</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plumetrack.plumetrack_config.config_script.MainFrame.on_new">
+<tt class="descname">on_new</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_script.html#MainFrame.on_new"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_script.MainFrame.on_new" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plumetrack.plumetrack_config.config_script.MainFrame.on_open_file">
+<tt class="descname">on_open_file</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_script.html#MainFrame.on_open_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_script.MainFrame.on_open_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plumetrack.plumetrack_config.config_script.MainFrame.on_process">
+<tt class="descname">on_process</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_script.html#MainFrame.on_process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_script.MainFrame.on_process" title="Permalink to this definition">¶</a></dt>
+<dd><p>Event handler for batch process toolbar events. Opens the batch 
+processing dialog</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="plumetrack.plumetrack_config.config_script.MainFrame.on_save">
 <tt class="descname">on_save</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_script.html#MainFrame.on_save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_script.MainFrame.on_save" title="Permalink to this definition">¶</a></dt>
 <dd><p>Event handler for Save button events. Opens a file selection dialog, 
@@ -298,20 +322,42 @@ file.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="plumetrack.plumetrack_config.config_script.MainFrame.on_test">
-<tt class="descname">on_test</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_script.html#MainFrame.on_test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_script.MainFrame.on_test" title="Permalink to this definition">¶</a></dt>
-<dd><p>Event handler for Test button events. Opens a directory choice dialog
-to choose an image directory to test the configs on and then launches 
-a config_test_frame. Note that if a config test frame already exists
-then clicking test simply updates the configuration that the config test
-frame is displaying</p>
-</dd></dl>
+<dt id="plumetrack.plumetrack_config.config_script.MainFrame.on_saveas">
+<tt class="descname">on_saveas</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_script.html#MainFrame.on_saveas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_script.MainFrame.on_saveas" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plumetrack.plumetrack_config.config_script.MainFrame.save_to_file">
+<tt class="descname">save_to_file</tt><big>(</big><em>filename</em><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_script.html#MainFrame.save_to_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_script.MainFrame.save_to_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plumetrack.plumetrack_config.config_script.MainFrame.save_unsaved_work">
+<tt class="descname">save_unsaved_work</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_script.html#MainFrame.save_unsaved_work"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_script.MainFrame.save_unsaved_work" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.plumetrack_config.config_script.MainFrame.set_configs">
 <tt class="descname">set_configs</tt><big>(</big><em>configs</em><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_script.html#MainFrame.set_configs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_script.MainFrame.set_configs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="method">
+<dt id="plumetrack.plumetrack_config.config_script.MainFrame.set_current_file">
+<tt class="descname">set_current_file</tt><big>(</big><em>filename</em><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_script.html#MainFrame.set_current_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_script.MainFrame.set_current_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plumetrack.plumetrack_config.config_script.MainFrame.set_needs_saving">
+<tt class="descname">set_needs_saving</tt><big>(</big><em>val</em><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_script.html#MainFrame.set_needs_saving"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_script.MainFrame.set_needs_saving" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="plumetrack.plumetrack_config.config_script.MainToolbar">
+<em class="property">class </em><tt class="descclassname">plumetrack.plumetrack_config.config_script.</tt><tt class="descname">MainToolbar</tt><big>(</big><em>parent</em><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_script.html#MainToolbar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_script.MainToolbar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">wx._controls.ToolBar</span></tt></p>
+<p>Main program toolbar</p>
 </dd></dl>
 
 <dl class="class">
@@ -372,12 +418,12 @@ frame is displaying</p>
 </dd></dl>
 
 <dl class="class">
-<dt id="plumetrack.plumetrack_config.config_script.PlumetrackConfigApp">
-<em class="property">class </em><tt class="descclassname">plumetrack.plumetrack_config.config_script.</tt><tt class="descname">PlumetrackConfigApp</tt><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_script.html#PlumetrackConfigApp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_script.PlumetrackConfigApp" title="Permalink to this definition">¶</a></dt>
+<dt id="plumetrack.plumetrack_config.config_script.PlumetrackApp">
+<em class="property">class </em><tt class="descclassname">plumetrack.plumetrack_config.config_script.</tt><tt class="descname">PlumetrackApp</tt><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_script.html#PlumetrackApp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_script.PlumetrackApp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">wx._core.App</span></tt></p>
 <dl class="method">
-<dt id="plumetrack.plumetrack_config.config_script.PlumetrackConfigApp.OnInit">
-<tt class="descname">OnInit</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_script.html#PlumetrackConfigApp.OnInit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_script.PlumetrackConfigApp.OnInit" title="Permalink to this definition">¶</a></dt>
+<dt id="plumetrack.plumetrack_config.config_script.PlumetrackApp.OnInit">
+<tt class="descname">OnInit</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_script.html#PlumetrackApp.OnInit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_script.PlumetrackApp.OnInit" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -392,32 +438,6 @@ utility in the setup.py file.</p>
 </div>
 <div class="section" id="module-plumetrack.plumetrack_config.config_test_frame">
 <span id="plumetrack-plumetrack-config-config-test-frame-module"></span><h2>plumetrack.plumetrack_config.config_test_frame module<a class="headerlink" href="#module-plumetrack.plumetrack_config.config_test_frame" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="plumetrack.plumetrack_config.config_test_frame.ConfigTestFrame">
-<em class="property">class </em><tt class="descclassname">plumetrack.plumetrack_config.config_test_frame.</tt><tt class="descname">ConfigTestFrame</tt><big>(</big><em>parent</em>, <em>image_dir</em>, <em>config</em><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_test_frame.html#ConfigTestFrame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_test_frame.ConfigTestFrame" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">wx._windows.Frame</span></tt></p>
-<dl class="method">
-<dt id="plumetrack.plumetrack_config.config_test_frame.ConfigTestFrame.clear_status">
-<tt class="descname">clear_status</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_test_frame.html#ConfigTestFrame.clear_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_test_frame.ConfigTestFrame.clear_status" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="plumetrack.plumetrack_config.config_test_frame.ConfigTestFrame.on_close">
-<tt class="descname">on_close</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_test_frame.html#ConfigTestFrame.on_close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_test_frame.ConfigTestFrame.on_close" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="plumetrack.plumetrack_config.config_test_frame.ConfigTestFrame.set_config">
-<tt class="descname">set_config</tt><big>(</big><em>config</em><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_test_frame.html#ConfigTestFrame.set_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_test_frame.ConfigTestFrame.set_config" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="plumetrack.plumetrack_config.config_test_frame.ConfigTestFrame.set_status">
-<tt class="descname">set_status</tt><big>(</big><em>x</em>, <em>y</em>, <em>pix_value</em>, <em>xvel</em>, <em>yvel</em><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_test_frame.html#ConfigTestFrame.set_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_test_frame.ConfigTestFrame.set_status" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
 <dl class="class">
 <dt id="plumetrack.plumetrack_config.config_test_frame.ImageFileList">
 <em class="property">class </em><tt class="descclassname">plumetrack.plumetrack_config.config_test_frame.</tt><tt class="descname">ImageFileList</tt><big>(</big><em>parent</em>, <em>image_dir</em>, <em>config</em>, <em>plot_panel</em><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_test_frame.html#ImageFileList"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_test_frame.ImageFileList" title="Permalink to this definition">¶</a></dt>
@@ -445,6 +465,37 @@ utility in the setup.py file.</p>
 <dl class="method">
 <dt id="plumetrack.plumetrack_config.config_test_frame.ImageFileList.set_image_dir">
 <tt class="descname">set_image_dir</tt><big>(</big><em>im_dir</em>, <em>config</em><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_test_frame.html#ImageFileList.set_image_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_test_frame.ImageFileList.set_image_dir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="plumetrack.plumetrack_config.config_test_frame.InteractiveViewerFrame">
+<em class="property">class </em><tt class="descclassname">plumetrack.plumetrack_config.config_test_frame.</tt><tt class="descname">InteractiveViewerFrame</tt><big>(</big><em>parent</em>, <em>image_dir</em>, <em>config</em><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_test_frame.html#InteractiveViewerFrame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_test_frame.InteractiveViewerFrame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">wx._windows.Frame</span></tt></p>
+<dl class="method">
+<dt id="plumetrack.plumetrack_config.config_test_frame.InteractiveViewerFrame.clear_status">
+<tt class="descname">clear_status</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_test_frame.html#InteractiveViewerFrame.clear_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_test_frame.InteractiveViewerFrame.clear_status" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plumetrack.plumetrack_config.config_test_frame.InteractiveViewerFrame.on_close">
+<tt class="descname">on_close</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_test_frame.html#InteractiveViewerFrame.on_close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_test_frame.InteractiveViewerFrame.on_close" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plumetrack.plumetrack_config.config_test_frame.InteractiveViewerFrame.set_config">
+<tt class="descname">set_config</tt><big>(</big><em>config</em><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_test_frame.html#InteractiveViewerFrame.set_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_test_frame.InteractiveViewerFrame.set_config" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plumetrack.plumetrack_config.config_test_frame.InteractiveViewerFrame.set_err_status">
+<tt class="descname">set_err_status</tt><big>(</big><em>x</em>, <em>y</em>, <em>error_val</em><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_test_frame.html#InteractiveViewerFrame.set_err_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_test_frame.InteractiveViewerFrame.set_err_status" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plumetrack.plumetrack_config.config_test_frame.InteractiveViewerFrame.set_vel_status">
+<tt class="descname">set_vel_status</tt><big>(</big><em>x</em>, <em>y</em>, <em>pix_value</em>, <em>xvel</em>, <em>yvel</em><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_test_frame.html#InteractiveViewerFrame.set_vel_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_test_frame.InteractiveViewerFrame.set_vel_status" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -478,6 +529,11 @@ utility in the setup.py file.</p>
 <tt class="descname">set_images</tt><big>(</big><em>cur_filename</em>, <em>next_filename</em><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_test_frame.html#MotionFigure.set_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_test_frame.MotionFigure.set_images" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="method">
+<dt id="plumetrack.plumetrack_config.config_test_frame.MotionFigure.show_error_plot">
+<tt class="descname">show_error_plot</tt><big>(</big><em>state</em><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_test_frame.html#MotionFigure.show_error_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_test_frame.MotionFigure.show_error_plot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -487,6 +543,16 @@ utility in the setup.py file.</p>
 <dl class="method">
 <dt id="plumetrack.plumetrack_config.config_test_frame.MotionFigureControls.on_density">
 <tt class="descname">on_density</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_test_frame.html#MotionFigureControls.on_density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_test_frame.MotionFigureControls.on_density" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plumetrack.plumetrack_config.config_test_frame.MotionFigureControls.on_err_sat">
+<tt class="descname">on_err_sat</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_test_frame.html#MotionFigureControls.on_err_sat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_test_frame.MotionFigureControls.on_err_sat" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plumetrack.plumetrack_config.config_test_frame.MotionFigureControls.on_error_plot_chkbx">
+<tt class="descname">on_error_plot_chkbx</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/plumetrack_config/config_test_frame.html#MotionFigureControls.on_error_plot_chkbx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.plumetrack_config.config_test_frame.MotionFigureControls.on_error_plot_chkbx" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -524,6 +590,9 @@ utility in the setup.py file.</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/plumetrack.png" alt="Logo"/>
+            </a></p>
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">plumetrack.plumetrack_config package</a><ul>
@@ -535,9 +604,6 @@ utility in the setup.py file.</p>
 </li>
 </ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="plumetrack.html"
-                        title="previous chapter">plumetrack package</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/plumetrack.plumetrack_config.txt"
@@ -569,12 +635,7 @@ utility in the setup.py file.</p>
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="plumetrack.html" title="plumetrack package"
-             >previous</a> |</li>
-        <li><a href="index.html">plumetrack 15.01 documentation</a> &raquo;</li>
-          <li><a href="API.html" >API</a> &raquo;</li>
-          <li><a href="plumetrack.html" >plumetrack package</a> &raquo;</li> 
+        <li><a href="index.html">Plumetrack 15.01 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

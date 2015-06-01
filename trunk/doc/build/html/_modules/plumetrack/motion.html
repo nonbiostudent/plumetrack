@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>plumetrack.motion &mdash; plumetrack 15.01 documentation</title>
+    <title>plumetrack.motion &mdash; Plumetrack 15.01 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -24,7 +24,8 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="plumetrack 15.01 documentation" href="../../index.html" />
+    <link rel="shortcut icon" href="../../_static/plumetrack_32.ico"/>
+    <link rel="top" title="Plumetrack 15.01 documentation" href="../../index.html" />
     <link rel="up" title="plumetrack" href="../plumetrack.html" /> 
   </head>
   <body>
@@ -37,7 +38,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">plumetrack 15.01 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">Plumetrack 15.01 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li>
           <li><a href="../plumetrack.html" accesskey="U">plumetrack</a> &raquo;</li> 
       </ul>
@@ -95,7 +96,7 @@
                 <span class="n">new_x</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__mask_im</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">downsizing_factor</span><span class="p">))</span>
                 <span class="n">new_y</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__mask_im</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">downsizing_factor</span><span class="p">))</span>
                 
-                <span class="bp">self</span><span class="o">.</span><span class="n">__mask_im</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__mask_im</span><span class="p">,</span> <span class="p">(</span><span class="n">new_x</span><span class="p">,</span><span class="n">new_y</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__mask_im</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__mask_im</span><span class="p">,</span> <span class="p">(</span><span class="n">new_y</span><span class="p">,</span><span class="n">new_x</span><span class="p">))</span>
             
             <span class="c">#ensure the loaded mask has the correct data type</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__mask_im</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__mask_im</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">uint8</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
@@ -242,6 +243,9 @@
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/plumetrack.png" alt="Logo"/>
+            </a></p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
@@ -268,7 +272,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">plumetrack 15.01 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">Plumetrack 15.01 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li>
           <li><a href="../plumetrack.html" >plumetrack</a> &raquo;</li> 
       </ul>

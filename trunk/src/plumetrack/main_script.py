@@ -81,6 +81,12 @@ def parallel_process(func, list_, *args, **kwargs):
 ############################################################################
 
 def __run_func_with_progress(progress, stay_alive, func,q,l,args,kwargs):
+    """
+    Same as __run_func(), but with additional progress and stay_alive args 
+    (which must be shared objects) to allow remote monitoring of progress and 
+    the possibility to cancel execution.
+    """
+    
     total = float(len(l))
     results = []
     
@@ -97,6 +103,16 @@ def __run_func_with_progress(progress, stay_alive, func,q,l,args,kwargs):
 ############################################################################
 
 def parallel_process_with_progress(progress_handler, func, list_, *args, **kwargs):
+    """
+    Same as parallel_process, but with additional progress_handler argument 
+    which should be a callable. This will be called repeatedly during the 
+    parallel processing and passed a float (<1.0) which shows the fraction of the
+    tasks that have been completed.
+    
+    The progress_handler should return True if execution is to be continued. If 
+    False is returned, then execution will halt and None will be returned.
+    """
+    
     if len(list_) == 0:
         return []
      
@@ -124,7 +140,10 @@ def parallel_process_with_progress(progress_handler, func, list_, *args, **kwarg
         progress_indicators.append(progress)
         stay_alive_flags.append(stay_alive)
     
+    #now that the worker processes have been started, loop continuously calling
+    #the progress handler function with updated progress reports.
     total_progress = 0
+    
     while total_progress < 1:
         total_progress = sum([p.value for p in progress_indicators])/float(len(progress_indicators))
         
@@ -139,7 +158,8 @@ def parallel_process_with_progress(progress_handler, func, list_, *args, **kwarg
             return None
 
         time.sleep(0.1)
-                
+    
+    #execution is complete - collect up and return the results.            
     for i in range(len(processes)):        
         results.append(queues[i].get())
         processes[i].join()
@@ -295,7 +315,16 @@ def main():
 ############################################################################
 
 def run_mainloop(options, args, progress_handler=None):    
+    """
+    This is the main "do it" function of Plumetrack. It loads the relevant config
+    file and processes images in the specified folder accordingly.
     
+    The options and args arguments are those returned from the 
+    settings.parse_cmd_line() function. The progress_handler argument should be 
+    a callable which takes as its only argument a float which is the fraction of
+    images that have processed. It should return True if execution should continue
+    and False if execution should be cancelled.
+    """
     image_dir = args[0]
      
     #load all the settings from the configuration file

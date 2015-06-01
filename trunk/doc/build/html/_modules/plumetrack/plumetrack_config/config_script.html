@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>plumetrack.plumetrack_config.config_script &mdash; plumetrack 15.01 documentation</title>
+    <title>plumetrack.plumetrack_config.config_script &mdash; Plumetrack 15.01 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -24,7 +24,8 @@
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="plumetrack 15.01 documentation" href="../../../index.html" />
+    <link rel="shortcut icon" href="../../../_static/plumetrack_32.ico"/>
+    <link rel="top" title="Plumetrack 15.01 documentation" href="../../../index.html" />
     <link rel="up" title="plumetrack" href="../../plumetrack.html" /> 
   </head>
   <body>
@@ -37,7 +38,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">plumetrack 15.01 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">Plumetrack 15.01 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../plumetrack.html" accesskey="U">plumetrack</a> &raquo;</li> 
       </ul>
@@ -87,6 +88,8 @@
 <span class="kn">from</span> <span class="nn">plumetrack</span> <span class="kn">import</span> <span class="n">settings</span><span class="p">,</span> <span class="n">flux</span><span class="p">,</span>  <span class="n">persist</span>
 <span class="kn">from</span> <span class="nn">plumetrack.plumetrack_config</span> <span class="kn">import</span> <span class="n">config_test_frame</span>
 
+<span class="kn">from</span> <span class="nn">plumetrack.gui</span> <span class="kn">import</span> <span class="n">artwork</span><span class="p">,</span> <span class="n">batch_processor</span>
+
 
 <div class="viewcode-block" id="main"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_script.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -94,7 +97,7 @@
 <span class="sd">    utility in the setup.py file.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
-    <span class="n">app</span> <span class="o">=</span> <span class="n">PlumetrackConfigApp</span><span class="p">()</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">PlumetrackApp</span><span class="p">()</span>
     <span class="n">app</span><span class="o">.</span><span class="n">MainLoop</span><span class="p">()</span>
     
 
@@ -102,7 +105,7 @@
 <span class="c">###############################################################</span>
 <span class="c"># Here we subclass a bunch of wx widgets so that when their values</span>
 <span class="c"># change they call the on_config_change method of the main frame to trigger</span>
-<span class="c"># an update to the config_test_frame (if it exists).</span></div>
+<span class="c"># an update to the interactive_viewer_frame (if it exists).</span></div>
 <div class="viewcode-block" id="AutoUpdate"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_script.AutoUpdate">[docs]</a><span class="k">class</span> <span class="nc">AutoUpdate</span><span class="p">:</span>
 <div class="viewcode-block" id="AutoUpdate.on_change"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_script.AutoUpdate.on_change">[docs]</a>    <span class="k">def</span> <span class="nf">on_change</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evnt</span><span class="p">):</span>
         <span class="n">wx</span><span class="o">.</span><span class="n">GetApp</span><span class="p">()</span><span class="o">.</span><span class="n">main_frame</span><span class="o">.</span><span class="n">on_config_change</span><span class="p">()</span>
@@ -113,6 +116,12 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">AutoUpdateCheckbox</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">wx</span><span class="o">.</span><span class="n">EVT_CHECKBOX</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetId</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_change</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="AutoUpdateChoice"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_script.AutoUpdateChoice">[docs]</a><span class="k">class</span> <span class="nc">AutoUpdateChoice</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">Choice</span><span class="p">,</span> <span class="n">AutoUpdate</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">AutoUpdateChoice</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">wx</span><span class="o">.</span><span class="n">EVT_CHOICE</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetId</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_change</span><span class="p">)</span>
 
 </div>
 <div class="viewcode-block" id="AutoUpdateFloatspin"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_script.AutoUpdateFloatspin">[docs]</a><span class="k">class</span> <span class="nc">AutoUpdateFloatspin</span><span class="p">(</span><span class="n">floatspin</span><span class="o">.</span><span class="n">FloatSpin</span><span class="p">,</span> <span class="n">AutoUpdate</span><span class="p">):</span>
@@ -132,50 +141,52 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">AutoUpdateTextCtrl</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_text_updated</span> <span class="o">=</span> <span class="bp">False</span>
         <span class="n">wx</span><span class="o">.</span><span class="n">EVT_TEXT_ENTER</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetId</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_change</span><span class="p">)</span>
-        <span class="n">wx</span><span class="o">.</span><span class="n">EVT_KILL_FOCUS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_lose_focus</span><span class="p">)</span>
+        <span class="n">wx</span><span class="o">.</span><span class="n">EVT_KILL_FOCUS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_change</span><span class="p">)</span>
         <span class="n">wx</span><span class="o">.</span><span class="n">EVT_TEXT</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetId</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_text_change</span><span class="p">)</span>
     
 <div class="viewcode-block" id="AutoUpdateTextCtrl.on_change"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_script.AutoUpdateTextCtrl.on_change">[docs]</a>    <span class="k">def</span> <span class="nf">on_change</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evnt</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_text_updated</span> <span class="o">=</span> <span class="bp">False</span>
-        <span class="n">AutoUpdate</span><span class="o">.</span><span class="n">on_change</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evnt</span><span class="p">)</span>
-    </div>
-<div class="viewcode-block" id="AutoUpdateTextCtrl.on_lose_focus"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_script.AutoUpdateTextCtrl.on_lose_focus">[docs]</a>    <span class="k">def</span> <span class="nf">on_lose_focus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evnt</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text_updated</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">on_change</span><span class="p">(</span><span class="n">evnt</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_text_updated</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="n">AutoUpdate</span><span class="o">.</span><span class="n">on_change</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evnt</span><span class="p">)</span>
     </div>
 <div class="viewcode-block" id="AutoUpdateTextCtrl.on_text_change"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_script.AutoUpdateTextCtrl.on_text_change">[docs]</a>    <span class="k">def</span> <span class="nf">on_text_change</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evnt</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_text_updated</span><span class="o">=</span><span class="bp">True</span>
+    </div>
+<div class="viewcode-block" id="AutoUpdateTextCtrl.SetValue"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_script.AutoUpdateTextCtrl.SetValue">[docs]</a>    <span class="k">def</span> <span class="nf">SetValue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">val</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Override the base class method so that using SetValue does not make the </span>
+<span class="sd">        control think that something has changed. Otherwise newly loaded config</span>
+<span class="sd">        files will look as though they need to be saved before they are edited.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">wx</span><span class="o">.</span><span class="n">TextCtrl</span><span class="o">.</span><span class="n">SetValue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">val</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_text_updated</span> <span class="o">=</span> <span class="bp">False</span>
 
 <span class="c">########################################################################</span>
 
 </div></div>
-<div class="viewcode-block" id="PlumetrackConfigApp"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_script.PlumetrackConfigApp">[docs]</a><span class="k">class</span> <span class="nc">PlumetrackConfigApp</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">App</span><span class="p">):</span>
+<div class="viewcode-block" id="PlumetrackApp"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_script.PlumetrackApp">[docs]</a><span class="k">class</span> <span class="nc">PlumetrackApp</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">App</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        wxApp for the plumetrack configuration program. </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">main_frame</span> <span class="o">=</span> <span class="bp">None</span>
         
-        <span class="nb">super</span><span class="p">(</span><span class="n">PlumetrackConfigApp</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">PlumetrackApp</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
     
     
-<div class="viewcode-block" id="PlumetrackConfigApp.OnInit"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_script.PlumetrackConfigApp.OnInit">[docs]</a>    <span class="k">def</span> <span class="nf">OnInit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PlumetrackApp.OnInit"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_script.PlumetrackApp.OnInit">[docs]</a>    <span class="k">def</span> <span class="nf">OnInit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         
         <span class="n">options</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_cmd_line</span><span class="p">()</span>
+        
+        <span class="c">#register our art provider to serve the Plumetrack icons</span>
+        <span class="n">wx</span><span class="o">.</span><span class="n">ArtProvider</span><span class="o">.</span><span class="n">Insert</span><span class="p">(</span><span class="n">artwork</span><span class="o">.</span><span class="n">PlumetrackArtProvider</span><span class="p">())</span>
         
         <span class="c">#launch the GUI!</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">main_frame</span> <span class="o">=</span> <span class="n">MainFrame</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">SetTopWindow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">main_frame</span><span class="p">)</span>
         
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">prev_cfg_file</span> <span class="o">=</span> <span class="n">persist</span><span class="o">.</span><span class="n">PersistentStorage</span><span class="p">()</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s">&quot;config_script_prev_file&quot;</span><span class="p">)</span>
-                
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">prev_cfg_file</span><span class="p">):</span>
-                    <span class="n">prev_cfg_file</span> <span class="o">=</span> <span class="bp">None</span>
-                     
-            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="n">prev_cfg_file</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="n">prev_cfg_file</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">prev_cfg_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
             
@@ -229,63 +240,6 @@
 
 
 </div>
-<div class="viewcode-block" id="ConfigFileSelect"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_script.ConfigFileSelect">[docs]</a><span class="k">class</span> <span class="nc">ConfigFileSelect</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">Panel</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">main_frame</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">ConfigFileSelect</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
-        
-        <span class="bp">self</span><span class="o">.</span><span class="n">main_frame</span> <span class="o">=</span> <span class="n">main_frame</span>
-        <span class="n">vsizer</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">BoxSizer</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">VERTICAL</span><span class="p">)</span>
-        <span class="n">hsizer</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">BoxSizer</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">HORIZONTAL</span><span class="p">)</span>
-        
-        <span class="bp">self</span><span class="o">.</span><span class="n">im_dir_box</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">TextCtrl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">250</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">browse_button</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Browse&quot;</span><span class="p">)</span>
-        <span class="n">h_txt</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;Select an existing configuration file to load parameters from.&quot;</span>
-                 <span class="s">&quot; This can be either a </span><span class="se">\&#39;</span><span class="s">.cfg</span><span class="se">\&#39;</span><span class="s"> configuration file, or a &quot;</span>
-                 <span class="s">&quot;results file produced by a previous plumetrack run.&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">im_dir_box</span><span class="o">.</span><span class="n">SetToolTipString</span><span class="p">(</span><span class="n">h_txt</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">browse_button</span><span class="o">.</span><span class="n">SetToolTipString</span><span class="p">(</span><span class="n">h_txt</span><span class="p">)</span>
-        <span class="n">wx</span><span class="o">.</span><span class="n">EVT_BUTTON</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">browse_button</span><span class="o">.</span><span class="n">GetId</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_browse</span><span class="p">)</span>
-        
-        <span class="n">hsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">im_dir_box</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">EXPAND</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_LEFT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
-        <span class="n">hsizer</span><span class="o">.</span><span class="n">AddSpacer</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-        <span class="n">hsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">browse_button</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_LEFT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
-        
-        <span class="bp">self</span><span class="o">.</span><span class="n">load_button</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Load&quot;</span><span class="p">)</span>
-        <span class="n">h_txt</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;Load the configuration parameters from the currently &quot;</span>
-                 <span class="s">&quot;selected file. This will overwrite any parameters already &quot;</span>
-                 <span class="s">&quot;defined below.&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">load_button</span><span class="o">.</span><span class="n">SetToolTipString</span><span class="p">(</span><span class="n">h_txt</span><span class="p">)</span>
-        <span class="n">wx</span><span class="o">.</span><span class="n">EVT_BUTTON</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_button</span><span class="o">.</span><span class="n">GetId</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_load</span><span class="p">)</span>
-        
-        <span class="c">#set the default config file to load</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">im_dir_box</span><span class="o">.</span><span class="n">SetValue</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-        
-        <span class="n">vsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">hsizer</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">EXPAND</span><span class="p">)</span>
-        <span class="n">vsizer</span><span class="o">.</span><span class="n">AddSpacer</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-        <span class="n">vsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">load_button</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_BOTTOM</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_RIGHT</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">SetSizer</span><span class="p">(</span><span class="n">vsizer</span><span class="p">)</span>
-        <span class="n">vsizer</span><span class="o">.</span><span class="n">Fit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-    
-    
-<div class="viewcode-block" id="ConfigFileSelect.on_browse"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_script.ConfigFileSelect.on_browse">[docs]</a>    <span class="k">def</span> <span class="nf">on_browse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evnt</span><span class="p">):</span>
-        <span class="n">filename</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">FileSelector</span><span class="p">(</span><span class="s">&quot;Select configuration file&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">filename</span> <span class="o">!=</span> <span class="s">&quot;&quot;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">im_dir_box</span><span class="o">.</span><span class="n">SetValue</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-    
-    </div>
-<div class="viewcode-block" id="ConfigFileSelect.on_load"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_script.ConfigFileSelect.on_load">[docs]</a>    <span class="k">def</span> <span class="nf">on_load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evnt</span><span class="p">):</span>
-        <span class="n">filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">im_dir_box</span><span class="o">.</span><span class="n">GetValue</span><span class="p">()</span>
-        
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">config</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">load_config_file</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">main_frame</span><span class="o">.</span><span class="n">set_configs</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
-        <span class="k">except</span> <span class="n">settings</span><span class="o">.</span><span class="n">ConfigError</span><span class="p">,</span> <span class="n">ex</span><span class="p">:</span>
-            <span class="n">wx</span><span class="o">.</span><span class="n">MessageBox</span><span class="p">(</span><span class="n">ex</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="k">except</span> <span class="ne">IOError</span><span class="p">,</span> <span class="n">ex</span><span class="p">:</span>
-            <span class="n">wx</span><span class="o">.</span><span class="n">MessageBox</span><span class="p">(</span><span class="n">ex</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-
-
-</div></div>
 <div class="viewcode-block" id="InputFilesConfig"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_script.InputFilesConfig">[docs]</a><span class="k">class</span> <span class="nc">InputFilesConfig</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">Panel</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">InputFilesConfig</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
@@ -295,7 +249,8 @@
         <span class="n">sizer</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">FlexGridSizer</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="n">sizer</span><span class="o">.</span><span class="n">AddGrowableCol</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
         
-        <span class="bp">self</span><span class="o">.</span><span class="n">filename_format_box</span> <span class="o">=</span> <span class="n">AutoUpdateTextCtrl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">250</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">style</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">TE_PROCESS_ENTER</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename_format_box</span> <span class="o">=</span> <span class="n">AutoUpdateTextCtrl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">250</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> 
+                                                      <span class="n">style</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">TE_PROCESS_ENTER</span><span class="p">)</span>
         <span class="n">h_txt</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;The format of the filenames of the images to be processed. &quot;</span>
                  <span class="s">&quot;The filenames must include the capture time of the images, &quot;</span>
                  <span class="s">&quot;and the format must be described using the Python strftime &quot;</span>
@@ -315,9 +270,35 @@
         <span class="n">vsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">hsizer</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">EXPAND</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_LEFT</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
         <span class="n">wx</span><span class="o">.</span><span class="n">EVT_BUTTON</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format_help_button</span><span class="o">.</span><span class="n">GetId</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_help</span><span class="p">)</span>
         
+        <span class="n">vsizer</span><span class="o">.</span><span class="n">AddSpacer</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">custom_loader_box</span> <span class="o">=</span> <span class="n">AutoUpdateTextCtrl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">250</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> 
+                                                    <span class="n">style</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">TE_PROCESS_ENTER</span><span class="p">)</span>
+        <span class="n">h_txt</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;Custom image loaders allow Plumetrack to be used with image &quot;</span>
+                 <span class="s">&quot;formats that are not natively supported, or that require &quot;</span>
+                 <span class="s">&quot;customised preprocessing. Enter the filename of your image &quot;</span>
+                 <span class="s">&quot;loader here. See the Plumetrack documentation for details.&quot;</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">custom_loader_box</span><span class="o">.</span><span class="n">SetToolTipString</span><span class="p">(</span><span class="n">h_txt</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">custom_loader_chkbox</span> <span class="o">=</span> <span class="n">AutoUpdateCheckbox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Custom image loader:&quot;</span><span class="p">)</span>
+        <span class="n">wx</span><span class="o">.</span><span class="n">EVT_CHECKBOX</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_loader_chkbox</span><span class="o">.</span><span class="n">GetId</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_custom_loader_chkbox</span><span class="p">)</span>
+        
+        <span class="n">hsizer2</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">BoxSizer</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">HORIZONTAL</span><span class="p">)</span>
+        <span class="n">hsizer2</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">custom_loader_chkbox</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> 
+                    <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_RIGHT</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
+        <span class="n">hsizer2</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">custom_loader_box</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> 
+                    <span class="n">wx</span><span class="o">.</span><span class="n">EXPAND</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_LEFT</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">custom_loader_browse_button</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Browse&quot;</span><span class="p">)</span>
+        <span class="n">hsizer2</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">custom_loader_browse_button</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_LEFT</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
+        <span class="n">vsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">hsizer2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">EXPAND</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_LEFT</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
+        <span class="n">wx</span><span class="o">.</span><span class="n">EVT_BUTTON</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_loader_browse_button</span><span class="o">.</span><span class="n">GetId</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_browse</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_custom_loader_chkbox</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+        
         <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">StaticText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;File extension:&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> 
                   <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_RIGHT</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">file_extension_box</span> <span class="o">=</span> <span class="n">AutoUpdateTextCtrl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">style</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">TE_PROCESS_ENTER</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_extension_box</span> <span class="o">=</span> <span class="n">AutoUpdateTextCtrl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> 
+                                                     <span class="n">style</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">TE_PROCESS_ENTER</span><span class="p">)</span>
         <span class="n">h_txt</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;The file extension of your image files to be processed e.g. &quot;</span>
                  <span class="s">&quot;&#39;.png&#39; or &#39;.jpg&#39;. This may be specified with or without the &quot;</span>
                  <span class="s">&quot;preceding dot. It must match the file extension given in the &quot;</span>
@@ -375,6 +356,18 @@
         <span class="n">w</span><span class="o">.</span><span class="n">SetPage</span><span class="p">(</span><span class="n">html_help_str</span><span class="p">)</span>
         <span class="n">help_frame</span><span class="o">.</span><span class="n">Show</span><span class="p">()</span>
     
+    </div>
+<div class="viewcode-block" id="InputFilesConfig.on_browse"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_script.InputFilesConfig.on_browse">[docs]</a>    <span class="k">def</span> <span class="nf">on_browse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evnt</span><span class="p">):</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">FileSelector</span><span class="p">(</span><span class="s">&quot;Select Python module containing custom loader class&quot;</span><span class="p">,</span>
+                                   <span class="n">wildcard</span><span class="o">=</span><span class="s">&quot;*.py&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">filename</span> <span class="o">!=</span> <span class="s">&quot;&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">custom_loader_box</span><span class="o">.</span><span class="n">SetValue</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    
+    </div>
+<div class="viewcode-block" id="InputFilesConfig.on_custom_loader_chkbox"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_script.InputFilesConfig.on_custom_loader_chkbox">[docs]</a>    <span class="k">def</span> <span class="nf">on_custom_loader_chkbox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">custom_loader_box</span><span class="o">.</span><span class="n">Enable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">custom_loader_chkbox</span><span class="o">.</span><span class="n">IsChecked</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">custom_loader_browse_button</span><span class="o">.</span><span class="n">Enable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">custom_loader_chkbox</span><span class="o">.</span><span class="n">IsChecked</span><span class="p">())</span>
+     
      </div>
 <div class="viewcode-block" id="InputFilesConfig.get_configs"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_script.InputFilesConfig.get_configs">[docs]</a>    <span class="k">def</span> <span class="nf">get_configs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         
@@ -388,8 +381,9 @@
             <span class="n">file_extension</span> <span class="o">=</span> <span class="s">&#39;.&#39;</span><span class="o">+</span><span class="n">file_extension</span>
         
         <span class="n">filename_format</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename_format_box</span><span class="o">.</span><span class="n">GetValue</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">filename_format</span><span class="o">.</span><span class="n">isspace</span><span class="p">()</span> <span class="ow">or</span> <span class="n">filename_format</span> <span class="o">==</span> <span class="s">&quot;&quot;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">settings</span><span class="o">.</span><span class="n">ConfigError</span><span class="p">(</span><span class="s">&quot;Filename format not specified&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_loader_chkbox</span><span class="o">.</span><span class="n">IsChecked</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">filename_format</span><span class="o">.</span><span class="n">isspace</span><span class="p">()</span> <span class="ow">or</span> <span class="n">filename_format</span> <span class="o">==</span> <span class="s">&quot;&quot;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">settings</span><span class="o">.</span><span class="n">ConfigError</span><span class="p">(</span><span class="s">&quot;Filename format not specified&quot;</span><span class="p">)</span>
         
         <span class="n">flux_conversion_factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flux_conversion_factor</span><span class="o">.</span><span class="n">GetValue</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">flux_conversion_factor</span><span class="o">.</span><span class="n">isspace</span><span class="p">()</span> <span class="ow">or</span> <span class="n">flux_conversion_factor</span> <span class="o">==</span> <span class="s">&quot;&quot;</span><span class="p">:</span>
@@ -399,9 +393,15 @@
         
         <span class="n">downsizing_factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">downsizing_factor</span><span class="o">.</span><span class="n">GetValue</span><span class="p">()</span>
         
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_loader_chkbox</span><span class="o">.</span><span class="n">IsChecked</span><span class="p">():</span>
+            <span class="n">custom_loader</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_loader_box</span><span class="o">.</span><span class="n">GetValue</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">custom_loader</span> <span class="o">=</span> <span class="s">u&quot;&quot;</span>
+        
         <span class="k">return</span> <span class="p">{</span>
                 <span class="s">&#39;filename_format&#39;</span><span class="p">:</span><span class="n">filename_format</span><span class="p">,</span>
                 <span class="s">&#39;file_extension&#39;</span><span class="p">:</span><span class="n">file_extension</span><span class="p">,</span>
+                <span class="s">&#39;custom_image_loader&#39;</span><span class="p">:</span><span class="n">custom_loader</span><span class="p">,</span>
                 <span class="s">&#39;pixel_size&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">pixel_size_box</span><span class="o">.</span><span class="n">GetValue</span><span class="p">(),</span>
                 <span class="s">&#39;flux_conversion_factor&#39;</span><span class="p">:</span><span class="n">flux_conversion_factor</span><span class="p">,</span>
                 <span class="s">&#39;downsizing_factor&#39;</span><span class="p">:</span> <span class="n">downsizing_factor</span>
@@ -411,6 +411,15 @@
 <div class="viewcode-block" id="InputFilesConfig.set_configs"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_script.InputFilesConfig.set_configs">[docs]</a>    <span class="k">def</span> <span class="nf">set_configs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filename_format_box</span><span class="o">.</span><span class="n">SetValue</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s">&#39;filename_format&#39;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">file_extension_box</span><span class="o">.</span><span class="n">SetValue</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s">&#39;file_extension&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">custom_loader_box</span><span class="o">.</span><span class="n">SetValue</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s">&#39;custom_image_loader&#39;</span><span class="p">])</span>
+        
+        <span class="k">if</span> <span class="n">configs</span><span class="p">[</span><span class="s">&#39;custom_image_loader&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&quot;&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">custom_loader_chkbox</span><span class="o">.</span><span class="n">SetValue</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">on_custom_loader_chkbox</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">custom_loader_chkbox</span><span class="o">.</span><span class="n">SetValue</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">on_custom_loader_chkbox</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+        
         <span class="bp">self</span><span class="o">.</span><span class="n">pixel_size_box</span><span class="o">.</span><span class="n">SetValue</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s">&#39;pixel_size&#39;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">flux_conversion_factor</span><span class="o">.</span><span class="n">SetValue</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%0.3e</span><span class="s">&quot;</span><span class="o">%</span><span class="n">configs</span><span class="p">[</span><span class="s">&#39;flux_conversion_factor&#39;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">downsizing_factor</span><span class="o">.</span><span class="n">SetValue</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s">&#39;downsizing_factor&#39;</span><span class="p">])</span>
@@ -542,8 +551,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">random_mean_box</span><span class="o">.</span><span class="n">SetValue</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s">&#39;random_mean&#39;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">random_sigma_box</span><span class="o">.</span><span class="n">SetValue</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s">&#39;random_sigma&#39;</span><span class="p">])</span>
         
-        <span class="bp">self</span><span class="o">.</span><span class="n">low_thresh_chkbx</span><span class="o">.</span><span class="n">SetValue</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s">&#39;motion_pix_threshold_low&#39;</span><span class="p">]</span><span class="o">!=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">low_thresh_box</span><span class="o">.</span><span class="n">Enable</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s">&#39;motion_pix_threshold_low&#39;</span><span class="p">]</span><span class="o">!=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">low_thresh_chkbx</span><span class="o">.</span><span class="n">SetValue</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s">&#39;motion_pix_threshold_low&#39;</span><span class="p">]</span><span class="o">!=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">low_thresh_box</span><span class="o">.</span><span class="n">Enable</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s">&#39;motion_pix_threshold_low&#39;</span><span class="p">]</span><span class="o">!=-</span><span class="mi">1</span><span class="p">)</span>
                                    
         <span class="bp">self</span><span class="o">.</span><span class="n">high_thresh_chkbx</span><span class="o">.</span><span class="n">SetValue</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s">&#39;motion_pix_threshold_high&#39;</span><span class="p">]</span><span class="o">!=-</span><span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">high_thresh_box</span><span class="o">.</span><span class="n">Enable</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s">&#39;motion_pix_threshold_high&#39;</span><span class="p">]</span><span class="o">!=-</span><span class="mi">1</span><span class="p">)</span>
@@ -693,7 +702,7 @@
         
         <span class="n">hsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">StaticText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Name:&quot;</span><span class="p">),</span><span class="mi">0</span><span class="p">,</span>
                    <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTER_VERTICAL</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_RIGHT</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name_box</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">TextCtrl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">TE_PROCESS_ENTER</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name_box</span> <span class="o">=</span> <span class="n">AutoUpdateTextCtrl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">TE_PROCESS_ENTER</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name_box</span><span class="o">.</span><span class="n">SetValue</span><span class="p">(</span><span class="s">&quot;Integration Line </span><span class="si">%d</span><span class="s">&quot;</span><span class="o">%</span><span class="n">num</span><span class="p">)</span>
         
         <span class="n">h_txt</span> <span class="o">=</span>  <span class="p">(</span><span class="s">&quot;Descriptive name for this integration line. This will appear&quot;</span>
@@ -797,8 +806,8 @@
         
         <span class="n">int_line_str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">integration_line_box</span><span class="o">.</span><span class="n">GetValue</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">int_line_str</span> <span class="o">==</span> <span class="s">&quot;&quot;</span> <span class="ow">or</span> <span class="n">int_line_str</span><span class="o">.</span><span class="n">isspace</span><span class="p">():</span>
-           <span class="k">raise</span> <span class="n">settings</span><span class="o">.</span><span class="n">ConfigError</span><span class="p">(</span><span class="s">&quot;No points specified for integration &quot;</span>
-                                      <span class="s">&quot;line </span><span class="si">%d</span><span class="s">.&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">_num</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">settings</span><span class="o">.</span><span class="n">ConfigError</span><span class="p">(</span><span class="s">&quot;No points specified for integration &quot;</span>
+                                       <span class="s">&quot;line </span><span class="si">%d</span><span class="s">.&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">_num</span><span class="p">)</span>
         
         <span class="k">try</span><span class="p">:</span>
             <span class="n">integration_points</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">int_line_str</span><span class="p">)</span>
@@ -828,7 +837,7 @@
         
         <span class="n">gsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">StaticText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Integration method:&quot;</span><span class="p">),</span><span class="mi">0</span><span class="p">,</span>
                          <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTER_VERTICAL</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_RIGHT</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">integration_method_choice</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">Choice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__integration_methods</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">integration_method_choice</span> <span class="o">=</span> <span class="n">AutoUpdateChoice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__integration_methods</span><span class="p">)</span>
         <span class="n">h_txt</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;Method used to calculate the flux. &#39;1d&#39; is marginally faster,&quot;</span>
                  <span class="s">&quot; but &#39;2d&#39; is more robust, especially for images with a large &quot;</span>
                  <span class="s">&quot;time gaps between them.&quot;</span><span class="p">)</span>
@@ -969,8 +978,10 @@
         <span class="k">if</span> <span class="n">configs</span><span class="p">[</span><span class="s">&#39;integration_pix_threshold_low&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">low_thresh_chkbx</span><span class="o">.</span><span class="n">SetValue</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">low_thresh_box</span><span class="o">.</span><span class="n">SetValue</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s">&#39;integration_pix_threshold_low&#39;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">low_thresh_box</span><span class="o">.</span><span class="n">Enable</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">low_thresh_chkbx</span><span class="o">.</span><span class="n">SetValue</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">low_thresh_box</span><span class="o">.</span><span class="n">Enable</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
         
         <span class="c">#now set the configs for all the integration lines that are defined</span>
         
@@ -989,6 +1000,43 @@
  
  
  </div></div>
+<div class="viewcode-block" id="MainToolbar"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_script.MainToolbar">[docs]</a><span class="k">class</span> <span class="nc">MainToolbar</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">ToolBar</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Main program toolbar</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">parent</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">main_frame</span> <span class="o">=</span> <span class="n">parent</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">__active_figure</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__all_figures</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        
+        <span class="n">wx</span><span class="o">.</span><span class="n">ToolBar</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">parent</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_ANY</span><span class="p">)</span>
+        
+        <span class="c">#file tools    </span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">new_tool</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">AddTool</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ArtProvider</span><span class="o">.</span><span class="n">GetBitmap</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">ART_NEW</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ART_TOOLBAR</span><span class="p">),</span> <span class="n">shortHelpString</span><span class="o">=</span><span class="s">&quot;New configuration&quot;</span><span class="p">)</span>    
+        <span class="bp">self</span><span class="o">.</span><span class="n">open_tool</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">AddTool</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ArtProvider</span><span class="o">.</span><span class="n">GetBitmap</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">ART_FILE_OPEN</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ART_TOOLBAR</span><span class="p">),</span> <span class="n">shortHelpString</span><span class="o">=</span><span class="s">&quot;Open an existing configuration file or import a configuration from a results file.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_tool</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">AddTool</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ArtProvider</span><span class="o">.</span><span class="n">GetBitmap</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">ART_FILE_SAVE</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ART_TOOLBAR</span><span class="p">),</span> <span class="n">shortHelpString</span><span class="o">=</span><span class="s">&quot;Save configuration&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">saveas_tool</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">AddTool</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ArtProvider</span><span class="o">.</span><span class="n">GetBitmap</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">ART_FILE_SAVE_AS</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ART_TOOLBAR</span><span class="p">),</span> <span class="n">shortHelpString</span><span class="o">=</span><span class="s">&quot;Save configuration with a new file name&quot;</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">AddSeparator</span><span class="p">()</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">interactive_tool</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">AddTool</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ArtProvider</span><span class="o">.</span><span class="n">GetBitmap</span><span class="p">(</span><span class="s">&quot;plumetrack_interactive&quot;</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ART_TOOLBAR</span><span class="p">),</span> <span class="n">shortHelpString</span><span class="o">=</span><span class="s">&quot;Open the interactive inspection window&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">process_tool</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">AddTool</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ArtProvider</span><span class="o">.</span><span class="n">GetBitmap</span><span class="p">(</span><span class="s">&quot;plumetrack_process&quot;</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ART_TOOLBAR</span><span class="p">),</span> <span class="n">shortHelpString</span><span class="o">=</span><span class="s">&quot;Batch process images using the current configuration&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">Realize</span><span class="p">()</span>
+        
+
+        <span class="c">#register events</span>
+        <span class="n">wx</span><span class="o">.</span><span class="n">EVT_TOOL</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_tool</span><span class="o">.</span><span class="n">GetId</span><span class="p">(),</span> <span class="n">parent</span><span class="o">.</span><span class="n">on_new</span><span class="p">)</span>
+        <span class="n">wx</span><span class="o">.</span><span class="n">EVT_TOOL</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_tool</span><span class="o">.</span><span class="n">GetId</span><span class="p">(),</span> <span class="n">parent</span><span class="o">.</span><span class="n">on_save</span><span class="p">)</span>        
+        <span class="n">wx</span><span class="o">.</span><span class="n">EVT_TOOL</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">saveas_tool</span><span class="o">.</span><span class="n">GetId</span><span class="p">(),</span> <span class="n">parent</span><span class="o">.</span><span class="n">on_saveas</span><span class="p">)</span>
+        <span class="n">wx</span><span class="o">.</span><span class="n">EVT_TOOL</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">open_tool</span><span class="o">.</span><span class="n">GetId</span><span class="p">(),</span> <span class="n">parent</span><span class="o">.</span><span class="n">on_open_file</span><span class="p">)</span>
+        <span class="n">wx</span><span class="o">.</span><span class="n">EVT_TOOL</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">interactive_tool</span><span class="o">.</span><span class="n">GetId</span><span class="p">(),</span> <span class="n">parent</span><span class="o">.</span><span class="n">on_interactive_viewer</span><span class="p">)</span>
+        <span class="n">wx</span><span class="o">.</span><span class="n">EVT_TOOL</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_tool</span><span class="o">.</span><span class="n">GetId</span><span class="p">(),</span> <span class="n">parent</span><span class="o">.</span><span class="n">on_process</span><span class="p">)</span>
+        
+    
+
+ </div>
 <div class="viewcode-block" id="MainFrame"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_script.MainFrame">[docs]</a><span class="k">class</span> <span class="nc">MainFrame</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">Frame</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Main frame of the configuration utility GUI.</span>
@@ -996,7 +1044,13 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">wx</span><span class="o">.</span><span class="n">Frame</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_ANY</span><span class="p">,</span> <span class="s">&quot; Configuration Utility - &quot;</span><span class="o">+</span><span class="n">plumetrack</span><span class="o">.</span><span class="n">PROG_SHORT_NAME</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">config_panels</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">config_test_frame</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interactive_viewer_frame</span> <span class="o">=</span> <span class="bp">None</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">__current_file</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__needs_saving</span> <span class="o">=</span> <span class="bp">False</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">toolbar</span> <span class="o">=</span> <span class="n">MainToolbar</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SetToolBar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">toolbar</span><span class="p">)</span>
     
     
 <div class="viewcode-block" id="MainFrame.launch"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_script.MainFrame.launch">[docs]</a>    <span class="k">def</span> <span class="nf">launch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prev_cfg_file</span><span class="p">):</span>
@@ -1010,23 +1064,9 @@
         <span class="n">vsizer</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">BoxSizer</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">VERTICAL</span><span class="p">)</span>
         <span class="n">top_panel</span><span class="o">.</span><span class="n">SetSizer</span><span class="p">(</span><span class="n">vsizer</span><span class="p">)</span>
         <span class="n">top_panel</span><span class="o">.</span><span class="n">SetScrollRate</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
-        <span class="c">#top_sizer.Add(top_panel, 1, wx.EXPAND| wx.ALIGN_TOP)</span>
-        
-        <span class="k">if</span> <span class="n">prev_cfg_file</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">prev_cfg_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">plumetrack</span><span class="o">.</span><span class="n">get_plumetrack_rw_dir</span><span class="p">(),</span>
-                                         <span class="s">&quot;plumetrack.cfg&quot;</span><span class="p">)</span>
         
         <span class="c">#create the configuration panels and add them to the top panel using a </span>
-        <span class="c">#box sizer to control the layout</span>
-        <span class="n">config_select_static_szr</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">StaticBoxSizer</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">StaticBox</span><span class="p">(</span><span class="n">top_panel</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_ANY</span><span class="p">,</span> <span class="s">&#39;Load Existing Configuration&#39;</span><span class="p">),</span> <span class="n">wx</span><span class="o">.</span><span class="n">VERTICAL</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">config_file_chooser</span> <span class="o">=</span> <span class="n">ConfigFileSelect</span><span class="p">(</span><span class="n">top_panel</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">prev_cfg_file</span><span class="p">)</span>
-        <span class="n">config_select_static_szr</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config_file_chooser</span><span class="p">,</span> <span class="mi">0</span> <span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">EXPAND</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_TOP</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_RIGHT</span><span class="p">)</span>
-        <span class="n">vsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">config_select_static_szr</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">EXPAND</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span> <span class="n">border</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-        <span class="n">config_select_static_szr</span><span class="o">.</span><span class="n">Layout</span><span class="p">()</span>
-        
-        <span class="n">vsizer</span><span class="o">.</span><span class="n">AddSpacer</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-        <span class="n">vsizer</span><span class="o">.</span><span class="n">AddStretchSpacer</span><span class="p">()</span>
-        
+        <span class="c">#box sizer to control the layout </span>
         <span class="n">input_files_static_szr</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">StaticBoxSizer</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">StaticBox</span><span class="p">(</span><span class="n">top_panel</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_ANY</span><span class="p">,</span> <span class="s">&#39;Input Files&#39;</span><span class="p">),</span> <span class="n">wx</span><span class="o">.</span><span class="n">VERTICAL</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_files_config</span> <span class="o">=</span> <span class="n">InputFilesConfig</span><span class="p">(</span><span class="n">top_panel</span><span class="p">)</span>
         <span class="n">input_files_static_szr</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_files_config</span><span class="p">,</span> <span class="mi">0</span> <span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">EXPAND</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_TOP</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_RIGHT</span><span class="p">)</span>
@@ -1066,40 +1106,18 @@
         
         <span class="n">vsizer</span><span class="o">.</span><span class="n">AddSpacer</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
         
-        <span class="c">#create the save and cancel button</span>
-        <span class="n">buttons_sizer</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">BoxSizer</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">HORIZONTAL</span><span class="p">)</span>
-        
-        <span class="bp">self</span><span class="o">.</span><span class="n">test_button</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_ANY</span><span class="p">,</span> <span class="s">&quot;Test&quot;</span><span class="p">)</span>
-        <span class="n">h_txt</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;Opens a viewer for the motion field created with this &quot;</span>
-                 <span class="s">&quot;configuration. Configuration parameters can be edited and &quot;</span>
-                 <span class="s">&quot;their effects viewed in realtime.&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">test_button</span><span class="o">.</span><span class="n">SetToolTipString</span><span class="p">(</span><span class="n">h_txt</span><span class="p">)</span>
-        <span class="n">buttons_sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_button</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_BOTTOM</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_RIGHT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">TOP</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">BOTTOM</span><span class="p">,</span> <span class="n">border</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-        <span class="n">wx</span><span class="o">.</span><span class="n">EVT_BUTTON</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_button</span><span class="o">.</span><span class="n">GetId</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_test</span><span class="p">)</span>
-        
-        <span class="bp">self</span><span class="o">.</span><span class="n">cancel_button</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_CANCEL</span><span class="p">,</span> <span class="s">&quot;Cancel&quot;</span><span class="p">)</span>
-        <span class="n">h_txt</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;Exits the program.&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cancel_button</span><span class="o">.</span><span class="n">SetToolTipString</span><span class="p">(</span><span class="n">h_txt</span><span class="p">)</span>
-        <span class="n">buttons_sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cancel_button</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_BOTTOM</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_RIGHT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">TOP</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">BOTTOM</span><span class="p">,</span> <span class="n">border</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-        <span class="n">wx</span><span class="o">.</span><span class="n">EVT_BUTTON</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cancel_button</span><span class="o">.</span><span class="n">GetId</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_cancel</span><span class="p">)</span>
-        
-        <span class="bp">self</span><span class="o">.</span><span class="n">save_button</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_SAVEAS</span><span class="p">,</span> <span class="s">&quot;Save As&quot;</span><span class="p">)</span>
-        <span class="n">h_txt</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;Save the current configuration to a specified file.&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">save_button</span><span class="o">.</span><span class="n">SetToolTipString</span><span class="p">(</span><span class="n">h_txt</span><span class="p">)</span>
-        <span class="n">buttons_sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_button</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_BOTTOM</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_RIGHT</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">TOP</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">BOTTOM</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">,</span> <span class="n">border</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-        <span class="n">wx</span><span class="o">.</span><span class="n">EVT_BUTTON</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_button</span><span class="o">.</span><span class="n">GetId</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_save</span><span class="p">)</span>
-        
         <span class="n">top_sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">top_panel</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">EXPAND</span><span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_TOP</span><span class="p">)</span>
-        <span class="n">top_sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">buttons_sizer</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_BOTTOM</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_RIGHT</span><span class="p">)</span>
         
-        <span class="c">#set the configs to those in the default config file (if we can - otherwise</span>
-        <span class="c">#they are just left blank)</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">set_configs</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">load_config_file</span><span class="p">(</span><span class="n">prev_cfg_file</span><span class="p">))</span>
-        <span class="k">except</span> <span class="n">settings</span><span class="o">.</span><span class="n">ConfigError</span><span class="p">:</span>
-            <span class="c">#if this configuration is unloadable, then just give up</span>
-            <span class="k">pass</span>
-            
+        
+        <span class="c">#create a new configuration or load the specified configuration</span>
+        <span class="k">if</span> <span class="n">prev_cfg_file</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">on_new</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_current_file</span><span class="p">(</span><span class="n">prev_cfg_file</span><span class="p">)</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">IOError</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">ConfigError</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">on_new</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+        
         <span class="c">#do the layout       </span>
         <span class="n">top_panel</span><span class="o">.</span><span class="n">SetSizer</span><span class="p">(</span><span class="n">vsizer</span><span class="p">)</span>
         <span class="n">top_panel</span><span class="o">.</span><span class="n">SetAutoLayout</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
@@ -1107,13 +1125,49 @@
         
         <span class="bp">self</span><span class="o">.</span><span class="n">SetSizer</span><span class="p">(</span><span class="n">top_sizer</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">SetAutoLayout</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">top_sizer</span><span class="o">.</span><span class="n">Layout</span><span class="p">()</span> <span class="c">#this fixes the problem of the frame being created too small</span>
         <span class="n">top_sizer</span><span class="o">.</span><span class="n">Fit</span><span class="p">(</span><span class="n">top_panel</span><span class="p">)</span>
         
         <span class="n">wx</span><span class="o">.</span><span class="n">EVT_CLOSE</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span><span class="p">)</span>
             
         <span class="bp">self</span><span class="o">.</span><span class="n">Show</span><span class="p">()</span>
 
-</div>
+    </div>
+<div class="viewcode-block" id="MainFrame.set_current_file"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_script.MainFrame.set_current_file">[docs]</a>    <span class="k">def</span> <span class="nf">set_current_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">load_config_file</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_configs</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">__current_file</span> <span class="o">=</span> <span class="n">filename</span>
+            
+            <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">SetTitle</span><span class="p">(</span><span class="s">&quot;New Configuration - &quot;</span><span class="o">+</span><span class="n">plumetrack</span><span class="o">.</span><span class="n">PROG_SHORT_NAME</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">SetTitle</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span><span class="o">+</span><span class="s">&quot; - &quot;</span><span class="o">+</span><span class="n">plumetrack</span><span class="o">.</span><span class="n">PROG_SHORT_NAME</span><span class="p">)</span>
+                
+                <span class="c">#store the last file opened</span>
+                <span class="n">persist</span><span class="o">.</span><span class="n">PersistentStorage</span><span class="p">()</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="s">&quot;config_script_prev_file&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_needs_saving</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+                
+        <span class="k">except</span> <span class="p">(</span><span class="ne">IOError</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">ConfigError</span><span class="p">),</span> <span class="n">ex</span><span class="p">:</span>
+            <span class="n">wx</span><span class="o">.</span><span class="n">MessageBox</span><span class="p">(</span><span class="n">ex</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">raise</span> <span class="n">ex</span>     
+        
+    </div>
+<div class="viewcode-block" id="MainFrame.set_needs_saving"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_script.MainFrame.set_needs_saving">[docs]</a>    <span class="k">def</span> <span class="nf">set_needs_saving</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">val</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">__needs_saving</span><span class="p">:</span>
+            <span class="k">return</span>
+        
+        <span class="k">if</span> <span class="n">val</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">SetTitle</span><span class="p">(</span><span class="s">&quot;*&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetTitle</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">SetTitle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">GetTitle</span><span class="p">()</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s">&#39;*&#39;</span><span class="p">))</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">__needs_saving</span> <span class="o">=</span> <span class="n">val</span>
+            
+            </div>
 <div class="viewcode-block" id="MainFrame.get_configs"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_script.MainFrame.get_configs">[docs]</a>    <span class="k">def</span> <span class="nf">get_configs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">configs</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config_panels</span><span class="p">:</span>
@@ -1129,8 +1183,9 @@
     
     </div>
 <div class="viewcode-block" id="MainFrame.on_config_change"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_script.MainFrame.on_config_change">[docs]</a>    <span class="k">def</span> <span class="nf">on_config_change</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_needs_saving</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
         
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config_test_frame</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">interactive_viewer_frame</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="c">#read the configs from the various input panels        </span>
                 <span class="n">configs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_configs</span><span class="p">()</span> 
@@ -1142,14 +1197,71 @@
                 <span class="n">wx</span><span class="o">.</span><span class="n">CallAfter</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">MessageBox</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">ex</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">plumetrack</span><span class="o">.</span><span class="n">PROG_SHORT_NAME</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ICON_ERROR</span><span class="p">)</span>
                 <span class="k">return</span>
             
-            <span class="bp">self</span><span class="o">.</span><span class="n">config_test_frame</span><span class="o">.</span><span class="n">set_config</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">interactive_viewer_frame</span><span class="o">.</span><span class="n">set_config</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>
     
     </div>
-<div class="viewcode-block" id="MainFrame.on_test"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_script.MainFrame.on_test">[docs]</a>    <span class="k">def</span> <span class="nf">on_test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evnt</span><span class="p">):</span>
+<div class="viewcode-block" id="MainFrame.save_unsaved_work"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_script.MainFrame.save_unsaved_work">[docs]</a>    <span class="k">def</span> <span class="nf">save_unsaved_work</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__current_file</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;Would you like to save your changes &quot;</span>
+                       <span class="s">&quot;to </span><span class="se">\&#39;</span><span class="s">New Configuration</span><span class="se">\&#39;</span><span class="s">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;Would you like to save your changes &quot;</span>
+                       <span class="s">&quot;to </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s">&quot;</span><span class="o">%</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__current_file</span><span class="p">))</span>
+        
+        <span class="n">ret_val</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">MessageBox</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">YES_NO</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">ret_val</span> <span class="o">==</span> <span class="n">wx</span><span class="o">.</span><span class="n">YES</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">on_save</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+        
+    </div>
+<div class="viewcode-block" id="MainFrame.on_new"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_script.MainFrame.on_new">[docs]</a>    <span class="k">def</span> <span class="nf">on_new</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evnt</span><span class="p">):</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__needs_saving</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save_unsaved_work</span><span class="p">()</span>
+            
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">load_config_file</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_configs</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">settings</span><span class="o">.</span><span class="n">ConfigError</span><span class="p">,</span> <span class="n">ex</span><span class="p">:</span>
+            <span class="n">wx</span><span class="o">.</span><span class="n">MessageBox</span><span class="p">(</span><span class="n">ex</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">IOError</span><span class="p">,</span> <span class="n">ex</span><span class="p">:</span>
+            <span class="n">wx</span><span class="o">.</span><span class="n">MessageBox</span><span class="p">(</span><span class="n">ex</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_current_file</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+    
+    </div>
+<div class="viewcode-block" id="MainFrame.on_open_file"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_script.MainFrame.on_open_file">[docs]</a>    <span class="k">def</span> <span class="nf">on_open_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evnt</span><span class="p">):</span>
+        
+        <span class="c">#try to get the name of the last config file opened</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">last_path</span> <span class="o">=</span> <span class="n">persist</span><span class="o">.</span><span class="n">PersistentStorage</span><span class="p">()</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s">&quot;config_script_prev_file&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">last_path</span><span class="o">=</span><span class="s">&quot;&quot;</span>
+        
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">FileSelector</span><span class="p">(</span><span class="s">&quot;Select configuration file&quot;</span><span class="p">,</span> 
+                                   <span class="n">default_path</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">last_path</span><span class="p">))</span>
+        
+        <span class="c">#load the configuration parameters from the file</span>
+        <span class="k">if</span> <span class="n">filename</span> <span class="o">!=</span> <span class="s">&quot;&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__needs_saving</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">save_unsaved_work</span><span class="p">()</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_current_file</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        
+            </div>
+<div class="viewcode-block" id="MainFrame.on_process"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_script.MainFrame.on_process">[docs]</a>    <span class="k">def</span> <span class="nf">on_process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evnt</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Event handler for Test button events. Opens a directory choice dialog</span>
+<span class="sd">        Event handler for batch process toolbar events. Opens the batch </span>
+<span class="sd">        processing dialog&quot;&quot;&quot;</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_configs</span><span class="p">()</span>
+        <span class="n">batch_processor</span><span class="o">.</span><span class="n">BatchProcessor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+        
+    </div>
+<div class="viewcode-block" id="MainFrame.on_interactive_viewer"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_script.MainFrame.on_interactive_viewer">[docs]</a>    <span class="k">def</span> <span class="nf">on_interactive_viewer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evnt</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Event handler for interactive toolbar events. Opens a directory choice dialog</span>
 <span class="sd">        to choose an image directory to test the configs on and then launches </span>
-<span class="sd">        a config_test_frame. Note that if a config test frame already exists</span>
+<span class="sd">        a interactive_viewer_frame. Note that if a config test frame already exists</span>
 <span class="sd">        then clicking test simply updates the configuration that the config test</span>
 <span class="sd">        frame is displaying</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1165,7 +1277,7 @@
             <span class="k">return</span>
         
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">prev_dir</span> <span class="o">=</span> <span class="n">persist</span><span class="o">.</span><span class="n">PersistentStorage</span><span class="p">()</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s">&quot;config_test_frame_image_dir&quot;</span><span class="p">)</span>
+            <span class="n">prev_dir</span> <span class="o">=</span> <span class="n">persist</span><span class="o">.</span><span class="n">PersistentStorage</span><span class="p">()</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s">&quot;prev_image_dir&quot;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="n">prev_dir</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
         
@@ -1174,15 +1286,15 @@
         <span class="k">if</span> <span class="n">im_dir</span> <span class="o">==</span> <span class="s">&quot;&quot;</span><span class="p">:</span>
             <span class="k">return</span>
         
-        <span class="n">persist</span><span class="o">.</span><span class="n">PersistentStorage</span><span class="p">()</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="s">&quot;config_test_frame_image_dir&quot;</span><span class="p">,</span> <span class="n">im_dir</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">test_button</span><span class="o">.</span><span class="n">Enable</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">config_test_frame</span> <span class="o">=</span> <span class="n">config_test_frame</span><span class="o">.</span><span class="n">ConfigTestFrame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">im_dir</span><span class="p">,</span> <span class="n">configs</span><span class="p">)</span>
+        <span class="n">persist</span><span class="o">.</span><span class="n">PersistentStorage</span><span class="p">()</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="s">&quot;prev_image_dir&quot;</span><span class="p">,</span> <span class="n">im_dir</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">toolbar</span><span class="o">.</span><span class="n">interactive_tool</span><span class="o">.</span><span class="n">Enable</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interactive_viewer_frame</span> <span class="o">=</span> <span class="n">config_test_frame</span><span class="o">.</span><span class="n">InteractiveViewerFrame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">im_dir</span><span class="p">,</span> <span class="n">configs</span><span class="p">)</span>
     
     </div>
     <span class="k">def</span> <span class="nf">_on_config_test_frame_close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c">#called from inside the on_close handler of the config test frame</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">config_test_frame</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">test_button</span><span class="o">.</span><span class="n">Enable</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interactive_viewer_frame</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">toolbar</span><span class="o">.</span><span class="n">interactive_tool</span><span class="o">.</span><span class="n">Enable</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
         <span class="n">wx</span><span class="o">.</span><span class="n">Yield</span><span class="p">()</span>
     
     
@@ -1197,8 +1309,11 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Event handler for close events - exits the program.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__needs_saving</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save_unsaved_work</span><span class="p">()</span>
+        
         <span class="c">#this is a hack for now, since I can&#39;t figure out what component of the </span>
-        <span class="c">#ConfigTestFrame is not being destroyed properly and is preventing the</span>
+        <span class="c">#InteractiveViewerFrame is not being destroyed properly and is preventing the</span>
         <span class="c">#main application from closing.</span>
         <span class="n">wx</span><span class="o">.</span><span class="n">GetApp</span><span class="p">()</span><span class="o">.</span><span class="n">ExitMainLoop</span><span class="p">()</span>
     
@@ -1209,7 +1324,24 @@
 <span class="sd">        reads the configs from the various panels and saves them to the selected</span>
 <span class="sd">        file.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-         
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__current_file</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">on_saveas</span><span class="p">(</span><span class="n">evnt</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save_to_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__current_file</span><span class="p">)</span>
+        
+    </div>
+<div class="viewcode-block" id="MainFrame.on_saveas"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_script.MainFrame.on_saveas">[docs]</a>    <span class="k">def</span> <span class="nf">on_saveas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evnt</span><span class="p">):</span>
+        
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">FileSelector</span><span class="p">(</span><span class="s">&quot;Select file to save configuration to&quot;</span><span class="p">,</span> 
+                                   <span class="n">flags</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">FD_SAVE</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">FD_OVERWRITE_PROMPT</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">isspace</span><span class="p">()</span> <span class="ow">or</span> <span class="n">filename</span> <span class="o">==</span> <span class="s">&quot;&quot;</span><span class="p">:</span>
+            <span class="k">return</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_to_file</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        
+    </div>
+<div class="viewcode-block" id="MainFrame.save_to_file"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_script.MainFrame.save_to_file">[docs]</a>    <span class="k">def</span> <span class="nf">save_to_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>     
         <span class="k">try</span><span class="p">:</span>
             <span class="c">#read the configs from the various input panels        </span>
             <span class="n">configs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_configs</span><span class="p">()</span> 
@@ -1220,16 +1352,13 @@
         <span class="k">except</span> <span class="n">settings</span><span class="o">.</span><span class="n">ConfigError</span><span class="p">,</span> <span class="n">ex</span><span class="p">:</span>
             <span class="n">wx</span><span class="o">.</span><span class="n">MessageBox</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ex</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">plumetrack</span><span class="o">.</span><span class="n">PROG_SHORT_NAME</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ICON_ERROR</span><span class="p">)</span>
             <span class="k">return</span>
-                
-        <span class="n">filename</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">FileSelector</span><span class="p">(</span><span class="s">&quot;Select file to save configuration to&quot;</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">FD_SAVE</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">FD_OVERWRITE_PROMPT</span><span class="p">)</span>
-        
-        <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">isspace</span><span class="p">()</span> <span class="ow">or</span> <span class="n">filename</span> <span class="o">==</span> <span class="s">&quot;&quot;</span><span class="p">:</span>
-            <span class="k">return</span>
-                
+                      
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ofp</span><span class="p">:</span>
             <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">configs</span><span class="p">,</span> <span class="n">ofp</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
         
         <span class="n">persist</span><span class="o">.</span><span class="n">PersistentStorage</span><span class="p">()</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="s">&quot;config_script_prev_file&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_current_file</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_needs_saving</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
         
         
 </div></div>
@@ -1289,7 +1418,7 @@
         <span class="n">wx</span><span class="o">.</span><span class="n">EVT_BUTTON</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">clear_button</span><span class="o">.</span><span class="n">GetId</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_clear</span><span class="p">)</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">direction_chkbx</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">CheckBox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Reverse integration direction&quot;</span><span class="p">)</span>
-        <span class="n">buttons_sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">direction_chkbx</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_BOTTOM</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_LEFT</span><span class="p">)</span>
+        <span class="n">buttons_sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">direction_chkbx</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE_VERTICAL</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_LEFT</span><span class="p">)</span>
         <span class="n">wx</span><span class="o">.</span><span class="n">EVT_CHECKBOX</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction_chkbx</span><span class="o">.</span><span class="n">GetId</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_reverse</span><span class="p">)</span>
         
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">int_direction</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
@@ -1313,12 +1442,14 @@
         <span class="c">#set up the event handling for the line drawing</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">mpl_connect</span><span class="p">(</span><span class="s">&#39;button_press_event&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_click</span><span class="p">)</span>
         
-        
+        <span class="c">#self.SetSize(self.Parent.GetSize())</span>
+        <span class="c">#self.SendSizeEvent()</span>
+    
         <span class="n">fig_panel</span><span class="o">.</span><span class="n">SetSizer</span><span class="p">(</span><span class="n">fig_sizer</span><span class="p">)</span>
         <span class="n">fig_sizer</span><span class="o">.</span><span class="n">Fit</span><span class="p">(</span><span class="n">fig_panel</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">SetSizer</span><span class="p">(</span><span class="n">top_sizer</span><span class="p">)</span>
         <span class="n">top_sizer</span><span class="o">.</span><span class="n">Fit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">SetSize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Parent</span><span class="o">.</span><span class="n">GetSize</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SetSize</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">GetApp</span><span class="p">()</span><span class="o">.</span><span class="n">GetTopWindow</span><span class="p">()</span><span class="o">.</span><span class="n">GetSize</span><span class="p">())</span>
         
     
 <div class="viewcode-block" id="IntegrationLineSelectDialog.redraw_integration_lines"><a class="viewcode-back" href="../../../plumetrack.plumetrack_config.html#plumetrack.plumetrack_config.config_script.IntegrationLineSelectDialog.redraw_integration_lines">[docs]</a>    <span class="k">def</span> <span class="nf">redraw_integration_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1550,6 +1681,9 @@
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/plumetrack.png" alt="Logo"/>
+            </a></p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../../search.html" method="get">
@@ -1576,7 +1710,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">plumetrack 15.01 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">Plumetrack 15.01 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../plumetrack.html" >plumetrack</a> &raquo;</li> 
       </ul>

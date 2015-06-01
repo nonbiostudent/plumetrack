@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>plumetrack.settings &mdash; plumetrack 15.01 documentation</title>
+    <title>plumetrack.settings &mdash; Plumetrack 15.01 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -24,7 +24,8 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="plumetrack 15.01 documentation" href="../../index.html" />
+    <link rel="shortcut icon" href="../../_static/plumetrack_32.ico"/>
+    <link rel="top" title="Plumetrack 15.01 documentation" href="../../index.html" />
     <link rel="up" title="plumetrack" href="../plumetrack.html" /> 
   </head>
   <body>
@@ -37,7 +38,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">plumetrack 15.01 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">Plumetrack 15.01 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li>
           <li><a href="../plumetrack.html" accesskey="U">plumetrack</a> &raquo;</li> 
       </ul>
@@ -72,22 +73,76 @@
 <span class="kn">from</span> <span class="nn">optparse</span> <span class="kn">import</span> <span class="n">OptionParser</span>
 
 
+<span class="n">__default_config</span> <span class="o">=</span> <span class="p">{</span>                  
+                    <span class="s">&quot;filename_format&quot;</span><span class="p">:</span> <span class="s">&quot;%Y%m</span><span class="si">%d</span><span class="s">_%H%M%S.png&quot;</span><span class="p">,</span>
+                    <span class="s">&quot;file_extension&quot;</span><span class="p">:</span> <span class="s">&quot;.png&quot;</span><span class="p">,</span>
+                    <span class="s">&quot;custom_image_loader&quot;</span><span class="p">:</span><span class="s">&quot;&quot;</span><span class="p">,</span>
+                    
+                    <span class="s">&quot;motion_pix_threshold_low&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span>
+                    <span class="s">&quot;motion_pix_threshold_high&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span>
+                    <span class="s">&quot;random_mean&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+                    <span class="s">&quot;random_sigma&quot;</span><span class="p">:</span><span class="mf">0.0</span><span class="p">,</span>
+                    <span class="s">&quot;mask_image&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span> 
+                    
+                    <span class="s">&quot;pixel_size&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+                    <span class="s">&quot;flux_conversion_factor&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+                    <span class="s">&quot;downsizing_factor&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+                    
+                    <span class="s">&quot;farneback_pyr_scale&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>
+                    <span class="s">&quot;farneback_levels&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+                    <span class="s">&quot;farneback_winsize&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+                    <span class="s">&quot;farneback_iterations&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+                    <span class="s">&quot;farneback_poly_n&quot;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
+                    <span class="s">&quot;farneback_poly_sigma&quot;</span><span class="p">:</span> <span class="mf">1.5</span><span class="p">,</span>
+                    
+                    <span class="s">&quot;integration_method&quot;</span><span class="p">:</span> <span class="s">&quot;2d&quot;</span><span class="p">,</span>
+                    <span class="s">&quot;integration_pix_threshold_low&quot;</span> <span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+                    <span class="s">&quot;integration_lines&quot;</span><span class="p">:</span> <span class="p">[{</span>
+                                           <span class="s">&quot;name&quot;</span><span class="p">:</span><span class="s">&quot;Integration Line 1&quot;</span><span class="p">,</span>
+                                           <span class="s">&quot;integration_points&quot;</span><span class="p">:</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span>
+                                           <span class="s">&quot;integration_direction&quot;</span><span class="p">:</span> <span class="mi">1</span>
+                                           <span class="p">}]</span>             
+                  
+                    <span class="p">}</span>
 
 
-<div class="viewcode-block" id="load_config_file"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.settings.load_config_file">[docs]</a><span class="k">def</span> <span class="nf">load_config_file</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="is_config_file"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.settings.is_config_file">[docs]</a><span class="k">def</span> <span class="nf">is_config_file</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns True if filename looks like a config file (i.e. is a JSON file) and </span>
+<span class="sd">    returns False otherwise. This function is used to determine if we are loading</span>
+<span class="sd">    configs from a results file or a config file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="s">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ifp</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">ifp</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+    
+    <span class="k">return</span> <span class="bp">True</span>
+
+</div>
+<div class="viewcode-block" id="get_default_config"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.settings.get_default_config">[docs]</a><span class="k">def</span> <span class="nf">get_default_config</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a default working config which can be used as a template for </span>
+<span class="sd">    customisation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">__default_config</span>
+
+</div>
+<div class="viewcode-block" id="load_config_file"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.settings.load_config_file">[docs]</a><span class="k">def</span> <span class="nf">load_config_file</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Load the configuration file and returns a dictionary of name:value pairs</span>
-<span class="sd">    that were specified in the file. If filename is not specified, then loads</span>
-<span class="sd">    the default configuration file. This function calls validate_config on the </span>
+<span class="sd">    that were specified in the file. This function calls validate_config on the </span>
 <span class="sd">    configuration before returning it.</span>
 <span class="sd">    </span>
 <span class="sd">    Configurations may be loaded either from config files, or from plumetrack</span>
 <span class="sd">    results files.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    
-    <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="kn">import</span> <span class="nn">plumetrack</span>
-        <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">plumetrack</span><span class="o">.</span><span class="n">get_plumetrack_rw_dir</span><span class="p">(),</span> <span class="s">&quot;plumetrack.cfg&quot;</span><span class="p">)</span>
     
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s">&quot;Failed to open config file </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s">. No such file.&quot;</span><span class="o">%</span><span class="n">filename</span><span class="p">)</span>
@@ -107,7 +162,7 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">config_str</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s">&quot;File </span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s"> does not contain a valid plumetrack configuration&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s">&quot;File </span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s"> does not contain a valid plumetrack configuration&quot;</span><span class="o">%</span><span class="n">filename</span><span class="p">)</span>
       
     <span class="n">validate_config</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
     
@@ -121,8 +176,16 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span>
      
-     
 </div>
+<span class="k">def</span> <span class="nf">__validate_im_loader</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    wrapper function used to prevent the setup.py script having to import </span>
+<span class="sd">    the image_loader module.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">plumetrack</span> <span class="kn">import</span> <span class="n">image_loader</span>
+    <span class="k">return</span> <span class="n">image_loader</span><span class="o">.</span><span class="n">validate_loader</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+     
+
 <div class="viewcode-block" id="validate_config"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.settings.validate_config">[docs]</a><span class="k">def</span> <span class="nf">validate_config</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Raises ConfigError if one or more of the configuration entries is </span>
@@ -130,8 +193,9 @@
 <span class="sd">    they have the correct data type and that they are within sensible limits.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">expected_configs</span> <span class="o">=</span> <span class="p">[</span>
-                        <span class="p">(</span><span class="s">&quot;filename_format&quot;</span><span class="p">,</span> <span class="n">UnicodeType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">!=</span> <span class="s">&quot;&quot;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">x</span><span class="o">.</span><span class="n">isspace</span><span class="p">(),</span> <span class="s">&quot;</span><span class="se">\&#39;</span><span class="s">filename_format</span><span class="se">\&#39;</span><span class="s"> cannot be an empty string.&quot;</span><span class="p">),</span>
-                        <span class="p">(</span><span class="s">&quot;file_extension&quot;</span><span class="p">,</span> <span class="n">UnicodeType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">config</span><span class="p">[</span><span class="s">&quot;filename_format&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="s">&quot;Mismatch between file extension specified in </span><span class="se">\&#39;</span><span class="s">filename_format</span><span class="se">\&#39;</span><span class="s"> and </span><span class="se">\&#39;</span><span class="s">file_extension</span><span class="se">\&#39;</span><span class="s">.&quot;</span><span class="p">),</span>
+                        <span class="p">(</span><span class="s">&quot;custom_image_loader&quot;</span><span class="p">,</span><span class="n">UnicodeType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">==</span><span class="s">&quot;&quot;</span> <span class="ow">or</span> <span class="n">__validate_im_loader</span><span class="p">(</span><span class="n">config</span><span class="p">),</span> <span class="s">&quot;Invalid value for </span><span class="se">\&#39;</span><span class="s">custom_image_loader</span><span class="se">\&#39;</span><span class="s">. Either the file does not exist, is not a valid Python source file, or does not define a subclass of the ImageLoader class.&quot;</span><span class="p">),</span>
+                        <span class="p">(</span><span class="s">&quot;filename_format&quot;</span><span class="p">,</span> <span class="n">UnicodeType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">config</span><span class="p">[</span><span class="s">&quot;custom_image_loader&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&quot;&quot;</span> <span class="ow">or</span> <span class="p">(</span><span class="n">x</span> <span class="o">!=</span> <span class="s">&quot;&quot;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">x</span><span class="o">.</span><span class="n">isspace</span><span class="p">()),</span> <span class="s">&quot;</span><span class="se">\&#39;</span><span class="s">filename_format</span><span class="se">\&#39;</span><span class="s"> cannot be an empty string (unless you are using a custom image loader).&quot;</span><span class="p">),</span>
+                        <span class="p">(</span><span class="s">&quot;file_extension&quot;</span><span class="p">,</span> <span class="n">UnicodeType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">config</span><span class="p">[</span><span class="s">&quot;filename_format&quot;</span><span class="p">]</span><span class="o">==</span><span class="s">&quot;&quot;</span> <span class="ow">or</span> <span class="n">config</span><span class="p">[</span><span class="s">&quot;filename_format&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="s">&quot;Mismatch between file extension specified in </span><span class="se">\&#39;</span><span class="s">filename_format</span><span class="se">\&#39;</span><span class="s"> and </span><span class="se">\&#39;</span><span class="s">file_extension</span><span class="se">\&#39;</span><span class="s">.&quot;</span><span class="p">),</span>
                         <span class="p">(</span><span class="s">&quot;motion_pix_threshold_low&quot;</span><span class="p">,</span> <span class="n">FloatType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s">&quot;motion_pix_threshold_high&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">config</span><span class="p">[</span><span class="s">&quot;motion_pix_threshold_high&quot;</span><span class="p">])</span> <span class="ow">and</span> <span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">x</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">),</span> <span class="s">&quot;</span><span class="se">\&#39;</span><span class="s">threshold_low</span><span class="se">\&#39;</span><span class="s"> must be either -1 or greater than or equal to 0 and must be less than </span><span class="se">\&#39;</span><span class="s">threshold_high</span><span class="se">\&#39;</span><span class="s">.&quot;</span> <span class="p">),</span>
                         <span class="p">(</span><span class="s">&quot;motion_pix_threshold_high&quot;</span><span class="p">,</span> <span class="n">FloatType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s">&quot;</span><span class="se">\&#39;</span><span class="s">threshold_high</span><span class="se">\&#39;</span><span class="s"> must be either -1 or greater than 0.&quot;</span> <span class="p">),</span>
                         <span class="p">(</span><span class="s">&quot;random_mean&quot;</span><span class="p">,</span> <span class="n">FloatType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span> <span class="s">&quot;&quot;</span> <span class="p">),</span>
@@ -239,16 +303,32 @@
             <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
     
 
+<div class="viewcode-block" id="OptionError"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.settings.OptionError">[docs]</a><span class="k">class</span> <span class="nc">OptionError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+    <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="CustomOptionParser"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.settings.CustomOptionParser">[docs]</a><span class="k">class</span> <span class="nc">CustomOptionParser</span><span class="p">(</span><span class="n">OptionParser</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exception_on_error</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exception_on_error</span> <span class="o">=</span> <span class="n">exception_on_error</span>
+        <span class="n">OptionParser</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+    
+<div class="viewcode-block" id="CustomOptionParser.error"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.settings.CustomOptionParser.error">[docs]</a>    <span class="k">def</span> <span class="nf">error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">exception_on_error</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">OptionError</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">OptionParser</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+        
 
-<div class="viewcode-block" id="parse_cmd_line"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.settings.parse_cmd_line">[docs]</a><span class="k">def</span> <span class="nf">parse_cmd_line</span><span class="p">():</span>
+</div></div>
+<div class="viewcode-block" id="parse_cmd_line"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.settings.parse_cmd_line">[docs]</a><span class="k">def</span> <span class="nf">parse_cmd_line</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">exception_on_error</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Function parses the command line input and returns a tuple</span>
-<span class="sd">    of (options, args)</span>
+<span class="sd">    of (options, args). By default this function parses the sys.vargs, but a list</span>
+<span class="sd">    of command line arguments may be passed in using the args kwarg instead.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">import</span> <span class="nn">plumetrack</span>
     <span class="n">usage</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;%prog [options] image_folder&quot;</span><span class="p">)</span>
     
-    <span class="n">parser</span> <span class="o">=</span> <span class="n">OptionParser</span><span class="p">()</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">CustomOptionParser</span><span class="p">(</span><span class="n">exception_on_error</span><span class="p">)</span>
     
     
     <span class="n">parser</span><span class="o">.</span><span class="n">prog</span> <span class="o">=</span> <span class="n">plumetrack</span><span class="o">.</span><span class="n">PROG_SHORT_NAME</span>
@@ -257,9 +337,7 @@
     
     <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&quot;-f&quot;</span><span class="p">,</span> <span class="s">&quot;--config_file&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&quot;config_file&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s">&#39;store&#39;</span><span class="p">,</span> 
                       <span class="nb">type</span><span class="o">=</span><span class="s">&#39;string&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                      <span class="n">help</span><span class="o">=</span><span class="s">&quot;Specifies the configuration file to use. If no &quot;</span>
-                           <span class="s">&quot;config file is specified then the default config &quot;</span>
-                           <span class="s">&quot;file is used.&quot;</span><span class="p">)</span>
+                      <span class="n">help</span><span class="o">=</span><span class="s">&quot;Specifies the configuration file to use.&quot;</span><span class="p">)</span>
     
     <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&quot;-r&quot;</span><span class="p">,</span> <span class="s">&quot;--recursive&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&quot;recursive&quot;</span><span class="p">,</span> 
                       <span class="n">action</span><span class="o">=</span><span class="s">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
@@ -309,11 +387,11 @@
                            <span class="s">&quot;of this option implies --realtime&quot;</span><span class="p">)</span>
     
     <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="s">&quot;--version&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s">&quot;callback&quot;</span><span class="p">,</span> 
-                      <span class="n">callback</span><span class="o">=</span><span class="n">__print_version_and_exit</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s">&quot;Print plumetrack&quot;</span>
+                      <span class="n">callback</span><span class="o">=</span><span class="n">__print_version_and_exit</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s">&quot;Print Plumetrack&quot;</span>
                       <span class="s">&quot; version number and license information and exit.&quot;</span><span class="p">))</span>
 
     
-    <span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+    <span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">parser</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;No input folder specified&quot;</span><span class="p">)</span>
@@ -324,6 +402,11 @@
     
     <span class="k">elif</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
         <span class="n">parser</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;Cannot open images in </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s">. No such directory.&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    
+    <span class="c">#a config file must be specified</span>
+    <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">config_file</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;No configuration file specified. You must use the </span><span class="se">\&#39;</span><span class="s">-f</span><span class="se">\&#39;</span><span class="s"> &quot;</span>
+                     <span class="s">&quot;option to specify a configuration file to use.&quot;</span><span class="p">)</span>
         
     <span class="c">#use of the skip_existing option implies the use of the realtime option</span>
     <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">skip_existing</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">options</span><span class="o">.</span><span class="n">realtime</span><span class="p">:</span>
@@ -353,6 +436,9 @@
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/plumetrack.png" alt="Logo"/>
+            </a></p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
@@ -379,7 +465,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">plumetrack 15.01 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">Plumetrack 15.01 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li>
           <li><a href="../plumetrack.html" >plumetrack</a> &raquo;</li> 
       </ul>

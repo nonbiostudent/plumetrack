@@ -40,8 +40,7 @@ def main():
     """
     Runs the main program - this is set as the entry point for the configuration
     utility in the setup.py file.
-    """
-    
+    """    
     app = PlumetrackApp()
     app.MainLoop()
     
@@ -134,7 +133,6 @@ class PlumetrackApp(wx.App):
             prev_cfg_file = None
         else:
             prev_cfg_file = os.path.abspath(args[0])
-            
         
         self.main_frame.launch(prev_cfg_file)
         return True
@@ -154,7 +152,7 @@ class PlumetrackApp(wx.App):
         parser.description = plumetrack.LONG_DESCRIPTION
         
         parser.add_option("", "--version", action="callback", 
-                  callback=self.__print_version_and_exit, help=("Print plumetrack"
+                  callback=self.__print_version_and_exit, help=("Print Plumetrack"
                   " version number and license information and exit."))
         
         
@@ -1063,6 +1061,12 @@ class MainFrame(wx.Frame):
             except (IOError, settings.ConfigError):
                 self.on_new(None)
         
+        #set up the icon for the frame
+        if sys.platform == "win32":
+            self.SetIcon(wx.ArtProvider.GetIcon("plumetrack", size=(16, 16)))
+        else:
+            self.SetIcon(wx.ArtProvider.GetIcon("plumetrack", size=(64, 64)))
+        
         #do the layout       
         top_panel.SetSizer(vsizer)
         top_panel.SetAutoLayout(True)
@@ -1081,15 +1085,18 @@ class MainFrame(wx.Frame):
     def set_current_file(self, filename):
         
         try:
-            config = settings.load_config_file(filename)
-            self.set_configs(config)
+            if filename is None:
+                config = settings.get_default_config()
+            else:
+                config = settings.load_config_file(filename)
             
-            if not settings.is_config_file(filename):
-                #we are importing settings from a results file. Since we don't 
-                #want to overwrite the results file with a config file, we set the 
-                #filename to None - forcing the user to do a "save as".
-                filename = None
+                if not settings.is_config_file(filename):
+                    #we are importing settings from a results file. Since we don't 
+                    #want to overwrite the results file with a config file, we set the 
+                    #filename to None - forcing the user to do a "save as".
+                    filename = None
                 
+            self.set_configs(config)    
             self.__current_file = filename
             
             if filename is None:
@@ -1128,7 +1135,6 @@ class MainFrame(wx.Frame):
         return configs
     
     
-     
     def set_configs(self, configs):
         for p in self.config_panels:
             p.set_configs(configs)    
@@ -1172,7 +1178,7 @@ class MainFrame(wx.Frame):
             self.save_unsaved_work()
             
         try:
-            config = settings.load_config_file(None)
+            config = settings.get_default_config()
             self.set_configs(config)
         except settings.ConfigError, ex:
             wx.MessageBox(ex.args[0])
@@ -1211,6 +1217,11 @@ class MainFrame(wx.Frame):
                 return
             
             self.on_save(None)
+            
+            if self.__needs_saving:
+                #user clicked cancel on save dialog
+                return
+            
         
         batch_processor.BatchProcessor(self, self.__current_file)
         
@@ -1245,14 +1256,14 @@ class MainFrame(wx.Frame):
             return
         
         persist.PersistentStorage().set_value("prev_image_dir", im_dir)
-        self.toolbar.interactive_tool.Enable(False)
+        self.toolbar.EnableTool(self.toolbar.interactive_tool.GetId(), False)
         self.interactive_viewer_frame = interactive_viewer.InteractiveViewerFrame(self, im_dir, configs)
     
     
     def _on_config_test_frame_close(self):
         #called from inside the on_close handler of the config test frame
         self.interactive_viewer_frame = None
-        self.toolbar.interactive_tool.Enable(True)
+        self.toolbar.EnableTool(self.toolbar.interactive_tool.GetId(), True)
         wx.Yield()
     
     

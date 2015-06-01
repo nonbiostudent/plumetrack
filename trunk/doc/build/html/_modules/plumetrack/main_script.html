@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>plumetrack.main_script &mdash; plumetrack 15.01 documentation</title>
+    <title>plumetrack.main_script &mdash; Plumetrack 15.01 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -24,7 +24,8 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="plumetrack 15.01 documentation" href="../../index.html" />
+    <link rel="shortcut icon" href="../../_static/plumetrack_32.ico"/>
+    <link rel="top" title="Plumetrack 15.01 documentation" href="../../index.html" />
     <link rel="up" title="plumetrack" href="../plumetrack.html" /> 
   </head>
   <body>
@@ -37,7 +38,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">plumetrack 15.01 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">Plumetrack 15.01 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li>
           <li><a href="../plumetrack.html" accesskey="U">plumetrack</a> &raquo;</li> 
       </ul>
@@ -66,12 +67,11 @@
 <span class="c">#You should have received a copy of the GNU General Public License</span>
 <span class="c">#along with plumetrack.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
 
-<span class="kn">import</span> <span class="nn">datetime</span>
 <span class="kn">import</span> <span class="nn">os.path</span>
 <span class="kn">import</span> <span class="nn">numpy</span>
-<span class="kn">import</span> <span class="nn">cv2</span>
 <span class="kn">import</span> <span class="nn">multiprocessing</span>
 <span class="kn">import</span> <span class="nn">calendar</span>
+<span class="kn">import</span> <span class="nn">time</span>
 
 <span class="kn">import</span> <span class="nn">plumetrack</span>
 <span class="kn">from</span> <span class="nn">plumetrack</span> <span class="kn">import</span> <span class="n">settings</span>
@@ -79,6 +79,7 @@
 <span class="kn">from</span> <span class="nn">plumetrack</span> <span class="kn">import</span> <span class="n">motion</span>
 <span class="kn">from</span> <span class="nn">plumetrack</span> <span class="kn">import</span> <span class="n">flux</span>
 <span class="kn">from</span> <span class="nn">plumetrack</span> <span class="kn">import</span> <span class="n">output</span>
+<span class="kn">from</span> <span class="nn">plumetrack</span> <span class="kn">import</span> <span class="n">image_loader</span>
 
 
 <span class="c">############################################################################</span>
@@ -130,6 +131,94 @@
     <span class="k">return</span> <span class="n">flatten</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">ltypes</span><span class="o">=</span><span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="p">))</span>
  
 <span class="c">############################################################################</span>
+</div>
+<span class="k">def</span> <span class="nf">__run_func_with_progress</span><span class="p">(</span><span class="n">progress</span><span class="p">,</span> <span class="n">stay_alive</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span><span class="n">q</span><span class="p">,</span><span class="n">l</span><span class="p">,</span><span class="n">args</span><span class="p">,</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Same as __run_func(), but with additional progress and stay_alive args </span>
+<span class="sd">    (which must be shared objects) to allow remote monitoring of progress and </span>
+<span class="sd">    the possibility to cancel execution.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">total</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">))</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="k">for</span> <span class="n">current</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">l</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">stay_alive</span><span class="p">:</span>
+            <span class="k">return</span>
+        
+        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">func</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+        
+        <span class="n">progress</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="p">(</span><span class="n">current</span><span class="o">+</span><span class="mf">1.0</span><span class="p">)</span><span class="o">/</span><span class="n">total</span>
+    
+    <span class="n">q</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+
+<span class="c">############################################################################</span>
+
+<div class="viewcode-block" id="parallel_process_with_progress"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.main_script.parallel_process_with_progress">[docs]</a><span class="k">def</span> <span class="nf">parallel_process_with_progress</span><span class="p">(</span><span class="n">progress_handler</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">list_</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Same as parallel_process, but with additional progress_handler argument </span>
+<span class="sd">    which should be a callable. This will be called repeatedly during the </span>
+<span class="sd">    parallel processing and passed a float (&lt;1.0) which shows the fraction of the</span>
+<span class="sd">    tasks that have been completed.</span>
+<span class="sd">    </span>
+<span class="sd">    The progress_handler should return True if execution is to be continued. If </span>
+<span class="sd">    False is returned, then execution will halt and None will be returned.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">list_</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+     
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">processes</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">queues</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">progress_indicators</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">stay_alive_flags</span> <span class="o">=</span> <span class="p">[]</span>
+     
+    <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">split</span><span class="p">(</span><span class="n">list_</span><span class="p">,</span><span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()):</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Queue</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        
+        <span class="n">progress</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">RawValue</span><span class="p">(</span><span class="s">&#39;f&#39;</span><span class="p">)</span>
+        <span class="n">progress</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="mi">0</span>
+        
+        <span class="n">stay_alive</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">RawValue</span><span class="p">(</span><span class="s">&#39;b&#39;</span><span class="p">)</span>
+        <span class="n">stay_alive</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="mi">1</span>
+        
+        <span class="n">p</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">__run_func_with_progress</span><span class="p">,</span>
+                                    <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">progress</span><span class="p">,</span> <span class="n">stay_alive</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span><span class="n">q</span><span class="p">,</span><span class="n">l</span><span class="p">,</span><span class="n">args</span><span class="p">,</span><span class="n">kwargs</span><span class="p">))</span>
+        
+        <span class="n">p</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="n">processes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="n">queues</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+        <span class="n">progress_indicators</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">progress</span><span class="p">)</span>
+        <span class="n">stay_alive_flags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">stay_alive</span><span class="p">)</span>
+    
+    <span class="c">#now that the worker processes have been started, loop continuously calling</span>
+    <span class="c">#the progress handler function with updated progress reports.</span>
+    <span class="n">total_progress</span> <span class="o">=</span> <span class="mi">0</span>
+    
+    <span class="k">while</span> <span class="n">total_progress</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">total_progress</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">p</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">progress_indicators</span><span class="p">])</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">progress_indicators</span><span class="p">))</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">progress_handler</span><span class="p">(</span><span class="n">total_progress</span><span class="p">):</span>
+            <span class="c">#user has clicked cancel</span>
+            <span class="k">for</span> <span class="n">flag</span> <span class="ow">in</span> <span class="n">stay_alive_flags</span><span class="p">:</span>
+                <span class="n">flag</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="mi">0</span>
+            
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">processes</span><span class="p">:</span>
+                <span class="n">p</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+            
+            <span class="k">return</span> <span class="bp">None</span>
+
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+    
+    <span class="c">#execution is complete - collect up and return the results.            </span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">processes</span><span class="p">)):</span>        
+        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">queues</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+        <span class="n">processes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+     
+    <span class="k">return</span> <span class="n">flatten</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">ltypes</span><span class="o">=</span><span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="p">))</span>
+
+<span class="c">############################################################################    </span>
 </div>
 <div class="viewcode-block" id="split"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.main_script.split">[docs]</a><span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="n">l</span><span class="p">,</span><span class="n">n</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -193,37 +282,10 @@
                 <span class="n">l</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">l</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
         <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
     <span class="k">return</span> <span class="n">ltype</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
-
-<span class="c">############################################################################</span>
-</div>
-<div class="viewcode-block" id="time_from_fname"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.main_script.time_from_fname">[docs]</a><span class="k">def</span> <span class="nf">time_from_fname</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns the capture time of an image file based on its filename.</span>
-<span class="sd">        * fname - filename of the image</span>
-<span class="sd">        * config - dictionary of config values (as returned by settings.load_config_file()</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    
-    <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">fname</span><span class="p">),</span> 
-                                      <span class="n">config</span><span class="p">[</span><span class="s">&#39;filename_format&#39;</span><span class="p">])</span>
-
-<span class="c">############################################################################</span>
-</div>
-<div class="viewcode-block" id="is_uv_image_file"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.main_script.is_uv_image_file">[docs]</a><span class="k">def</span> <span class="nf">is_uv_image_file</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Function returns True if the filename has the format which we expect for a </span>
-<span class="sd">    UV image.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;file_extension&#39;</span><span class="p">]):</span>
-        <span class="k">return</span> <span class="bp">False</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">time_from_fname</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
-    <span class="k">except</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">False</span>
-    <span class="k">return</span> <span class="bp">True</span>
     
 <span class="c">############################################################################</span>
  </div>
-<div class="viewcode-block" id="process_image_pair"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.main_script.process_image_pair">[docs]</a><span class="k">def</span> <span class="nf">process_image_pair</span><span class="p">(</span><span class="n">im_pair</span><span class="p">,</span> <span class="n">motion_engine</span><span class="p">,</span> <span class="n">flux_engine</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+<div class="viewcode-block" id="process_image_pair"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.main_script.process_image_pair">[docs]</a><span class="k">def</span> <span class="nf">process_image_pair</span><span class="p">(</span><span class="n">im_pair</span><span class="p">,</span> <span class="n">image_loader</span><span class="p">,</span> <span class="n">motion_engine</span><span class="p">,</span> <span class="n">flux_engine</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Performs the motion tracking and flux calculation on a single image pair.</span>
 <span class="sd">    This is split into a separate function to make facilitate parallel execution.</span>
@@ -231,21 +293,20 @@
     <span class="n">im1</span> <span class="o">=</span> <span class="n">im_pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">im2</span> <span class="o">=</span> <span class="n">im_pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
     
-    <span class="n">current_capture_time</span> <span class="o">=</span> <span class="n">time_from_fname</span><span class="p">(</span><span class="n">im1</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
-    
     <span class="k">if</span> <span class="n">im1</span> <span class="o">==</span> <span class="n">process_image_pair</span><span class="o">.</span><span class="n">cached_im_name</span><span class="p">:</span>
+        <span class="n">current_capture_time</span> <span class="o">=</span> <span class="n">process_image_pair</span><span class="o">.</span><span class="n">cached_im_time</span>
         <span class="n">current_masked_im</span> <span class="o">=</span> <span class="n">process_image_pair</span><span class="o">.</span><span class="n">cached_im</span>
         <span class="n">integration_mask</span> <span class="o">=</span> <span class="n">process_image_pair</span><span class="o">.</span><span class="n">cached_mask</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">current_masked_im</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">im1</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">IMREAD_UNCHANGED</span><span class="p">)</span> 
+    <span class="k">else</span><span class="p">:</span>      
+        <span class="n">current_masked_im</span><span class="p">,</span> <span class="n">current_capture_time</span> <span class="o">=</span> <span class="n">image_loader</span><span class="o">.</span><span class="n">_load_and_check</span><span class="p">(</span><span class="n">im1</span><span class="p">)</span>
         <span class="n">integration_mask</span> <span class="o">=</span> <span class="n">motion_engine</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">current_masked_im</span><span class="p">)</span>
     
-    <span class="n">next_capture_time</span> <span class="o">=</span> <span class="n">time_from_fname</span><span class="p">(</span><span class="n">im2</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
-    <span class="n">next_masked_im</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">im2</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">IMREAD_UNCHANGED</span><span class="p">)</span> 
+    <span class="n">next_masked_im</span><span class="p">,</span> <span class="n">next_capture_time</span> <span class="o">=</span> <span class="n">image_loader</span><span class="o">.</span><span class="n">_load_and_check</span><span class="p">(</span><span class="n">im2</span><span class="p">)</span>
     <span class="n">process_image_pair</span><span class="o">.</span><span class="n">cached_mask</span> <span class="o">=</span> <span class="n">motion_engine</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">next_masked_im</span><span class="p">)</span>
     
     <span class="c">#update cached values</span>
     <span class="n">process_image_pair</span><span class="o">.</span><span class="n">cached_im_name</span> <span class="o">=</span> <span class="n">im2</span>
+    <span class="n">process_image_pair</span><span class="o">.</span><span class="n">cached_im_time</span> <span class="o">=</span> <span class="n">next_capture_time</span>
     <span class="n">process_image_pair</span><span class="o">.</span><span class="n">cached_im</span> <span class="o">=</span> <span class="n">next_masked_im</span>
     
     <span class="c">#images must be the same size for motion estimation</span>
@@ -253,7 +314,6 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Images </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s"> and </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s"> are different sizes </span><span class="si">%s</span><span class="s"> and &quot;</span>
                          <span class="s">&quot;</span><span class="si">%s</span><span class="s"> respectively&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">im1</span><span class="p">,</span> <span class="n">im2</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">current_masked_im</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span> 
                                             <span class="nb">str</span><span class="p">(</span><span class="n">next_masked_im</span><span class="o">.</span><span class="n">shape</span><span class="p">)))</span>
-    
     
     <span class="n">delta_t</span> <span class="o">=</span> <span class="n">date2secs</span><span class="p">(</span><span class="n">next_capture_time</span><span class="p">)</span> <span class="o">-</span> <span class="n">date2secs</span><span class="p">(</span><span class="n">current_capture_time</span><span class="p">)</span>
      
@@ -273,12 +333,13 @@
     <span class="c">#only include pixels in the non-masked regions in the flux calculation</span>
     <span class="n">current_masked_im</span> <span class="o">*=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">integration_mask</span><span class="p">)</span> 
     
-    <span class="n">so2_flux</span> <span class="o">=</span> <span class="n">flux_engine</span><span class="o">.</span><span class="n">compute_flux</span><span class="p">(</span><span class="n">current_masked_im</span><span class="p">,</span> <span class="n">flow</span><span class="p">,</span> <span class="n">delta_t</span><span class="p">)</span> 
+    <span class="n">so2_flux</span> <span class="o">=</span> <span class="n">flux_engine</span><span class="o">.</span><span class="n">compute_flux</span><span class="p">(</span><span class="n">current_masked_im</span><span class="p">,</span> <span class="n">next_masked_im</span><span class="p">,</span> <span class="n">flow</span><span class="p">,</span> <span class="n">delta_t</span><span class="p">)</span> 
     
     <span class="k">return</span> <span class="n">so2_flux</span>
 
 <span class="c">#define the cache for the process_image_pair function</span></div>
 <span class="n">process_image_pair</span><span class="o">.</span><span class="n">cached_im_name</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="n">process_image_pair</span><span class="o">.</span><span class="n">cached_im_time</span> <span class="o">=</span> <span class="bp">None</span>
 <span class="n">process_image_pair</span><span class="o">.</span><span class="n">cached_im</span> <span class="o">=</span> <span class="bp">None</span>
 <span class="n">process_image_pair</span><span class="o">.</span><span class="n">cached_mask</span> <span class="o">=</span> <span class="bp">None</span>
 
@@ -293,22 +354,40 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c">#read the user supplied values from the command line</span>
     <span class="n">options</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">parse_cmd_line</span><span class="p">()</span>
-    <span class="n">image_dir</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-     
-    <span class="c">#load all the settings from the configuration file</span>
+    
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">config</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">load_config_file</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">config_file</span><span class="p">)</span>
+        <span class="n">run_mainloop</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+        
     <span class="k">except</span> <span class="n">settings</span><span class="o">.</span><span class="n">ConfigError</span><span class="p">,</span> <span class="n">ex</span><span class="p">:</span>
         <span class="c">#print a friendly error message rather than a scary looking traceback</span>
         <span class="k">print</span> <span class="s">&quot;plumetrack: Configuration file error!&quot;</span>
         <span class="k">print</span> <span class="n">ex</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">return</span>
+        
+
+<span class="c">############################################################################</span>
+</div>
+<div class="viewcode-block" id="run_mainloop"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.main_script.run_mainloop">[docs]</a><span class="k">def</span> <span class="nf">run_mainloop</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">progress_handler</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>    
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This is the main &quot;do it&quot; function of Plumetrack. It loads the relevant config</span>
+<span class="sd">    file and processes images in the specified folder accordingly.</span>
+<span class="sd">    </span>
+<span class="sd">    The options and args arguments are those returned from the </span>
+<span class="sd">    settings.parse_cmd_line() function. The progress_handler argument should be </span>
+<span class="sd">    a callable which takes as its only argument a float which is the fraction of</span>
+<span class="sd">    images that have processed. It should return True if execution should continue</span>
+<span class="sd">    and False if execution should be cancelled.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">image_dir</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+     
+    <span class="c">#load all the settings from the configuration file</span>
+
+    <span class="n">config</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">load_config_file</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">config_file</span><span class="p">)</span>
+    
+    <span class="c">#create the image loader object</span>
+    <span class="n">im_loader</span> <span class="o">=</span> <span class="n">image_loader</span><span class="o">.</span><span class="n">get_image_loader</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
      
     <span class="c">#define a comparator function for ordering UV images by capture time </span>
-    <span class="n">compare_by_time</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">f1</span><span class="p">,</span><span class="n">f2</span><span class="p">:</span> <span class="nb">cmp</span><span class="p">(</span><span class="n">time_from_fname</span><span class="p">(</span><span class="n">f1</span><span class="p">,</span> <span class="n">config</span><span class="p">),</span> <span class="n">time_from_fname</span><span class="p">(</span><span class="n">f2</span><span class="p">,</span> <span class="n">config</span><span class="p">))</span>
-    
-    <span class="c">#define a test function for excluding files which are not uv images</span>
-    <span class="n">is_uv_image</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">fname</span><span class="p">:</span> <span class="n">is_uv_image_file</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+    <span class="n">compare_by_time</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">f1</span><span class="p">,</span><span class="n">f2</span><span class="p">:</span> <span class="nb">cmp</span><span class="p">(</span><span class="n">im_loader</span><span class="o">.</span><span class="n">time_from_fname</span><span class="p">(</span><span class="n">f1</span><span class="p">),</span> <span class="n">im_loader</span><span class="o">.</span><span class="n">time_from_fname</span><span class="p">(</span><span class="n">f2</span><span class="p">))</span>
     
     <span class="k">if</span> <span class="n">plumetrack</span><span class="o">.</span><span class="n">have_gpu</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">options</span><span class="o">.</span><span class="n">no_gpu</span><span class="p">:</span>
         <span class="n">motion_engine</span> <span class="o">=</span> <span class="n">motion</span><span class="o">.</span><span class="n">GPUMotionEngine</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
@@ -321,7 +400,7 @@
                                       <span class="n">skip_existing</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">skip_existing</span><span class="p">,</span> 
                                       <span class="n">recursive</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">recursive</span><span class="p">,</span> 
                                       <span class="n">sort_func</span><span class="o">=</span><span class="n">compare_by_time</span><span class="p">,</span> 
-                                      <span class="n">test_func</span><span class="o">=</span><span class="n">is_uv_image</span><span class="p">,</span>
+                                      <span class="n">test_func</span><span class="o">=</span><span class="n">im_loader</span><span class="o">.</span><span class="n">can_load</span><span class="p">,</span>
                                       <span class="n">max_n</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">max_n</span><span class="p">)</span> 
     
     <span class="c">#set an exit handler if we are working in realtime - otherwise it can hang</span>
@@ -348,29 +427,45 @@
                 <span class="k">continue</span>
                 
             <span class="n">so2fluxes</span> <span class="o">=</span> <span class="n">process_image_pair</span><span class="p">((</span><span class="n">current_image_fname</span><span class="p">,</span> <span class="n">next_image_fname</span><span class="p">),</span>
-                                         <span class="n">motion_engine</span><span class="p">,</span> <span class="n">flux_engine</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span>
-                                         <span class="n">config</span><span class="p">)</span>
+                                         <span class="n">im_loader</span><span class="p">,</span> <span class="n">motion_engine</span><span class="p">,</span> <span class="n">flux_engine</span><span class="p">,</span> 
+                                         <span class="n">options</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
             
-            <span class="n">current_im_time</span> <span class="o">=</span> <span class="n">time_from_fname</span><span class="p">(</span><span class="n">current_image_fname</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+            <span class="n">current_im_time</span> <span class="o">=</span> <span class="n">im_loader</span><span class="o">.</span><span class="n">time_from_fname</span><span class="p">(</span><span class="n">current_image_fname</span><span class="p">)</span>
             
             <span class="n">output</span><span class="o">.</span><span class="n">write_output</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">image_dir</span><span class="p">,</span> <span class="p">[</span><span class="n">current_im_time</span><span class="p">],</span> <span class="p">[</span><span class="n">current_image_fname</span><span class="p">],</span> <span class="p">[</span><span class="n">so2fluxes</span><span class="p">])</span>
                  
             <span class="n">current_image_fname</span> <span class="o">=</span> <span class="n">next_image_fname</span>
+            
+            <span class="k">if</span> <span class="n">progress_handler</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">done</span><span class="p">,</span><span class="n">todo</span> <span class="o">=</span> <span class="n">image_iter</span><span class="o">.</span><span class="n">get_current_position</span><span class="p">()</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">progress_handler</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">done</span><span class="p">)</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">todo</span><span class="o">+</span><span class="n">done</span><span class="p">)):</span>
+                    <span class="n">image_iter</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                    <span class="k">return</span> <span class="bp">False</span>
+                    
         
-     
     <span class="k">else</span><span class="p">:</span>
         <span class="c">#main loop for parallel processing</span>
         <span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">image_iter</span><span class="p">]</span>
-        <span class="n">times</span> <span class="o">=</span> <span class="p">[</span><span class="n">time_from_fname</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="n">times</span> <span class="o">=</span> <span class="p">[</span><span class="n">im_loader</span><span class="o">.</span><span class="n">time_from_fname</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
         <span class="n">file_pairs</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">files</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">files</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+        
+        <span class="k">if</span> <span class="n">progress_handler</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">fluxes</span> <span class="o">=</span> <span class="n">parallel_process_with_progress</span><span class="p">(</span><span class="n">progress_handler</span><span class="p">,</span> <span class="n">process_image_pair</span><span class="p">,</span> 
+                                                    <span class="n">file_pairs</span><span class="p">,</span> <span class="n">im_loader</span><span class="p">,</span> <span class="n">motion_engine</span><span class="p">,</span> 
+                                                    <span class="n">flux_engine</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="n">fluxes</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">False</span> <span class="c">#user clicked cancel</span>
+        
+        <span class="k">else</span><span class="p">:</span>
          
-        <span class="n">fluxes</span> <span class="o">=</span> <span class="n">parallel_process</span><span class="p">(</span><span class="n">process_image_pair</span><span class="p">,</span> <span class="n">file_pairs</span><span class="p">,</span> <span class="n">motion_engine</span><span class="p">,</span> 
-                                  <span class="n">flux_engine</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+            <span class="n">fluxes</span> <span class="o">=</span> <span class="n">parallel_process</span><span class="p">(</span><span class="n">process_image_pair</span><span class="p">,</span> <span class="n">file_pairs</span><span class="p">,</span> <span class="n">im_loader</span><span class="p">,</span> <span class="n">motion_engine</span><span class="p">,</span> 
+                                      <span class="n">flux_engine</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
         
 
         <span class="n">output</span><span class="o">.</span><span class="n">write_output</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">image_dir</span><span class="p">,</span> <span class="n">times</span><span class="p">,</span> <span class="n">files</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">fluxes</span><span class="p">)</span>
         
-        
+    <span class="k">return</span> <span class="bp">True</span>
         </div>
 </pre></div>
 
@@ -379,6 +474,9 @@
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/plumetrack.png" alt="Logo"/>
+            </a></p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
@@ -405,7 +503,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">plumetrack 15.01 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">Plumetrack 15.01 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li>
           <li><a href="../plumetrack.html" >plumetrack</a> &raquo;</li> 
       </ul>

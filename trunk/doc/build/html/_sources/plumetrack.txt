@@ -6,7 +6,7 @@ Subpackages
 
 .. toctree::
 
-    plumetrack.plumetrack_config
+    plumetrack.gui
 
 Submodules
 ----------
@@ -23,6 +23,14 @@ plumetrack.flux module
 ----------------------
 
 .. automodule:: plumetrack.flux
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+plumetrack.image_loader module
+------------------------------
+
+.. automodule:: plumetrack.image_loader
     :members:
     :undoc-members:
     :show-inheritance:

@@ -1,0 +1,283 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>plumetrack.gui.batch_processor &mdash; Plumetrack 15.01 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '15.01',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../../_static/plumetrack_32.ico"/>
+    <link rel="top" title="Plumetrack 15.01 documentation" href="../../../index.html" />
+    <link rel="up" title="plumetrack" href="../../plumetrack.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Plumetrack 15.01 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../plumetrack.html" accesskey="U">plumetrack</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for plumetrack.gui.batch_processor</h1><div class="highlight"><pre>
+<span class="c">#Copyright (C) Nial Peters 2014</span>
+<span class="c">#</span>
+<span class="c">#This file is part of plumetrack.</span>
+<span class="c">#</span>
+<span class="c">#plumetrack is free software: you can redistribute it and/or modify</span>
+<span class="c">#it under the terms of the GNU General Public License as published by</span>
+<span class="c">#the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c">#(at your option) any later version.</span>
+<span class="c">#</span>
+<span class="c">#_plumetrack is distributed in the hope that it will be useful,</span>
+<span class="c">#but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c">#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c">#GNU General Public License for more details.</span>
+<span class="c">#</span>
+<span class="c">#You should have received a copy of the GNU General Public License</span>
+<span class="c">#along with plumetrack.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="kn">import</span> <span class="nn">wx</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">plumetrack</span>
+<span class="kn">from</span> <span class="nn">plumetrack</span> <span class="kn">import</span> <span class="n">persist</span><span class="p">,</span> <span class="n">settings</span><span class="p">,</span> <span class="n">main_script</span>
+
+<div class="viewcode-block" id="BatchProcessor"><a class="viewcode-back" href="../../../plumetrack.gui.html#plumetrack.gui.batch_processor.BatchProcessor">[docs]</a><span class="k">class</span> <span class="nc">BatchProcessor</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">Dialog</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">config_file</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">BatchProcessor</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Batch Process Images &quot;</span>
+                                             <span class="s">&quot;- </span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="n">plumetrack</span><span class="o">.</span><span class="n">PROG_SHORT_NAME</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">config_file</span> <span class="o">=</span> <span class="n">config_file</span>
+        
+        <span class="n">top_panel</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">Panel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_ANY</span><span class="p">)</span>
+        <span class="n">vsizer</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">BoxSizer</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">VERTICAL</span><span class="p">)</span>
+        <span class="n">top_sizer</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">BoxSizer</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">VERTICAL</span><span class="p">)</span>
+        <span class="n">vsizer</span><span class="o">.</span><span class="n">AddSpacer</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+        
+        <span class="c">#add the image directory options</span>
+        <span class="n">vsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">StaticText</span><span class="p">(</span><span class="n">top_panel</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Image folder:&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_LEFT</span><span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">LEFT</span><span class="p">,</span> <span class="n">border</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+        <span class="n">hsizer</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">BoxSizer</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">HORIZONTAL</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">im_dir_box</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">TextCtrl</span><span class="p">(</span><span class="n">top_panel</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">350</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ims_browse_button</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">top_panel</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Browse&quot;</span><span class="p">)</span>
+        <span class="n">hsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">im_dir_box</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_LEFT</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTER_VERTICAL</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">LEFT</span><span class="p">,</span> <span class="n">border</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+        <span class="n">hsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ims_browse_button</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_LEFT</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTER_VERTICAL</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">,</span> <span class="n">border</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+        <span class="n">vsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">hsizer</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">EXPAND</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">recursive_chkbx</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">CheckBox</span><span class="p">(</span><span class="n">top_panel</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Search folder recursively&quot;</span><span class="p">)</span>
+        <span class="n">vsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">recursive_chkbx</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALL</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_LEFT</span><span class="p">,</span> <span class="n">border</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+        
+        <span class="n">wx</span><span class="o">.</span><span class="n">EVT_BUTTON</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ims_browse_button</span><span class="o">.</span><span class="n">GetId</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_images_browse</span><span class="p">)</span>
+        
+        <span class="n">vsizer</span><span class="o">.</span><span class="n">AddSpacer</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+        
+        <span class="c">#add the output file options</span>
+        <span class="n">vsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">StaticText</span><span class="p">(</span><span class="n">top_panel</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Results file:&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_LEFT</span><span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">LEFT</span><span class="p">,</span> <span class="n">border</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+        <span class="n">hsizer2</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">BoxSizer</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">HORIZONTAL</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_file_bx</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">TextCtrl</span><span class="p">(</span><span class="n">top_panel</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">350</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_browse_button</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">top_panel</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Browse&quot;</span><span class="p">)</span>
+        <span class="n">hsizer2</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_file_bx</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_LEFT</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTER_VERTICAL</span><span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">LEFT</span><span class="p">,</span> <span class="n">border</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+        <span class="n">hsizer2</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_browse_button</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_LEFT</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTER_VERTICAL</span><span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">,</span> <span class="n">border</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+        <span class="n">vsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">hsizer2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">EXPAND</span><span class="p">)</span>
+        
+        <span class="n">wx</span><span class="o">.</span><span class="n">EVT_BUTTON</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_browse_button</span><span class="o">.</span><span class="n">GetId</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_output_browse</span><span class="p">)</span>
+        
+        <span class="n">vsizer</span><span class="o">.</span><span class="n">AddSpacer</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+        
+        <span class="c">#add the buttons</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ok_button</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">top_panel</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Ok&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cancel_button</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">top_panel</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;Cancel&quot;</span><span class="p">)</span>
+        <span class="n">button_sizer</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">BoxSizer</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">HORIZONTAL</span><span class="p">)</span>
+        <span class="n">button_sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ok_button</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_BOTTOM</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_RIGHT</span><span class="p">)</span>
+        <span class="n">button_sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cancel_button</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_BOTTOM</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_RIGHT</span><span class="p">)</span>
+        <span class="n">wx</span><span class="o">.</span><span class="n">EVT_BUTTON</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cancel_button</span><span class="o">.</span><span class="n">GetId</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_cancel</span><span class="p">)</span>
+        <span class="n">wx</span><span class="o">.</span><span class="n">EVT_BUTTON</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ok_button</span><span class="o">.</span><span class="n">GetId</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_process</span><span class="p">)</span>
+        
+        <span class="n">vsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">button_sizer</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_BOTTOM</span><span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_RIGHT</span><span class="p">)</span>
+        
+        <span class="n">top_sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">top_panel</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">EXPAND</span><span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_TOP</span><span class="p">)</span>
+        
+        <span class="n">top_panel</span><span class="o">.</span><span class="n">SetSizer</span><span class="p">(</span><span class="n">vsizer</span><span class="p">)</span>
+        <span class="n">top_panel</span><span class="o">.</span><span class="n">SetAutoLayout</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">vsizer</span><span class="o">.</span><span class="n">Fit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">SetSizer</span><span class="p">(</span><span class="n">top_sizer</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SetAutoLayout</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">top_sizer</span><span class="o">.</span><span class="n">Layout</span><span class="p">()</span> <span class="c">#this fixes the problem of the frame being created too small</span>
+        <span class="n">top_sizer</span><span class="o">.</span><span class="n">Fit</span><span class="p">(</span><span class="n">top_panel</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">ShowModal</span><span class="p">()</span>
+        
+        
+        
+<div class="viewcode-block" id="BatchProcessor.on_images_browse"><a class="viewcode-back" href="../../../plumetrack.gui.html#plumetrack.gui.batch_processor.BatchProcessor.on_images_browse">[docs]</a>    <span class="k">def</span> <span class="nf">on_images_browse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evnt</span><span class="p">):</span>
+        
+        <span class="n">current_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">im_dir_box</span><span class="o">.</span><span class="n">GetValue</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="n">current_dir</span> <span class="o">!=</span> <span class="s">&quot;&quot;</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">current_dir</span><span class="p">):</span>
+            <span class="n">prev_dir</span> <span class="o">=</span> <span class="n">current_dir</span>
+            
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">prev_dir</span> <span class="o">=</span> <span class="n">persist</span><span class="o">.</span><span class="n">PersistentStorage</span><span class="p">()</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s">&quot;prev_image_dir&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="n">prev_dir</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+        
+        <span class="n">im_dir</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">DirSelector</span><span class="p">(</span><span class="s">&quot;Select directory containing images to process&quot;</span><span class="p">,</span>
+                                 <span class="n">defaultPath</span><span class="o">=</span><span class="n">prev_dir</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">im_dir</span> <span class="o">==</span> <span class="s">&quot;&quot;</span><span class="p">:</span>
+            <span class="k">return</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">im_dir_box</span><span class="o">.</span><span class="n">SetValue</span><span class="p">(</span><span class="n">im_dir</span><span class="p">)</span>
+            
+        <span class="n">persist</span><span class="o">.</span><span class="n">PersistentStorage</span><span class="p">()</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="s">&quot;prev_image_dir&quot;</span><span class="p">,</span> <span class="n">im_dir</span><span class="p">)</span>
+        
+    
+    </div>
+<div class="viewcode-block" id="BatchProcessor.on_output_browse"><a class="viewcode-back" href="../../../plumetrack.gui.html#plumetrack.gui.batch_processor.BatchProcessor.on_output_browse">[docs]</a>    <span class="k">def</span> <span class="nf">on_output_browse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evnt</span><span class="p">):</span>
+        
+        <span class="n">current_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_file_bx</span><span class="o">.</span><span class="n">GetValue</span><span class="p">())</span>
+        <span class="n">current_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_file_bx</span><span class="o">.</span><span class="n">GetValue</span><span class="p">())</span>
+        
+        <span class="k">if</span> <span class="n">current_dir</span> <span class="o">!=</span> <span class="s">&quot;&quot;</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">current_dir</span><span class="p">):</span>
+            <span class="n">prev_dir</span> <span class="o">=</span> <span class="n">current_dir</span>
+            
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">prev_dir</span> <span class="o">=</span> <span class="n">persist</span><span class="o">.</span><span class="n">PersistentStorage</span><span class="p">()</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s">&quot;prev_output_dir&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="n">prev_dir</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+        
+        <span class="k">if</span> <span class="n">current_filename</span> <span class="o">!=</span> <span class="s">&quot;&quot;</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">current_dir</span><span class="p">):</span>
+            <span class="n">prev_filename</span> <span class="o">=</span> <span class="n">current_filename</span>
+        
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">prev_filename</span> <span class="o">=</span> <span class="n">persist</span><span class="o">.</span><span class="n">PersistentStorage</span><span class="p">()</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s">&quot;prev_output_file&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="n">prev_filename</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+        
+        <span class="n">output_file</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">FileSelector</span><span class="p">(</span><span class="s">&quot;Select output file&quot;</span><span class="p">,</span> <span class="n">default_path</span><span class="o">=</span><span class="n">prev_dir</span><span class="p">,</span> 
+                                 <span class="n">default_filename</span><span class="o">=</span><span class="n">prev_filename</span><span class="p">,</span>
+                                 <span class="n">flags</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">FD_SAVE</span><span class="o">|</span><span class="n">wx</span><span class="o">.</span><span class="n">FD_OVERWRITE_PROMPT</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">output_file</span> <span class="o">==</span> <span class="s">&quot;&quot;</span><span class="p">:</span>
+            <span class="k">return</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_file_bx</span><span class="o">.</span><span class="n">SetValue</span><span class="p">(</span><span class="n">output_file</span><span class="p">)</span>
+            
+        <span class="n">persist</span><span class="o">.</span><span class="n">PersistentStorage</span><span class="p">()</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="s">&quot;prev_output_dir&quot;</span><span class="p">,</span> 
+                                              <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">output_file</span><span class="p">))</span>
+        <span class="n">persist</span><span class="o">.</span><span class="n">PersistentStorage</span><span class="p">()</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="s">&quot;prev_output_file&quot;</span><span class="p">,</span>
+                                              <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">output_file</span><span class="p">))</span>
+    
+    </div>
+<div class="viewcode-block" id="BatchProcessor.on_process"><a class="viewcode-back" href="../../../plumetrack.gui.html#plumetrack.gui.batch_processor.BatchProcessor.on_process">[docs]</a>    <span class="k">def</span> <span class="nf">on_process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evnt</span><span class="p">):</span>
+        
+        <span class="n">cmd_args</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;-f&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config_file</span><span class="p">,</span> 
+                    <span class="s">&quot;-p&quot;</span><span class="p">,</span> <span class="c">#parallel process by default</span>
+                    <span class="s">&quot;-o&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_file_bx</span><span class="o">.</span><span class="n">GetValue</span><span class="p">(),</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">im_dir_box</span><span class="o">.</span><span class="n">GetValue</span><span class="p">()]</span>
+        
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">options</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">parse_cmd_line</span><span class="p">(</span><span class="n">cmd_args</span><span class="p">,</span> <span class="n">exception_on_error</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">settings</span><span class="o">.</span><span class="n">OptionError</span><span class="p">,</span><span class="n">ex</span><span class="p">:</span>
+            <span class="n">wx</span><span class="o">.</span><span class="n">MessageBox</span><span class="p">(</span><span class="n">ex</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">plumetrack</span><span class="o">.</span><span class="n">PROG_SHORT_NAME</span><span class="p">,</span><span class="n">wx</span><span class="o">.</span><span class="n">ICON_ERROR</span><span class="p">)</span>
+            <span class="k">return</span>
+        
+        <span class="n">dialog</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">ProgressDialog</span><span class="p">(</span><span class="s">&quot;Processing... - Plumetrack&quot;</span><span class="p">,</span> 
+                                   <span class="s">&quot;Processing images. Please Wait.&quot;</span><span class="p">,</span> 
+                                   <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">PD_CAN_ABORT</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">PD_REMAINING_TIME</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">PD_AUTO_HIDE</span><span class="p">)</span>
+        
+        <span class="n">progress_handler</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">dialog</span><span class="o">.</span><span class="n">Update</span><span class="p">(</span><span class="mi">100</span><span class="o">*</span><span class="n">x</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">success</span> <span class="o">=</span> <span class="n">main_script</span><span class="o">.</span><span class="n">run_mainloop</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">progress_handler</span><span class="p">)</span>
+        <span class="n">dialog</span><span class="o">.</span><span class="n">Destroy</span><span class="p">()</span>
+        <span class="n">wx</span><span class="o">.</span><span class="n">Yield</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">EndModal</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">CANCEL</span><span class="p">)</span>
+            <span class="n">wx</span><span class="o">.</span><span class="n">MessageBox</span><span class="p">(</span><span class="s">&quot;Finished processing. Results saved to </span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">output_file_bx</span><span class="o">.</span><span class="n">GetValue</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Destroy</span><span class="p">()</span>
+        
+    </div>
+<div class="viewcode-block" id="BatchProcessor.on_cancel"><a class="viewcode-back" href="../../../plumetrack.gui.html#plumetrack.gui.batch_processor.BatchProcessor.on_cancel">[docs]</a>    <span class="k">def</span> <span class="nf">on_cancel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evnt</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">EndModal</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">CANCEL</span><span class="p">)</span>
+        
+        </div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/plumetrack.png" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Plumetrack 15.01 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../plumetrack.html" >plumetrack</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Nial Peters.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Welcome to plumetrack’s documentation! &mdash; plumetrack 15.01 documentation</title>
+    <title>Welcome to Plumetrack’s documentation! &mdash; Plumetrack 15.01 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -24,7 +24,8 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="plumetrack 15.01 documentation" href="#" />
+    <link rel="shortcut icon" href="_static/plumetrack_32.ico"/>
+    <link rel="top" title="Plumetrack 15.01 documentation" href="#" />
     <link rel="next" title="Installation" href="installation.html" /> 
   </head>
   <body>
@@ -40,7 +41,7 @@
         <li class="right" >
           <a href="installation.html" title="Installation"
              accesskey="N">next</a> |</li>
-        <li><a href="#">plumetrack 15.01 documentation</a> &raquo;</li> 
+        <li><a href="#">Plumetrack 15.01 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -50,11 +51,11 @@
           <div class="body">
             
   <div class="section" id="welcome-to-plumetrack-s-documentation">
-<h1>Welcome to plumetrack&#8217;s documentation!<a class="headerlink" href="#welcome-to-plumetrack-s-documentation" title="Permalink to this headline">¶</a></h1>
+<h1>Welcome to Plumetrack&#8217;s documentation!<a class="headerlink" href="#welcome-to-plumetrack-s-documentation" title="Permalink to this headline">¶</a></h1>
 <a class="reference internal image-reference" href="_images/villarrica.png"><img alt="_images/villarrica.png" class="align-right" src="_images/villarrica.png" style="width: 400px;" /></a>
-<p>plumetrack is a <a class="reference external" href="http://www.python.org">Python</a> program for computing sulphur dioxide fluxes from SO2 camera data. It does <em>not</em> perform image calibration into SO2 column amounts. Instead it uses optical flow to calculate the velocity field between pre-calibrated images and allows integrations to be performed across arbitrary paths in the images to compute fluxes.</p>
-<p>It is designed with volcanic monitoring in mind and can perform both real-time and batch processing of images.</p>
-<p>The main plumetrack program is a command-line program, to facilitate easy integration of plumetrack with existing UV image processing toolchains and simple automation of flux calculations. However, plumetrack also ships with a graphical configuration utility which allows program settings to be adjusted whilst viewing in realtime the effects that the changes have on the computed motion field.</p>
+<p>Plumetrack is a <a class="reference external" href="http://www.python.org">Python</a> program for computing sulphur dioxide fluxes from SO2 camera data. It does <em>not</em> perform image calibration into SO2 column amounts. Instead it uses optical flow to calculate the velocity field between pre-calibrated images and allows integrations to be performed across arbitrary paths in the images to compute fluxes.</p>
+<p>It is designed with volcanic monitoring in mind and can perform both real-time and batch processing of images. In addition to SO2 camera images, Plumetrack can be used to compute the motion field for any arbitrary sequence of images. This makes it a useful tool for estimating plume rise speed from video footage for example for DOAS-based flux calculations.</p>
+<p>Plumetrack can be used from the command-line, to facilitate easy integration with existing UV image processing toolchains and simple automation of flux calculations. It also ships with a graphical user interface which allows program settings to be adjusted whilst viewing in realtime the effects that the changes have on the computed motion field. This makes configuration of flux calculations relatively straightforward, and allows use of the majority of the program&#8217;s features without needing to type magic runes at a command prompt.</p>
 <p>Contents:</p>
 <div class="toctree-wrapper compound">
 <ul>
@@ -63,10 +64,11 @@
 <li class="toctree-l2"><a class="reference internal" href="installation.html#windows">Windows</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart_gui.html">Quickstart - Graphical User Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart_cmdline.html">Quickstart - Command Line</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="configuration.html#the-configuration-file">The Configuration File</a></li>
-<li class="toctree-l2"><a class="reference internal" href="configuration.html#the-plumetrack-config-program">The plumetrack-config Program</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#the-plumetrack-gui-program">The plumetrack-gui Program</a></li>
 <li class="toctree-l2"><a class="reference internal" href="configuration.html#configuration-options">Configuration Options</a></li>
 </ul>
 </li>
@@ -93,9 +95,12 @@
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="#">
+              <img class="logo" src="_static/plumetrack.png" alt="Logo"/>
+            </a></p>
   <h3><a href="#">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Welcome to plumetrack&#8217;s documentation!</a><ul>
+<li><a class="reference internal" href="#">Welcome to Plumetrack&#8217;s documentation!</a><ul>
 </ul>
 </li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
@@ -138,7 +143,7 @@
         <li class="right" >
           <a href="installation.html" title="Installation"
              >next</a> |</li>
-        <li><a href="#">plumetrack 15.01 documentation</a> &raquo;</li> 
+        <li><a href="#">Plumetrack 15.01 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

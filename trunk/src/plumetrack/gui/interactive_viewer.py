@@ -18,6 +18,7 @@ import wx
 import math
 import numpy
 import os
+import sys
 
 from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg
 from matplotlib.backends.backend_wx import NavigationToolbar2Wx
@@ -48,6 +49,12 @@ class InteractiveViewerFrame(wx.Frame):
         vsizer.Add(splitter, 1, wx.EXPAND)
         
         wx.EVT_CLOSE(self, self.on_close)
+        
+        #set up the icon for the frame
+        if sys.platform == "win32":
+            self.SetIcon(wx.ArtProvider.GetIcon("plumetrack", size=(16, 16)))
+        else:
+            self.SetIcon(wx.ArtProvider.GetIcon("plumetrack", size=(64, 64)))
         
         #create a status bar to show the velocity values 
         self.status_bar = wx.StatusBar(self, -1)

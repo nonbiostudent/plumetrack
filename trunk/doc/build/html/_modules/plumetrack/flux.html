@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>plumetrack.flux &mdash; plumetrack 15.01 documentation</title>
+    <title>plumetrack.flux &mdash; Plumetrack 15.01 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -24,7 +24,8 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="plumetrack 15.01 documentation" href="../../index.html" />
+    <link rel="shortcut icon" href="../../_static/plumetrack_32.ico"/>
+    <link rel="top" title="Plumetrack 15.01 documentation" href="../../index.html" />
     <link rel="up" title="plumetrack" href="../plumetrack.html" /> 
   </head>
   <body>
@@ -37,7 +38,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">plumetrack 15.01 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">Plumetrack 15.01 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li>
           <li><a href="../plumetrack.html" accesskey="U">plumetrack</a> &raquo;</li> 
       </ul>
@@ -67,6 +68,11 @@
 <span class="c">#along with plumetrack.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
 <span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">interp1d</span><span class="p">,</span> <span class="n">interp2d</span>
 <span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+
+<span class="c">#new data type to hold a value and its associated error</span>
+<span class="n">ValueAndError</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s">&#39;ValueAndError&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;value&#39;</span><span class="p">,</span><span class="s">&#39;error&#39;</span><span class="p">))</span>
 
 
 <div class="viewcode-block" id="IntegrationLine"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.flux.IntegrationLine">[docs]</a><span class="k">class</span> <span class="nc">IntegrationLine</span><span class="p">:</span>
@@ -161,12 +167,14 @@
 </div></div>
 <div class="viewcode-block" id="create_flux_engine"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.flux.create_flux_engine">[docs]</a><span class="k">def</span> <span class="nf">create_flux_engine</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns a flux engine based on the values in config.</span>
+<span class="sd">    Returns a flux engine object based on the values in config.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">config</span><span class="p">[</span><span class="s">&#39;integration_method&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;2d&#39;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">FluxEngine2D</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+    
     <span class="k">elif</span> <span class="n">config</span><span class="p">[</span><span class="s">&#39;integration_method&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;1d&#39;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">FluxEngine1D</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+    
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Unknown integration method </span><span class="se">\&quot;\&quot;</span><span class="s">. Expecting either </span><span class="se">\&quot;</span><span class="s">1d</span><span class="se">\&quot;</span><span class="s"> or </span><span class="se">\&quot;</span><span class="s">2d</span><span class="se">\&quot;</span><span class="s">.&quot;</span><span class="p">)</span>
 
@@ -174,7 +182,10 @@
 </div>
 <div class="viewcode-block" id="FluxEngineBase"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.flux.FluxEngineBase">[docs]</a><span class="k">class</span> <span class="nc">FluxEngineBase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
-        
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Base class for flux engine classes. Creates integration lines based on </span>
+<span class="sd">        the values in config. Subclasses must override the compute_flux method.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_int_lines</span> <span class="o">=</span> <span class="p">[]</span>
         
         <span class="k">for</span> <span class="n">int_line_cfg</span> <span class="ow">in</span> <span class="n">config</span><span class="p">[</span><span class="s">&#39;integration_lines&#39;</span><span class="p">]:</span>
@@ -191,36 +202,154 @@
     
     
 <div class="viewcode-block" id="FluxEngineBase.get_integration_lines"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.flux.FluxEngineBase.get_integration_lines">[docs]</a>    <span class="k">def</span> <span class="nf">get_integration_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a list of IntegrationLine objects that were defined in the config.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_int_lines</span>
     
     </div>
 <div class="viewcode-block" id="FluxEngineBase.compute_flux"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.flux.FluxEngineBase.compute_flux">[docs]</a>    <span class="k">def</span> <span class="nf">compute_flux</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_image</span><span class="p">,</span> <span class="n">flow</span><span class="p">,</span> <span class="n">delta_t</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Should be implemented by subclasses.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;FluxEngineBase must be subclassed, and the &quot;</span>
                         <span class="s">&quot;compute_flux() method should be defined in the &quot;</span>
                         <span class="s">&quot;subclass.&quot;</span><span class="p">)</span>
-
-
+    
 </div></div>
+<div class="viewcode-block" id="compute_error_map"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.flux.compute_error_map">[docs]</a><span class="k">def</span> <span class="nf">compute_error_map</span><span class="p">(</span><span class="n">current_image</span><span class="p">,</span> <span class="n">next_image</span><span class="p">,</span> <span class="n">flow</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function attempts to estimate the error associated with an image pair </span>
+<span class="sd">    and their corresponding motion field. It works by considering conservation of</span>
+<span class="sd">    mass. For each pixel in current_image, it uses the motion vector to compute</span>
+<span class="sd">    where the mass of SO2 in the pixel should end up - eventually creating a </span>
+<span class="sd">    &quot;modelled next image&quot;. This is then compared to the real next image to </span>
+<span class="sd">    estimate the error. The motion field is then used to map the errors back </span>
+<span class="sd">    onto their source pixels in current_image.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">flat_len</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">current_image</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    
+    <span class="n">flat_error_map</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">flat_len</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;float&#39;</span><span class="p">)</span>
+    
+    <span class="n">src_coords</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dstack</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">current_image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span><span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">current_image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">indexing</span><span class="o">=</span><span class="s">&#39;ij&#39;</span><span class="p">))</span>
+
+    <span class="n">primary_dest_coords</span> <span class="o">=</span> <span class="n">src_coords</span> <span class="o">+</span> <span class="n">flow</span><span class="p">[</span><span class="o">...</span><span class="p">,::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="c">#reverse x and y flows since we are dealing with row and columns now</span>
+    
+    <span class="c">#calculate the fractional contribution to each destination pixel</span>
+    <span class="n">fraction</span> <span class="o">=</span> <span class="p">((</span><span class="n">primary_dest_coords</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s">&#39;int&#39;</span><span class="p">)</span> <span class="o">-</span> <span class="n">primary_dest_coords</span><span class="p">)</span>
+    
+    <span class="c">#convert the destination coordinates into coordinates for a flattened image</span>
+    <span class="n">flat_dest_coords</span> <span class="o">=</span> <span class="p">(</span><span class="n">primary_dest_coords</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s">&#39;int&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span> <span class="o">+</span> 
+                        <span class="n">primary_dest_coords</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s">&#39;int&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span> <span class="o">*</span> <span class="n">current_image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    
+    <span class="c">#add up the various contributions. Note that this is slightly complicated by the fact </span>
+    <span class="c">#that multiple pixels in the current image can contribute to the pixels in the next</span>
+    <span class="c">#image. This means that our dest_coords array can contain duplicate entries, and so</span>
+    <span class="c">#we have to use the bincount function to add it to our error map.</span>
+    
+    <span class="c">#11 contribution</span>
+    <span class="n">dest_coords</span> <span class="o">=</span> <span class="n">flat_dest_coords</span>
+    <span class="n">valid_mask</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">dest_coords</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">dest_coords</span> <span class="o">&lt;</span> <span class="n">flat_len</span><span class="p">))</span>
+    <span class="n">contribution</span> <span class="o">=</span> <span class="p">(</span><span class="n">current_image</span> <span class="o">*</span> <span class="n">fraction</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">fraction</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+    <span class="n">flat_error_map</span> <span class="o">+=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="n">dest_coords</span><span class="p">[</span><span class="n">valid_mask</span><span class="p">],</span><span class="n">weights</span><span class="o">=</span><span class="n">contribution</span><span class="p">[</span><span class="n">valid_mask</span><span class="p">],</span> <span class="n">minlength</span><span class="o">=</span><span class="n">flat_len</span><span class="p">)</span>
+    
+    <span class="c">#12 contribution</span>
+    <span class="n">dest_coords</span> <span class="o">=</span> <span class="n">flat_dest_coords</span> <span class="o">+</span> <span class="mi">1</span> <span class="c">#plus one column</span>
+    <span class="n">valid_mask</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">dest_coords</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">dest_coords</span> <span class="o">&lt;</span> <span class="n">flat_len</span><span class="p">))</span>
+    <span class="n">contribution</span> <span class="o">=</span> <span class="p">(</span><span class="n">current_image</span> <span class="o">*</span> <span class="n">fraction</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">fraction</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">1</span><span class="p">]))</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+    <span class="n">flat_error_map</span> <span class="o">+=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="n">dest_coords</span><span class="p">[</span><span class="n">valid_mask</span><span class="p">],</span> <span class="n">weights</span><span class="o">=</span><span class="n">contribution</span><span class="p">[</span><span class="n">valid_mask</span><span class="p">],</span> <span class="n">minlength</span><span class="o">=</span><span class="n">flat_len</span><span class="p">)</span>
+    
+    <span class="c">#21 contribution</span>
+    <span class="n">dest_coords</span> <span class="o">=</span> <span class="n">flat_dest_coords</span> <span class="o">+</span> <span class="n">current_image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="c">#plus one row</span>
+    <span class="n">valid_mask</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">dest_coords</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">dest_coords</span> <span class="o">&lt;</span> <span class="n">flat_len</span><span class="p">))</span>
+    <span class="n">contribution</span> <span class="o">=</span> <span class="p">(</span><span class="n">current_image</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">fraction</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">fraction</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+    <span class="n">flat_error_map</span> <span class="o">+=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="n">dest_coords</span><span class="p">[</span><span class="n">valid_mask</span><span class="p">],</span> <span class="n">weights</span><span class="o">=</span><span class="n">contribution</span><span class="p">[</span><span class="n">valid_mask</span><span class="p">],</span> <span class="n">minlength</span><span class="o">=</span><span class="n">flat_len</span><span class="p">)</span>
+    
+    <span class="c">#22 contribution</span>
+    <span class="n">dest_coords</span> <span class="o">=</span> <span class="n">flat_dest_coords</span> <span class="o">+</span> <span class="n">current_image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="c">#plus one row and one col</span>
+    <span class="n">valid_mask</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">dest_coords</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">dest_coords</span> <span class="o">&lt;</span> <span class="n">flat_len</span><span class="p">))</span>
+    <span class="n">contribution</span> <span class="o">=</span> <span class="p">(</span><span class="n">current_image</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">fraction</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">fraction</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">1</span><span class="p">]))</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+    <span class="n">flat_error_map</span> <span class="o">+=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="n">dest_coords</span><span class="p">[</span><span class="n">valid_mask</span><span class="p">],</span> <span class="n">weights</span><span class="o">=</span><span class="n">contribution</span><span class="p">[</span><span class="n">valid_mask</span><span class="p">],</span> <span class="n">minlength</span><span class="o">=</span><span class="n">flat_len</span><span class="p">)</span>
+    
+    <span class="n">error_map</span> <span class="o">=</span> <span class="n">flat_error_map</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">current_image</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    
+    <span class="n">error_map</span> <span class="o">-=</span> <span class="n">next_image</span>
+    
+    <span class="n">percentage_errors</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">error_map</span><span class="p">)</span>
+    <span class="n">valid_mask</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">next_image</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">percentage_errors</span><span class="p">[</span><span class="n">valid_mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="mi">100</span> <span class="o">*</span> <span class="n">error_map</span><span class="p">[</span><span class="n">valid_mask</span><span class="p">]</span> <span class="o">/</span> <span class="n">next_image</span><span class="p">[</span><span class="n">valid_mask</span><span class="p">])</span>
+    
+    <span class="c">#error map now contains the computed error in next_image following the motion</span>
+    <span class="c">#however, what we want is a map of where this error originated from (i.e. </span>
+    <span class="c">#the error in current_image). So, we now invert the error map, splitting the</span>
+    <span class="c">#error in each pixel in next_image between the pixels in current_image that</span>
+    <span class="c">#contributed to it. </span>
+    <span class="n">flat_err_map</span> <span class="o">=</span> <span class="n">percentage_errors</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+    
+    <span class="n">flat_inverted_error_map</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">flat_err_map</span><span class="p">)</span>
+    
+    <span class="c">#11 contribution</span>
+    <span class="n">dest_coords</span> <span class="o">=</span> <span class="n">flat_dest_coords</span>
+    <span class="n">valid_mask</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">dest_coords</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">dest_coords</span> <span class="o">&lt;</span> <span class="n">flat_len</span><span class="p">))</span>
+    <span class="n">flat_inverted_error_map</span><span class="p">[</span><span class="n">valid_mask</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span><span class="n">fraction</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">fraction</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">ravel</span><span class="p">()[</span><span class="n">valid_mask</span><span class="p">]</span> <span class="o">*</span> <span class="n">flat_err_map</span><span class="p">[</span><span class="n">dest_coords</span><span class="p">[</span><span class="n">valid_mask</span><span class="p">]]</span>
+    
+    <span class="c">#12 contribution</span>
+    <span class="n">dest_coords</span> <span class="o">=</span> <span class="n">flat_dest_coords</span> <span class="o">+</span> <span class="mi">1</span> <span class="c">#plus one column</span>
+    <span class="n">valid_mask</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">dest_coords</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">dest_coords</span> <span class="o">&lt;</span> <span class="n">flat_len</span><span class="p">))</span>
+    <span class="n">flat_inverted_error_map</span><span class="p">[</span><span class="n">valid_mask</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span><span class="n">fraction</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">fraction</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">1</span><span class="p">]))</span><span class="o">.</span><span class="n">ravel</span><span class="p">()[</span><span class="n">valid_mask</span><span class="p">]</span> <span class="o">*</span> <span class="n">flat_err_map</span><span class="p">[</span><span class="n">dest_coords</span><span class="p">[</span><span class="n">valid_mask</span><span class="p">]]</span>
+
+    <span class="c">#21 contribution</span>
+    <span class="n">dest_coords</span> <span class="o">=</span> <span class="n">flat_dest_coords</span> <span class="o">+</span> <span class="n">current_image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="c">#plus one row</span>
+    <span class="n">valid_mask</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">dest_coords</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">dest_coords</span> <span class="o">&lt;</span> <span class="n">flat_len</span><span class="p">))</span>
+    <span class="n">flat_inverted_error_map</span><span class="p">[</span><span class="n">valid_mask</span><span class="p">]</span> <span class="o">+=</span> <span class="p">((</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">fraction</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">fraction</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">ravel</span><span class="p">()[</span><span class="n">valid_mask</span><span class="p">]</span> <span class="o">*</span> <span class="n">flat_err_map</span><span class="p">[</span><span class="n">dest_coords</span><span class="p">[</span><span class="n">valid_mask</span><span class="p">]]</span>
+
+    <span class="c">#22 contribution</span>
+    <span class="n">dest_coords</span> <span class="o">=</span> <span class="n">flat_dest_coords</span> <span class="o">+</span> <span class="n">current_image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="c">#plus one row and one col</span>
+    <span class="n">valid_mask</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">dest_coords</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">dest_coords</span> <span class="o">&lt;</span> <span class="n">flat_len</span><span class="p">))</span>
+    <span class="n">flat_inverted_error_map</span><span class="p">[</span><span class="n">valid_mask</span><span class="p">]</span> <span class="o">+=</span> <span class="p">((</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">fraction</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">fraction</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">1</span><span class="p">]))</span><span class="o">.</span><span class="n">ravel</span><span class="p">()[</span><span class="n">valid_mask</span><span class="p">]</span> <span class="o">*</span> <span class="n">flat_err_map</span><span class="p">[</span><span class="n">dest_coords</span><span class="p">[</span><span class="n">valid_mask</span><span class="p">]]</span>
+
+    
+    <span class="c">#returns % errors.</span>
+    <span class="k">return</span> <span class="n">flat_inverted_error_map</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">current_image</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    
+
+</div>
 <div class="viewcode-block" id="FluxEngine1D"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.flux.FluxEngine1D">[docs]</a><span class="k">class</span> <span class="nc">FluxEngine1D</span><span class="p">(</span><span class="n">FluxEngineBase</span><span class="p">):</span>
     
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        One dimensional flux calculation engine. This works by multiplying each </span>
+<span class="sd">        pixel on the integration line by its corresponding velocity and then </span>
+<span class="sd">        integrating along the line. This is the &quot;traditional&quot; flux calculation </span>
+<span class="sd">        method.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">FluxEngine1D</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
     
     
-<div class="viewcode-block" id="FluxEngine1D.compute_flux"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.flux.FluxEngine1D.compute_flux">[docs]</a>    <span class="k">def</span> <span class="nf">compute_flux</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_image</span><span class="p">,</span> <span class="n">flow</span><span class="p">,</span> <span class="n">delta_t</span><span class="p">):</span>
-        
+<div class="viewcode-block" id="FluxEngine1D.compute_flux"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.flux.FluxEngine1D.compute_flux">[docs]</a>    <span class="k">def</span> <span class="nf">compute_flux</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_image</span><span class="p">,</span> <span class="n">next_image</span><span class="p">,</span><span class="n">flow</span><span class="p">,</span> <span class="n">delta_t</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the fluxes and associated errors across each defined integration </span>
+<span class="sd">        line.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">flow</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">current_image</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;The image has a different shape </span><span class="si">%s</span><span class="s"> to the flow &quot;</span>
                              <span class="s">&quot;array </span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">current_image</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">flow</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)))</span>
                
+        <span class="c">#calculate the errors associated with the image pair and flow field</span>
+        <span class="n">pix_errors</span> <span class="o">=</span> <span class="n">compute_error_map</span><span class="p">(</span><span class="n">current_image</span><span class="p">,</span> <span class="n">next_image</span><span class="p">,</span> <span class="n">flow</span><span class="p">)</span>
+        
         <span class="c">#convert the displacements to velocities in m/s</span>
         <span class="n">flow</span> <span class="o">*=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pixel_size</span> <span class="o">/</span> <span class="n">delta_t</span><span class="p">)</span>
         
-        <span class="c">#interpolate the current image to find the pixel values at the points </span>
-        <span class="c">#on the integration line</span>
+        <span class="c">#interpolate the current image and error values to find the values at </span>
+        <span class="c">#the points on the integration line</span>
         <span class="n">image_interp</span> <span class="o">=</span> <span class="n">interp2d</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">current_image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> 
                                 <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">current_image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> 
                                 <span class="n">current_image</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+        
+        <span class="n">errors_interp</span> <span class="o">=</span> <span class="n">interp2d</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">current_image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> 
+                                <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">current_image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> 
+                                <span class="n">pix_errors</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
                
         <span class="c">#interpolate the flow field to find the velocities on the integration</span>
         <span class="c">#line</span>
@@ -247,6 +376,7 @@
             <span class="n">mid_points</span> <span class="o">=</span> <span class="n">int_pts</span> <span class="o">+</span> <span class="p">(</span><span class="mf">0.5</span><span class="o">*</span><span class="n">int_vecs</span><span class="p">)</span>
             
             <span class="n">pix_vals</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">number_of_segments</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;float&#39;</span><span class="p">)</span>
+            <span class="n">err_vals</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">number_of_segments</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;float&#39;</span><span class="p">)</span>
             <span class="n">velocities</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">number_of_segments</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;float&#39;</span><span class="p">)</span>
             
             <span class="c">#note that we have to do this in a for loop rather than calling the </span>
@@ -256,7 +386,8 @@
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">number_of_segments</span><span class="p">):</span>
                 <span class="n">x_coord</span> <span class="o">=</span> <span class="n">mid_points</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
                 <span class="n">y_coord</span> <span class="o">=</span> <span class="n">mid_points</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
-                <span class="n">pix_vals</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">image_interp</span><span class="p">(</span><span class="n">x_coord</span><span class="p">,</span> <span class="n">y_coord</span><span class="p">)</span>        
+                <span class="n">pix_vals</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">image_interp</span><span class="p">(</span><span class="n">x_coord</span><span class="p">,</span> <span class="n">y_coord</span><span class="p">)</span> 
+                <span class="n">err_vals</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">errors_interp</span><span class="p">(</span><span class="n">x_coord</span><span class="p">,</span> <span class="n">y_coord</span><span class="p">)</span>       
                 <span class="n">velocities</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_flow_interp</span><span class="p">(</span><span class="n">x_coord</span><span class="p">,</span> <span class="n">y_coord</span><span class="p">)</span>
                 <span class="n">velocities</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_flow_interp</span><span class="p">(</span><span class="n">x_coord</span><span class="p">,</span> <span class="n">y_coord</span><span class="p">)</span>
             
@@ -272,11 +403,19 @@
             
             <span class="c">#only sum the values with pixel values above the low pixel threshold</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_low_pix_threshold</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-                <span class="n">total_flux</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">fluxes</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">pix_vals</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_low_pix_threshold</span><span class="p">)])</span>
+                <span class="n">mask</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">pix_vals</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_low_pix_threshold</span><span class="p">)</span>
+                <span class="n">total_flux</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">fluxes</span><span class="p">[</span><span class="n">mask</span><span class="p">])</span>
+                
+                <span class="c">#total error is quadrature sum of pixel errors</span>
+                <span class="n">error</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(((</span><span class="n">err_vals</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">/</span><span class="mf">100.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">fluxes</span><span class="p">[</span><span class="n">mask</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+                <span class="n">error</span> <span class="o">=</span> <span class="p">(</span><span class="n">error</span><span class="o">/</span><span class="n">total_flux</span><span class="p">)</span> <span class="o">*</span> <span class="mf">100.0</span> <span class="c">#convert to percentage</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">total_flux</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">fluxes</span><span class="p">)</span>
+                <span class="n">error</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(((</span><span class="n">err_vals</span><span class="o">/</span><span class="mf">100.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">fluxes</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+                <span class="n">error</span> <span class="o">=</span> <span class="p">(</span><span class="n">error</span><span class="o">/</span><span class="n">total_flux</span><span class="p">)</span> <span class="o">*</span> <span class="mf">100.0</span> <span class="c">#convert to percentage</span>
+                
             
-            <span class="n">total_fluxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">total_flux</span><span class="p">)</span>
+            <span class="n">total_fluxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ValueAndError</span><span class="p">(</span><span class="n">total_flux</span><span class="p">,</span> <span class="n">error</span><span class="p">))</span>
             
         <span class="c">#need to return a tuple NOT a list - since parallel processing uses</span>
         <span class="c">#the flatten() function    </span>
@@ -287,16 +426,31 @@
 <div class="viewcode-block" id="FluxEngine2D"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.flux.FluxEngine2D">[docs]</a><span class="k">class</span> <span class="nc">FluxEngine2D</span><span class="p">(</span><span class="n">FluxEngineBase</span><span class="p">):</span>    
     
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Two dimensional flux calculation engine. This works by considering the </span>
+<span class="sd">        motion of every pixel in the image and computing whether it crosses the </span>
+<span class="sd">        integration line or not. This is a more robust method of flux computation</span>
+<span class="sd">        particularly for images with a large time step between them, or for </span>
+<span class="sd">        rapidly moving plumes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">FluxEngine2D</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
         
         
-<div class="viewcode-block" id="FluxEngine2D.compute_flux"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.flux.FluxEngine2D.compute_flux">[docs]</a>    <span class="k">def</span> <span class="nf">compute_flux</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_image</span><span class="p">,</span> <span class="n">flow</span><span class="p">,</span> <span class="n">delta_t</span><span class="p">):</span>
+<div class="viewcode-block" id="FluxEngine2D.compute_flux"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.flux.FluxEngine2D.compute_flux">[docs]</a>    <span class="k">def</span> <span class="nf">compute_flux</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_image</span><span class="p">,</span> <span class="n">next_image</span><span class="p">,</span> <span class="n">flow</span><span class="p">,</span> <span class="n">delta_t</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the fluxes and associated errors across each defined integration </span>
+<span class="sd">        line.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">flow</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">current_image</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;The image has a different shape </span><span class="si">%s</span><span class="s"> to the flow &quot;</span>
                              <span class="s">&quot;array </span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">current_image</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">flow</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)))</span>
             
         <span class="c">#convert the pixel values into mass of SO2</span>
         <span class="n">so2_masses_kg</span> <span class="o">=</span> <span class="n">current_image</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pixel_size</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_conversion_factor</span>
+        
+        <span class="c">#calculate the errors associated with the image pair and flow field</span>
+        <span class="n">percent_pix_errors</span> <span class="o">=</span> <span class="n">compute_error_map</span><span class="p">(</span><span class="n">current_image</span><span class="p">,</span> <span class="n">next_image</span><span class="p">,</span> <span class="n">flow</span><span class="p">)</span>
+        <span class="n">pix_errors</span> <span class="o">=</span> <span class="p">(</span><span class="n">percent_pix_errors</span><span class="o">/</span><span class="mf">100.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">so2_masses_kg</span>
         
         <span class="c">#now compute the flux for each integration line in the list</span>
         <span class="n">total_fluxes</span> <span class="o">=</span> <span class="p">[]</span>
@@ -309,13 +463,17 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_low_pix_threshold</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
                 <span class="c">#only sum the values with pixel values above the low pixel threshold</span>
                 <span class="n">contributing_pixels</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">current_image</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_low_pix_threshold</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
-
+            
             <span class="n">total_so2_mass</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">so2_masses_kg</span> <span class="o">*</span> <span class="n">contributing_pixels</span><span class="p">)</span>
+            
+            <span class="n">error</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">contributing_pixels</span> <span class="o">*</span> <span class="n">pix_errors</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+            
+            <span class="n">error</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="p">(</span><span class="n">error</span><span class="o">/</span><span class="n">total_so2_mass</span><span class="p">)</span>
             
             <span class="c">#convert to flux</span>
             <span class="n">flux</span> <span class="o">=</span> <span class="n">total_so2_mass</span> <span class="o">/</span> <span class="n">delta_t</span>
             
-            <span class="n">total_fluxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">flux</span><span class="p">)</span>
+            <span class="n">total_fluxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ValueAndError</span><span class="p">(</span><span class="n">flux</span><span class="p">,</span> <span class="n">error</span><span class="p">))</span>
         
         <span class="c">#need to return a tuple NOT a list - since parallel processing uses</span>
         <span class="c">#the flatten() function</span>
@@ -323,7 +481,13 @@
     
     </div>
 <div class="viewcode-block" id="FluxEngine2D.find_flux_contributions"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.flux.FluxEngine2D.find_flux_contributions">[docs]</a>    <span class="k">def</span> <span class="nf">find_flux_contributions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flow</span><span class="p">,</span> <span class="n">integration_line</span><span class="p">,</span> <span class="n">poly_approx</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
-    
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        For every pixel in the image, computes whether its motion vector </span>
+<span class="sd">        crosses the integration line and whether it crosses in a positive or </span>
+<span class="sd">        negative direction. Returns an array the same size as the image, where </span>
+<span class="sd">        each element is either 1 (positive contribution to flux), 0 (no </span>
+<span class="sd">        contribution) or -1 (negative contribution to flux).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">int_pts</span><span class="p">,</span> <span class="n">int_vecs</span><span class="p">,</span> <span class="n">int_norms</span> <span class="o">=</span> <span class="n">integration_line</span><span class="o">.</span><span class="n">get_poly_approx</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">poly_approx</span><span class="p">)</span>
         
         <span class="n">xsize</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -390,6 +554,9 @@
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/plumetrack.png" alt="Logo"/>
+            </a></p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
@@ -416,7 +583,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">plumetrack 15.01 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">Plumetrack 15.01 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li>
           <li><a href="../plumetrack.html" >plumetrack</a> &raquo;</li> 
       </ul>
