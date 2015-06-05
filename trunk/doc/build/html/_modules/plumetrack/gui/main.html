@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>plumetrack.gui.main &mdash; Plumetrack 15.01 documentation</title>
+    <title>plumetrack.gui.main &mdash; Plumetrack 15.06 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '15.01',
+        VERSION:     '15.06',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="../../../_static/plumetrack_32.ico"/>
-    <link rel="top" title="Plumetrack 15.01 documentation" href="../../../index.html" />
+    <link rel="top" title="Plumetrack 15.06 documentation" href="../../../index.html" />
     <link rel="up" title="plumetrack" href="../../plumetrack.html" /> 
   </head>
   <body>
@@ -38,7 +38,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">Plumetrack 15.01 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">Plumetrack 15.06 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../plumetrack.html" accesskey="U">plumetrack</a> &raquo;</li> 
       </ul>
@@ -185,7 +185,6 @@
             <span class="n">prev_cfg_file</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">prev_cfg_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-            
         
         <span class="bp">self</span><span class="o">.</span><span class="n">main_frame</span><span class="o">.</span><span class="n">launch</span><span class="p">(</span><span class="n">prev_cfg_file</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">True</span>
@@ -1114,6 +1113,12 @@
             <span class="k">except</span> <span class="p">(</span><span class="ne">IOError</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">ConfigError</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">on_new</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
         
+        <span class="c">#set up the icon for the frame</span>
+        <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s">&quot;win32&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">SetIcon</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">ArtProvider</span><span class="o">.</span><span class="n">GetIcon</span><span class="p">(</span><span class="s">&quot;plumetrack&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">)))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">SetIcon</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">ArtProvider</span><span class="o">.</span><span class="n">GetIcon</span><span class="p">(</span><span class="s">&quot;plumetrack&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">)))</span>
+        
         <span class="c">#do the layout       </span>
         <span class="n">top_panel</span><span class="o">.</span><span class="n">SetSizer</span><span class="p">(</span><span class="n">vsizer</span><span class="p">)</span>
         <span class="n">top_panel</span><span class="o">.</span><span class="n">SetAutoLayout</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
@@ -1303,15 +1308,14 @@
             <span class="k">return</span>
         
         <span class="n">persist</span><span class="o">.</span><span class="n">PersistentStorage</span><span class="p">()</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="s">&quot;prev_image_dir&quot;</span><span class="p">,</span> <span class="n">im_dir</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">toolbar</span><span class="o">.</span><span class="n">interactive_tool</span><span class="o">.</span><span class="n">Enable</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">toolbar</span><span class="o">.</span><span class="n">EnableTool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">toolbar</span><span class="o">.</span><span class="n">interactive_tool</span><span class="o">.</span><span class="n">GetId</span><span class="p">(),</span> <span class="bp">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">interactive_viewer_frame</span> <span class="o">=</span> <span class="n">interactive_viewer</span><span class="o">.</span><span class="n">InteractiveViewerFrame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">im_dir</span><span class="p">,</span> <span class="n">configs</span><span class="p">)</span>
     
     </div>
     <span class="k">def</span> <span class="nf">_on_config_test_frame_close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c">#called from inside the on_close handler of the config test frame</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">interactive_viewer_frame</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">toolbar</span><span class="o">.</span><span class="n">interactive_tool</span><span class="o">.</span><span class="n">Enable</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
-        <span class="k">print</span> <span class="s">&quot;ran on_close handler&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">toolbar</span><span class="o">.</span><span class="n">EnableTool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">toolbar</span><span class="o">.</span><span class="n">interactive_tool</span><span class="o">.</span><span class="n">GetId</span><span class="p">(),</span> <span class="bp">True</span><span class="p">)</span>
         <span class="n">wx</span><span class="o">.</span><span class="n">Yield</span><span class="p">()</span>
     
     
@@ -1727,7 +1731,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">Plumetrack 15.01 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">Plumetrack 15.06 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../plumetrack.html" >plumetrack</a> &raquo;</li> 
       </ul>

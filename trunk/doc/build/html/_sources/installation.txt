@@ -2,7 +2,10 @@
 Installation
 ============
 
-Since plumetrack is still in a fairly early stage of development, installation (especially on Windows) might be a little tricky. Hopefully, this will be gradually improved on in the future. In the meantime, please help to improve useability by reporting any installation problems you have.
+.. note::
+
+  If you have an old version of Plumetrack installed on your computer, it is highly recommended to remove it before installing the latest version. 
+  
 
 
 Linux
@@ -14,7 +17,7 @@ These instructions are for Ubuntu Linux, other distributions should be similar, 
   
       sudo apt-get install python-numpy python-scipy python-opencv python-matplotlib python-wxgtk2.8 python-pyinotify
 
-  #. Download the plumetrack distribution package (a .zip file) from `here <http://ccpforge.cse.rl.ac.uk/gf/project/plumetrack/frs>`_.
+  #. Download the Plumetrack distribution package (a .zip file) from `here <http://ccpforge.cse.rl.ac.uk/gf/project/plumetrack/frs>`_.
   
   #. Right-click on the zip file and select "Extract here", or open a terminal and use the command::
   
@@ -22,7 +25,7 @@ These instructions are for Ubuntu Linux, other distributions should be similar, 
       
     (where x.x is the version number).
   
-  #. Open a terminal and navigate to the unpacked plumetrack folder:: 
+  #. Open a terminal and navigate to the unpacked Plumetrack folder:: 
   
       cd plumetrack-15.01
   
@@ -35,13 +38,15 @@ These instructions are for Ubuntu Linux, other distributions should be similar, 
   
       plumetrack -h
      
-     If plumetrack has installed correctly then the above command should print a list of command-line options that can be used with plumetrack and their meanings.
+     If Plumetrack has installed correctly then the above command should print a list of command-line options that can be used with Plumetrack and their meanings.
+     
+  #. The graphical interface for Plumetrack should also have been added to your applications menu, so you can open it without needing to use the terminal.
 
 
 Windows
 -------
 
-If you do not already have Python installed on your system then it is recommended to use Anaconda. Anaconda is a version of Python which already includes many of the common Python packages (including most of the dependencies for plumetrack), which makes installation of plumetrack easier!
+If you do not already have Python installed on your system then it is recommended to use Anaconda. Anaconda is a version of Python which already includes many of the common Python packages (including most of the dependencies for Plumetrack), which makes installation of Plumetrack easier!
 
 
 Prerequisites - Using Anaconda
@@ -55,7 +60,7 @@ Now go to the OpenCV section below.
 
 Prerequisites - Using an Existing Python Installation
 .....................................................
-If you already have a Python installation on your system, then you will need to install the following Python packages before installing plumetrack:
+If you already have a Python installation on your system, then you will need to install the following Python packages before installing Plumetrack:
 
  * `NumPy <http://www.numpy.org/>`_
  * `SciPy <http://www.scipy.org/>`_
@@ -78,22 +83,22 @@ To install the Python bindings for the OpenCV library:
  #. Copy the cv2.pyd file into the site-packages directory of your Python install, for people using Anaconda this will be something like C:\\Anaconda\\Lib\\site-packages and for people using a standard Python install it will be C:\\Python27\\Lib\\site-packages
 
 
-Installing plumetrack
+Installing Plumetrack
 .....................
 
-Once you have installed all of the dependencies, then installation of plumetrack itself should be relatively straightforward.
+Once you have installed all of the dependencies, then installation of Plumetrack itself should be relatively straightforward. You can either download and run one of the executable installers (.exe files) from `here <http://ccpforge.cse.rl.ac.uk/gf/project/plumetrack/frs>`_, or you can follow the instructions below to install from source:
 
- #. Download the plumetrack distribution package (a .zip file) from `here <http://ccpforge.cse.rl.ac.uk/gf/project/plumetrack/frs>`_.
+ #. Download the Plumetrack distribution package (a .zip file) from `here <http://ccpforge.cse.rl.ac.uk/gf/project/plumetrack/frs>`_.
  
  #. Unzip the package.
  
  #. Open a terminal (start->run->cmd.exe).
  
- #. Navigate to the unzipped plumetrack folder. For example::
+ #. Navigate to the unzipped Plumetrack folder. For example::
      
      cd plumetrack-14.11
  
- #. Install plumetrack using the following commands::
+ #. Install Plumetrack using the following commands::
 
      python setup.py build
      python setup.py install
@@ -106,14 +111,18 @@ Once you have installed all of the dependencies, then installation of plumetrack
      
      plumetrack -h
   
-  This should print a summary of options that can be passed to plumetrack. If this works, then you're done!
+  This should print a summary of options that can be passed to Plumetrack. If this works, then you're done!
+  
+.. note::
+
+ If you used one of the executable installers for Plumetrack, then a Start Menu entry should have been created for the graphical interface to Plumetrack. You can therefore open it as you would any other program.
 
 
 
-Installing plumetrack from SVN
+Installing Plumetrack from SVN
 ..............................
 
-If you want the very latest version of plumetrack (and be advised that this may not be very stable!) then you can install it from the SVN repository. To do this you need an SVN client, which you can get from `here <http://sourceforge.net/projects/win32svn>`_. Once you have installed an SVN client:
+If you want the very latest version of Plumetrack (and be advised that this may not be very stable!) then you can install it from the SVN repository. To do this you need an SVN client, which you can get from `here <http://sourceforge.net/projects/win32svn>`_. Once you have installed an SVN client:
 
  #. Create a folder on your desktop called plumetrack.
 
@@ -123,13 +132,13 @@ If you want the very latest version of plumetrack (and be advised that this may 
      
      cd Desktop\plumetrack
 
- #. Check out a copy of the plumetrack repository by entering the following command::
+ #. Check out a copy of the Plumetrack repository by entering the following command::
      
      svn checkout http://ccpforge.cse.rl.ac.uk/svn/plumetrack/trunk .
 
  #. When prompted for a password press enter (blank password). When prompted for a username enter 'anonymous'.
 
- #. You should now have a full checkout of the plumetrack code. Install plumetrack using the following commands::
+ #. You should now have a full checkout of the Plumetrack code. Install Plumetrack using the following commands::
 
      python setup.py build
      python setup.py install
@@ -142,7 +151,7 @@ If you want the very latest version of plumetrack (and be advised that this may 
      
      plumetrack -h
   
-  This should print a summary of options that can be passed to plumetrack. If this works, then you're done!
+  This should print a summary of options that can be passed to Plumetrack. If this works, then you're done!
  
 
 

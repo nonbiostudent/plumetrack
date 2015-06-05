@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>plumetrack.gui.interactive_viewer &mdash; Plumetrack 15.01 documentation</title>
+    <title>plumetrack.gui.interactive_viewer &mdash; Plumetrack 15.06 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '15.01',
+        VERSION:     '15.06',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="../../../_static/plumetrack_32.ico"/>
-    <link rel="top" title="Plumetrack 15.01 documentation" href="../../../index.html" />
+    <link rel="top" title="Plumetrack 15.06 documentation" href="../../../index.html" />
     <link rel="up" title="plumetrack" href="../../plumetrack.html" /> 
   </head>
   <body>
@@ -38,7 +38,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">Plumetrack 15.01 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">Plumetrack 15.06 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../plumetrack.html" accesskey="U">plumetrack</a> &raquo;</li> 
       </ul>
@@ -70,6 +70,7 @@
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">numpy</span>
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
 
 <span class="kn">from</span> <span class="nn">matplotlib.backends.backend_wxagg</span> <span class="kn">import</span> <span class="n">FigureCanvasWxAgg</span>
 <span class="kn">from</span> <span class="nn">matplotlib.backends.backend_wx</span> <span class="kn">import</span> <span class="n">NavigationToolbar2Wx</span>
@@ -100,6 +101,12 @@
         <span class="n">vsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">splitter</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">EXPAND</span><span class="p">)</span>
         
         <span class="n">wx</span><span class="o">.</span><span class="n">EVT_CLOSE</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span><span class="p">)</span>
+        
+        <span class="c">#set up the icon for the frame</span>
+        <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s">&quot;win32&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">SetIcon</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">ArtProvider</span><span class="o">.</span><span class="n">GetIcon</span><span class="p">(</span><span class="s">&quot;plumetrack&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">)))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">SetIcon</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">ArtProvider</span><span class="o">.</span><span class="n">GetIcon</span><span class="p">(</span><span class="s">&quot;plumetrack&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">)))</span>
         
         <span class="c">#create a status bar to show the velocity values </span>
         <span class="bp">self</span><span class="o">.</span><span class="n">status_bar</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">StatusBar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
@@ -681,7 +688,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">Plumetrack 15.01 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">Plumetrack 15.06 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../plumetrack.html" >plumetrack</a> &raquo;</li> 
       </ul>

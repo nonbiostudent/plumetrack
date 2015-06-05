@@ -1,7 +1,7 @@
 Quickstart - Command Line
 =========================
 
-The Plumetrack distribution includes a few example images of Villarrica volcano in Chile along with an example configuration file, so that you can quickly get used to using the program. The following tutorial will guide you through processing these example images using the command-line version of Plumetrack. The commands listed are for Windows users, Linux users need to substitute blackslashes for forward slashes.
+The Plumetrack distribution includes a few example images of Villarrica volcano in Chile along with an example configuration file, so that you can quickly get used to using the program. The following tutorial will guide you through processing these example images using the command-line version of Plumetrack. The commands listed are for Windows users, Linux users need to substitute blackslashes for forward slashes. If you do not have the example images (they are in the examples folder of the source distribution) then you can download them seperately as a zip file `here <http://ccpforge.cse.rl.ac.uk/gf/project/plumetrack/frs>`_.
 
 To start, open a terminal and change directory to the examples folder of the Plumetrack distribution::
 

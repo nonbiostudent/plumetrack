@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Installation &mdash; Plumetrack 15.01 documentation</title>
+    <title>Installation &mdash; Plumetrack 15.06 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '15.01',
+        VERSION:     '15.06',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,8 +25,8 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="_static/plumetrack_32.ico"/>
-    <link rel="top" title="Plumetrack 15.01 documentation" href="index.html" />
-    <link rel="next" title="Quickstart" href="quickstart.html" />
+    <link rel="top" title="Plumetrack 15.06 documentation" href="index.html" />
+    <link rel="next" title="Quickstart - Graphical User Interface" href="quickstart_gui.html" />
     <link rel="prev" title="Welcome to Plumetrack’s documentation!" href="index.html" /> 
   </head>
   <body>
@@ -40,12 +40,12 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="quickstart.html" title="Quickstart"
+          <a href="quickstart_gui.html" title="Quickstart - Graphical User Interface"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="index.html" title="Welcome to Plumetrack’s documentation!"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Plumetrack 15.01 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Plumetrack 15.06 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -56,7 +56,10 @@
             
   <div class="section" id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
-<p>Since plumetrack is still in a fairly early stage of development, installation (especially on Windows) might be a little tricky. Hopefully, this will be gradually improved on in the future. In the meantime, please help to improve useability by reporting any installation problems you have.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If you have an old version of Plumetrack installed on your computer, it is highly recommended to remove it before installing the latest version.</p>
+</div>
 <div class="section" id="linux">
 <h2>Linux<a class="headerlink" href="#linux" title="Permalink to this headline">¶</a></h2>
 <p>These instructions are for Ubuntu Linux, other distributions should be similar, but the package names may be slightly different.</p>
@@ -67,7 +70,7 @@
 </pre></div>
 </div>
 </li>
-<li><p class="first">Download the plumetrack distribution package (a .zip file) from <a class="reference external" href="http://ccpforge.cse.rl.ac.uk/gf/project/plumetrack/frs">here</a>.</p>
+<li><p class="first">Download the Plumetrack distribution package (a .zip file) from <a class="reference external" href="http://ccpforge.cse.rl.ac.uk/gf/project/plumetrack/frs">here</a>.</p>
 </li>
 <li><p class="first">Right-click on the zip file and select &#8220;Extract here&#8221;, or open a terminal and use the command:</p>
 <div class="highlight-python"><div class="highlight"><pre>unzip plumetrack-x.x.zip
@@ -78,7 +81,7 @@
 <blockquote>
 <div>(where x.x is the version number).</div></blockquote>
 <ol class="arabic">
-<li><p class="first">Open a terminal and navigate to the unpacked plumetrack folder:</p>
+<li><p class="first">Open a terminal and navigate to the unpacked Plumetrack folder:</p>
 <div class="highlight-python"><div class="highlight"><pre>cd plumetrack-15.01
 </pre></div>
 </div>
@@ -93,14 +96,16 @@ sudo python setup.py install
 <div class="highlight-python"><div class="highlight"><pre><span class="n">plumetrack</span> <span class="o">-</span><span class="n">h</span>
 </pre></div>
 </div>
-<p>If plumetrack has installed correctly then the above command should print a list of command-line options that can be used with plumetrack and their meanings.</p>
+<p>If Plumetrack has installed correctly then the above command should print a list of command-line options that can be used with Plumetrack and their meanings.</p>
+</li>
+<li><p class="first">The graphical interface for Plumetrack should also have been added to your applications menu, so you can open it without needing to use the terminal.</p>
 </li>
 </ol>
 </div></blockquote>
 </div>
 <div class="section" id="windows">
 <h2>Windows<a class="headerlink" href="#windows" title="Permalink to this headline">¶</a></h2>
-<p>If you do not already have Python installed on your system then it is recommended to use Anaconda. Anaconda is a version of Python which already includes many of the common Python packages (including most of the dependencies for plumetrack), which makes installation of plumetrack easier!</p>
+<p>If you do not already have Python installed on your system then it is recommended to use Anaconda. Anaconda is a version of Python which already includes many of the common Python packages (including most of the dependencies for Plumetrack), which makes installation of Plumetrack easier!</p>
 <div class="section" id="prerequisites-using-anaconda">
 <h3>Prerequisites - Using Anaconda<a class="headerlink" href="#prerequisites-using-anaconda" title="Permalink to this headline">¶</a></h3>
 <p>Download and install Anaconda from <a class="reference external" href="https://store.continuum.io/cshop/anaconda/">here</a>. Note, that you want the Python 2.7 version.</p>
@@ -109,7 +114,7 @@ sudo python setup.py install
 </div>
 <div class="section" id="prerequisites-using-an-existing-python-installation">
 <h3>Prerequisites - Using an Existing Python Installation<a class="headerlink" href="#prerequisites-using-an-existing-python-installation" title="Permalink to this headline">¶</a></h3>
-<p>If you already have a Python installation on your system, then you will need to install the following Python packages before installing plumetrack:</p>
+<p>If you already have a Python installation on your system, then you will need to install the following Python packages before installing Plumetrack:</p>
 <blockquote>
 <div><ul class="simple">
 <li><a class="reference external" href="http://www.numpy.org/">NumPy</a></li>
@@ -133,22 +138,22 @@ sudo python setup.py install
 </div></blockquote>
 </div>
 <div class="section" id="installing-plumetrack">
-<h3>Installing plumetrack<a class="headerlink" href="#installing-plumetrack" title="Permalink to this headline">¶</a></h3>
-<p>Once you have installed all of the dependencies, then installation of plumetrack itself should be relatively straightforward.</p>
+<h3>Installing Plumetrack<a class="headerlink" href="#installing-plumetrack" title="Permalink to this headline">¶</a></h3>
+<p>Once you have installed all of the dependencies, then installation of Plumetrack itself should be relatively straightforward. You can either download and run one of the executable installers (.exe files) from <a class="reference external" href="http://ccpforge.cse.rl.ac.uk/gf/project/plumetrack/frs">here</a>, or you can follow the instructions below to install from source:</p>
 <blockquote>
 <div><ol class="arabic">
-<li><p class="first">Download the plumetrack distribution package (a .zip file) from <a class="reference external" href="http://ccpforge.cse.rl.ac.uk/gf/project/plumetrack/frs">here</a>.</p>
+<li><p class="first">Download the Plumetrack distribution package (a .zip file) from <a class="reference external" href="http://ccpforge.cse.rl.ac.uk/gf/project/plumetrack/frs">here</a>.</p>
 </li>
 <li><p class="first">Unzip the package.</p>
 </li>
 <li><p class="first">Open a terminal (start-&gt;run-&gt;cmd.exe).</p>
 </li>
-<li><p class="first">Navigate to the unzipped plumetrack folder. For example:</p>
+<li><p class="first">Navigate to the unzipped Plumetrack folder. For example:</p>
 <div class="highlight-python"><div class="highlight"><pre>cd plumetrack-14.11
 </pre></div>
 </div>
 </li>
-<li><p class="first">Install plumetrack using the following commands:</p>
+<li><p class="first">Install Plumetrack using the following commands:</p>
 <div class="highlight-python"><div class="highlight"><pre>python setup.py build
 python setup.py install
 </pre></div>
@@ -165,12 +170,16 @@ python setup.py install
 </li>
 </ol>
 <blockquote>
-<div>This should print a summary of options that can be passed to plumetrack. If this works, then you&#8217;re done!</div></blockquote>
+<div>This should print a summary of options that can be passed to Plumetrack. If this works, then you&#8217;re done!</div></blockquote>
 </div></blockquote>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If you used one of the executable installers for Plumetrack, then a Start Menu entry should have been created for the graphical interface to Plumetrack. You can therefore open it as you would any other program.</p>
+</div>
 </div>
 <div class="section" id="installing-plumetrack-from-svn">
-<h3>Installing plumetrack from SVN<a class="headerlink" href="#installing-plumetrack-from-svn" title="Permalink to this headline">¶</a></h3>
-<p>If you want the very latest version of plumetrack (and be advised that this may not be very stable!) then you can install it from the SVN repository. To do this you need an SVN client, which you can get from <a class="reference external" href="http://sourceforge.net/projects/win32svn">here</a>. Once you have installed an SVN client:</p>
+<h3>Installing Plumetrack from SVN<a class="headerlink" href="#installing-plumetrack-from-svn" title="Permalink to this headline">¶</a></h3>
+<p>If you want the very latest version of Plumetrack (and be advised that this may not be very stable!) then you can install it from the SVN repository. To do this you need an SVN client, which you can get from <a class="reference external" href="http://sourceforge.net/projects/win32svn">here</a>. Once you have installed an SVN client:</p>
 <blockquote>
 <div><ol class="arabic">
 <li><p class="first">Create a folder on your desktop called plumetrack.</p>
@@ -182,14 +191,14 @@ python setup.py install
 </pre></div>
 </div>
 </li>
-<li><p class="first">Check out a copy of the plumetrack repository by entering the following command:</p>
+<li><p class="first">Check out a copy of the Plumetrack repository by entering the following command:</p>
 <div class="highlight-python"><div class="highlight"><pre>svn checkout http://ccpforge.cse.rl.ac.uk/svn/plumetrack/trunk .
 </pre></div>
 </div>
 </li>
 <li><p class="first">When prompted for a password press enter (blank password). When prompted for a username enter &#8216;anonymous&#8217;.</p>
 </li>
-<li><p class="first">You should now have a full checkout of the plumetrack code. Install plumetrack using the following commands:</p>
+<li><p class="first">You should now have a full checkout of the Plumetrack code. Install Plumetrack using the following commands:</p>
 <div class="highlight-python"><div class="highlight"><pre>python setup.py build
 python setup.py install
 </pre></div>
@@ -206,7 +215,7 @@ python setup.py install
 </li>
 </ol>
 <blockquote>
-<div>This should print a summary of options that can be passed to plumetrack. If this works, then you&#8217;re done!</div></blockquote>
+<div>This should print a summary of options that can be passed to Plumetrack. If this works, then you&#8217;re done!</div></blockquote>
 </div></blockquote>
 </div>
 </div>
@@ -229,8 +238,8 @@ python setup.py install
 <li><a class="reference internal" href="#prerequisites-using-anaconda">Prerequisites - Using Anaconda</a></li>
 <li><a class="reference internal" href="#prerequisites-using-an-existing-python-installation">Prerequisites - Using an Existing Python Installation</a></li>
 <li><a class="reference internal" href="#installing-opencv">Installing OpenCV</a></li>
-<li><a class="reference internal" href="#installing-plumetrack">Installing plumetrack</a></li>
-<li><a class="reference internal" href="#installing-plumetrack-from-svn">Installing plumetrack from SVN</a></li>
+<li><a class="reference internal" href="#installing-plumetrack">Installing Plumetrack</a></li>
+<li><a class="reference internal" href="#installing-plumetrack-from-svn">Installing Plumetrack from SVN</a></li>
 </ul>
 </li>
 </ul>
@@ -241,8 +250,8 @@ python setup.py install
   <p class="topless"><a href="index.html"
                         title="previous chapter">Welcome to Plumetrack&#8217;s documentation!</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="quickstart.html"
-                        title="next chapter">Quickstart</a></p>
+  <p class="topless"><a href="quickstart_gui.html"
+                        title="next chapter">Quickstart - Graphical User Interface</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/installation.txt"
@@ -275,12 +284,12 @@ python setup.py install
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="quickstart.html" title="Quickstart"
+          <a href="quickstart_gui.html" title="Quickstart - Graphical User Interface"
              >next</a> |</li>
         <li class="right" >
           <a href="index.html" title="Welcome to Plumetrack’s documentation!"
              >previous</a> |</li>
-        <li><a href="index.html">Plumetrack 15.01 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Plumetrack 15.06 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

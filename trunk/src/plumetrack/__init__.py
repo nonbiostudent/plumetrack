@@ -121,8 +121,8 @@ try:
     ImageLoader = image_loader.ImageLoader
 except ImportError:
     #since this __init__.py file is imported by the setup.py script, we ignore
-    #import errors here to prevent cv2,numpy etc. from having to be installed
-    #on the machine building the distrobutions/packages.
+    #import errors here to prevent cv2, numpy etc. from having to be installed
+    #on the machine building the distributions/packages.
     pass
 ####################################################################
 

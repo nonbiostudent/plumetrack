@@ -27,6 +27,7 @@ Contents:
    quickstart_gui
    quickstart_cmdline
    configuration
+   loading_images
    
    
    

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Quickstart - Graphical User Interface &mdash; Plumetrack 15.01 documentation</title>
+    <title>Quickstart - Graphical User Interface &mdash; Plumetrack 15.06 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '15.01',
+        VERSION:     '15.06',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="_static/plumetrack_32.ico"/>
-    <link rel="top" title="Plumetrack 15.01 documentation" href="index.html" />
+    <link rel="top" title="Plumetrack 15.06 documentation" href="index.html" />
     <link rel="next" title="Quickstart - Command Line" href="quickstart_cmdline.html" />
     <link rel="prev" title="Installation" href="installation.html" /> 
   </head>
@@ -45,7 +45,7 @@
         <li class="right" >
           <a href="installation.html" title="Installation"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Plumetrack 15.01 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Plumetrack 15.06 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -56,10 +56,30 @@
             
   <div class="section" id="quickstart-graphical-user-interface">
 <span id="section-gui-quickstart"></span><h1>Quickstart - Graphical User Interface<a class="headerlink" href="#quickstart-graphical-user-interface" title="Permalink to this headline">¶</a></h1>
+<p>The Plumetrack distribution includes a few example images of Villarrica volcano in Chile along with an example configuration file, so that you can quickly get used to using the program. The following tutorial will guide you through processing these example images using the graphical version of Plumetrack. If you do not have the example files (they are in the examples folder of the source distribution) then you can download them seperately as a zip file <a class="reference external" href="http://ccpforge.cse.rl.ac.uk/gf/project/plumetrack/frs">here</a>.</p>
+<p>To start, open the Plumetrack graphical interface either by clicking on the icon in your Start menu (or applications menu for Linux users) or by running the command <cite>plumetrack-gui</cite> at the commandline. A window similar to the one shown below should open.</p>
+<a class="reference internal image-reference" href="_images/main_gui.png"><img alt="_images/main_gui.png" src="_images/main_gui.png" style="width: 400px;" /></a>
+<p>This window shows all the configuration options for Plumetrack. At the moment it is just filled with some default values. For this example we want to use the configuration file that comes with the example images, so click on the open button on the toolbar (top left), navigate to the Plumetrack examples folder and select the villarrica.cfg file to open.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">When you process images using Plumetrack, a copy of the configuration options used is written to the results file. These settings can be imported back into the program (for example if you want to use the same configuration for a different set of images) by opening the results file in the same way you would a configuration (.cfg) file.</p>
+</div>
+<p>The configuration options from the villarrica.cfg file should now be loaded and displayed in the window. From here, they can be edited and saved back to the file using the save button on the toolbar, or to a different file using the save-as button.</p>
+<p>Before we continue, lets change the line accross which we want to compute the flux, the integration line. To do that, click on the &#8220;Draw&#8221; button next to &#8220;Integration Line 1&#8221; in the bottom right of the window. You should be asked to select an image that you want to use to draw the intergration line. Select one of the images in the examples/villarrica folder (it doesn&#8217;t matter which one you pick). A drawing dialog similar to the one below should open.</p>
+<a class="reference internal image-reference" href="_images/integration_line_draw.png"><img alt="_images/integration_line_draw.png" src="_images/integration_line_draw.png" style="width: 400px;" /></a>
+<p>The integration line (the line across which the flux will be calculated) is shown in blue, with its vertices highlighted in red. The tick marks on the line denote the positive flux direction and this can be changed using the <cite>Reverse integration direction</cite> checkbox at the bottom. Vertices are added to the end of the line by left-clicking on the image and any individual vertex can be removed by right-clicking on it. To remove all the current vertices, click on the <cite>Clear</cite> button in the bottom right of the window. Once you are happy with your choice of integration line click <cite>Ok</cite>. The drawing dialog will close, and the points that you have chosen will be listed in the <cite>Points</cite> box in the format <cite>[[x1, y1], [x2, y2], ...]</cite>- you can also use this box to edit your integration line, but normally it is easier just to draw the points.</p>
+<p>You can define as many integration lines as you wish. Additional integration lines are created by clicking on the <cite>Add</cite> button in the bottom right of the main window.</p>
+<p>Now lets see what the motion fields being calculated look like. Click on the <cite>Interactive viewer</cite> button in the toolbar (highighted below).</p>
+<a class="reference internal image-reference" href="_images/interactive_viewer_button.png"><img alt="_images/interactive_viewer_button.png" src="_images/interactive_viewer_button.png" style="width: 400px;" /></a>
+<p>You will be prompted to select a folder containing images. Select the <cite>villarrica</cite> folder in the Plumetrack examples folder. Once you select the folder, a new window will open similar to the one shown below.</p>
+<a class="reference internal image-reference" href="_images/interactive_viewer.png"><img alt="_images/interactive_viewer.png" src="_images/interactive_viewer.png" style="width: 400px;" /></a>
+<p>In this window the computed motion field for a particular image is plotted. The filelist on the left hand side shows all the images in the folder and you can use this to scroll through the images and see the computed velocities for each. The sliders at the bottom of the window allow you to adjust how the velocities are plotted. Note that the sliders do not affect how the velocities are computed, only their visualisation.</p>
+<p>With the interactive viewer window open, try changing the configuration parameters in the main window and see the effect that they have on the computed motion field. For example, try setting the <cite>Window size</cite> parameter to 50. Note that you either need to press enter, or click in a different settings box in order for the velocity field to be recomputed.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The realtime display of the motion field requires the recomputation of the motion field each time a parameter is changed. On old hardware, or for very large images this may be rather slow, making the program unresponsive. Increasing the downsizing factor will help to improve performance - but keep in mind that this will also affect the accuracy of the plotted motion field.</p>
 </div>
+<p>Once you are happy with your configuration, save it to a new file using the <cite>Save as</cite> button in the toolbar. Close the interactive viewer and click on the <cite>Batch process</cite> button in the toolbar (immediately to the right of the <cite>Interactive viewer</cite> button). Select the <cite>villarrica</cite> folder as the Image folder, and choose any filename you like for the Results file (this will be a plain text file so you might want to give it a .txt extension). When you are done, click <cite>Ok</cite>. Plumetrack will compute the fluxes accross the integration line(s) you defined in your configuration for all the images in the <cite>villarrica</cite> folder and write them to the results file that you specified (along with their associated error). Easy! Now try having a play with your own images.</p>
 </div>
 
 
@@ -114,7 +134,7 @@
         <li class="right" >
           <a href="installation.html" title="Installation"
              >previous</a> |</li>
-        <li><a href="index.html">Plumetrack 15.01 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Plumetrack 15.06 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

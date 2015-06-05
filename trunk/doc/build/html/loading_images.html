@@ -1,0 +1,230 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Loading Images &mdash; Plumetrack 15.06 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '15.06',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="_static/plumetrack_32.ico"/>
+    <link rel="top" title="Plumetrack 15.06 documentation" href="index.html" />
+    <link rel="next" title="API" href="API.html" />
+    <link rel="prev" title="Configuration" href="configuration.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="API.html" title="API"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="configuration.html" title="Configuration"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Plumetrack 15.06 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="loading-images">
+<span id="section-loading-images"></span><h1>Loading Images<a class="headerlink" href="#loading-images" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="supported-image-formats">
+<h2>Supported Image Formats<a class="headerlink" href="#supported-image-formats" title="Permalink to this headline">¶</a></h2>
+<p>Plumetrack uses OpenCV&#8217;s <a class="reference external" href="http://docs.opencv.org/modules/highgui/doc/reading_and_writing_images_and_video.html?highlight=imread#imread">imread()</a> function to load image files. As such, it supports most popular image file formats such as JPEG, PNG and TIFF (depending on what plugins were enabled when OpenCV was built). A full list of supported formats can be found in the <a class="reference external" href="http://docs.opencv.org/modules/highgui/doc/reading_and_writing_images_and_video.html?highlight=imread#imread">imread() documentation</a>. Images that are not supported natively can be loaded through the use of a custom image loader - see below.</p>
+</div>
+<div class="section" id="customised-preprocessing-and-loading-unsupported-images">
+<h2>Customised Preprocessing and Loading Unsupported Images<a class="headerlink" href="#customised-preprocessing-and-loading-unsupported-images" title="Permalink to this headline">¶</a></h2>
+<p>In some situations it may be necessary to load image file formats which are not supported natively by Plumetrack. Furthermore, some custom preprocessing of images (cropping to a region of interest, filtering etc.) may be required. To facilitate both of these tasks, Plumetrack allows users to define their own &#8220;custom image loader&#8221;. The custom image loader is just some Python code that Plumetrack calls on the image file prior to processing it. Creating a custom image loader is best demonstrated with an example:</p>
+<p>In this example, lets assume that our images are in FITS format (which is not loadable with OpenCV&#8217;s imread() function) and that we want to median filter the images before we process them with Plumetrack. To do this, we create a plain text file called &#8220;my_image_loader.py&#8221;. Into the file we put the following:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">plumetrack</span> <span class="kn">import</span> <span class="n">ImageLoader</span>
+<span class="kn">import</span> <span class="nn">pyfits</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">scipy.signal</span>
+
+
+<span class="k">class</span> <span class="nc">FITSImageLoader</span><span class="p">(</span><span class="n">ImageLoader</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+
+        <span class="n">hdulist</span> <span class="o">=</span> <span class="n">pyfits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+
+        <span class="n">im</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">hdulist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="n">im</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">medfilt2d</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+        <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_from_fname</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">im</span><span class="p">,</span> <span class="n">t</span>
+</pre></div>
+</div>
+<p>Now lets go through what all that means bit at a time.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">plumetrack</span> <span class="kn">import</span> <span class="n">ImageLoader</span>
+</pre></div>
+</div>
+<p>ImageLoader is the class that Plumetrack normally uses to load images. We want to create a subclass of this in which we redefine (override) the load() method in order to load FITS images and perform our median filter.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">pyfits</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">scipy.signal</span>
+</pre></div>
+</div>
+<p><a class="reference external" href="https://pypi.python.org/pypi/pyfits/3.3">pyfits</a> is the module that we will use to load the FITS file. It&#8217;s not part of the standard Python install, so if you want to use it you will have to install it separately. <a class="reference external" href="http://www.numpy.org/">numpy</a> is a numerical library for Python. Plumetrack expects the load() method to return images as a NumPy array, so we also need this module. <a class="reference external" href="http://www.scipy.org/">scipy.signal</a> has a median filtering function which we will use.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">FITSImageLoader</span><span class="p">(</span><span class="n">ImageLoader</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+</pre></div>
+</div>
+<p>Here we are defining a subclass of the ImageLoader class and overriding its load() method. The load() method takes the filename of the image to be loaded as an argument.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">hdulist</span> <span class="o">=</span> <span class="n">pyfits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+
+<span class="n">im</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">hdulist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The first line loads the contents of the FITS file (see the <a class="reference external" href="http://pythonhosted.org/pyfits/">pyfits documentation</a> for details. The second line extracts the pixel data and converts it to a NumPy array.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">im</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">medfilt2d</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This line median filters the image data, overwriting the original <cite>im</cite> array with a median filtered version of itself.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_from_fname</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The ImageLoader class defines a time_from_fname() method which extracts the capture time of an image from its filename (based on the filename_format that the user supplies - see <a class="reference internal" href="configuration.html#section-configuration"><em>Configuration</em></a>) and returns it as a datetime object. This method can also be overridden in order to load images whose capture times do not feature in their filenames - see example below.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">return</span> <span class="n">im</span><span class="p">,</span> <span class="n">t</span>
+</pre></div>
+</div>
+<p>Your customised load() method needs to return both the image (as a NumPy array) and the corresponding capture time (as a datetime object).</p>
+<p>To get Plumetrack to use your image loader rather than the default one, simply enable the &#8220;Custom Image Loader&#8221; checkbox in the graphical interface and set the value to the full path of the file which contains the definition (&#8220;my_image_loader.py&#8221; in this case).</p>
+</div>
+<div class="section" id="images-without-times-in-their-filenames">
+<h2>Images Without Times in Their Filenames<a class="headerlink" href="#images-without-times-in-their-filenames" title="Permalink to this headline">¶</a></h2>
+<p>Plumetrack is designed to work with sets of images whose capture times form part of their filenames. However, this may not always be the case. Custom image loaders can also be used to deal with image sets without capture times in their filenames, by overriding the time_from_fname() method of the standard loader. For example, lets consider a set of numerically named PNG files (000.png, 001.png etc) whose capture times are stored in the PNG header data. In this case we can define a custom image loader as shown below:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">plumetrack</span> <span class="kn">import</span> <span class="n">ImageLoader</span>
+
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">Image</span>
+
+<span class="k">class</span> <span class="nc">MyCustomLoader</span><span class="p">(</span><span class="n">ImageLoader</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">time_from_fname</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overrides the base class method in order to read the capture time from</span>
+<span class="sd">        the PNG file header.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c"># open the PNG file using the Python Image Library (PIL)</span>
+        <span class="n">im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+
+        <span class="c"># read the capture time string from the PNG header</span>
+        <span class="n">cap_time_string</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s">&#39;capture time&#39;</span><span class="p">]</span>
+
+        <span class="c"># convert the string to a datetime object. Here we assume that the</span>
+        <span class="c"># capture time is in the format 20151123_092555 (yearmonthday_hourminutesecond)</span>
+        <span class="n">cap_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">cap_time_string</span><span class="p">,</span><span class="s">&quot;%Y%m</span><span class="si">%d</span><span class="s">_%H%M%S&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">cap_time</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>The above code should be placed in a plain text file with a &#8221;.py&#8221; extension, and the full path of this file should be entered in the &#8220;Custom image loader&#8221; box in the Plumetrack graphical interface.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/plumetrack.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Loading Images</a><ul>
+<li><a class="reference internal" href="#supported-image-formats">Supported Image Formats</a></li>
+<li><a class="reference internal" href="#customised-preprocessing-and-loading-unsupported-images">Customised Preprocessing and Loading Unsupported Images</a></li>
+<li><a class="reference internal" href="#images-without-times-in-their-filenames">Images Without Times in Their Filenames</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="configuration.html"
+                        title="previous chapter">Configuration</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="API.html"
+                        title="next chapter">API</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/loading_images.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="API.html" title="API"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="configuration.html" title="Configuration"
+             >previous</a> |</li>
+        <li><a href="index.html">Plumetrack 15.06 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Nial Peters.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>
