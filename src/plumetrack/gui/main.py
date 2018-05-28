@@ -27,6 +27,9 @@ import matplotlib
 matplotlib.use('wxagg')
 import matplotlib.cm
 
+import matplotlib.pyplot
+matplotlib.pyplot.rcParams['image.cmap'] = 'jet'
+
 from wx.lib.agw import floatspin
 from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg
 from matplotlib.figure import Figure

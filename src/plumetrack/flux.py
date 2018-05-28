@@ -445,7 +445,7 @@ class FluxEngine2D(FluxEngineBase):
         #create an array of start pts for the flow vectors
         flow_pts_x, flow_pts_y = numpy.meshgrid(numpy.arange(ysize), 
                                                 numpy.arange(xsize), 
-                                                indexing='xy',dtype='float')
+                                                indexing='xy')
         
         flow_pts_x = flow_pts_x.reshape((xsize, ysize, 1, 1))
         flow_pts_y = flow_pts_y.reshape((xsize, ysize, 1, 1))
@@ -458,12 +458,13 @@ class FluxEngine2D(FluxEngineBase):
         int_norms = int_norms.reshape((1, 1, zsize, 2))
         
         #calculate the intercept parameters
-        b = numpy.ones((xsize, zsize, ysize,1), dtype='float') * 2.0 #*2 prevents invalid indexes from passing the b_criteria test below
+        #b = numpy.ones((xsize, zsize, ysize,1), dtype='float') * 2.0 #*2 prevents invalid indexes from passing the b_criteria test below
+        b = numpy.ones((xsize, ysize, zsize,1), dtype='float') * 2.0 #*2 prevents invalid indexes from passing the b_criteria test below
         denom = numpy.cross(int_vecs,flow)
         valid_idxs = numpy.logical_and(denom != 0.0, numpy.isfinite(denom))
         b[:,:,:,0][valid_idxs] = numpy.cross(flow_pts - int_pts, flow)[valid_idxs] / denom[valid_idxs]
             
-        b = b.swapaxes(1,2)
+        #b = b.swapaxes(1,2)
         
         #we ignore divide by 0 and multiply by NaN errors since NaN results will
         #fail the 'criteria' tests below anyway.

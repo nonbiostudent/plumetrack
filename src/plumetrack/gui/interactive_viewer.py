@@ -183,8 +183,11 @@ class MotionFigureControls(wx.Panel):
         self.Parent._quiver_density = new_density
         
         #clear the zoom history - otherwise it causes problems
-        self.Parent.tb._views._elements = []
-        self.Parent.tb._views._pos = 0
+        try:
+            self.Parent.tb._views._elements = []
+            self.Parent.tb._views._pos = 0
+        except AttributeError:
+            pass #_views doesn't exist in Windows - skip it
         
         self.Parent.redraw_plot()
     
@@ -319,8 +322,8 @@ class MotionFigure(wx.Panel):
             x *= (self.cur_im_masked.shape[1] - 1) / (self.extent[1] - self.extent[0]) 
             y *= (self.cur_im_masked.shape[0] - 1) / (self.extent[2] - self.extent[3])
             
-            x = round(x)
-            y = round(y)
+            x = int(round(x))
+            y = int(round(y))
             
             if x < 0 or x >= self.cur_im_masked.shape[1]:
                 self.main_frame.clear_status()
@@ -335,8 +338,8 @@ class MotionFigure(wx.Panel):
             self.main_frame.set_vel_status(x, y, self.cur_im_masked[y, x], xvel, -yvel)
         
         else:
-            x = round(x)
-            y = round(y)
+            x = int(round(x))
+            y = int(round(y))
             if x < 0 or x >= self.cur_im_masked.shape[1]:
                 self.main_frame.clear_status()
                 return
@@ -450,7 +453,7 @@ class MotionFigure(wx.Panel):
         self.int_line_plots = []    
         
         for l in self.config['integration_lines']:
-            pts = numpy.array(l['integration_points'])
+            pts = numpy.array(l['integration_points'], dtype='float')
             
             pts[:,0] *= self.extent[1]/float(self.cur_im.shape[1])
             pts[:,1] *= self.extent[2]/float(self.cur_im.shape[0])

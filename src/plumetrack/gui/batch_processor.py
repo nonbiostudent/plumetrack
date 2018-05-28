@@ -16,6 +16,7 @@
 #along with plumetrack.  If not, see <http://www.gnu.org/licenses/>.
 
 import wx
+import sys
 import os
 import plumetrack
 from plumetrack import persist, settings, main_script
@@ -153,9 +154,13 @@ class BatchProcessor(wx.Dialog):
     def on_process(self, evnt):
         
         cmd_args = ["-f", self.config_file, 
-                    "-p", #parallel process by default
                     "-o", self.output_file_bx.GetValue(),
                     self.im_dir_box.GetValue()]
+        
+        #check if we are running as a bundled (frozen) executable, or normally
+        #if bundled, don't use parallel processing
+        if not getattr( sys, 'frozen', False ) :
+            cmd_args.append("-p") #parallel process by default
         
         try:
             options, args = settings.parse_cmd_line(cmd_args, exception_on_error=True)

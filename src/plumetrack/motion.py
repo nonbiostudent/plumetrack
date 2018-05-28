@@ -130,14 +130,26 @@ class MotionEngine(object):
         in current_image, to pixels in next_image. Both image arguments should be
         numpy arrays.
         """                             
-        return cv2.calcOpticalFlowFarneback(current_image, next_image, 
-                                            self.pyr_scale,
-                                            self.levels,
-                                            self.winsize,
-                                            self.iterations,
-                                            self.poly_n,
-                                            self.poly_sigma,
-                                            flags=cv2.OPTFLOW_FARNEBACK_GAUSSIAN)
+        #OpenCV keep changing the order of arguments to this function for some reason
+        #so we will allow either calling convention.
+        try:
+            return cv2.calcOpticalFlowFarneback(current_image, next_image, 
+                                                self.pyr_scale,
+                                                self.levels,
+                                                self.winsize,
+                                                self.iterations,
+                                                self.poly_n,
+                                                self.poly_sigma,
+                                                flags=cv2.OPTFLOW_FARNEBACK_GAUSSIAN)
+        except TypeError:
+            return cv2.calcOpticalFlowFarneback(current_image, next_image, None,
+                                                self.pyr_scale,
+                                                self.levels,
+                                                self.winsize,
+                                                self.iterations,
+                                                self.poly_n,
+                                                self.poly_sigma,
+                                                flags=cv2.OPTFLOW_FARNEBACK_GAUSSIAN)
     
         
 if plumetrack.have_gpu():
