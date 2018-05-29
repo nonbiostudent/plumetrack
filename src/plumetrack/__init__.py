@@ -21,13 +21,13 @@ import sys
 ####################################################################
 #                     Program Information
 ####################################################################
-VERSION = "15.06" #year.month of release
+VERSION = "18.05" #year.month of release
 
 AUTHOR = 'Nial Peters'
 
 AUTHOR_EMAIL = 'nonbiostudent@hotmail.com'
 
-URL = 'http://ccpforge.cse.rl.ac.uk/gf/project/plumetrack/'
+URL = 'https://github.com/nonbiostudent/plumetrack'
 
 PROG_SHORT_NAME = 'Plumetrack'
 

@@ -316,6 +316,25 @@ def parse_cmd_line(args=None, exception_on_error=False):
                            "would split the output into daily files organised by "
                            "month and year.")
     
+    parser.add_option("--output_velocities", dest="vel_output_folder", 
+                      action="store", default=None, type='string',
+                      help="Output computed velocity arrays into this folder. "
+                           "The folder (and any subfolders) will be created "
+                           "automatically if it does not already exist. The "
+                           "file format used for output arrays can be set using" 
+                           " the vel_arr_format option. Velocity arrays have a "
+                           "shape of MxNx2 where M is image width, N is image "
+                           "height. arr[:,:,0] are the computed velocities in "
+                           "the x-direction (in m/s) and arr[:,:,1] are the "
+                           "computed velocities in the y-direction (in m/s).")
+    
+    parser.add_option("--vel_arr_format", dest="vel_arr_format", action="store",
+                      default='npy', type='string',
+                      help="Sets the file format for output velocity arrays. "
+                      "Can be set to 'npy' (default) for numpy binary files, "
+                      "'mat' for Matlab .mat files (saved using "
+                      "scipy.io.savemat) or 'json' for JSON files.")
+    
     parser.add_option("--output_pngs", dest="png_output_folder", action="store", 
                       default=None, type='string',
                       help="Output PNG files of the motion field into this "
@@ -355,6 +374,9 @@ def parse_cmd_line(args=None, exception_on_error=False):
     if options.config_file is None:
         parser.error("No configuration file specified. You must use the \'-f\' "
                      "option to specify a configuration file to use.")
+    
+    if options.vel_arr_format not in ('npy', 'mat', 'json'):
+        parser.error("Invalid value for vel_arr_format, expecting 'npy', 'mat' or 'json'.")
         
     #use of the skip_existing option implies the use of the realtime option
     if options.skip_existing and not options.realtime:

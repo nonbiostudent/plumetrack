@@ -149,6 +149,13 @@ class FluxEngineBase(object):
         self._low_pix_threshold = config['integration_pix_threshold_low']
     
     
+    def get_pixel_size(self):
+        """
+        Returns the pixel size of the image in metres.
+        """
+        return self._pixel_size
+    
+    
     def get_integration_lines(self):
         """
         Returns a list of IntegrationLine objects that were defined in the config.

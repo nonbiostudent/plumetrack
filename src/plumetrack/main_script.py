@@ -278,6 +278,19 @@ def process_image_pair(im_pair, image_loader, motion_engine, flux_engine, option
         output.create_motion_png(current_masked_im, flow, output_filename, 
                                  flux_engine.get_integration_lines())
     
+    if options.vel_output_folder is not None:
+        if not os.path.isdir(options.vel_output_folder):
+            os.makedirs(options.vel_output_folder)
+        
+        array_filename = os.path.join(options.vel_output_folder, 
+                                       os.path.splitext(os.path.basename(im1))[0])
+        
+        #convert the flow array into velocities in m/s
+        vel_arr = flow * flux_engine.get_pixel_size() / delta_t
+        
+        output.save_velocity_array(vel_arr, array_filename, options.vel_arr_format)
+    
+    
     #only include pixels in the non-masked regions in the flux calculation
     current_masked_im *= numpy.logical_not(integration_mask) 
     

@@ -18,8 +18,9 @@ import datetime
 import json
 import os
 import matplotlib.pyplot as plt
+import numpy
 import scipy.misc
-
+import scipy.io
 import plumetrack
 
 
@@ -154,7 +155,38 @@ def write_output(options, config, image_dir, times, filenames, fluxes):
             ofp.close()
     
 write_output.cur_output_filename = None    
-    
 
+
+def save_velocity_array(arr, filename, format_):
+    """
+    Saves a numpy array object to the specified file using the specified format.
+    
+    format can be 'mat', 'npy' or 'json'
+    """    
+    
+    
+    dir_name = os.path.dirname(filename)
+    if not os.path.exists(dir_name):
+        os.makedirs(dir_name)
+    
+    
+    if format_ == 'mat':
+        if not filename.endswith('.mat'):
+            filename = ''.join([filename,'.mat'])        
+        scipy.io.savemat(filename, {'xvel':arr[...,0], 'yvel':arr[...,1]})
+        
+    elif format_ == 'npy':
+        if not filename.endswith('.npy'):
+            filename = ''.join([filename,'.npy'])        
+        numpy.save(filename,arr, allow_pickle=False)
+    
+    elif format_ == 'json':
+        if not filename.endswith('.json'):
+            filename = ''.join([filename,'.json'])        
+        with open(filename, 'wb') as ofp:
+            json.dump(arr.tolist(), ofp)
+    else:
+        raise ValueError("Unknown format for output \"%s\""%format_)
+    
 
     

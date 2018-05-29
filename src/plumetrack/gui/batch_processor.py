@@ -60,6 +60,38 @@ class BatchProcessor(wx.Dialog):
         
         wx.EVT_BUTTON(self, self.output_browse_button.GetId(), self.on_output_browse)
         
+        vsizer.AddSpacer(15)
+        
+        #add velocities out options
+        self.output_velocities_chkbx = wx.CheckBox(top_panel, -1, "Output velocity arrays")
+        vsizer.Add(self.output_velocities_chkbx, 0, wx.ALIGN_LEFT| wx.LEFT, border=5)
+        self.vel_output_txt = wx.StaticText(top_panel, -1, "Velocity array output folder:")
+        vsizer.Add(self.vel_output_txt, 0, wx.ALIGN_LEFT| wx.LEFT, border=5)
+        hsizer3 = wx.BoxSizer(wx.HORIZONTAL)
+        self.vel_output_dir_bx = wx.TextCtrl(top_panel, -1, size=(350,-1))
+        self.vel_output_browse_button = wx.Button(top_panel, -1, "Browse")
+        hsizer3.Add(self.vel_output_dir_bx, 1, wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL| wx.LEFT, border=5)
+        hsizer3.Add(self.vel_output_browse_button, 0, wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL| wx.RIGHT, border=5)
+        vsizer.Add(hsizer3, 1, wx.EXPAND)
+        
+        hsizer4 = wx.BoxSizer(wx.HORIZONTAL)
+        self.vel_output_format_txt = wx.StaticText(top_panel, -1, "Velocity array output format:")
+        self.format_choices = [('NumPy','npy'), ('Matlab','mat'), ('JSON','json')]
+        self.vel_output_format_choice = wx.Choice(top_panel, -1, choices=[i[0] for i in self.format_choices])
+        self.vel_output_format_choice.SetSelection(0)
+        hsizer4.Add(self.vel_output_format_txt,1, wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL| wx.LEFT, border=5)
+        hsizer4.Add(self.vel_output_format_choice,1, wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL| wx.RIGHT, border=5)
+        vsizer.Add(hsizer4, 1, wx.EXPAND)
+        
+        self.vel_output_browse_button.Enable(False)
+        self.vel_output_dir_bx.Enable(False)
+        self.vel_output_txt.Enable(False)
+        self.vel_output_format_txt.Enable(False)
+        self.vel_output_format_choice.Enable(False)
+        
+        wx.EVT_BUTTON(self, self.vel_output_browse_button.GetId(), self.on_vel_output_browse)
+        wx.EVT_CHECKBOX(self, self.output_velocities_chkbx.GetId(), self.on_output_vel_chkbx)
+        
         vsizer.AddSpacer(20)
         
         #add the buttons
@@ -85,8 +117,38 @@ class BatchProcessor(wx.Dialog):
         top_sizer.Fit(top_panel)
         
         self.ShowModal()
+    
         
+    def on_output_vel_chkbx(self, evnt):
+            self.vel_output_dir_bx.Enable(self.output_velocities_chkbx.IsChecked())
+            self.vel_output_browse_button.Enable(self.output_velocities_chkbx.IsChecked())
+            self.vel_output_txt.Enable(self.output_velocities_chkbx.IsChecked())
+            self.vel_output_format_txt.Enable(self.output_velocities_chkbx.IsChecked())
+            self.vel_output_format_choice.Enable(self.output_velocities_chkbx.IsChecked())
+    
+    def on_vel_output_browse(self, evnt):
         
+        current_dir = self.vel_output_dir_bx.GetValue()
+        
+        if current_dir != "" and os.path.isdir(current_dir):
+            prev_dir = current_dir
+            
+        else:
+            try:
+                prev_dir = persist.PersistentStorage().get_value("prev_velocity_output_dir")
+            except KeyError:
+                prev_dir = ""
+        
+        vel_out_dir = wx.DirSelector("Select directory for saving velocity arrays",
+                                 defaultPath=prev_dir)
+        
+        if vel_out_dir == "":
+            return
+        
+        self.vel_output_dir_bx.SetValue(vel_out_dir)
+            
+        persist.PersistentStorage().set_value("prev_velocity_output_dir", vel_out_dir)
+    
         
     def on_images_browse(self, evnt):
         
@@ -154,13 +216,36 @@ class BatchProcessor(wx.Dialog):
     def on_process(self, evnt):
         
         cmd_args = ["-f", self.config_file, 
-                    "-o", self.output_file_bx.GetValue(),
-                    self.im_dir_box.GetValue()]
+                    "-o", self.output_file_bx.GetValue()]
+        
+        #check for recursive directory search
+        if self.recursive_chkbx.IsChecked():
+            cmd_args.append('-r')
+        
+        #check for velocity array output
+        if self.output_velocities_chkbx.IsChecked():
+            fmt_idx = self.vel_output_format_choice.GetSelection()
+            fmt_str = self.format_choices[fmt_idx][1]
+            
+            vel_output_dir = self.vel_output_dir_bx.GetValue()
+            
+            if vel_output_dir == '' or vel_output_dir.isspace():
+                wx.MessageBox("No output folder specified for velocity arrays",
+                              plumetrack.PROG_SHORT_NAME,wx.ICON_ERROR)
+                return
+            
+            cmd_args.append("--output_velocities=%s"%(vel_output_dir))
+            cmd_args.append("--vel_arr_format=%s"%fmt_str)
+        
         
         #check if we are running as a bundled (frozen) executable, or normally
         #if bundled, don't use parallel processing
         if not getattr( sys, 'frozen', False ) :
             cmd_args.append("-p") #parallel process by default
+        
+        
+        #add the image directory to the command args
+        cmd_args.append(self.im_dir_box.GetValue())
         
         try:
             options, args = settings.parse_cmd_line(cmd_args, exception_on_error=True)
