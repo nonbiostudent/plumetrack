@@ -46,6 +46,8 @@ These instructions are for Ubuntu Linux, other distributions should be similar, 
 Windows
 -------
 
+.. note:: There is a bundled executable of the Plumetrack GUI available for Windows users named plumetrack_gui_x.x.exe `here <https://github.com/nonbiostudent/plumetrack/releases>`_. This may be used "as is" without installing any dependencies (not even Python). However, it is a very large file, slow to open and lacks the parallel processing capabilities of the standard Plumetrack distributions. The bundled executable is only available for 64 bit systems.
+
 If you do not already have Python installed on your system then it is recommended to use Anaconda. Anaconda is a version of Python which already includes many of the common Python packages (including most of the dependencies for Plumetrack), which makes installation of Plumetrack easier!
 
 
