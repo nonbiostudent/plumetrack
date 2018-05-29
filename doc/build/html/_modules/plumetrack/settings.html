@@ -6,15 +6,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>plumetrack.settings &mdash; Plumetrack 15.06 documentation</title>
+    <title>plumetrack.settings &#8212; Plumetrack 18.05 documentation</title>
     
-    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '15.06',
+        VERSION:     '18.05',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,13 +23,13 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="../../_static/plumetrack_32.ico"/>
-    <link rel="top" title="Plumetrack 15.06 documentation" href="../../index.html" />
+    <link rel="top" title="Plumetrack 18.05 documentation" href="../../index.html" />
     <link rel="up" title="plumetrack" href="../plumetrack.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -38,69 +38,69 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">Plumetrack 15.06 documentation</a> &raquo;</li>
-          <li><a href="../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../plumetrack.html" accesskey="U">plumetrack</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../index.html">Plumetrack 18.05 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../plumetrack.html" accesskey="U">plumetrack</a> &#187;</li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <h1>Source code for plumetrack.settings</h1><div class="highlight"><pre>
-<span class="c">#Copyright (C) Nial Peters 2014</span>
-<span class="c">#</span>
-<span class="c">#This file is part of plumetrack.</span>
-<span class="c">#</span>
-<span class="c">#plumetrack is free software: you can redistribute it and/or modify</span>
-<span class="c">#it under the terms of the GNU General Public License as published by</span>
-<span class="c">#the Free Software Foundation, either version 3 of the License, or</span>
-<span class="c">#(at your option) any later version.</span>
-<span class="c">#</span>
-<span class="c">#plumetrack is distributed in the hope that it will be useful,</span>
-<span class="c">#but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
-<span class="c">#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
-<span class="c">#GNU General Public License for more details.</span>
-<span class="c">#</span>
-<span class="c">#You should have received a copy of the GNU General Public License</span>
-<span class="c">#along with plumetrack.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+<span class="c1">#Copyright (C) Nial Peters 2014</span>
+<span class="c1">#</span>
+<span class="c1">#This file is part of plumetrack.</span>
+<span class="c1">#</span>
+<span class="c1">#plumetrack is free software: you can redistribute it and/or modify</span>
+<span class="c1">#it under the terms of the GNU General Public License as published by</span>
+<span class="c1">#the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1">#(at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1">#plumetrack is distributed in the hope that it will be useful,</span>
+<span class="c1">#but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1">#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1">#GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1">#You should have received a copy of the GNU General Public License</span>
+<span class="c1">#along with plumetrack.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">FloatType</span><span class="p">,</span> <span class="n">ListType</span><span class="p">,</span> <span class="n">IntType</span><span class="p">,</span> <span class="n">UnicodeType</span><span class="p">,</span> <span class="n">DictType</span>
-<span class="kn">from</span> <span class="nn">optparse</span> <span class="kn">import</span> <span class="n">OptionParser</span>
+<span class="kn">from</span> <span class="nn">types</span> <span class="k">import</span> <span class="n">FloatType</span><span class="p">,</span> <span class="n">ListType</span><span class="p">,</span> <span class="n">IntType</span><span class="p">,</span> <span class="n">UnicodeType</span><span class="p">,</span> <span class="n">DictType</span>
+<span class="kn">from</span> <span class="nn">optparse</span> <span class="k">import</span> <span class="n">OptionParser</span>
 
 
 <span class="n">__default_config</span> <span class="o">=</span> <span class="p">{</span>                  
-                    <span class="s">&quot;filename_format&quot;</span><span class="p">:</span> <span class="s">&quot;%Y%m</span><span class="si">%d</span><span class="s">_%H%M%S.png&quot;</span><span class="p">,</span>
-                    <span class="s">&quot;file_extension&quot;</span><span class="p">:</span> <span class="s">&quot;.png&quot;</span><span class="p">,</span>
-                    <span class="s">&quot;custom_image_loader&quot;</span><span class="p">:</span><span class="s">&quot;&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;filename_format&quot;</span><span class="p">:</span> <span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">_%H%M%S.png&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;file_extension&quot;</span><span class="p">:</span> <span class="s2">&quot;.png&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;custom_image_loader&quot;</span><span class="p">:</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
                     
-                    <span class="s">&quot;motion_pix_threshold_low&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span>
-                    <span class="s">&quot;motion_pix_threshold_high&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span>
-                    <span class="s">&quot;random_mean&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
-                    <span class="s">&quot;random_sigma&quot;</span><span class="p">:</span><span class="mf">0.0</span><span class="p">,</span>
-                    <span class="s">&quot;mask_image&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span> 
+                    <span class="s2">&quot;motion_pix_threshold_low&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span>
+                    <span class="s2">&quot;motion_pix_threshold_high&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span>
+                    <span class="s2">&quot;random_mean&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+                    <span class="s2">&quot;random_sigma&quot;</span><span class="p">:</span><span class="mf">0.0</span><span class="p">,</span>
+                    <span class="s2">&quot;mask_image&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> 
                     
-                    <span class="s">&quot;pixel_size&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
-                    <span class="s">&quot;flux_conversion_factor&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
-                    <span class="s">&quot;downsizing_factor&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+                    <span class="s2">&quot;pixel_size&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+                    <span class="s2">&quot;flux_conversion_factor&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+                    <span class="s2">&quot;downsizing_factor&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
                     
-                    <span class="s">&quot;farneback_pyr_scale&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>
-                    <span class="s">&quot;farneback_levels&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
-                    <span class="s">&quot;farneback_winsize&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
-                    <span class="s">&quot;farneback_iterations&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
-                    <span class="s">&quot;farneback_poly_n&quot;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
-                    <span class="s">&quot;farneback_poly_sigma&quot;</span><span class="p">:</span> <span class="mf">1.5</span><span class="p">,</span>
+                    <span class="s2">&quot;farneback_pyr_scale&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>
+                    <span class="s2">&quot;farneback_levels&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+                    <span class="s2">&quot;farneback_winsize&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+                    <span class="s2">&quot;farneback_iterations&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+                    <span class="s2">&quot;farneback_poly_n&quot;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
+                    <span class="s2">&quot;farneback_poly_sigma&quot;</span><span class="p">:</span> <span class="mf">1.5</span><span class="p">,</span>
                     
-                    <span class="s">&quot;integration_method&quot;</span><span class="p">:</span> <span class="s">&quot;2d&quot;</span><span class="p">,</span>
-                    <span class="s">&quot;integration_pix_threshold_low&quot;</span> <span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
-                    <span class="s">&quot;integration_lines&quot;</span><span class="p">:</span> <span class="p">[{</span>
-                                           <span class="s">&quot;name&quot;</span><span class="p">:</span><span class="s">&quot;Integration Line 1&quot;</span><span class="p">,</span>
-                                           <span class="s">&quot;integration_points&quot;</span><span class="p">:</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span>
-                                           <span class="s">&quot;integration_direction&quot;</span><span class="p">:</span> <span class="mi">1</span>
+                    <span class="s2">&quot;integration_method&quot;</span><span class="p">:</span> <span class="s2">&quot;2d&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;integration_pix_threshold_low&quot;</span> <span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+                    <span class="s2">&quot;integration_lines&quot;</span><span class="p">:</span> <span class="p">[{</span>
+                                           <span class="s2">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;Integration Line 1&quot;</span><span class="p">,</span>
+                                           <span class="s2">&quot;integration_points&quot;</span><span class="p">:</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span>
+                                           <span class="s2">&quot;integration_direction&quot;</span><span class="p">:</span> <span class="mi">1</span>
                                            <span class="p">}]</span>             
                   
                     <span class="p">}</span>
@@ -115,25 +115,25 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">return</span> <span class="kc">False</span>
     
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="s">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ifp</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ifp</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">ifp</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">False</span>
+            <span class="k">return</span> <span class="kc">False</span>
     
-    <span class="k">return</span> <span class="bp">True</span>
+    <span class="k">return</span> <span class="kc">True</span></div>
 
-</div>
+
 <div class="viewcode-block" id="get_default_config"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.settings.get_default_config">[docs]</a><span class="k">def</span> <span class="nf">get_default_config</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a default working config which can be used as a template for </span>
 <span class="sd">    customisation.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">__default_config</span>
+    <span class="k">return</span> <span class="n">__default_config</span></div>
 
-</div>
+
 <div class="viewcode-block" id="load_config_file"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.settings.load_config_file">[docs]</a><span class="k">def</span> <span class="nf">load_config_file</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Load the configuration file and returns a dictionary of name:value pairs</span>
@@ -145,167 +145,167 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s">&quot;Failed to open config file </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s">. No such file.&quot;</span><span class="o">%</span><span class="n">filename</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Failed to open config file </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s2">. No such file.&quot;</span><span class="o">%</span><span class="n">filename</span><span class="p">)</span>
         
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="s">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ifp</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ifp</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">ifp</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="c">#maybe we are trying to load a configuration from a results file</span>
+            <span class="c1">#maybe we are trying to load a configuration from a results file</span>
             <span class="n">ifp</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-            <span class="n">config_str</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+            <span class="n">config_str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
             <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">ifp</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s">&#39;#&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;Configuration&#39;</span><span class="p">):</span>
-                    <span class="n">config_str</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s">&#39;=&#39;</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;Configuration&#39;</span><span class="p">):</span>
+                    <span class="n">config_str</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span>
                     <span class="k">break</span>
             
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">config_str</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s">&quot;File </span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s"> does not contain a valid plumetrack configuration&quot;</span><span class="o">%</span><span class="n">filename</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;File </span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2"> does not contain a valid plumetrack configuration&quot;</span><span class="o">%</span><span class="n">filename</span><span class="p">)</span>
       
     <span class="n">validate_config</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
     
-    <span class="k">return</span> <span class="n">config</span>
+    <span class="k">return</span> <span class="n">config</span></div>
 
 
-</div>
+
 <div class="viewcode-block" id="ConfigError"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.settings.ConfigError">[docs]</a><span class="k">class</span> <span class="nc">ConfigError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Exception raised if the configuration file is invalid.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">pass</span>
+    <span class="k">pass</span></div>
      
-</div>
+
 <span class="k">def</span> <span class="nf">__validate_im_loader</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    wrapper function used to prevent the setup.py script having to import </span>
 <span class="sd">    the image_loader module.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">plumetrack</span> <span class="kn">import</span> <span class="n">image_loader</span>
+    <span class="kn">from</span> <span class="nn">plumetrack</span> <span class="k">import</span> <span class="n">image_loader</span>
     <span class="k">return</span> <span class="n">image_loader</span><span class="o">.</span><span class="n">validate_loader</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
      
 
-<div class="viewcode-block" id="validate_config"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.settings.validate_config">[docs]</a><span class="k">def</span> <span class="nf">validate_config</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="validate_config"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.settings.validate_config">[docs]</a><span class="k">def</span> <span class="nf">validate_config</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Raises ConfigError if one or more of the configuration entries is </span>
 <span class="sd">    invalid. This function checks that all necessary settings are defined, that </span>
 <span class="sd">    they have the correct data type and that they are within sensible limits.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">expected_configs</span> <span class="o">=</span> <span class="p">[</span>
-                        <span class="p">(</span><span class="s">&quot;custom_image_loader&quot;</span><span class="p">,</span><span class="n">UnicodeType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">==</span><span class="s">&quot;&quot;</span> <span class="ow">or</span> <span class="n">__validate_im_loader</span><span class="p">(</span><span class="n">config</span><span class="p">),</span> <span class="s">&quot;Invalid value for </span><span class="se">\&#39;</span><span class="s">custom_image_loader</span><span class="se">\&#39;</span><span class="s">. Either the file does not exist, is not a valid Python source file, or does not define a subclass of the ImageLoader class.&quot;</span><span class="p">),</span>
-                        <span class="p">(</span><span class="s">&quot;filename_format&quot;</span><span class="p">,</span> <span class="n">UnicodeType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">config</span><span class="p">[</span><span class="s">&quot;custom_image_loader&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&quot;&quot;</span> <span class="ow">or</span> <span class="p">(</span><span class="n">x</span> <span class="o">!=</span> <span class="s">&quot;&quot;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">x</span><span class="o">.</span><span class="n">isspace</span><span class="p">()),</span> <span class="s">&quot;</span><span class="se">\&#39;</span><span class="s">filename_format</span><span class="se">\&#39;</span><span class="s"> cannot be an empty string (unless you are using a custom image loader).&quot;</span><span class="p">),</span>
-                        <span class="p">(</span><span class="s">&quot;file_extension&quot;</span><span class="p">,</span> <span class="n">UnicodeType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">config</span><span class="p">[</span><span class="s">&quot;filename_format&quot;</span><span class="p">]</span><span class="o">==</span><span class="s">&quot;&quot;</span> <span class="ow">or</span> <span class="n">config</span><span class="p">[</span><span class="s">&quot;filename_format&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="s">&quot;Mismatch between file extension specified in </span><span class="se">\&#39;</span><span class="s">filename_format</span><span class="se">\&#39;</span><span class="s"> and </span><span class="se">\&#39;</span><span class="s">file_extension</span><span class="se">\&#39;</span><span class="s">.&quot;</span><span class="p">),</span>
-                        <span class="p">(</span><span class="s">&quot;motion_pix_threshold_low&quot;</span><span class="p">,</span> <span class="n">FloatType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s">&quot;motion_pix_threshold_high&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">config</span><span class="p">[</span><span class="s">&quot;motion_pix_threshold_high&quot;</span><span class="p">])</span> <span class="ow">and</span> <span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">x</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">),</span> <span class="s">&quot;</span><span class="se">\&#39;</span><span class="s">threshold_low</span><span class="se">\&#39;</span><span class="s"> must be either -1 or greater than or equal to 0 and must be less than </span><span class="se">\&#39;</span><span class="s">threshold_high</span><span class="se">\&#39;</span><span class="s">.&quot;</span> <span class="p">),</span>
-                        <span class="p">(</span><span class="s">&quot;motion_pix_threshold_high&quot;</span><span class="p">,</span> <span class="n">FloatType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s">&quot;</span><span class="se">\&#39;</span><span class="s">threshold_high</span><span class="se">\&#39;</span><span class="s"> must be either -1 or greater than 0.&quot;</span> <span class="p">),</span>
-                        <span class="p">(</span><span class="s">&quot;random_mean&quot;</span><span class="p">,</span> <span class="n">FloatType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span> <span class="s">&quot;&quot;</span> <span class="p">),</span>
-                        <span class="p">(</span><span class="s">&quot;random_sigma&quot;</span><span class="p">,</span> <span class="n">FloatType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span> <span class="s">&quot;&quot;</span> <span class="p">),</span>
-                        <span class="p">(</span><span class="s">&quot;mask_image&quot;</span><span class="p">,</span> <span class="n">UnicodeType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">==</span><span class="s">&quot;&quot;</span> <span class="ow">or</span> <span class="n">x</span><span class="o">.</span><span class="n">isspace</span><span class="p">()</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="s">&quot;</span><span class="se">\&#39;</span><span class="s">mask_image</span><span class="se">\&#39;</span><span class="s"> file specified does not exist.&quot;</span><span class="p">),</span>
-                        <span class="p">(</span><span class="s">&quot;pixel_size&quot;</span><span class="p">,</span> <span class="n">FloatType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span> <span class="s">&quot;&quot;</span> <span class="p">),</span>
-                        <span class="p">(</span><span class="s">&quot;flux_conversion_factor&quot;</span><span class="p">,</span> <span class="n">FloatType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span> <span class="s">&quot;&quot;</span> <span class="p">),</span>
-                        <span class="p">(</span><span class="s">&quot;downsizing_factor&quot;</span><span class="p">,</span> <span class="n">FloatType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">&gt;=</span><span class="mf">1.0</span><span class="p">,</span> <span class="s">&quot;</span><span class="se">\&#39;</span><span class="s">downsizing_factor</span><span class="se">\&#39;</span><span class="s"> must be greater than or equal to 1.&quot;</span><span class="p">),</span>
-                        <span class="p">(</span><span class="s">&quot;farneback_pyr_scale&quot;</span><span class="p">,</span> <span class="n">FloatType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">&lt;</span><span class="mf">1.0</span><span class="p">,</span> <span class="s">&quot;</span><span class="se">\&#39;</span><span class="s">farneback_pyr_scale</span><span class="se">\&#39;</span><span class="s"> must be &lt;1.0.&quot;</span><span class="p">),</span>
-                        <span class="p">(</span><span class="s">&quot;farneback_levels&quot;</span><span class="p">,</span> <span class="n">IntType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">&gt;=</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;</span><span class="se">\&#39;</span><span class="s">farneback_levels</span><span class="se">\&#39;</span><span class="s"> must be &gt;=1&quot;</span><span class="p">),</span>
-                        <span class="p">(</span><span class="s">&quot;farneback_winsize&quot;</span><span class="p">,</span> <span class="n">IntType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">&gt;=</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;</span><span class="se">\&#39;</span><span class="s">farneback_winsize</span><span class="se">\&#39;</span><span class="s"> must be &gt;=1&quot;</span><span class="p">),</span>
-                        <span class="p">(</span><span class="s">&quot;farneback_iterations&quot;</span><span class="p">,</span> <span class="n">IntType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">&gt;=</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;</span><span class="se">\&#39;</span><span class="s">farneback_iterations</span><span class="se">\&#39;</span><span class="s"> must be &gt;=1&quot;</span><span class="p">),</span>
-                        <span class="p">(</span><span class="s">&quot;farneback_poly_n&quot;</span><span class="p">,</span> <span class="n">IntType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">&gt;=</span><span class="mi">3</span><span class="p">,</span> <span class="s">&quot;</span><span class="se">\&#39;</span><span class="s">farneback_poly_n</span><span class="se">\&#39;</span><span class="s"> must be &gt;=3 (5 or 7 would be a better choice)&quot;</span><span class="p">),</span>
-                        <span class="p">(</span><span class="s">&quot;farneback_poly_sigma&quot;</span><span class="p">,</span> <span class="n">FloatType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">&gt;</span><span class="mf">0.0</span><span class="p">,</span> <span class="s">&quot;</span><span class="se">\&#39;</span><span class="s">farneback_poly_sigma</span><span class="se">\&#39;</span><span class="s"> must be &gt;0.0&quot;</span><span class="p">),</span>
-                        <span class="p">(</span><span class="s">&quot;integration_pix_threshold_low&quot;</span><span class="p">,</span> <span class="n">FloatType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">x</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">),</span> <span class="s">&quot;</span><span class="se">\&#39;</span><span class="s">integration_pix_threshold_low</span><span class="se">\&#39;</span><span class="s"> must be either -1 or &gt;=0.&quot;</span><span class="p">),</span>
-                        <span class="p">(</span><span class="s">&quot;integration_lines&quot;</span><span class="p">,</span> <span class="n">ListType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&quot;At least one integration line must be defined.&quot;</span><span class="p">),</span>
-                        <span class="p">(</span><span class="s">&quot;integration_method&quot;</span><span class="p">,</span> <span class="n">UnicodeType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;1d&#39;</span><span class="p">,</span><span class="s">&#39;2d&#39;</span><span class="p">),</span> <span class="s">&quot;</span><span class="se">\&#39;</span><span class="s">integration_method</span><span class="se">\&#39;</span><span class="s"> must be either </span><span class="se">\&#39;</span><span class="s">1d</span><span class="se">\&#39;</span><span class="s"> or </span><span class="se">\&#39;</span><span class="s">2d</span><span class="se">\&#39;</span><span class="s">&quot;</span><span class="p">)</span>
+                        <span class="p">(</span><span class="s2">&quot;custom_image_loader&quot;</span><span class="p">,</span><span class="n">UnicodeType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">==</span><span class="s2">&quot;&quot;</span> <span class="ow">or</span> <span class="n">__validate_im_loader</span><span class="p">(</span><span class="n">config</span><span class="p">),</span> <span class="s2">&quot;Invalid value for </span><span class="se">\&#39;</span><span class="s2">custom_image_loader</span><span class="se">\&#39;</span><span class="s2">. Either the file does not exist, is not a valid Python source file, or does not define a subclass of the ImageLoader class.&quot;</span><span class="p">),</span>
+                        <span class="p">(</span><span class="s2">&quot;filename_format&quot;</span><span class="p">,</span> <span class="n">UnicodeType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;custom_image_loader&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span> <span class="ow">or</span> <span class="p">(</span><span class="n">x</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">x</span><span class="o">.</span><span class="n">isspace</span><span class="p">()),</span> <span class="s2">&quot;</span><span class="se">\&#39;</span><span class="s2">filename_format</span><span class="se">\&#39;</span><span class="s2"> cannot be an empty string (unless you are using a custom image loader).&quot;</span><span class="p">),</span>
+                        <span class="p">(</span><span class="s2">&quot;file_extension&quot;</span><span class="p">,</span> <span class="n">UnicodeType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;filename_format&quot;</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;&quot;</span> <span class="ow">or</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;filename_format&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="s2">&quot;Mismatch between file extension specified in </span><span class="se">\&#39;</span><span class="s2">filename_format</span><span class="se">\&#39;</span><span class="s2"> and </span><span class="se">\&#39;</span><span class="s2">file_extension</span><span class="se">\&#39;</span><span class="s2">.&quot;</span><span class="p">),</span>
+                        <span class="p">(</span><span class="s2">&quot;motion_pix_threshold_low&quot;</span><span class="p">,</span> <span class="n">FloatType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;motion_pix_threshold_high&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;motion_pix_threshold_high&quot;</span><span class="p">])</span> <span class="ow">and</span> <span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">x</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">),</span> <span class="s2">&quot;</span><span class="se">\&#39;</span><span class="s2">threshold_low</span><span class="se">\&#39;</span><span class="s2"> must be either -1 or greater than or equal to 0 and must be less than </span><span class="se">\&#39;</span><span class="s2">threshold_high</span><span class="se">\&#39;</span><span class="s2">.&quot;</span> <span class="p">),</span>
+                        <span class="p">(</span><span class="s2">&quot;motion_pix_threshold_high&quot;</span><span class="p">,</span> <span class="n">FloatType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\&#39;</span><span class="s2">threshold_high</span><span class="se">\&#39;</span><span class="s2"> must be either -1 or greater than 0.&quot;</span> <span class="p">),</span>
+                        <span class="p">(</span><span class="s2">&quot;random_mean&quot;</span><span class="p">,</span> <span class="n">FloatType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">),</span>
+                        <span class="p">(</span><span class="s2">&quot;random_sigma&quot;</span><span class="p">,</span> <span class="n">FloatType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">),</span>
+                        <span class="p">(</span><span class="s2">&quot;mask_image&quot;</span><span class="p">,</span> <span class="n">UnicodeType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">==</span><span class="s2">&quot;&quot;</span> <span class="ow">or</span> <span class="n">x</span><span class="o">.</span><span class="n">isspace</span><span class="p">()</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="s2">&quot;</span><span class="se">\&#39;</span><span class="s2">mask_image</span><span class="se">\&#39;</span><span class="s2"> file specified does not exist.&quot;</span><span class="p">),</span>
+                        <span class="p">(</span><span class="s2">&quot;pixel_size&quot;</span><span class="p">,</span> <span class="n">FloatType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">),</span>
+                        <span class="p">(</span><span class="s2">&quot;flux_conversion_factor&quot;</span><span class="p">,</span> <span class="n">FloatType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">),</span>
+                        <span class="p">(</span><span class="s2">&quot;downsizing_factor&quot;</span><span class="p">,</span> <span class="n">FloatType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">&gt;=</span><span class="mf">1.0</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\&#39;</span><span class="s2">downsizing_factor</span><span class="se">\&#39;</span><span class="s2"> must be greater than or equal to 1.&quot;</span><span class="p">),</span>
+                        <span class="p">(</span><span class="s2">&quot;farneback_pyr_scale&quot;</span><span class="p">,</span> <span class="n">FloatType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">&lt;</span><span class="mf">1.0</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\&#39;</span><span class="s2">farneback_pyr_scale</span><span class="se">\&#39;</span><span class="s2"> must be &lt;1.0.&quot;</span><span class="p">),</span>
+                        <span class="p">(</span><span class="s2">&quot;farneback_levels&quot;</span><span class="p">,</span> <span class="n">IntType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">&gt;=</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\&#39;</span><span class="s2">farneback_levels</span><span class="se">\&#39;</span><span class="s2"> must be &gt;=1&quot;</span><span class="p">),</span>
+                        <span class="p">(</span><span class="s2">&quot;farneback_winsize&quot;</span><span class="p">,</span> <span class="n">IntType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">&gt;=</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\&#39;</span><span class="s2">farneback_winsize</span><span class="se">\&#39;</span><span class="s2"> must be &gt;=1&quot;</span><span class="p">),</span>
+                        <span class="p">(</span><span class="s2">&quot;farneback_iterations&quot;</span><span class="p">,</span> <span class="n">IntType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">&gt;=</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\&#39;</span><span class="s2">farneback_iterations</span><span class="se">\&#39;</span><span class="s2"> must be &gt;=1&quot;</span><span class="p">),</span>
+                        <span class="p">(</span><span class="s2">&quot;farneback_poly_n&quot;</span><span class="p">,</span> <span class="n">IntType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">&gt;=</span><span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\&#39;</span><span class="s2">farneback_poly_n</span><span class="se">\&#39;</span><span class="s2"> must be &gt;=3 (5 or 7 would be a better choice)&quot;</span><span class="p">),</span>
+                        <span class="p">(</span><span class="s2">&quot;farneback_poly_sigma&quot;</span><span class="p">,</span> <span class="n">FloatType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">&gt;</span><span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\&#39;</span><span class="s2">farneback_poly_sigma</span><span class="se">\&#39;</span><span class="s2"> must be &gt;0.0&quot;</span><span class="p">),</span>
+                        <span class="p">(</span><span class="s2">&quot;integration_pix_threshold_low&quot;</span><span class="p">,</span> <span class="n">FloatType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">x</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">),</span> <span class="s2">&quot;</span><span class="se">\&#39;</span><span class="s2">integration_pix_threshold_low</span><span class="se">\&#39;</span><span class="s2"> must be either -1 or &gt;=0.&quot;</span><span class="p">),</span>
+                        <span class="p">(</span><span class="s2">&quot;integration_lines&quot;</span><span class="p">,</span> <span class="n">ListType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;At least one integration line must be defined.&quot;</span><span class="p">),</span>
+                        <span class="p">(</span><span class="s2">&quot;integration_method&quot;</span><span class="p">,</span> <span class="n">UnicodeType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;1d&#39;</span><span class="p">,</span><span class="s1">&#39;2d&#39;</span><span class="p">),</span> <span class="s2">&quot;</span><span class="se">\&#39;</span><span class="s2">integration_method</span><span class="se">\&#39;</span><span class="s2"> must be either </span><span class="se">\&#39;</span><span class="s2">1d</span><span class="se">\&#39;</span><span class="s2"> or </span><span class="se">\&#39;</span><span class="s2">2d</span><span class="se">\&#39;</span><span class="s2">&quot;</span><span class="p">)</span>
                         <span class="p">]</span>
     
     <span class="n">int_line_configs</span> <span class="o">=</span> <span class="p">[</span>
-                        <span class="p">(</span><span class="s">&quot;integration_direction&quot;</span><span class="p">,</span> <span class="n">IntType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">==</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">x</span><span class="o">==-</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;</span><span class="se">\&#39;</span><span class="s">integration_direction</span><span class="se">\&#39;</span><span class="s"> must be either 1 or -1&quot;</span><span class="p">),</span>
-                        <span class="p">(</span><span class="s">&quot;name&quot;</span><span class="p">,</span> <span class="n">UnicodeType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">!=</span><span class="s">&quot;&quot;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">x</span><span class="o">.</span><span class="n">isspace</span><span class="p">(),</span> <span class="s">&quot;Missing name for integration line&quot;</span><span class="p">),</span>
-                        <span class="p">(</span><span class="s">&quot;integration_points&quot;</span><span class="p">,</span> <span class="n">ListType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;At least two points are required for each integration line.&quot;</span><span class="p">)</span>
+                        <span class="p">(</span><span class="s2">&quot;integration_direction&quot;</span><span class="p">,</span> <span class="n">IntType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">==</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">x</span><span class="o">==-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\&#39;</span><span class="s2">integration_direction</span><span class="se">\&#39;</span><span class="s2"> must be either 1 or -1&quot;</span><span class="p">),</span>
+                        <span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="n">UnicodeType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">!=</span><span class="s2">&quot;&quot;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">x</span><span class="o">.</span><span class="n">isspace</span><span class="p">(),</span> <span class="s2">&quot;Missing name for integration line&quot;</span><span class="p">),</span>
+                        <span class="p">(</span><span class="s2">&quot;integration_points&quot;</span><span class="p">,</span> <span class="n">ListType</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;At least two points are required for each integration line.&quot;</span><span class="p">)</span>
                         <span class="p">]</span>
     
-    <span class="c">#first validate all the top-level configs</span>
+    <span class="c1">#first validate all the top-level configs</span>
     <span class="n">__validate_config</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">expected_configs</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">)</span>
     
-    <span class="c">#now validate the configs for the integration lines</span>
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s">&quot;integration_lines&quot;</span><span class="p">]):</span>
+    <span class="c1">#now validate the configs for the integration lines</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;integration_lines&quot;</span><span class="p">]):</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">!=</span> <span class="n">DictType</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="s">&quot;Incorrect type for definition of integration &quot;</span>
-                              <span class="s">&quot;line </span><span class="si">%d</span><span class="s">. Expecting a dict.&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="s2">&quot;Incorrect type for definition of integration &quot;</span>
+                              <span class="s2">&quot;line </span><span class="si">%d</span><span class="s2">. Expecting a dict.&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
         
         <span class="n">__validate_config</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">int_line_configs</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span> 
-                          <span class="n">subsection</span><span class="o">=</span><span class="s">&quot;integration line </span><span class="si">%d</span><span class="s">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+                          <span class="n">subsection</span><span class="o">=</span><span class="s2">&quot;integration line </span><span class="si">%d</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span></div>
     
 
-</div>
-<span class="k">def</span> <span class="nf">__validate_config</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">expected_configs</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">subsection</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-    <span class="c">#first check that they all exist</span>
+
+<span class="k">def</span> <span class="nf">__validate_config</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">expected_configs</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">subsection</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="c1">#first check that they all exist</span>
     <span class="n">defined_names</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">expected_configs</span><span class="p">]:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">defined_names</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">subsection</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="s">&quot;Missing definition of </span><span class="si">%s</span><span class="s"> in configuration file </span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">subsection</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="s2">&quot;Missing definition of </span><span class="si">%s</span><span class="s2"> in configuration file </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span>
                 <span class="k">else</span><span class="p">:</span> 
-                    <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="s">&quot;Missing definition of </span><span class="si">%s</span><span class="s"> for </span><span class="si">%s</span><span class="s"> in configuration file </span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">subsection</span><span class="p">,</span><span class="n">filename</span><span class="p">))</span>
+                    <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="s2">&quot;Missing definition of </span><span class="si">%s</span><span class="s2"> for </span><span class="si">%s</span><span class="s2"> in configuration file </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">subsection</span><span class="p">,</span><span class="n">filename</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">subsection</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="s">&quot;Missing definition of </span><span class="si">%s</span><span class="s"> in configuration.&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">subsection</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="s2">&quot;Missing definition of </span><span class="si">%s</span><span class="s2"> in configuration.&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="s">&quot;Missing definition of </span><span class="si">%s</span><span class="s"> for </span><span class="si">%s</span><span class="s"> in configuration.&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">subsection</span><span class="p">))</span>
+                    <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="s2">&quot;Missing definition of </span><span class="si">%s</span><span class="s2"> for </span><span class="si">%s</span><span class="s2"> in configuration.&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">subsection</span><span class="p">))</span>
                     
-    <span class="c">#check if any unknown settings were defined</span>
+    <span class="c1">#check if any unknown settings were defined</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">defined_names</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">subsection</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="s">&quot;Unknown setting </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s"> in configuration file </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s">.&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">defined_names</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">filename</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">subsection</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="s2">&quot;Unknown setting </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s2"> in configuration file </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s2">.&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">defined_names</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">filename</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="s">&quot;Unknown setting </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s"> for </span><span class="si">%s</span><span class="s"> in configuration file </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s">.&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">defined_names</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">subsection</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="s2">&quot;Unknown setting </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s2"> for </span><span class="si">%s</span><span class="s2"> in configuration file </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s2">.&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">defined_names</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">subsection</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">subsection</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="s">&quot;Unknown setting </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s"> in configuration.&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">defined_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+            <span class="k">if</span> <span class="n">subsection</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="s2">&quot;Unknown setting </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s2"> in configuration.&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">defined_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="s">&quot;Unknown setting </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s"> for </span><span class="si">%s</span><span class="s"> in configuration.&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">defined_names</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">subsection</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="s2">&quot;Unknown setting </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s2"> for </span><span class="si">%s</span><span class="s2"> in configuration.&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">defined_names</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">subsection</span><span class="p">))</span>
             
-    <span class="c">#now check all the types and the test_functions</span>
+    <span class="c1">#now check all the types and the test_functions</span>
     <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">expected_type</span><span class="p">,</span> <span class="n">test_func</span><span class="p">,</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">expected_configs</span><span class="p">:</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
         
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">!=</span> <span class="n">expected_type</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">expected_type</span> <span class="o">==</span> <span class="n">FloatType</span><span class="p">:</span>
-                <span class="c">#allow floats to be specified as ints and or strings</span>
+                <span class="c1">#allow floats to be specified as ints and or strings</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">x</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
                     <span class="n">config</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
                 <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="n">subsection</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-                            <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="s">&quot;Incorrect type (</span><span class="si">%s</span><span class="s">) for config </span><span class="si">%s</span><span class="s"> in file </span><span class="si">%s</span><span class="s">. Expecting </span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="n">name</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">expected_type</span><span class="p">))</span>
+                    <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">subsection</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="s2">&quot;Incorrect type (</span><span class="si">%s</span><span class="s2">) for config </span><span class="si">%s</span><span class="s2"> in file </span><span class="si">%s</span><span class="s2">. Expecting </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="n">name</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">expected_type</span><span class="p">))</span>
                         <span class="k">else</span><span class="p">:</span>
-                            <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="s">&quot;Incorrect type (</span><span class="si">%s</span><span class="s">) for config </span><span class="si">%s</span><span class="s"> for </span><span class="si">%s</span><span class="s"> in file </span><span class="si">%s</span><span class="s">. Expecting </span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="n">name</span><span class="p">,</span> <span class="n">subsection</span><span class="p">,</span><span class="n">filename</span><span class="p">,</span> <span class="n">expected_type</span><span class="p">))</span>
+                            <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="s2">&quot;Incorrect type (</span><span class="si">%s</span><span class="s2">) for config </span><span class="si">%s</span><span class="s2"> for </span><span class="si">%s</span><span class="s2"> in file </span><span class="si">%s</span><span class="s2">. Expecting </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="n">name</span><span class="p">,</span> <span class="n">subsection</span><span class="p">,</span><span class="n">filename</span><span class="p">,</span> <span class="n">expected_type</span><span class="p">))</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="n">subsection</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-                            <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="s">&quot;Incorrect type (</span><span class="si">%s</span><span class="s">) for config </span><span class="si">%s</span><span class="s">. Expecting </span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="n">name</span><span class="p">,</span> <span class="n">expected_type</span><span class="p">))</span>
+                        <span class="k">if</span> <span class="n">subsection</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="s2">&quot;Incorrect type (</span><span class="si">%s</span><span class="s2">) for config </span><span class="si">%s</span><span class="s2">. Expecting </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="n">name</span><span class="p">,</span> <span class="n">expected_type</span><span class="p">))</span>
                         <span class="k">else</span><span class="p">:</span>
-                            <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="s">&quot;Incorrect type (</span><span class="si">%s</span><span class="s">) for config </span><span class="si">%s</span><span class="s"> for </span><span class="si">%s</span><span class="s">. Expecting </span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="n">name</span><span class="p">,</span> <span class="n">subsection</span><span class="p">,</span> <span class="n">expected_type</span><span class="p">))</span>
+                            <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="s2">&quot;Incorrect type (</span><span class="si">%s</span><span class="s2">) for config </span><span class="si">%s</span><span class="s2"> for </span><span class="si">%s</span><span class="s2">. Expecting </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="n">name</span><span class="p">,</span> <span class="n">subsection</span><span class="p">,</span> <span class="n">expected_type</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">subsection</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-                        <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="s">&quot;Incorrect type (</span><span class="si">%s</span><span class="s">) for config </span><span class="si">%s</span><span class="s"> in file </span><span class="si">%s</span><span class="s">. Expecting </span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="n">name</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">expected_type</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">subsection</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="s2">&quot;Incorrect type (</span><span class="si">%s</span><span class="s2">) for config </span><span class="si">%s</span><span class="s2"> in file </span><span class="si">%s</span><span class="s2">. Expecting </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="n">name</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">expected_type</span><span class="p">))</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="s">&quot;Incorrect type (</span><span class="si">%s</span><span class="s">) for config </span><span class="si">%s</span><span class="s"> for </span><span class="si">%s</span><span class="s"> in file </span><span class="si">%s</span><span class="s">. Expecting </span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="n">name</span><span class="p">,</span> <span class="n">subsection</span><span class="p">,</span><span class="n">filename</span><span class="p">,</span> <span class="n">expected_type</span><span class="p">))</span>
+                        <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="s2">&quot;Incorrect type (</span><span class="si">%s</span><span class="s2">) for config </span><span class="si">%s</span><span class="s2"> for </span><span class="si">%s</span><span class="s2"> in file </span><span class="si">%s</span><span class="s2">. Expecting </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="n">name</span><span class="p">,</span> <span class="n">subsection</span><span class="p">,</span><span class="n">filename</span><span class="p">,</span> <span class="n">expected_type</span><span class="p">))</span>
 
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">subsection</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-                        <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="s">&quot;Incorrect type (</span><span class="si">%s</span><span class="s">) for config </span><span class="si">%s</span><span class="s">. Expecting </span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="n">name</span><span class="p">,</span> <span class="n">expected_type</span><span class="p">))</span>
+                    <span class="k">if</span> <span class="n">subsection</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="s2">&quot;Incorrect type (</span><span class="si">%s</span><span class="s2">) for config </span><span class="si">%s</span><span class="s2">. Expecting </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="n">name</span><span class="p">,</span> <span class="n">expected_type</span><span class="p">))</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="s">&quot;Incorrect type (</span><span class="si">%s</span><span class="s">) for config </span><span class="si">%s</span><span class="s"> for </span><span class="si">%s</span><span class="s">. Expecting </span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="n">name</span><span class="p">,</span> <span class="n">subsection</span><span class="p">,</span><span class="n">expected_type</span><span class="p">))</span>
+                        <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="s2">&quot;Incorrect type (</span><span class="si">%s</span><span class="s2">) for config </span><span class="si">%s</span><span class="s2"> for </span><span class="si">%s</span><span class="s2">. Expecting </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="n">name</span><span class="p">,</span> <span class="n">subsection</span><span class="p">,</span><span class="n">expected_type</span><span class="p">))</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">test_func</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
     
 
 <div class="viewcode-block" id="OptionError"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.settings.OptionError">[docs]</a><span class="k">class</span> <span class="nc">OptionError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
-    <span class="k">pass</span>
-</div>
+    <span class="k">pass</span></div>
+
 <div class="viewcode-block" id="CustomOptionParser"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.settings.CustomOptionParser">[docs]</a><span class="k">class</span> <span class="nc">CustomOptionParser</span><span class="p">(</span><span class="n">OptionParser</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exception_on_error</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">exception_on_error</span> <span class="o">=</span> <span class="n">exception_on_error</span>
@@ -315,18 +315,18 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">exception_on_error</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">OptionError</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">OptionParser</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+            <span class="n">OptionParser</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span></div></div>
         
 
-</div></div>
-<div class="viewcode-block" id="parse_cmd_line"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.settings.parse_cmd_line">[docs]</a><span class="k">def</span> <span class="nf">parse_cmd_line</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">exception_on_error</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+
+<div class="viewcode-block" id="parse_cmd_line"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.settings.parse_cmd_line">[docs]</a><span class="k">def</span> <span class="nf">parse_cmd_line</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exception_on_error</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Function parses the command line input and returns a tuple</span>
 <span class="sd">    of (options, args). By default this function parses the sys.vargs, but a list</span>
 <span class="sd">    of command line arguments may be passed in using the args kwarg instead.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">import</span> <span class="nn">plumetrack</span>
-    <span class="n">usage</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;%prog [options] image_folder&quot;</span><span class="p">)</span>
+    <span class="n">usage</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;%prog [options] image_folder&quot;</span><span class="p">)</span>
     
     <span class="n">parser</span> <span class="o">=</span> <span class="n">CustomOptionParser</span><span class="p">(</span><span class="n">exception_on_error</span><span class="p">)</span>
     
@@ -335,98 +335,120 @@
     <span class="n">parser</span><span class="o">.</span><span class="n">usage</span> <span class="o">=</span> <span class="n">usage</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">plumetrack</span><span class="o">.</span><span class="n">LONG_DESCRIPTION</span>
     
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&quot;-f&quot;</span><span class="p">,</span> <span class="s">&quot;--config_file&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&quot;config_file&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s">&#39;store&#39;</span><span class="p">,</span> 
-                      <span class="nb">type</span><span class="o">=</span><span class="s">&#39;string&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                      <span class="n">help</span><span class="o">=</span><span class="s">&quot;Specifies the configuration file to use.&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;-f&quot;</span><span class="p">,</span> <span class="s2">&quot;--config_file&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;config_file&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store&#39;</span><span class="p">,</span> 
+                      <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;string&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                      <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Specifies the configuration file to use.&quot;</span><span class="p">)</span>
     
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&quot;-r&quot;</span><span class="p">,</span> <span class="s">&quot;--recursive&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&quot;recursive&quot;</span><span class="p">,</span> 
-                      <span class="n">action</span><span class="o">=</span><span class="s">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-                      <span class="n">help</span><span class="o">=</span><span class="s">&quot;Scan folders recursively for image files&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;-r&quot;</span><span class="p">,</span> <span class="s2">&quot;--recursive&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;recursive&quot;</span><span class="p">,</span> 
+                      <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                      <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Scan folders recursively for image files&quot;</span><span class="p">)</span>
     
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&quot;-p&quot;</span><span class="p">,</span> <span class="s">&quot;--parallel&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&quot;parallel&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s">&quot;store_true&quot;</span><span class="p">,</span> 
-                      <span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-                      <span class="n">help</span><span class="o">=</span><span class="s">&quot;Parallel process the images. This will be ignored &quot;</span>
-                           <span class="s">&quot;when used with the realtime option&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;-p&quot;</span><span class="p">,</span> <span class="s2">&quot;--parallel&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;parallel&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> 
+                      <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                      <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Parallel process the images. This will be ignored &quot;</span>
+                           <span class="s2">&quot;when used with the realtime option&quot;</span><span class="p">)</span>
     
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&quot;-t&quot;</span><span class="p">,</span> <span class="s">&quot;--realtime&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&quot;realtime&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s">&quot;store_true&quot;</span><span class="p">,</span> 
-                      <span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-                      <span class="n">help</span><span class="o">=</span><span class="s">&quot;Continuously monitor the image folder for new files&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;-t&quot;</span><span class="p">,</span> <span class="s2">&quot;--realtime&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;realtime&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> 
+                      <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                      <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Continuously monitor the image folder for new files&quot;</span><span class="p">)</span>
     
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span> <span class="s">&quot;--no_gpu&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&quot;no_gpu&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s">&quot;store_true&quot;</span><span class="p">,</span> 
-                      <span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-                      <span class="n">help</span><span class="o">=</span><span class="s">&quot;Stops plumetrack from using the GPU for processing. &quot;</span>
-                      <span class="s">&quot;Note that it may not be using the GPU anyway.&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span> <span class="s2">&quot;--no_gpu&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;no_gpu&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> 
+                      <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                      <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Stops plumetrack from using the GPU for processing. &quot;</span>
+                      <span class="s2">&quot;Note that it may not be using the GPU anyway.&quot;</span><span class="p">)</span>
 
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&quot;-o&quot;</span><span class="p">,</span><span class="s">&quot;--output_file&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&quot;output_file&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s">&quot;store&quot;</span><span class="p">,</span> 
-                      <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s">&#39;string&#39;</span><span class="p">,</span>
-                      <span class="n">help</span><span class="o">=</span><span class="s">&quot;Output file to write computed fluxes to. If no file &quot;</span>
-                           <span class="s">&quot;is specified then fluxes will be written to &quot;</span>
-                           <span class="s">&quot;standard output. The specified filename may contain &quot;</span>
-                           <span class="s">&quot;Python date/time format specifiers to enable &quot;</span>
-                           <span class="s">&quot;automatic splitting of output data into multiple &quot;</span>
-                           <span class="s">&quot;files. For example a filename of %Y/%m/</span><span class="si">%d</span><span class="s">_fluxes.txt &quot;</span>
-                           <span class="s">&quot;would split the output into daily files organised by &quot;</span>
-                           <span class="s">&quot;month and year.&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;-o&quot;</span><span class="p">,</span><span class="s2">&quot;--output_file&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;output_file&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> 
+                      <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;string&#39;</span><span class="p">,</span>
+                      <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Output file to write computed fluxes to. If no file &quot;</span>
+                           <span class="s2">&quot;is specified then fluxes will be written to &quot;</span>
+                           <span class="s2">&quot;standard output. The specified filename may contain &quot;</span>
+                           <span class="s2">&quot;Python date/time format specifiers to enable &quot;</span>
+                           <span class="s2">&quot;automatic splitting of output data into multiple &quot;</span>
+                           <span class="s2">&quot;files. For example a filename of %Y/%m/</span><span class="si">%d</span><span class="s2">_fluxes.txt &quot;</span>
+                           <span class="s2">&quot;would split the output into daily files organised by &quot;</span>
+                           <span class="s2">&quot;month and year.&quot;</span><span class="p">)</span>
     
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&quot;--output_pngs&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&quot;png_output_folder&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s">&quot;store&quot;</span><span class="p">,</span> 
-                      <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s">&#39;string&#39;</span><span class="p">,</span>
-                      <span class="n">help</span><span class="o">=</span><span class="s">&quot;Output PNG files of the motion field into this &quot;</span>
-                           <span class="s">&quot;folder. The folder (and any subfolders) will be &quot;</span>
-                           <span class="s">&quot;created automatically if it does not already exist. &quot;</span>
-                           <span class="s">&quot;Default is no PNG output.&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;--output_velocities&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;vel_output_folder&quot;</span><span class="p">,</span> 
+                      <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;string&#39;</span><span class="p">,</span>
+                      <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Output computed velocity arrays into this folder. &quot;</span>
+                           <span class="s2">&quot;The folder (and any subfolders) will be created &quot;</span>
+                           <span class="s2">&quot;automatically if it does not already exist. The &quot;</span>
+                           <span class="s2">&quot;file format used for output arrays can be set using&quot;</span> 
+                           <span class="s2">&quot; the vel_arr_format option. Velocity arrays have a &quot;</span>
+                           <span class="s2">&quot;shape of MxNx2 where M is image width, N is image &quot;</span>
+                           <span class="s2">&quot;height. arr[:,:,0] are the computed velocities in &quot;</span>
+                           <span class="s2">&quot;the x-direction (in m/s) and arr[:,:,1] are the &quot;</span>
+                           <span class="s2">&quot;computed velocities in the y-direction (in m/s).&quot;</span><span class="p">)</span>
+    
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;--vel_arr_format&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;vel_arr_format&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span>
+                      <span class="n">default</span><span class="o">=</span><span class="s1">&#39;npy&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;string&#39;</span><span class="p">,</span>
+                      <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Sets the file format for output velocity arrays. &quot;</span>
+                      <span class="s2">&quot;Can be set to &#39;npy&#39; (default) for numpy binary files, &quot;</span>
+                      <span class="s2">&quot;&#39;mat&#39; for Matlab .mat files (saved using &quot;</span>
+                      <span class="s2">&quot;scipy.io.savemat) or &#39;json&#39; for JSON files.&quot;</span><span class="p">)</span>
+    
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;--output_pngs&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;png_output_folder&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> 
+                      <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;string&#39;</span><span class="p">,</span>
+                      <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Output PNG files of the motion field into this &quot;</span>
+                           <span class="s2">&quot;folder. The folder (and any subfolders) will be &quot;</span>
+                           <span class="s2">&quot;created automatically if it does not already exist. &quot;</span>
+                           <span class="s2">&quot;Default is no PNG output.&quot;</span><span class="p">)</span>
           
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&quot;--max_n&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&quot;max_n&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s">&quot;store&quot;</span><span class="p">,</span> 
-                      <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s">&#39;int&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&quot;Sets the maximum number &quot;</span>
-                      <span class="s">&quot;of images to process. Note that you will get max_n - 1 &quot;</span>
-                      <span class="s">&quot;flux measurements returned (since each flux requires &quot;</span>
-                      <span class="s">&quot;two images.)&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;--max_n&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;max_n&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> 
+                      <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;int&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Sets the maximum number &quot;</span>
+                      <span class="s2">&quot;of images to process. Note that you will get max_n - 1 &quot;</span>
+                      <span class="s2">&quot;flux measurements returned (since each flux requires &quot;</span>
+                      <span class="s2">&quot;two images.)&quot;</span><span class="p">)</span>
                       
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&quot;-s&quot;</span><span class="p">,</span> <span class="s">&quot;--skip_existing&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&quot;skip_existing&quot;</span><span class="p">,</span> 
-                      <span class="n">action</span><span class="o">=</span><span class="s">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-                      <span class="n">help</span><span class="o">=</span><span class="s">&quot;Ignore images that are already in the folder. Use &quot;</span>
-                           <span class="s">&quot;of this option implies --realtime&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;-s&quot;</span><span class="p">,</span> <span class="s2">&quot;--skip_existing&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;skip_existing&quot;</span><span class="p">,</span> 
+                      <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                      <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Ignore images that are already in the folder. Use &quot;</span>
+                           <span class="s2">&quot;of this option implies --realtime&quot;</span><span class="p">)</span>
     
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="s">&quot;--version&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s">&quot;callback&quot;</span><span class="p">,</span> 
-                      <span class="n">callback</span><span class="o">=</span><span class="n">__print_version_and_exit</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s">&quot;Print Plumetrack&quot;</span>
-                      <span class="s">&quot; version number and license information and exit.&quot;</span><span class="p">))</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;--version&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;callback&quot;</span><span class="p">,</span> 
+                      <span class="n">callback</span><span class="o">=</span><span class="n">__print_version_and_exit</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Print Plumetrack&quot;</span>
+                      <span class="s2">&quot; version number and license information and exit.&quot;</span><span class="p">))</span>
 
     
     <span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">parser</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;No input folder specified&quot;</span><span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;No input folder specified&quot;</span><span class="p">)</span>
     
     <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">parser</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;Only one input folder can be specified. Folders with &quot;</span>
-                     <span class="s">&quot;spaces in their names should be enclosed in quotation marks&quot;</span><span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Only one input folder can be specified. Folders with &quot;</span>
+                     <span class="s2">&quot;spaces in their names should be enclosed in quotation marks&quot;</span><span class="p">)</span>
     
     <span class="k">elif</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-        <span class="n">parser</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;Cannot open images in </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s">. No such directory.&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Cannot open images in </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s2">. No such directory.&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
     
-    <span class="c">#a config file must be specified</span>
-    <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">config_file</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="n">parser</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;No configuration file specified. You must use the </span><span class="se">\&#39;</span><span class="s">-f</span><span class="se">\&#39;</span><span class="s"> &quot;</span>
-                     <span class="s">&quot;option to specify a configuration file to use.&quot;</span><span class="p">)</span>
+    <span class="c1">#a config file must be specified</span>
+    <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">config_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;No configuration file specified. You must use the </span><span class="se">\&#39;</span><span class="s2">-f</span><span class="se">\&#39;</span><span class="s2"> &quot;</span>
+                     <span class="s2">&quot;option to specify a configuration file to use.&quot;</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">vel_arr_format</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;npy&#39;</span><span class="p">,</span> <span class="s1">&#39;mat&#39;</span><span class="p">,</span> <span class="s1">&#39;json&#39;</span><span class="p">):</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Invalid value for vel_arr_format, expecting &#39;npy&#39;, &#39;mat&#39; or &#39;json&#39;.&quot;</span><span class="p">)</span>
         
-    <span class="c">#use of the skip_existing option implies the use of the realtime option</span>
+    <span class="c1">#use of the skip_existing option implies the use of the realtime option</span>
     <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">skip_existing</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">options</span><span class="o">.</span><span class="n">realtime</span><span class="p">:</span>
-        <span class="n">options</span><span class="o">.</span><span class="n">realtime</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="n">options</span><span class="o">.</span><span class="n">realtime</span> <span class="o">=</span> <span class="kc">True</span>
     
         
-    <span class="k">return</span> <span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span></div>
 
 
-</div>
+
 <span class="k">def</span> <span class="nf">__print_version_and_exit</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Prints the version number and license information for plumetrack.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">import</span> <span class="nn">plumetrack</span> <span class="c">#imported here to prevent circular imports</span>
-    <span class="k">print</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s"> (version </span><span class="si">%s</span><span class="s">)&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">plumetrack</span><span class="o">.</span><span class="n">PROG_SHORT_NAME</span><span class="p">,</span> <span class="n">plumetrack</span><span class="o">.</span><span class="n">VERSION</span><span class="p">)</span>
-    <span class="k">print</span> <span class="n">plumetrack</span><span class="o">.</span><span class="n">COPYRIGHT</span>
-    <span class="k">print</span> <span class="n">plumetrack</span><span class="o">.</span><span class="n">LICENSE_SHORT</span>
-    <span class="k">print</span> <span class="s">&quot;&quot;</span>
-    <span class="k">print</span> <span class="s">&quot;Written by </span><span class="si">%s</span><span class="s">.&quot;</span><span class="o">%</span><span class="n">plumetrack</span><span class="o">.</span><span class="n">AUTHOR</span>
+    <span class="kn">import</span> <span class="nn">plumetrack</span> <span class="c1">#imported here to prevent circular imports</span>
+    <span class="nb">print</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> (version </span><span class="si">%s</span><span class="s2">)&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">plumetrack</span><span class="o">.</span><span class="n">PROG_SHORT_NAME</span><span class="p">,</span> <span class="n">plumetrack</span><span class="o">.</span><span class="n">VERSION</span><span class="p">)</span>
+    <span class="nb">print</span> <span class="n">plumetrack</span><span class="o">.</span><span class="n">COPYRIGHT</span>
+    <span class="nb">print</span> <span class="n">plumetrack</span><span class="o">.</span><span class="n">LICENSE_SHORT</span>
+    <span class="nb">print</span> <span class="s2">&quot;&quot;</span>
+    <span class="nb">print</span> <span class="s2">&quot;Written by </span><span class="si">%s</span><span class="s2">.&quot;</span><span class="o">%</span><span class="n">plumetrack</span><span class="o">.</span><span class="n">AUTHOR</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
     
 </pre></div>
@@ -434,29 +456,26 @@
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../index.html">
               <img class="logo" src="../../_static/plumetrack.png" alt="Logo"/>
             </a></p>
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -465,14 +484,14 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">Plumetrack 15.06 documentation</a> &raquo;</li>
-          <li><a href="../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../plumetrack.html" >plumetrack</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../index.html">Plumetrack 18.05 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../plumetrack.html" >plumetrack</a> &#187;</li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2014, Nial Peters.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2014, Nial Peters.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.6.
     </div>
   </body>
 </html>

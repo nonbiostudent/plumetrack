@@ -6,15 +6,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>plumetrack.gui package &mdash; Plumetrack 15.06 documentation</title>
+    <title>plumetrack.gui package &#8212; Plumetrack 18.05 documentation</title>
     
-    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '15.06',
+        VERSION:     '18.05',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,14 +23,14 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="_static/plumetrack_32.ico"/>
-    <link rel="top" title="Plumetrack 15.06 documentation" href="index.html" />
+    <link rel="top" title="Plumetrack 18.05 documentation" href="index.html" />
     <link rel="up" title="plumetrack package" href="plumetrack.html" />
     <link rel="prev" title="plumetrack package" href="plumetrack.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -42,16 +42,16 @@
         <li class="right" >
           <a href="plumetrack.html" title="plumetrack package"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Plumetrack 15.06 documentation</a> &raquo;</li>
-          <li><a href="API.html" >API</a> &raquo;</li>
-          <li><a href="plumetrack.html" accesskey="U">plumetrack package</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Plumetrack 18.05 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="API.html" >API</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="plumetrack.html" accesskey="U">plumetrack package</a> &#187;</li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="plumetrack-gui-package">
 <h1>plumetrack.gui package<a class="headerlink" href="#plumetrack-gui-package" title="Permalink to this headline">¶</a></h1>
@@ -62,12 +62,12 @@
 <span id="plumetrack-gui-artwork-module"></span><h2>plumetrack.gui.artwork module<a class="headerlink" href="#module-plumetrack.gui.artwork" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="plumetrack.gui.artwork.PlumetrackArtProvider">
-<em class="property">class </em><tt class="descclassname">plumetrack.gui.artwork.</tt><tt class="descname">PlumetrackArtProvider</tt><a class="reference internal" href="_modules/plumetrack/gui/artwork.html#PlumetrackArtProvider"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.artwork.PlumetrackArtProvider" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">wx._misc.ArtProvider</span></tt></p>
+<em class="property">class </em><code class="descclassname">plumetrack.gui.artwork.</code><code class="descname">PlumetrackArtProvider</code><a class="reference internal" href="_modules/plumetrack/gui/artwork.html#PlumetrackArtProvider"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.artwork.PlumetrackArtProvider" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._misc.ArtProvider</span></code></p>
 <p>Customised art provider class for serving the Plumetrack specific icons.</p>
 <dl class="method">
 <dt id="plumetrack.gui.artwork.PlumetrackArtProvider.CreateBitmap">
-<tt class="descname">CreateBitmap</tt><big>(</big><em>artid</em>, <em>client</em>, <em>size</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/artwork.html#PlumetrackArtProvider.CreateBitmap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.artwork.PlumetrackArtProvider.CreateBitmap" title="Permalink to this definition">¶</a></dt>
+<code class="descname">CreateBitmap</code><span class="sig-paren">(</span><em>artid</em>, <em>client</em>, <em>size</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/artwork.html#PlumetrackArtProvider.CreateBitmap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.artwork.PlumetrackArtProvider.CreateBitmap" title="Permalink to this definition">¶</a></dt>
 <dd><p>Overrides CreateBitmap from wx.ArtProvider. This method looks in the 
 Plumetrack icons directory (as returned by plumetrack.get_plumetrack_icons_dir())
 for the icon specified by artid. The icons are split up into subfolders
@@ -82,26 +82,36 @@ relevant size subfolder for the requested icon.</p>
 <span id="plumetrack-gui-batch-processor-module"></span><h2>plumetrack.gui.batch_processor module<a class="headerlink" href="#module-plumetrack.gui.batch_processor" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="plumetrack.gui.batch_processor.BatchProcessor">
-<em class="property">class </em><tt class="descclassname">plumetrack.gui.batch_processor.</tt><tt class="descname">BatchProcessor</tt><big>(</big><em>parent</em>, <em>config_file</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/batch_processor.html#BatchProcessor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.batch_processor.BatchProcessor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">wx._windows.Dialog</span></tt></p>
+<em class="property">class </em><code class="descclassname">plumetrack.gui.batch_processor.</code><code class="descname">BatchProcessor</code><span class="sig-paren">(</span><em>parent</em>, <em>config_file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/batch_processor.html#BatchProcessor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.batch_processor.BatchProcessor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Dialog</span></code></p>
 <dl class="method">
 <dt id="plumetrack.gui.batch_processor.BatchProcessor.on_cancel">
-<tt class="descname">on_cancel</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/batch_processor.html#BatchProcessor.on_cancel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.batch_processor.BatchProcessor.on_cancel" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_cancel</code><span class="sig-paren">(</span><em>evnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/batch_processor.html#BatchProcessor.on_cancel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.batch_processor.BatchProcessor.on_cancel" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.batch_processor.BatchProcessor.on_images_browse">
-<tt class="descname">on_images_browse</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/batch_processor.html#BatchProcessor.on_images_browse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.batch_processor.BatchProcessor.on_images_browse" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_images_browse</code><span class="sig-paren">(</span><em>evnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/batch_processor.html#BatchProcessor.on_images_browse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.batch_processor.BatchProcessor.on_images_browse" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.batch_processor.BatchProcessor.on_output_browse">
-<tt class="descname">on_output_browse</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/batch_processor.html#BatchProcessor.on_output_browse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.batch_processor.BatchProcessor.on_output_browse" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_output_browse</code><span class="sig-paren">(</span><em>evnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/batch_processor.html#BatchProcessor.on_output_browse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.batch_processor.BatchProcessor.on_output_browse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plumetrack.gui.batch_processor.BatchProcessor.on_output_vel_chkbx">
+<code class="descname">on_output_vel_chkbx</code><span class="sig-paren">(</span><em>evnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/batch_processor.html#BatchProcessor.on_output_vel_chkbx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.batch_processor.BatchProcessor.on_output_vel_chkbx" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.batch_processor.BatchProcessor.on_process">
-<tt class="descname">on_process</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/batch_processor.html#BatchProcessor.on_process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.batch_processor.BatchProcessor.on_process" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_process</code><span class="sig-paren">(</span><em>evnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/batch_processor.html#BatchProcessor.on_process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.batch_processor.BatchProcessor.on_process" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plumetrack.gui.batch_processor.BatchProcessor.on_vel_output_browse">
+<code class="descname">on_vel_output_browse</code><span class="sig-paren">(</span><em>evnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/batch_processor.html#BatchProcessor.on_vel_output_browse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.batch_processor.BatchProcessor.on_vel_output_browse" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -111,140 +121,140 @@ relevant size subfolder for the requested icon.</p>
 <span id="plumetrack-gui-interactive-viewer-module"></span><h2>plumetrack.gui.interactive_viewer module<a class="headerlink" href="#module-plumetrack.gui.interactive_viewer" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="plumetrack.gui.interactive_viewer.ImageFileList">
-<em class="property">class </em><tt class="descclassname">plumetrack.gui.interactive_viewer.</tt><tt class="descname">ImageFileList</tt><big>(</big><em>parent</em>, <em>image_dir</em>, <em>config</em>, <em>plot_panel</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#ImageFileList"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.ImageFileList" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">wx._windows.Panel</span></tt></p>
+<em class="property">class </em><code class="descclassname">plumetrack.gui.interactive_viewer.</code><code class="descname">ImageFileList</code><span class="sig-paren">(</span><em>parent</em>, <em>image_dir</em>, <em>config</em>, <em>plot_panel</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#ImageFileList"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.ImageFileList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Panel</span></code></p>
 <dl class="method">
 <dt id="plumetrack.gui.interactive_viewer.ImageFileList.get_current_selection">
-<tt class="descname">get_current_selection</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#ImageFileList.get_current_selection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.ImageFileList.get_current_selection" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_current_selection</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#ImageFileList.get_current_selection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.ImageFileList.get_current_selection" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.interactive_viewer.ImageFileList.on_browse">
-<tt class="descname">on_browse</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#ImageFileList.on_browse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.ImageFileList.on_browse" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_browse</code><span class="sig-paren">(</span><em>evnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#ImageFileList.on_browse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.ImageFileList.on_browse" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.interactive_viewer.ImageFileList.on_select_image">
-<tt class="descname">on_select_image</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#ImageFileList.on_select_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.ImageFileList.on_select_image" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_select_image</code><span class="sig-paren">(</span><em>evnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#ImageFileList.on_select_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.ImageFileList.on_select_image" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.interactive_viewer.ImageFileList.set_config">
-<tt class="descname">set_config</tt><big>(</big><em>config</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#ImageFileList.set_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.ImageFileList.set_config" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_config</code><span class="sig-paren">(</span><em>config</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#ImageFileList.set_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.ImageFileList.set_config" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.interactive_viewer.ImageFileList.set_image_dir">
-<tt class="descname">set_image_dir</tt><big>(</big><em>im_dir</em>, <em>config</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#ImageFileList.set_image_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.ImageFileList.set_image_dir" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_image_dir</code><span class="sig-paren">(</span><em>im_dir</em>, <em>config</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#ImageFileList.set_image_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.ImageFileList.set_image_dir" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="plumetrack.gui.interactive_viewer.InteractiveViewerFrame">
-<em class="property">class </em><tt class="descclassname">plumetrack.gui.interactive_viewer.</tt><tt class="descname">InteractiveViewerFrame</tt><big>(</big><em>parent</em>, <em>image_dir</em>, <em>config</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#InteractiveViewerFrame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.InteractiveViewerFrame" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">wx._windows.Frame</span></tt></p>
+<em class="property">class </em><code class="descclassname">plumetrack.gui.interactive_viewer.</code><code class="descname">InteractiveViewerFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>image_dir</em>, <em>config</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#InteractiveViewerFrame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.InteractiveViewerFrame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Frame</span></code></p>
 <dl class="method">
 <dt id="plumetrack.gui.interactive_viewer.InteractiveViewerFrame.clear_status">
-<tt class="descname">clear_status</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#InteractiveViewerFrame.clear_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.InteractiveViewerFrame.clear_status" title="Permalink to this definition">¶</a></dt>
+<code class="descname">clear_status</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#InteractiveViewerFrame.clear_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.InteractiveViewerFrame.clear_status" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.interactive_viewer.InteractiveViewerFrame.on_close">
-<tt class="descname">on_close</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#InteractiveViewerFrame.on_close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.InteractiveViewerFrame.on_close" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_close</code><span class="sig-paren">(</span><em>evnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#InteractiveViewerFrame.on_close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.InteractiveViewerFrame.on_close" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.interactive_viewer.InteractiveViewerFrame.set_config">
-<tt class="descname">set_config</tt><big>(</big><em>config</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#InteractiveViewerFrame.set_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.InteractiveViewerFrame.set_config" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_config</code><span class="sig-paren">(</span><em>config</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#InteractiveViewerFrame.set_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.InteractiveViewerFrame.set_config" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.interactive_viewer.InteractiveViewerFrame.set_err_status">
-<tt class="descname">set_err_status</tt><big>(</big><em>x</em>, <em>y</em>, <em>error_val</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#InteractiveViewerFrame.set_err_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.InteractiveViewerFrame.set_err_status" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_err_status</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>error_val</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#InteractiveViewerFrame.set_err_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.InteractiveViewerFrame.set_err_status" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.interactive_viewer.InteractiveViewerFrame.set_vel_status">
-<tt class="descname">set_vel_status</tt><big>(</big><em>x</em>, <em>y</em>, <em>pix_value</em>, <em>xvel</em>, <em>yvel</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#InteractiveViewerFrame.set_vel_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.InteractiveViewerFrame.set_vel_status" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_vel_status</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>pix_value</em>, <em>xvel</em>, <em>yvel</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#InteractiveViewerFrame.set_vel_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.InteractiveViewerFrame.set_vel_status" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="plumetrack.gui.interactive_viewer.MotionFigure">
-<em class="property">class </em><tt class="descclassname">plumetrack.gui.interactive_viewer.</tt><tt class="descname">MotionFigure</tt><big>(</big><em>parent</em>, <em>main_frame</em>, <em>config</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#MotionFigure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.MotionFigure" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">wx._windows.Panel</span></tt></p>
+<em class="property">class </em><code class="descclassname">plumetrack.gui.interactive_viewer.</code><code class="descname">MotionFigure</code><span class="sig-paren">(</span><em>parent</em>, <em>main_frame</em>, <em>config</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#MotionFigure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.MotionFigure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Panel</span></code></p>
 <dl class="method">
 <dt id="plumetrack.gui.interactive_viewer.MotionFigure.clear_plot">
-<tt class="descname">clear_plot</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#MotionFigure.clear_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.MotionFigure.clear_plot" title="Permalink to this definition">¶</a></dt>
+<code class="descname">clear_plot</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#MotionFigure.clear_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.MotionFigure.clear_plot" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.interactive_viewer.MotionFigure.on_mouse_move">
-<tt class="descname">on_mouse_move</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#MotionFigure.on_mouse_move"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.MotionFigure.on_mouse_move" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_mouse_move</code><span class="sig-paren">(</span><em>evnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#MotionFigure.on_mouse_move"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.MotionFigure.on_mouse_move" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.interactive_viewer.MotionFigure.redraw_plot">
-<tt class="descname">redraw_plot</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#MotionFigure.redraw_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.MotionFigure.redraw_plot" title="Permalink to this definition">¶</a></dt>
+<code class="descname">redraw_plot</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#MotionFigure.redraw_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.MotionFigure.redraw_plot" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.interactive_viewer.MotionFigure.set_config">
-<tt class="descname">set_config</tt><big>(</big><em>config</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#MotionFigure.set_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.MotionFigure.set_config" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_config</code><span class="sig-paren">(</span><em>config</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#MotionFigure.set_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.MotionFigure.set_config" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.interactive_viewer.MotionFigure.set_images">
-<tt class="descname">set_images</tt><big>(</big><em>cur_filename</em>, <em>next_filename</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#MotionFigure.set_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.MotionFigure.set_images" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_images</code><span class="sig-paren">(</span><em>cur_filename</em>, <em>next_filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#MotionFigure.set_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.MotionFigure.set_images" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.interactive_viewer.MotionFigure.show_error_plot">
-<tt class="descname">show_error_plot</tt><big>(</big><em>state</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#MotionFigure.show_error_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.MotionFigure.show_error_plot" title="Permalink to this definition">¶</a></dt>
+<code class="descname">show_error_plot</code><span class="sig-paren">(</span><em>state</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#MotionFigure.show_error_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.MotionFigure.show_error_plot" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="plumetrack.gui.interactive_viewer.MotionFigureControls">
-<em class="property">class </em><tt class="descclassname">plumetrack.gui.interactive_viewer.</tt><tt class="descname">MotionFigureControls</tt><big>(</big><em>parent</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#MotionFigureControls"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.MotionFigureControls" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">wx._windows.Panel</span></tt></p>
+<em class="property">class </em><code class="descclassname">plumetrack.gui.interactive_viewer.</code><code class="descname">MotionFigureControls</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#MotionFigureControls"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.MotionFigureControls" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Panel</span></code></p>
 <dl class="method">
 <dt id="plumetrack.gui.interactive_viewer.MotionFigureControls.on_density">
-<tt class="descname">on_density</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#MotionFigureControls.on_density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.MotionFigureControls.on_density" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_density</code><span class="sig-paren">(</span><em>evnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#MotionFigureControls.on_density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.MotionFigureControls.on_density" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.interactive_viewer.MotionFigureControls.on_err_sat">
-<tt class="descname">on_err_sat</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#MotionFigureControls.on_err_sat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.MotionFigureControls.on_err_sat" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_err_sat</code><span class="sig-paren">(</span><em>evnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#MotionFigureControls.on_err_sat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.MotionFigureControls.on_err_sat" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.interactive_viewer.MotionFigureControls.on_error_plot_chkbx">
-<tt class="descname">on_error_plot_chkbx</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#MotionFigureControls.on_error_plot_chkbx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.MotionFigureControls.on_error_plot_chkbx" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_error_plot_chkbx</code><span class="sig-paren">(</span><em>evnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#MotionFigureControls.on_error_plot_chkbx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.MotionFigureControls.on_error_plot_chkbx" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.interactive_viewer.MotionFigureControls.on_int_line_chkbx">
-<tt class="descname">on_int_line_chkbx</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#MotionFigureControls.on_int_line_chkbx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.MotionFigureControls.on_int_line_chkbx" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_int_line_chkbx</code><span class="sig-paren">(</span><em>evnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#MotionFigureControls.on_int_line_chkbx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.MotionFigureControls.on_int_line_chkbx" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.interactive_viewer.MotionFigureControls.on_scale">
-<tt class="descname">on_scale</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#MotionFigureControls.on_scale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.MotionFigureControls.on_scale" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_scale</code><span class="sig-paren">(</span><em>evnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#MotionFigureControls.on_scale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.MotionFigureControls.on_scale" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="plumetrack.gui.interactive_viewer.NavBar">
-<em class="property">class </em><tt class="descclassname">plumetrack.gui.interactive_viewer.</tt><tt class="descname">NavBar</tt><big>(</big><em>canvas</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#NavBar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.NavBar" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">matplotlib.backends.backend_wx.NavigationToolbar2Wx</span></tt></p>
+<em class="property">class </em><code class="descclassname">plumetrack.gui.interactive_viewer.</code><code class="descname">NavBar</code><span class="sig-paren">(</span><em>canvas</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/interactive_viewer.html#NavBar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.interactive_viewer.NavBar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">matplotlib.backends.backend_wx.NavigationToolbar2Wx</span></code></p>
 <dl class="attribute">
 <dt id="plumetrack.gui.interactive_viewer.NavBar.toolitems">
-<tt class="descname">toolitems</tt><em class="property"> = ((None, None, None, None), ('Home', 'Reset original view', 'home', 'home'), ('Back', 'Back to  previous view', 'back', 'back'), ('Forward', 'Forward to next view', 'forward', 'forward'), (None, None, None, None), ('Pan', 'Pan axes with left mouse, zoom with right', 'move', 'pan'), ('Zoom', 'Zoom to rectangle', 'zoom_to_rect', 'zoom'), (None, None, None, None), ('Save', 'Save the figure', 'filesave', 'save_figure'))</em><a class="headerlink" href="#plumetrack.gui.interactive_viewer.NavBar.toolitems" title="Permalink to this definition">¶</a></dt>
+<code class="descname">toolitems</code><em class="property"> = ((None, None, None, None), ('Home', 'Reset original view', 'home', 'home'), ('Back', 'Back to  previous view', 'back', 'back'), ('Forward', 'Forward to next view', 'forward', 'forward'), (None, None, None, None), ('Pan', 'Pan axes with left mouse, zoom with right', 'move', 'pan'), ('Zoom', 'Zoom to rectangle', 'zoom_to_rect', 'zoom'), (None, None, None, None), ('Save', 'Save the figure', 'filesave', 'save_figure'))</em><a class="headerlink" href="#plumetrack.gui.interactive_viewer.NavBar.toolitems" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -254,45 +264,45 @@ relevant size subfolder for the requested icon.</p>
 <span id="plumetrack-gui-main-module"></span><h2>plumetrack.gui.main module<a class="headerlink" href="#module-plumetrack.gui.main" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="plumetrack.gui.main.AutoUpdate">
-<em class="property">class </em><tt class="descclassname">plumetrack.gui.main.</tt><tt class="descname">AutoUpdate</tt><a class="reference internal" href="_modules/plumetrack/gui/main.html#AutoUpdate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.AutoUpdate" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">plumetrack.gui.main.</code><code class="descname">AutoUpdate</code><a class="reference internal" href="_modules/plumetrack/gui/main.html#AutoUpdate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.AutoUpdate" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="method">
 <dt id="plumetrack.gui.main.AutoUpdate.on_change">
-<tt class="descname">on_change</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#AutoUpdate.on_change"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.AutoUpdate.on_change" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_change</code><span class="sig-paren">(</span><em>evnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#AutoUpdate.on_change"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.AutoUpdate.on_change" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="plumetrack.gui.main.AutoUpdateCheckbox">
-<em class="property">class </em><tt class="descclassname">plumetrack.gui.main.</tt><tt class="descname">AutoUpdateCheckbox</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#AutoUpdateCheckbox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.AutoUpdateCheckbox" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">wx._controls.CheckBox</span></tt>, <a class="reference internal" href="#plumetrack.gui.main.AutoUpdate" title="plumetrack.gui.main.AutoUpdate"><tt class="xref py py-class docutils literal"><span class="pre">plumetrack.gui.main.AutoUpdate</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">plumetrack.gui.main.</code><code class="descname">AutoUpdateCheckbox</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#AutoUpdateCheckbox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.AutoUpdateCheckbox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._controls.CheckBox</span></code>, <a class="reference internal" href="#plumetrack.gui.main.AutoUpdate" title="plumetrack.gui.main.AutoUpdate"><code class="xref py py-class docutils literal"><span class="pre">plumetrack.gui.main.AutoUpdate</span></code></a></p>
 </dd></dl>
 
 <dl class="class">
 <dt id="plumetrack.gui.main.AutoUpdateChoice">
-<em class="property">class </em><tt class="descclassname">plumetrack.gui.main.</tt><tt class="descname">AutoUpdateChoice</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#AutoUpdateChoice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.AutoUpdateChoice" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">wx._controls.Choice</span></tt>, <a class="reference internal" href="#plumetrack.gui.main.AutoUpdate" title="plumetrack.gui.main.AutoUpdate"><tt class="xref py py-class docutils literal"><span class="pre">plumetrack.gui.main.AutoUpdate</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">plumetrack.gui.main.</code><code class="descname">AutoUpdateChoice</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#AutoUpdateChoice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.AutoUpdateChoice" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._controls.Choice</span></code>, <a class="reference internal" href="#plumetrack.gui.main.AutoUpdate" title="plumetrack.gui.main.AutoUpdate"><code class="xref py py-class docutils literal"><span class="pre">plumetrack.gui.main.AutoUpdate</span></code></a></p>
 </dd></dl>
 
 <dl class="class">
 <dt id="plumetrack.gui.main.AutoUpdateFloatspin">
-<em class="property">class </em><tt class="descclassname">plumetrack.gui.main.</tt><tt class="descname">AutoUpdateFloatspin</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#AutoUpdateFloatspin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.AutoUpdateFloatspin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">wx.lib.agw.floatspin.FloatSpin</span></tt>, <a class="reference internal" href="#plumetrack.gui.main.AutoUpdate" title="plumetrack.gui.main.AutoUpdate"><tt class="xref py py-class docutils literal"><span class="pre">plumetrack.gui.main.AutoUpdate</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">plumetrack.gui.main.</code><code class="descname">AutoUpdateFloatspin</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#AutoUpdateFloatspin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.AutoUpdateFloatspin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx.lib.agw.floatspin.FloatSpin</span></code>, <a class="reference internal" href="#plumetrack.gui.main.AutoUpdate" title="plumetrack.gui.main.AutoUpdate"><code class="xref py py-class docutils literal"><span class="pre">plumetrack.gui.main.AutoUpdate</span></code></a></p>
 </dd></dl>
 
 <dl class="class">
 <dt id="plumetrack.gui.main.AutoUpdateSpinCtrl">
-<em class="property">class </em><tt class="descclassname">plumetrack.gui.main.</tt><tt class="descname">AutoUpdateSpinCtrl</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#AutoUpdateSpinCtrl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.AutoUpdateSpinCtrl" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">wx._controls.SpinCtrl</span></tt>, <a class="reference internal" href="#plumetrack.gui.main.AutoUpdate" title="plumetrack.gui.main.AutoUpdate"><tt class="xref py py-class docutils literal"><span class="pre">plumetrack.gui.main.AutoUpdate</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">plumetrack.gui.main.</code><code class="descname">AutoUpdateSpinCtrl</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#AutoUpdateSpinCtrl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.AutoUpdateSpinCtrl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._controls.SpinCtrl</span></code>, <a class="reference internal" href="#plumetrack.gui.main.AutoUpdate" title="plumetrack.gui.main.AutoUpdate"><code class="xref py py-class docutils literal"><span class="pre">plumetrack.gui.main.AutoUpdate</span></code></a></p>
 </dd></dl>
 
 <dl class="class">
 <dt id="plumetrack.gui.main.AutoUpdateTextCtrl">
-<em class="property">class </em><tt class="descclassname">plumetrack.gui.main.</tt><tt class="descname">AutoUpdateTextCtrl</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#AutoUpdateTextCtrl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.AutoUpdateTextCtrl" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">wx._controls.TextCtrl</span></tt>, <a class="reference internal" href="#plumetrack.gui.main.AutoUpdate" title="plumetrack.gui.main.AutoUpdate"><tt class="xref py py-class docutils literal"><span class="pre">plumetrack.gui.main.AutoUpdate</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">plumetrack.gui.main.</code><code class="descname">AutoUpdateTextCtrl</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#AutoUpdateTextCtrl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.AutoUpdateTextCtrl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._controls.TextCtrl</span></code>, <a class="reference internal" href="#plumetrack.gui.main.AutoUpdate" title="plumetrack.gui.main.AutoUpdate"><code class="xref py py-class docutils literal"><span class="pre">plumetrack.gui.main.AutoUpdate</span></code></a></p>
 <dl class="method">
 <dt id="plumetrack.gui.main.AutoUpdateTextCtrl.SetValue">
-<tt class="descname">SetValue</tt><big>(</big><em>val</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#AutoUpdateTextCtrl.SetValue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.AutoUpdateTextCtrl.SetValue" title="Permalink to this definition">¶</a></dt>
+<code class="descname">SetValue</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#AutoUpdateTextCtrl.SetValue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.AutoUpdateTextCtrl.SetValue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Override the base class method so that using SetValue does not make the 
 control think that something has changed. Otherwise newly loaded config
 files will look as though they need to be saved before they are edited.</p>
@@ -300,169 +310,169 @@ files will look as though they need to be saved before they are edited.</p>
 
 <dl class="method">
 <dt id="plumetrack.gui.main.AutoUpdateTextCtrl.on_change">
-<tt class="descname">on_change</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#AutoUpdateTextCtrl.on_change"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.AutoUpdateTextCtrl.on_change" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_change</code><span class="sig-paren">(</span><em>evnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#AutoUpdateTextCtrl.on_change"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.AutoUpdateTextCtrl.on_change" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.main.AutoUpdateTextCtrl.on_text_change">
-<tt class="descname">on_text_change</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#AutoUpdateTextCtrl.on_text_change"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.AutoUpdateTextCtrl.on_text_change" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_text_change</code><span class="sig-paren">(</span><em>evnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#AutoUpdateTextCtrl.on_text_change"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.AutoUpdateTextCtrl.on_text_change" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="plumetrack.gui.main.FluxCalculationConfig">
-<em class="property">class </em><tt class="descclassname">plumetrack.gui.main.</tt><tt class="descname">FluxCalculationConfig</tt><big>(</big><em>parent</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#FluxCalculationConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.FluxCalculationConfig" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">wx._windows.Panel</span></tt></p>
+<em class="property">class </em><code class="descclassname">plumetrack.gui.main.</code><code class="descname">FluxCalculationConfig</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#FluxCalculationConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.FluxCalculationConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Panel</span></code></p>
 <dl class="method">
 <dt id="plumetrack.gui.main.FluxCalculationConfig.get_configs">
-<tt class="descname">get_configs</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#FluxCalculationConfig.get_configs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.FluxCalculationConfig.get_configs" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_configs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#FluxCalculationConfig.get_configs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.FluxCalculationConfig.get_configs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.main.FluxCalculationConfig.get_other_int_line_pts">
-<tt class="descname">get_other_int_line_pts</tt><big>(</big><em>num</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#FluxCalculationConfig.get_other_int_line_pts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.FluxCalculationConfig.get_other_int_line_pts" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_other_int_line_pts</code><span class="sig-paren">(</span><em>num</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#FluxCalculationConfig.get_other_int_line_pts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.FluxCalculationConfig.get_other_int_line_pts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the points in all the other integration lines except &#8216;num&#8217;.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.main.FluxCalculationConfig.on_add_int_line">
-<tt class="descname">on_add_int_line</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#FluxCalculationConfig.on_add_int_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.FluxCalculationConfig.on_add_int_line" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_add_int_line</code><span class="sig-paren">(</span><em>evnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#FluxCalculationConfig.on_add_int_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.FluxCalculationConfig.on_add_int_line" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.main.FluxCalculationConfig.on_low_thresh">
-<tt class="descname">on_low_thresh</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#FluxCalculationConfig.on_low_thresh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.FluxCalculationConfig.on_low_thresh" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_low_thresh</code><span class="sig-paren">(</span><em>evnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#FluxCalculationConfig.on_low_thresh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.FluxCalculationConfig.on_low_thresh" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.main.FluxCalculationConfig.on_remove_int_line">
-<tt class="descname">on_remove_int_line</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#FluxCalculationConfig.on_remove_int_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.FluxCalculationConfig.on_remove_int_line" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_remove_int_line</code><span class="sig-paren">(</span><em>evnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#FluxCalculationConfig.on_remove_int_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.FluxCalculationConfig.on_remove_int_line" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.main.FluxCalculationConfig.set_configs">
-<tt class="descname">set_configs</tt><big>(</big><em>configs</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#FluxCalculationConfig.set_configs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.FluxCalculationConfig.set_configs" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_configs</code><span class="sig-paren">(</span><em>configs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#FluxCalculationConfig.set_configs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.FluxCalculationConfig.set_configs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="plumetrack.gui.main.InputFilesConfig">
-<em class="property">class </em><tt class="descclassname">plumetrack.gui.main.</tt><tt class="descname">InputFilesConfig</tt><big>(</big><em>parent</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#InputFilesConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.InputFilesConfig" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">wx._windows.Panel</span></tt></p>
+<em class="property">class </em><code class="descclassname">plumetrack.gui.main.</code><code class="descname">InputFilesConfig</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#InputFilesConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.InputFilesConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Panel</span></code></p>
 <dl class="method">
 <dt id="plumetrack.gui.main.InputFilesConfig.get_configs">
-<tt class="descname">get_configs</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#InputFilesConfig.get_configs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.InputFilesConfig.get_configs" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_configs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#InputFilesConfig.get_configs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.InputFilesConfig.get_configs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.main.InputFilesConfig.on_browse">
-<tt class="descname">on_browse</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#InputFilesConfig.on_browse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.InputFilesConfig.on_browse" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_browse</code><span class="sig-paren">(</span><em>evnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#InputFilesConfig.on_browse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.InputFilesConfig.on_browse" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.main.InputFilesConfig.on_custom_loader_chkbox">
-<tt class="descname">on_custom_loader_chkbox</tt><big>(</big><em>event</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#InputFilesConfig.on_custom_loader_chkbox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.InputFilesConfig.on_custom_loader_chkbox" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_custom_loader_chkbox</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#InputFilesConfig.on_custom_loader_chkbox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.InputFilesConfig.on_custom_loader_chkbox" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.main.InputFilesConfig.on_help">
-<tt class="descname">on_help</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#InputFilesConfig.on_help"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.InputFilesConfig.on_help" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_help</code><span class="sig-paren">(</span><em>evnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#InputFilesConfig.on_help"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.InputFilesConfig.on_help" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.main.InputFilesConfig.set_configs">
-<tt class="descname">set_configs</tt><big>(</big><em>configs</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#InputFilesConfig.set_configs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.InputFilesConfig.set_configs" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_configs</code><span class="sig-paren">(</span><em>configs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#InputFilesConfig.set_configs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.InputFilesConfig.set_configs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="plumetrack.gui.main.IntegrationLineConfig">
-<em class="property">class </em><tt class="descclassname">plumetrack.gui.main.</tt><tt class="descname">IntegrationLineConfig</tt><big>(</big><em>parent</em>, <em>num</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#IntegrationLineConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.IntegrationLineConfig" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">wx._windows.Panel</span></tt></p>
+<em class="property">class </em><code class="descclassname">plumetrack.gui.main.</code><code class="descname">IntegrationLineConfig</code><span class="sig-paren">(</span><em>parent</em>, <em>num</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#IntegrationLineConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.IntegrationLineConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Panel</span></code></p>
 <dl class="method">
 <dt id="plumetrack.gui.main.IntegrationLineConfig.get_configs">
-<tt class="descname">get_configs</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#IntegrationLineConfig.get_configs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.IntegrationLineConfig.get_configs" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_configs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#IntegrationLineConfig.get_configs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.IntegrationLineConfig.get_configs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.main.IntegrationLineConfig.on_draw">
-<tt class="descname">on_draw</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#IntegrationLineConfig.on_draw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.IntegrationLineConfig.on_draw" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_draw</code><span class="sig-paren">(</span><em>evnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#IntegrationLineConfig.on_draw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.IntegrationLineConfig.on_draw" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.main.IntegrationLineConfig.set_configs">
-<tt class="descname">set_configs</tt><big>(</big><em>configs</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#IntegrationLineConfig.set_configs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.IntegrationLineConfig.set_configs" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_configs</code><span class="sig-paren">(</span><em>configs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#IntegrationLineConfig.set_configs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.IntegrationLineConfig.set_configs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="plumetrack.gui.main.IntegrationLineSelectDialog">
-<em class="property">class </em><tt class="descclassname">plumetrack.gui.main.</tt><tt class="descname">IntegrationLineSelectDialog</tt><big>(</big><em>parent</em>, <em>image_array</em>, <em>pts</em>, <em>direction</em>, <em>other_pts=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#IntegrationLineSelectDialog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.IntegrationLineSelectDialog" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">wx._windows.Dialog</span></tt></p>
+<em class="property">class </em><code class="descclassname">plumetrack.gui.main.</code><code class="descname">IntegrationLineSelectDialog</code><span class="sig-paren">(</span><em>parent</em>, <em>image_array</em>, <em>pts</em>, <em>direction</em>, <em>other_pts=[]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#IntegrationLineSelectDialog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.IntegrationLineSelectDialog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Dialog</span></code></p>
 <dl class="method">
 <dt id="plumetrack.gui.main.IntegrationLineSelectDialog.get_integration_direction">
-<tt class="descname">get_integration_direction</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#IntegrationLineSelectDialog.get_integration_direction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.IntegrationLineSelectDialog.get_integration_direction" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_integration_direction</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#IntegrationLineSelectDialog.get_integration_direction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.IntegrationLineSelectDialog.get_integration_direction" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.main.IntegrationLineSelectDialog.get_integration_line">
-<tt class="descname">get_integration_line</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#IntegrationLineSelectDialog.get_integration_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.IntegrationLineSelectDialog.get_integration_line" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_integration_line</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#IntegrationLineSelectDialog.get_integration_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.IntegrationLineSelectDialog.get_integration_line" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.main.IntegrationLineSelectDialog.on_cancel">
-<tt class="descname">on_cancel</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#IntegrationLineSelectDialog.on_cancel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.IntegrationLineSelectDialog.on_cancel" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_cancel</code><span class="sig-paren">(</span><em>evnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#IntegrationLineSelectDialog.on_cancel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.IntegrationLineSelectDialog.on_cancel" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.main.IntegrationLineSelectDialog.on_clear">
-<tt class="descname">on_clear</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#IntegrationLineSelectDialog.on_clear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.IntegrationLineSelectDialog.on_clear" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_clear</code><span class="sig-paren">(</span><em>evnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#IntegrationLineSelectDialog.on_clear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.IntegrationLineSelectDialog.on_clear" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.main.IntegrationLineSelectDialog.on_click">
-<tt class="descname">on_click</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#IntegrationLineSelectDialog.on_click"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.IntegrationLineSelectDialog.on_click" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_click</code><span class="sig-paren">(</span><em>evnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#IntegrationLineSelectDialog.on_click"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.IntegrationLineSelectDialog.on_click" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.main.IntegrationLineSelectDialog.on_help">
-<tt class="descname">on_help</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#IntegrationLineSelectDialog.on_help"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.IntegrationLineSelectDialog.on_help" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_help</code><span class="sig-paren">(</span><em>evnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#IntegrationLineSelectDialog.on_help"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.IntegrationLineSelectDialog.on_help" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.main.IntegrationLineSelectDialog.on_ok">
-<tt class="descname">on_ok</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#IntegrationLineSelectDialog.on_ok"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.IntegrationLineSelectDialog.on_ok" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_ok</code><span class="sig-paren">(</span><em>evnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#IntegrationLineSelectDialog.on_ok"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.IntegrationLineSelectDialog.on_ok" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.main.IntegrationLineSelectDialog.on_reverse">
-<tt class="descname">on_reverse</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#IntegrationLineSelectDialog.on_reverse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.IntegrationLineSelectDialog.on_reverse" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_reverse</code><span class="sig-paren">(</span><em>evnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#IntegrationLineSelectDialog.on_reverse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.IntegrationLineSelectDialog.on_reverse" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.main.IntegrationLineSelectDialog.redraw_integration_lines">
-<tt class="descname">redraw_integration_lines</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#IntegrationLineSelectDialog.redraw_integration_lines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.IntegrationLineSelectDialog.redraw_integration_lines" title="Permalink to this definition">¶</a></dt>
+<code class="descname">redraw_integration_lines</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#IntegrationLineSelectDialog.redraw_integration_lines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.IntegrationLineSelectDialog.redraw_integration_lines" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="plumetrack.gui.main.MainFrame">
-<em class="property">class </em><tt class="descclassname">plumetrack.gui.main.</tt><tt class="descname">MainFrame</tt><a class="reference internal" href="_modules/plumetrack/gui/main.html#MainFrame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MainFrame" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">wx._windows.Frame</span></tt></p>
+<em class="property">class </em><code class="descclassname">plumetrack.gui.main.</code><code class="descname">MainFrame</code><a class="reference internal" href="_modules/plumetrack/gui/main.html#MainFrame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MainFrame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Frame</span></code></p>
 <p>Main frame of the configuration utility GUI.</p>
 <dl class="method">
 <dt id="plumetrack.gui.main.MainFrame.get_configs">
-<tt class="descname">get_configs</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#MainFrame.get_configs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MainFrame.get_configs" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_configs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#MainFrame.get_configs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MainFrame.get_configs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.main.MainFrame.launch">
-<tt class="descname">launch</tt><big>(</big><em>prev_cfg_file</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#MainFrame.launch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MainFrame.launch" title="Permalink to this definition">¶</a></dt>
+<code class="descname">launch</code><span class="sig-paren">(</span><em>prev_cfg_file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#MainFrame.launch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MainFrame.launch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create all the GUI elements and show the main window. Note that this 
 needs to be separate from the __init__ method, since we need to set the top
 level window for wx before calling launch().</p>
@@ -470,24 +480,24 @@ level window for wx before calling launch().</p>
 
 <dl class="method">
 <dt id="plumetrack.gui.main.MainFrame.on_cancel">
-<tt class="descname">on_cancel</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#MainFrame.on_cancel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MainFrame.on_cancel" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_cancel</code><span class="sig-paren">(</span><em>evnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#MainFrame.on_cancel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MainFrame.on_cancel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Event handler for cancel button events. Exits the program.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.main.MainFrame.on_close">
-<tt class="descname">on_close</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#MainFrame.on_close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MainFrame.on_close" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_close</code><span class="sig-paren">(</span><em>evnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#MainFrame.on_close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MainFrame.on_close" title="Permalink to this definition">¶</a></dt>
 <dd><p>Event handler for close events - exits the program.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.main.MainFrame.on_config_change">
-<tt class="descname">on_config_change</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#MainFrame.on_config_change"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MainFrame.on_config_change" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_config_change</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#MainFrame.on_config_change"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MainFrame.on_config_change" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.main.MainFrame.on_interactive_viewer">
-<tt class="descname">on_interactive_viewer</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#MainFrame.on_interactive_viewer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MainFrame.on_interactive_viewer" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_interactive_viewer</code><span class="sig-paren">(</span><em>evnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#MainFrame.on_interactive_viewer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MainFrame.on_interactive_viewer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Event handler for interactive toolbar events. Opens a directory choice dialog
 to choose an image directory to test the configs on and then launches 
 a interactive_viewer_frame. Note that if a config test frame already exists
@@ -497,24 +507,24 @@ frame is displaying</p>
 
 <dl class="method">
 <dt id="plumetrack.gui.main.MainFrame.on_new">
-<tt class="descname">on_new</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#MainFrame.on_new"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MainFrame.on_new" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_new</code><span class="sig-paren">(</span><em>evnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#MainFrame.on_new"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MainFrame.on_new" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.main.MainFrame.on_open_file">
-<tt class="descname">on_open_file</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#MainFrame.on_open_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MainFrame.on_open_file" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_open_file</code><span class="sig-paren">(</span><em>evnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#MainFrame.on_open_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MainFrame.on_open_file" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.main.MainFrame.on_process">
-<tt class="descname">on_process</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#MainFrame.on_process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MainFrame.on_process" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_process</code><span class="sig-paren">(</span><em>evnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#MainFrame.on_process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MainFrame.on_process" title="Permalink to this definition">¶</a></dt>
 <dd><p>Event handler for batch process toolbar events. Opens the batch 
 processing dialog</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.main.MainFrame.on_save">
-<tt class="descname">on_save</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#MainFrame.on_save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MainFrame.on_save" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_save</code><span class="sig-paren">(</span><em>evnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#MainFrame.on_save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MainFrame.on_save" title="Permalink to this definition">¶</a></dt>
 <dd><p>Event handler for Save button events. Opens a file selection dialog, 
 reads the configs from the various panels and saves them to the selected
 file.</p>
@@ -522,114 +532,114 @@ file.</p>
 
 <dl class="method">
 <dt id="plumetrack.gui.main.MainFrame.on_saveas">
-<tt class="descname">on_saveas</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#MainFrame.on_saveas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MainFrame.on_saveas" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_saveas</code><span class="sig-paren">(</span><em>evnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#MainFrame.on_saveas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MainFrame.on_saveas" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.main.MainFrame.save_to_file">
-<tt class="descname">save_to_file</tt><big>(</big><em>filename</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#MainFrame.save_to_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MainFrame.save_to_file" title="Permalink to this definition">¶</a></dt>
+<code class="descname">save_to_file</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#MainFrame.save_to_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MainFrame.save_to_file" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.main.MainFrame.save_unsaved_work">
-<tt class="descname">save_unsaved_work</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#MainFrame.save_unsaved_work"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MainFrame.save_unsaved_work" title="Permalink to this definition">¶</a></dt>
+<code class="descname">save_unsaved_work</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#MainFrame.save_unsaved_work"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MainFrame.save_unsaved_work" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.main.MainFrame.set_configs">
-<tt class="descname">set_configs</tt><big>(</big><em>configs</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#MainFrame.set_configs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MainFrame.set_configs" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_configs</code><span class="sig-paren">(</span><em>configs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#MainFrame.set_configs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MainFrame.set_configs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.main.MainFrame.set_current_file">
-<tt class="descname">set_current_file</tt><big>(</big><em>filename</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#MainFrame.set_current_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MainFrame.set_current_file" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_current_file</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#MainFrame.set_current_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MainFrame.set_current_file" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.main.MainFrame.set_needs_saving">
-<tt class="descname">set_needs_saving</tt><big>(</big><em>val</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#MainFrame.set_needs_saving"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MainFrame.set_needs_saving" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_needs_saving</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#MainFrame.set_needs_saving"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MainFrame.set_needs_saving" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="plumetrack.gui.main.MainToolbar">
-<em class="property">class </em><tt class="descclassname">plumetrack.gui.main.</tt><tt class="descname">MainToolbar</tt><big>(</big><em>parent</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#MainToolbar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MainToolbar" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">wx._controls.ToolBar</span></tt></p>
+<em class="property">class </em><code class="descclassname">plumetrack.gui.main.</code><code class="descname">MainToolbar</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#MainToolbar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MainToolbar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._controls.ToolBar</span></code></p>
 <p>Main program toolbar</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="plumetrack.gui.main.MaskingConfig">
-<em class="property">class </em><tt class="descclassname">plumetrack.gui.main.</tt><tt class="descname">MaskingConfig</tt><big>(</big><em>parent</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#MaskingConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MaskingConfig" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">wx._windows.Panel</span></tt></p>
+<em class="property">class </em><code class="descclassname">plumetrack.gui.main.</code><code class="descname">MaskingConfig</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#MaskingConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MaskingConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Panel</span></code></p>
 <dl class="method">
 <dt id="plumetrack.gui.main.MaskingConfig.get_configs">
-<tt class="descname">get_configs</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#MaskingConfig.get_configs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MaskingConfig.get_configs" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_configs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#MaskingConfig.get_configs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MaskingConfig.get_configs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.main.MaskingConfig.on_browse">
-<tt class="descname">on_browse</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#MaskingConfig.on_browse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MaskingConfig.on_browse" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_browse</code><span class="sig-paren">(</span><em>evnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#MaskingConfig.on_browse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MaskingConfig.on_browse" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.main.MaskingConfig.on_high_thresh">
-<tt class="descname">on_high_thresh</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#MaskingConfig.on_high_thresh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MaskingConfig.on_high_thresh" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_high_thresh</code><span class="sig-paren">(</span><em>evnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#MaskingConfig.on_high_thresh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MaskingConfig.on_high_thresh" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.main.MaskingConfig.on_low_thresh">
-<tt class="descname">on_low_thresh</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#MaskingConfig.on_low_thresh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MaskingConfig.on_low_thresh" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_low_thresh</code><span class="sig-paren">(</span><em>evnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#MaskingConfig.on_low_thresh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MaskingConfig.on_low_thresh" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.main.MaskingConfig.on_mask_im">
-<tt class="descname">on_mask_im</tt><big>(</big><em>evnt</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#MaskingConfig.on_mask_im"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MaskingConfig.on_mask_im" title="Permalink to this definition">¶</a></dt>
+<code class="descname">on_mask_im</code><span class="sig-paren">(</span><em>evnt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#MaskingConfig.on_mask_im"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MaskingConfig.on_mask_im" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.main.MaskingConfig.set_configs">
-<tt class="descname">set_configs</tt><big>(</big><em>configs</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#MaskingConfig.set_configs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MaskingConfig.set_configs" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_configs</code><span class="sig-paren">(</span><em>configs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#MaskingConfig.set_configs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MaskingConfig.set_configs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.main.MaskingConfig.update_threshold_visibility">
-<tt class="descname">update_threshold_visibility</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#MaskingConfig.update_threshold_visibility"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MaskingConfig.update_threshold_visibility" title="Permalink to this definition">¶</a></dt>
+<code class="descname">update_threshold_visibility</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#MaskingConfig.update_threshold_visibility"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MaskingConfig.update_threshold_visibility" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="plumetrack.gui.main.MotionTrackingConfig">
-<em class="property">class </em><tt class="descclassname">plumetrack.gui.main.</tt><tt class="descname">MotionTrackingConfig</tt><big>(</big><em>parent</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#MotionTrackingConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MotionTrackingConfig" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">wx._windows.Panel</span></tt></p>
+<em class="property">class </em><code class="descclassname">plumetrack.gui.main.</code><code class="descname">MotionTrackingConfig</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#MotionTrackingConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MotionTrackingConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Panel</span></code></p>
 <dl class="method">
 <dt id="plumetrack.gui.main.MotionTrackingConfig.get_configs">
-<tt class="descname">get_configs</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#MotionTrackingConfig.get_configs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MotionTrackingConfig.get_configs" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_configs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#MotionTrackingConfig.get_configs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MotionTrackingConfig.get_configs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.gui.main.MotionTrackingConfig.set_configs">
-<tt class="descname">set_configs</tt><big>(</big><em>configs</em><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#MotionTrackingConfig.set_configs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MotionTrackingConfig.set_configs" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_configs</code><span class="sig-paren">(</span><em>configs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#MotionTrackingConfig.set_configs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.MotionTrackingConfig.set_configs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="plumetrack.gui.main.PlumetrackApp">
-<em class="property">class </em><tt class="descclassname">plumetrack.gui.main.</tt><tt class="descname">PlumetrackApp</tt><a class="reference internal" href="_modules/plumetrack/gui/main.html#PlumetrackApp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.PlumetrackApp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">wx._core.App</span></tt></p>
+<em class="property">class </em><code class="descclassname">plumetrack.gui.main.</code><code class="descname">PlumetrackApp</code><a class="reference internal" href="_modules/plumetrack/gui/main.html#PlumetrackApp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.PlumetrackApp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._core.App</span></code></p>
 <dl class="method">
 <dt id="plumetrack.gui.main.PlumetrackApp.OnInit">
-<tt class="descname">OnInit</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#PlumetrackApp.OnInit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.PlumetrackApp.OnInit" title="Permalink to this definition">¶</a></dt>
+<code class="descname">OnInit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#PlumetrackApp.OnInit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.PlumetrackApp.OnInit" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="function">
 <dt id="plumetrack.gui.main.main">
-<tt class="descclassname">plumetrack.gui.main.</tt><tt class="descname">main</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack/gui/main.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.main" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">plumetrack.gui.main.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/gui/main.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.gui.main.main" title="Permalink to this definition">¶</a></dt>
 <dd><p>Runs the main program - this is set as the entry point for the configuration
 utility in the setup.py file.</p>
 </dd></dl>
@@ -644,7 +654,7 @@ utility in the setup.py file.</p>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="index.html">
               <img class="logo" src="_static/plumetrack.png" alt="Logo"/>
@@ -665,29 +675,28 @@ utility in the setup.py file.</p>
   <h4>Previous topic</h4>
   <p class="topless"><a href="plumetrack.html"
                         title="previous chapter">plumetrack package</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="_sources/plumetrack.gui.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/plumetrack.gui.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -699,14 +708,14 @@ utility in the setup.py file.</p>
         <li class="right" >
           <a href="plumetrack.html" title="plumetrack package"
              >previous</a> |</li>
-        <li><a href="index.html">Plumetrack 15.06 documentation</a> &raquo;</li>
-          <li><a href="API.html" >API</a> &raquo;</li>
-          <li><a href="plumetrack.html" >plumetrack package</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Plumetrack 18.05 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="API.html" >API</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="plumetrack.html" >plumetrack package</a> &#187;</li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2014, Nial Peters.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2014, Nial Peters.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.6.
     </div>
   </body>
 </html>

@@ -7,15 +7,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Index &mdash; Plumetrack 15.06 documentation</title>
+    <title>Index &#8212; Plumetrack 18.05 documentation</title>
     
-    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '15.06',
+        VERSION:     '18.05',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,12 +24,12 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="_static/plumetrack_32.ico"/>
-    <link rel="top" title="Plumetrack 15.06 documentation" href="index.html" /> 
+    <link rel="top" title="Plumetrack 18.05 documentation" href="index.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -38,14 +38,14 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="index.html">Plumetrack 15.06 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Plumetrack 18.05 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
 
 <h1 id="index">Index</h1>
@@ -337,6 +337,10 @@
   </dt>
 
       
+  <dt><a href="plumetrack.html#plumetrack.flux.FluxEngineBase.get_pixel_size">get_pixel_size() (plumetrack.flux.FluxEngineBase method)</a>
+  </dt>
+
+      
   <dt><a href="plumetrack.html#plumetrack.get_plumetrack_icons_dir">get_plumetrack_icons_dir() (in module plumetrack)</a>
   </dt>
 
@@ -618,8 +622,6 @@
   <dt><a href="plumetrack.gui.html#plumetrack.gui.main.MainFrame.on_interactive_viewer">on_interactive_viewer() (plumetrack.gui.main.MainFrame method)</a>
   </dt>
 
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="plumetrack.gui.html#plumetrack.gui.main.FluxCalculationConfig.on_low_thresh">on_low_thresh() (plumetrack.gui.main.FluxCalculationConfig method)</a>
   </dt>
@@ -630,6 +632,8 @@
   </dt>
 
       </dl></dd>
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="plumetrack.gui.html#plumetrack.gui.main.MaskingConfig.on_mask_im">on_mask_im() (plumetrack.gui.main.MaskingConfig method)</a>
   </dt>
@@ -652,6 +656,10 @@
 
       
   <dt><a href="plumetrack.gui.html#plumetrack.gui.batch_processor.BatchProcessor.on_output_browse">on_output_browse() (plumetrack.gui.batch_processor.BatchProcessor method)</a>
+  </dt>
+
+      
+  <dt><a href="plumetrack.gui.html#plumetrack.gui.batch_processor.BatchProcessor.on_output_vel_chkbx">on_output_vel_chkbx() (plumetrack.gui.batch_processor.BatchProcessor method)</a>
   </dt>
 
       
@@ -690,6 +698,10 @@
 
       
   <dt><a href="plumetrack.gui.html#plumetrack.gui.main.AutoUpdateTextCtrl.on_text_change">on_text_change() (plumetrack.gui.main.AutoUpdateTextCtrl method)</a>
+  </dt>
+
+      
+  <dt><a href="plumetrack.gui.html#plumetrack.gui.batch_processor.BatchProcessor.on_vel_output_browse">on_vel_output_browse() (plumetrack.gui.batch_processor.BatchProcessor method)</a>
   </dt>
 
       
@@ -844,6 +856,10 @@
 
       
   <dt><a href="plumetrack.gui.html#plumetrack.gui.main.MainFrame.save_unsaved_work">save_unsaved_work() (plumetrack.gui.main.MainFrame method)</a>
+  </dt>
+
+      
+  <dt><a href="plumetrack.html#plumetrack.output.save_velocity_array">save_velocity_array() (in module plumetrack.output)</a>
   </dt>
 
       
@@ -1004,7 +1020,7 @@
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="index.html">
               <img class="logo" src="_static/plumetrack.png" alt="Logo"/>
@@ -1012,24 +1028,21 @@
 
    
 
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -1038,12 +1051,12 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="index.html">Plumetrack 15.06 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Plumetrack 18.05 documentation</a> &#187;</li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2014, Nial Peters.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2014, Nial Peters.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.6.
     </div>
   </body>
 </html>

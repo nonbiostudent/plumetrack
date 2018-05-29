@@ -959,7 +959,7 @@ class MainToolbar(wx.ToolBar):
         wx.ToolBar.__init__(self,parent, wx.ID_ANY)
         
         #file tools    
-        self.new_tool = self.AddTool(-1, wx.ArtProvider.GetBitmap(wx.ART_NEW, wx.ART_TOOLBAR), shortHelpString="New configuration")    
+        self.new_tool = self.AddTool(-1,wx.ArtProvider.GetBitmap(wx.ART_NEW, wx.ART_TOOLBAR), shortHelpString="New configuration")    
         self.open_tool = self.AddTool(-1, wx.ArtProvider.GetBitmap(wx.ART_FILE_OPEN, wx.ART_TOOLBAR), shortHelpString="Open an existing configuration file or import a configuration from a results file.")
         self.save_tool = self.AddTool(-1, wx.ArtProvider.GetBitmap(wx.ART_FILE_SAVE, wx.ART_TOOLBAR), shortHelpString="Save configuration")
         self.saveas_tool = self.AddTool(-1, wx.ArtProvider.GetBitmap(wx.ART_FILE_SAVE_AS, wx.ART_TOOLBAR), shortHelpString="Save configuration with a new file name")

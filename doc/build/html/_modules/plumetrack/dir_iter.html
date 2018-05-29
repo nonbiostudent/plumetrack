@@ -6,15 +6,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>plumetrack.dir_iter &mdash; Plumetrack 15.06 documentation</title>
+    <title>plumetrack.dir_iter &#8212; Plumetrack 18.05 documentation</title>
     
-    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '15.06',
+        VERSION:     '18.05',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,13 +23,13 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="../../_static/plumetrack_32.ico"/>
-    <link rel="top" title="Plumetrack 15.06 documentation" href="../../index.html" />
+    <link rel="top" title="Plumetrack 18.05 documentation" href="../../index.html" />
     <link rel="up" title="plumetrack" href="../plumetrack.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -38,34 +38,34 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">Plumetrack 15.06 documentation</a> &raquo;</li>
-          <li><a href="../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../plumetrack.html" accesskey="U">plumetrack</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../index.html">Plumetrack 18.05 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../plumetrack.html" accesskey="U">plumetrack</a> &#187;</li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <h1>Source code for plumetrack.dir_iter</h1><div class="highlight"><pre>
-<span class="c">#Copyright (C) Nial Peters 2014</span>
-<span class="c">#</span>
-<span class="c">#This file is part of plumetrack.</span>
-<span class="c">#</span>
-<span class="c">#plumetrack is free software: you can redistribute it and/or modify</span>
-<span class="c">#it under the terms of the GNU General Public License as published by</span>
-<span class="c">#the Free Software Foundation, either version 3 of the License, or</span>
-<span class="c">#(at your option) any later version.</span>
-<span class="c">#</span>
-<span class="c">#plumetrack is distributed in the hope that it will be useful,</span>
-<span class="c">#but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
-<span class="c">#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
-<span class="c">#GNU General Public License for more details.</span>
-<span class="c">#</span>
-<span class="c">#You should have received a copy of the GNU General Public License</span>
-<span class="c">#along with plumetrack.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+<span class="c1">#Copyright (C) Nial Peters 2014</span>
+<span class="c1">#</span>
+<span class="c1">#This file is part of plumetrack.</span>
+<span class="c1">#</span>
+<span class="c1">#plumetrack is free software: you can redistribute it and/or modify</span>
+<span class="c1">#it under the terms of the GNU General Public License as published by</span>
+<span class="c1">#the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1">#(at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1">#plumetrack is distributed in the hope that it will be useful,</span>
+<span class="c1">#but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1">#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1">#GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1">#You should have received a copy of the GNU General Public License</span>
+<span class="c1">#along with plumetrack.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
 
 <span class="kn">import</span> <span class="nn">os.path</span>
 <span class="kn">import</span> <span class="nn">Queue</span>
@@ -73,7 +73,7 @@
 <span class="kn">import</span> <span class="nn">glob</span>
 <span class="kn">import</span> <span class="nn">itertools</span>
 
-<span class="kn">from</span> <span class="nn">plumetrack.watcher</span> <span class="kn">import</span> <span class="n">create_dir_watcher</span><span class="p">,</span> <span class="n">can_watch_directories</span>
+<span class="kn">from</span> <span class="nn">plumetrack.watcher</span> <span class="k">import</span> <span class="n">create_dir_watcher</span><span class="p">,</span> <span class="n">can_watch_directories</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">The dir_iter module provides an iterator class for iterating through the files</span>
@@ -91,7 +91,7 @@
 <span class="sd">    </span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="find_files"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.dir_iter.find_files">[docs]</a><span class="k">def</span> <span class="nf">find_files</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">pattern</span><span class="o">=</span><span class="s">&#39;*&#39;</span><span class="p">,</span> <span class="n">skip_links</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">full_paths</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<div class="viewcode-block" id="find_files"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.dir_iter.find_files">[docs]</a><span class="k">def</span> <span class="nf">find_files</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pattern</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="n">skip_links</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">full_paths</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a list of files in a directory with various filter options applied.</span>
 <span class="sd">    </span>
@@ -103,18 +103,18 @@
 <span class="sd">                       paths or relative paths.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="s">&quot;</span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s"> is not a recognised folder&quot;</span> <span class="o">%</span><span class="n">path</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s2"> is not a recognised folder&quot;</span> <span class="o">%</span><span class="n">path</span>
     
     <span class="n">found_files</span> <span class="o">=</span> <span class="p">[]</span>
         
-    <span class="k">for</span> <span class="n">folder</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">topdown</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">followlinks</span><span class="o">=</span><span class="ow">not</span> <span class="n">skip_links</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">folder</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">topdown</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">followlinks</span><span class="o">=</span><span class="ow">not</span> <span class="n">skip_links</span><span class="p">):</span>
         
         <span class="k">if</span> <span class="n">full_paths</span><span class="p">:</span>
             <span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span><span class="n">f</span><span class="p">))</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">]</span>
             
-        <span class="k">if</span> <span class="n">pattern</span> <span class="o">!=</span> <span class="s">&#39;*&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">pattern</span> <span class="o">!=</span> <span class="s1">&#39;*&#39;</span><span class="p">:</span>
             <span class="n">found_files</span> <span class="o">+=</span> <span class="n">glob</span><span class="o">.</span><span class="n">fnmatch</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">pattern</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">found_files</span> <span class="o">+=</span> <span class="n">files</span>
@@ -122,12 +122,12 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">recursive</span><span class="p">:</span>
             <span class="k">break</span>
     
-    <span class="k">return</span> <span class="n">found_files</span>
+    <span class="k">return</span> <span class="n">found_files</span></div>
 
-</div>
+
 <div class="viewcode-block" id="AsyncFileFinder"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.dir_iter.AsyncFileFinder">[docs]</a><span class="k">class</span> <span class="nc">AsyncFileFinder</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">pattern</span><span class="o">=</span><span class="s">&#39;*&#39;</span><span class="p">,</span> <span class="n">skip_links</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> 
-                 <span class="n">full_paths</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pattern</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="n">skip_links</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
+                 <span class="n">full_paths</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Asynchronous version of the find_files function. The AsyncFileFinder is </span>
 <span class="sd">        an iterator which starts returning filenames as soon as it has them </span>
@@ -149,7 +149,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">=</span> <span class="n">path</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">_output_q</span> <span class="o">=</span> <span class="n">Queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_stay_alive</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stay_alive</span> <span class="o">=</span> <span class="kc">True</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">_worker_thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_find_files</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_worker_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
@@ -158,9 +158,9 @@
     <span class="k">def</span> <span class="nf">_find_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recursive</span><span class="p">:</span>
-            <span class="n">topdown</span><span class="o">=</span><span class="bp">False</span>
+            <span class="n">topdown</span><span class="o">=</span><span class="kc">False</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">topdown</span><span class="o">=</span><span class="bp">True</span>
+            <span class="n">topdown</span><span class="o">=</span><span class="kc">True</span>
         
         <span class="k">for</span> <span class="n">folder</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">,</span> <span class="n">topdown</span><span class="o">=</span><span class="n">topdown</span><span class="p">,</span> <span class="n">followlinks</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_follow_links</span><span class="p">):</span>
             
@@ -169,7 +169,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">]</span>
             
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pattern</span> <span class="o">!=</span> <span class="s">&#39;*&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pattern</span> <span class="o">!=</span> <span class="s1">&#39;*&#39;</span><span class="p">:</span>
                 <span class="n">files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">fnmatch</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pattern</span><span class="p">)</span>
             
             <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
@@ -178,8 +178,8 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recursive</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stay_alive</span><span class="p">:</span>
                 <span class="k">break</span>
         
-        <span class="c">#signal that this is all the files</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_output_q</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+        <span class="c1">#signal that this is all the files</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_output_q</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
 
     
 <div class="viewcode-block" id="AsyncFileFinder.close"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.dir_iter.AsyncFileFinder.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -187,10 +187,10 @@
 <span class="sd">        Stops the search for files and causes any calls to next() to raise</span>
 <span class="sd">        StopIteration</span>
 <span class="sd">        &quot;&quot;&quot;</span>       
-        <span class="bp">self</span><span class="o">.</span><span class="n">_stay_alive</span> <span class="o">=</span> <span class="bp">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_worker_thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stay_alive</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_worker_thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span></div>
     
-    </div>
+    
     <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method required by iterator protocol. Allows iterator to be used in </span>
@@ -200,7 +200,7 @@
     
 
     <span class="k">def</span> <span class="nf">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c">#needed for Py3k compatibility</span>
+        <span class="c1">#needed for Py3k compatibility</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
         
         
@@ -215,27 +215,27 @@
 <span class="sd">        close() is called).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         
-        <span class="c">#we do the get() call in a loop so that signals can be recieved by the </span>
-        <span class="c">#thread calling next() even if no items come into the filename queue     </span>
-        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="c1">#we do the get() call in a loop so that signals can be recieved by the </span>
+        <span class="c1">#thread calling next() even if no items come into the filename queue     </span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_q</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">timeout</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_q</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">timeout</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
                 <span class="k">break</span>
             <span class="k">except</span> <span class="n">Queue</span><span class="o">.</span><span class="n">Empty</span><span class="p">:</span>
                 <span class="k">continue</span>
         
-        <span class="k">if</span> <span class="n">s</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stay_alive</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">s</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stay_alive</span><span class="p">:</span>
             
             <span class="k">raise</span> <span class="ne">StopIteration</span>
         
-        <span class="k">return</span> <span class="n">s</span>
+        <span class="k">return</span> <span class="n">s</span></div></div>
     
     
-</div></div>
+
 <div class="viewcode-block" id="ListDirIter"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.dir_iter.ListDirIter">[docs]</a><span class="k">class</span> <span class="nc">ListDirIter</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">realtime</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">skip_existing</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> 
-                 <span class="n">recursive</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">sort_func</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">test_func</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">max_n</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                 <span class="n">pattern</span><span class="o">=</span><span class="s">&#39;*&#39;</span><span class="p">,</span> <span class="n">full_paths</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">skip_links</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">realtime</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">skip_existing</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
+                 <span class="n">recursive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sort_func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">test_func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">pattern</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="n">full_paths</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">skip_links</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Iterator class which returns the filenames in a directory structure, with</span>
 <span class="sd">        the option of monitoring for new files in realtime.</span>
@@ -279,12 +279,12 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Cannot access &quot;</span><span class="o">+</span><span class="n">directory</span><span class="o">+</span><span class="s">&quot;. No such directory.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot access &quot;</span><span class="o">+</span><span class="n">directory</span><span class="o">+</span><span class="s2">&quot;. No such directory.&quot;</span><span class="p">)</span>
         
         <span class="k">if</span> <span class="n">skip_existing</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">realtime</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s">&quot;If skip_existing is set to True then realtime &quot;</span>
-                               <span class="s">&quot;must also be set to True (otherwise no files &quot;</span> 
-                               <span class="s">&quot;will be returned).&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;If skip_existing is set to True then realtime &quot;</span>
+                               <span class="s2">&quot;must also be set to True (otherwise no files &quot;</span> 
+                               <span class="s2">&quot;will be returned).&quot;</span><span class="p">)</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">__dir</span> <span class="o">=</span> <span class="n">directory</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__sort_func</span> <span class="o">=</span> <span class="n">sort_func</span>
@@ -294,10 +294,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">__skip_links</span> <span class="o">=</span> <span class="n">skip_links</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_filename_q</span> <span class="o">=</span> <span class="n">Queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__realtime_filename_q</span> <span class="o">=</span> <span class="n">Queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_stay_alive</span> <span class="o">=</span> <span class="bp">True</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__existing_loader_thread</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_realtime_loader_thread</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__async_file_iter</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stay_alive</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__existing_loader_thread</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_realtime_loader_thread</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__async_file_iter</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_finished_loading_existing_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_finished_loading_existing_lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__existing_files_found</span> <span class="o">=</span> <span class="p">{}</span>
@@ -305,18 +305,18 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">__max_n</span> <span class="o">=</span> <span class="n">max_n</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__return_count</span> <span class="o">=</span> <span class="mi">0</span>
         
-        <span class="c">#note that we start the realtime loader thread BEFORE the existing loader thread</span>
-        <span class="c">#this is to prevent files that are created during the find_files() call being </span>
-        <span class="c">#skipped.</span>
+        <span class="c1">#note that we start the realtime loader thread BEFORE the existing loader thread</span>
+        <span class="c1">#this is to prevent files that are created during the find_files() call being </span>
+        <span class="c1">#skipped.</span>
         <span class="k">if</span> <span class="n">realtime</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">can_watch_directories</span><span class="p">():</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s">&quot;No directory watching implementation available on this system&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;No directory watching implementation available on this system&quot;</span><span class="p">)</span>
             
             <span class="bp">self</span><span class="o">.</span><span class="n">_realtime_loader_thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__load_realtime</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_realtime_loader_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
               
         <span class="k">if</span> <span class="ow">not</span> <span class="n">skip_existing</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">sort_func</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">sort_func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__existing_loader_thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__load_existing_async</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__existing_loader_thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__load_existing</span><span class="p">)</span>
@@ -334,7 +334,7 @@
     
 
     <span class="k">def</span> <span class="nf">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c">#needed for Py3k compatibility</span>
+        <span class="c1">#needed for Py3k compatibility</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
         
         
@@ -349,27 +349,27 @@
 <span class="sd">        close() is called).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         
-        <span class="c">#we do the get() call in a loop so that signals can be recieved by the </span>
-        <span class="c">#thread calling next() even if no items come into the filename queue</span>
+        <span class="c1">#we do the get() call in a loop so that signals can be recieved by the </span>
+        <span class="c1">#thread calling next() even if no items come into the filename queue</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__return_count</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__max_n</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">__return_count</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">__max_n</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__max_n</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">__return_count</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">__max_n</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="k">raise</span> <span class="ne">StopIteration</span>
         
-        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filename_q</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">timeout</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filename_q</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">timeout</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
                 <span class="k">break</span>
             <span class="k">except</span> <span class="n">Queue</span><span class="o">.</span><span class="n">Empty</span><span class="p">:</span>
                 <span class="k">continue</span>
         
-        <span class="k">if</span> <span class="n">s</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stay_alive</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">s</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stay_alive</span><span class="p">:</span>
             
             <span class="k">raise</span> <span class="ne">StopIteration</span>
         
-        <span class="k">return</span> <span class="n">s</span>
+        <span class="k">return</span> <span class="n">s</span></div>
     
-    </div>
+    
 <div class="viewcode-block" id="ListDirIter.get_current_position"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.dir_iter.ListDirIter.get_current_position">[docs]</a>    <span class="k">def</span> <span class="nf">get_current_position</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a tuple of number of filenames already returned and number of </span>
@@ -377,49 +377,49 @@
 <span class="sd">        nature of the iterator the latter of these numbers may be entirely</span>
 <span class="sd">        fictional.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__max_n</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__max_n</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__return_count</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filename_q</span><span class="o">.</span><span class="n">qsize</span><span class="p">())</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__return_count</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__max_n</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">__return_count</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__return_count</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__max_n</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">__return_count</span><span class="p">)</span></div>
         
-    </div>
+    
 <div class="viewcode-block" id="ListDirIter.close"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.dir_iter.ListDirIter.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This is only needed if the iterator was created with the realtime option</span>
 <span class="sd">        set to True. Calling close() stops the iterator from waiting for new</span>
 <span class="sd">        files and causes any pending calls to next() to raise StopIteration.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_stay_alive</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stay_alive</span> <span class="o">=</span> <span class="kc">False</span>
         
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__async_file_iter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__async_file_iter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__async_file_iter</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         
-        <span class="c">#the loader threads may be blocking waiting to put something into the queue</span>
-        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="c1">#the loader threads may be blocking waiting to put something into the queue</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_filename_q</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_filename_q</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
             <span class="k">except</span> <span class="n">Queue</span><span class="o">.</span><span class="n">Empty</span><span class="p">:</span>
                 <span class="k">break</span>
             
-        <span class="c">#the next() method may be blocking waiting to get something from the queue</span>
+        <span class="c1">#the next() method may be blocking waiting to get something from the queue</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_filename_q</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_filename_q</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">Queue</span><span class="o">.</span><span class="n">Full</span><span class="p">:</span>
             <span class="k">pass</span>
         
-        <span class="c">#the realtime loader thread may be blocking waiting to get a new filename to load</span>
+        <span class="c1">#the realtime loader thread may be blocking waiting to get a new filename to load</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__realtime_filename_q</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__realtime_filename_q</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">Queue</span><span class="o">.</span><span class="n">Full</span><span class="p">:</span>
             <span class="k">pass</span>
                   
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__existing_loader_thread</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__existing_loader_thread</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__existing_loader_thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
             
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_realtime_loader_thread</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_realtime_loader_thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_realtime_loader_thread</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_realtime_loader_thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span></div>
                
-    </div>
+    
     <span class="k">def</span> <span class="nf">__load_existing_async</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__async_file_iter</span> <span class="o">=</span> <span class="n">AsyncFileFinder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__dir</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__recursive</span><span class="p">,</span>
@@ -428,18 +428,18 @@
                                      <span class="n">pattern</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__pattern</span><span class="p">)</span>
             
             <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__async_file_iter</span><span class="p">:</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__test_func</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__test_func</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__test_func</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__test_func</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
                     <span class="k">continue</span>
                 
-                <span class="bp">self</span><span class="o">.</span><span class="n">__existing_files_found</span><span class="p">[</span><span class="n">filename</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__existing_files_found</span><span class="p">[</span><span class="n">filename</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_filename_q</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
              
         <span class="k">finally</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_finished_loading_existing_lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
             
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_realtime_loader_thread</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>        
-            <span class="c">#put None into the queue so that the iteration finishes when the q is emptied</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_filename_q</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>    
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_realtime_loader_thread</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>        
+            <span class="c1">#put None into the queue so that the iteration finishes when the q is emptied</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_filename_q</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>    
     
        
     <span class="k">def</span> <span class="nf">__load_existing</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -449,26 +449,26 @@
                                         <span class="n">skip_links</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__skip_links</span><span class="p">,</span>
                                         <span class="n">pattern</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__pattern</span><span class="p">)</span>
             
-            <span class="c">#if a test function was specified, then only keep the filenames which satisfy it</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__test_func</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="c1">#if a test function was specified, then only keep the filenames which satisfy it</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__test_func</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">existing_files</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">ifilter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__test_func</span><span class="p">,</span> <span class="n">existing_files</span><span class="p">)]</span>
              
-            <span class="c">#sort the filenames using the comparator function specified in the </span>
-            <span class="c">#kwargs to the constructor of the DirFilesIter object</span>
+            <span class="c1">#sort the filenames using the comparator function specified in the </span>
+            <span class="c1">#kwargs to the constructor of the DirFilesIter object</span>
             <span class="n">existing_files</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="nb">cmp</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__sort_func</span><span class="p">)</span>
             
-            <span class="c">#create a dict of all the files found so that we can check for </span>
-            <span class="c">#duplicates when the realtime loader thread starts returning filenames</span>
+            <span class="c1">#create a dict of all the files found so that we can check for </span>
+            <span class="c1">#duplicates when the realtime loader thread starts returning filenames</span>
             <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">existing_files</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__existing_files_found</span><span class="p">[</span><span class="n">filename</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__existing_files_found</span><span class="p">[</span><span class="n">filename</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_filename_q</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
                        
         <span class="k">finally</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_finished_loading_existing_lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
             
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_realtime_loader_thread</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>        
-            <span class="c">#put None into the queue so that the iteration finishes when the q is emptied</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_filename_q</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_realtime_loader_thread</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>        
+            <span class="c1">#put None into the queue so that the iteration finishes when the q is emptied</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_filename_q</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
             
     
     
@@ -481,50 +481,50 @@
                                      <span class="n">put_into_q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__realtime_filename_q</span><span class="p">)</span>
         <span class="n">watcher</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
         
-        <span class="c">#wait for the existing files to be found</span>
+        <span class="c1">#wait for the existing files to be found</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_finished_loading_existing_lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_finished_loading_existing_lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
         
-        <span class="c">#skip any files that were picked up by the existing loader</span>
+        <span class="c1">#skip any files that were picked up by the existing loader</span>
         <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stay_alive</span><span class="p">:</span>
-            <span class="n">filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__realtime_filename_q</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__realtime_filename_q</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             
-            <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">break</span>
             
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__full_paths</span><span class="p">:</span>
                 <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
             
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__pattern</span> <span class="o">!=</span> <span class="s">&#39;*&#39;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">glob</span><span class="o">.</span><span class="n">fnmatch</span><span class="o">.</span><span class="n">fnmatch</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__pattern</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__pattern</span> <span class="o">!=</span> <span class="s1">&#39;*&#39;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">glob</span><span class="o">.</span><span class="n">fnmatch</span><span class="o">.</span><span class="n">fnmatch</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__pattern</span><span class="p">):</span>
                     <span class="k">continue</span>
             
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__test_func</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__test_func</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__test_func</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__test_func</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
                 <span class="k">continue</span>
             
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__existing_files_found</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
                 <span class="k">break</span>
         
-        <span class="bp">self</span><span class="o">.</span><span class="n">__existing_files_found</span> <span class="o">=</span> <span class="p">{}</span> <span class="c">#done with this dict now - leave it to be GC&#39;d</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__existing_files_found</span> <span class="o">=</span> <span class="p">{}</span> <span class="c1">#done with this dict now - leave it to be GC&#39;d</span>
         
         <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stay_alive</span><span class="p">:</span>         
-            <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">break</span>
 
             <span class="k">try</span><span class="p">:</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__test_func</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__test_func</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__test_func</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__test_func</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
                     <span class="k">continue</span>
                 
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__pattern</span> <span class="o">!=</span> <span class="s">&#39;*&#39;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">glob</span><span class="o">.</span><span class="n">fnmatch</span><span class="o">.</span><span class="n">fnmatch</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__pattern</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__pattern</span> <span class="o">!=</span> <span class="s1">&#39;*&#39;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">glob</span><span class="o">.</span><span class="n">fnmatch</span><span class="o">.</span><span class="n">fnmatch</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__pattern</span><span class="p">):</span>
                     <span class="k">continue</span>
                 
-                <span class="bp">self</span><span class="o">.</span><span class="n">_filename_q</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_filename_q</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
             <span class="k">except</span> <span class="n">Queue</span><span class="o">.</span><span class="n">Full</span><span class="p">:</span>
-                <span class="c">#if the output queue is full, then just skip the file - otherwise it might block</span>
-                <span class="c">#forever</span>
-                <span class="k">print</span> <span class="s">&quot;Warning! Filename output queue is full - skipping file </span><span class="se">\&#39;</span><span class="s">&quot;</span><span class="o">+</span><span class="n">filename</span><span class="o">+</span><span class="s">&quot;</span><span class="se">\&#39;</span><span class="s">&quot;</span>
+                <span class="c1">#if the output queue is full, then just skip the file - otherwise it might block</span>
+                <span class="c1">#forever</span>
+                <span class="nb">print</span> <span class="s2">&quot;Warning! Filename output queue is full - skipping file </span><span class="se">\&#39;</span><span class="s2">&quot;</span><span class="o">+</span><span class="n">filename</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\&#39;</span><span class="s2">&quot;</span>
                    
-            <span class="n">filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__realtime_filename_q</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__realtime_filename_q</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         
         <span class="n">watcher</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div>
 </pre></div>
@@ -532,29 +532,26 @@
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../index.html">
               <img class="logo" src="../../_static/plumetrack.png" alt="Logo"/>
             </a></p>
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -563,14 +560,14 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">Plumetrack 15.06 documentation</a> &raquo;</li>
-          <li><a href="../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../plumetrack.html" >plumetrack</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../index.html">Plumetrack 18.05 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../plumetrack.html" >plumetrack</a> &#187;</li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2014, Nial Peters.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2014, Nial Peters.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.6.
     </div>
   </body>
 </html>

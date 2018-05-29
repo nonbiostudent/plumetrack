@@ -6,15 +6,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Installation &mdash; Plumetrack 15.06 documentation</title>
+    <title>Installation &#8212; Plumetrack 18.05 documentation</title>
     
-    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '15.06',
+        VERSION:     '18.05',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,14 +23,14 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="_static/plumetrack_32.ico"/>
-    <link rel="top" title="Plumetrack 15.06 documentation" href="index.html" />
+    <link rel="top" title="Plumetrack 18.05 documentation" href="index.html" />
     <link rel="next" title="Quickstart - Graphical User Interface" href="quickstart_gui.html" />
     <link rel="prev" title="Welcome to Plumetrack’s documentation!" href="index.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -45,14 +45,14 @@
         <li class="right" >
           <a href="index.html" title="Welcome to Plumetrack’s documentation!"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Plumetrack 15.06 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Plumetrack 18.05 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
@@ -66,14 +66,14 @@
 <blockquote>
 <div><ol class="arabic">
 <li><p class="first">Use your package manager (e.g. Synaptic, apt-get etc.) to install the following packages: python-numpy, python-scipy, python-opencv, python-matplotlib, python-wxgtk2.8, python-pyinotify. For example (if you are using apt-get):</p>
-<div class="highlight-python"><div class="highlight"><pre>sudo apt-get install python-numpy python-scipy python-opencv python-matplotlib python-wxgtk2.8 python-pyinotify
+<div class="highlight-default"><div class="highlight"><pre><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">python</span><span class="o">-</span><span class="n">numpy</span> <span class="n">python</span><span class="o">-</span><span class="n">scipy</span> <span class="n">python</span><span class="o">-</span><span class="n">opencv</span> <span class="n">python</span><span class="o">-</span><span class="n">matplotlib</span> <span class="n">python</span><span class="o">-</span><span class="n">wxgtk2</span><span class="o">.</span><span class="mi">8</span> <span class="n">python</span><span class="o">-</span><span class="n">pyinotify</span>
 </pre></div>
 </div>
 </li>
-<li><p class="first">Download the Plumetrack distribution package (a .zip file) from <a class="reference external" href="http://ccpforge.cse.rl.ac.uk/gf/project/plumetrack/frs">here</a>.</p>
+<li><p class="first">Download the Plumetrack distribution package (a .zip file) from <a class="reference external" href="https://github.com/nonbiostudent/plumetrack/releases">here</a>.</p>
 </li>
 <li><p class="first">Right-click on the zip file and select &#8220;Extract here&#8221;, or open a terminal and use the command:</p>
-<div class="highlight-python"><div class="highlight"><pre>unzip plumetrack-x.x.zip
+<div class="highlight-default"><div class="highlight"><pre><span class="n">unzip</span> <span class="n">plumetrack</span><span class="o">-</span><span class="n">x</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">zip</span>
 </pre></div>
 </div>
 </li>
@@ -82,18 +82,18 @@
 <div>(where x.x is the version number).</div></blockquote>
 <ol class="arabic">
 <li><p class="first">Open a terminal and navigate to the unpacked Plumetrack folder:</p>
-<div class="highlight-python"><div class="highlight"><pre>cd plumetrack-15.01
+<div class="highlight-default"><div class="highlight"><pre><span class="n">cd</span> <span class="n">plumetrack</span><span class="o">-</span><span class="n">x</span><span class="o">.</span><span class="n">x</span>
 </pre></div>
 </div>
 </li>
 <li><p class="first">Then run the commands:</p>
-<div class="highlight-python"><div class="highlight"><pre>python setup.py build
-sudo python setup.py install
+<div class="highlight-default"><div class="highlight"><pre><span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">build</span>
+<span class="n">sudo</span> <span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">install</span>
 </pre></div>
 </div>
 </li>
 <li><p class="first">Plumetrack should now be installed. You can test the installation using:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">plumetrack</span> <span class="o">-</span><span class="n">h</span>
+<div class="highlight-default"><div class="highlight"><pre><span class="n">plumetrack</span> <span class="o">-</span><span class="n">h</span>
 </pre></div>
 </div>
 <p>If Plumetrack has installed correctly then the above command should print a list of command-line options that can be used with Plumetrack and their meanings.</p>
@@ -109,7 +109,11 @@ sudo python setup.py install
 <div class="section" id="prerequisites-using-anaconda">
 <h3>Prerequisites - Using Anaconda<a class="headerlink" href="#prerequisites-using-anaconda" title="Permalink to this headline">¶</a></h3>
 <p>Download and install Anaconda from <a class="reference external" href="https://store.continuum.io/cshop/anaconda/">here</a>. Note, that you want the Python 2.7 version.</p>
-<p>Unfortunately, Anaconda does not come with wxPython, and so you will need to install that separately. wxPython can be downloaded from <a class="reference external" href="http://www.wxpython.org/">here</a>.</p>
+<p>Unfortunately, Anaconda does not come with wxPython, and so you will need to install that separately. wxPython can be downloaded from <a class="reference external" href="https://sourceforge.net/projects/wxpython/files/wxPython/3.0.2.0/">here</a>.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Plumetrack does not currently work with v4 (Phoenix) versions of wxPython. Please make sure you install wxPython3.x.</p>
+</div>
 <p>Now go to the OpenCV section below.</p>
 </div>
 <div class="section" id="prerequisites-using-an-existing-python-installation">
@@ -121,9 +125,13 @@ sudo python setup.py install
 <li><a class="reference external" href="http://www.scipy.org/">SciPy</a></li>
 <li><a class="reference external" href="http://matplotlib.org/">matplotlib</a></li>
 <li><a class="reference external" href="http://sourceforge.net/projects/pywin32">pywin32</a></li>
-<li><a class="reference external" href="http://www.wxpython.org/">wxPython</a></li>
+<li><a class="reference external" href="https://sourceforge.net/projects/wxpython/files/wxPython/3.0.2.0/">wxPython</a></li>
 </ul>
 </div></blockquote>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Plumetrack does not currently work with v4 (Phoenix) versions of wxPython. Please make sure you install wxPython3.x.</p>
+</div>
 </div>
 <div class="section" id="installing-opencv">
 <h3>Installing OpenCV<a class="headerlink" href="#installing-opencv" title="Permalink to this headline">¶</a></h3>
@@ -139,23 +147,27 @@ sudo python setup.py install
 </div>
 <div class="section" id="installing-plumetrack">
 <h3>Installing Plumetrack<a class="headerlink" href="#installing-plumetrack" title="Permalink to this headline">¶</a></h3>
-<p>Once you have installed all of the dependencies, then installation of Plumetrack itself should be relatively straightforward. You can either download and run one of the executable installers (.exe files) from <a class="reference external" href="http://ccpforge.cse.rl.ac.uk/gf/project/plumetrack/frs">here</a>, or you can follow the instructions below to install from source:</p>
+<p>Once you have installed all of the dependencies, then installation of Plumetrack itself should be relatively straightforward. You can either download and run one of the executable installers (.exe files) from <a class="reference external" href="https://github.com/nonbiostudent/plumetrack/releases">here</a>, or you can follow the instructions below to install from source:</p>
 <blockquote>
 <div><ol class="arabic">
-<li><p class="first">Download the Plumetrack distribution package (a .zip file) from <a class="reference external" href="http://ccpforge.cse.rl.ac.uk/gf/project/plumetrack/frs">here</a>.</p>
+<li><p class="first">Download the Plumetrack distribution package (a .zip file) from <a class="reference external" href="https://github.com/nonbiostudent/plumetrack/releases">here</a>.</p>
 </li>
 <li><p class="first">Unzip the package.</p>
 </li>
 <li><p class="first">Open a terminal (start-&gt;run-&gt;cmd.exe).</p>
 </li>
 <li><p class="first">Navigate to the unzipped Plumetrack folder. For example:</p>
-<div class="highlight-python"><div class="highlight"><pre>cd plumetrack-14.11
+<div class="highlight-default"><div class="highlight"><pre><span class="n">cd</span> <span class="n">plumetrack</span><span class="o">-</span><span class="n">x</span><span class="o">.</span><span class="n">x</span>
 </pre></div>
 </div>
 </li>
+</ol>
+<blockquote>
+<div>(where x.x is the version number).</div></blockquote>
+<ol class="arabic">
 <li><p class="first">Install Plumetrack using the following commands:</p>
-<div class="highlight-python"><div class="highlight"><pre>python setup.py build
-python setup.py install
+<div class="highlight-default"><div class="highlight"><pre><span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">build</span>
+<span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">install</span>
 </pre></div>
 </div>
 </li>
@@ -164,7 +176,7 @@ python setup.py install
 <li><p class="first">Add the C:\Python27\Scripts (or C:\Anaconda\Scripts) directory to your system path, following the same procedure as above.</p>
 </li>
 <li><p class="first">Open a new terminal and type:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">plumetrack</span> <span class="o">-</span><span class="n">h</span>
+<div class="highlight-default"><div class="highlight"><pre><span class="n">plumetrack</span> <span class="o">-</span><span class="n">h</span>
 </pre></div>
 </div>
 </li>
@@ -177,47 +189,6 @@ python setup.py install
 <p class="last">If you used one of the executable installers for Plumetrack, then a Start Menu entry should have been created for the graphical interface to Plumetrack. You can therefore open it as you would any other program.</p>
 </div>
 </div>
-<div class="section" id="installing-plumetrack-from-svn">
-<h3>Installing Plumetrack from SVN<a class="headerlink" href="#installing-plumetrack-from-svn" title="Permalink to this headline">¶</a></h3>
-<p>If you want the very latest version of Plumetrack (and be advised that this may not be very stable!) then you can install it from the SVN repository. To do this you need an SVN client, which you can get from <a class="reference external" href="http://sourceforge.net/projects/win32svn">here</a>. Once you have installed an SVN client:</p>
-<blockquote>
-<div><ol class="arabic">
-<li><p class="first">Create a folder on your desktop called plumetrack.</p>
-</li>
-<li><p class="first">Open a terminal (start-&gt;run-&gt;cmd.exe).</p>
-</li>
-<li><p class="first">Navigate to the plumetrack folder you just created:</p>
-<div class="highlight-python"><div class="highlight"><pre>cd Desktop\plumetrack
-</pre></div>
-</div>
-</li>
-<li><p class="first">Check out a copy of the Plumetrack repository by entering the following command:</p>
-<div class="highlight-python"><div class="highlight"><pre>svn checkout http://ccpforge.cse.rl.ac.uk/svn/plumetrack/trunk .
-</pre></div>
-</div>
-</li>
-<li><p class="first">When prompted for a password press enter (blank password). When prompted for a username enter &#8216;anonymous&#8217;.</p>
-</li>
-<li><p class="first">You should now have a full checkout of the Plumetrack code. Install Plumetrack using the following commands:</p>
-<div class="highlight-python"><div class="highlight"><pre>python setup.py build
-python setup.py install
-</pre></div>
-</div>
-</li>
-<li><p class="first">If the previous commands gave you the error &#8216;&#8217;python&#8217; is not recognised as an internal or external command, operable or batch file&#8217;, then you need to add c:\python27 to your system path (or c:\anaconda if you are using anaconda) there are some instructions for this <a class="reference external" href="http://stackoverflow.com/questions/6318156/adding-python-path-on-windows-7">here</a>.</p>
-</li>
-<li><p class="first">Add the C:\Python27\Scripts (or C:\Anaconda\Scripts) directory to your system path.</p>
-</li>
-<li><p class="first">Open a new terminal and type:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">plumetrack</span> <span class="o">-</span><span class="n">h</span>
-</pre></div>
-</div>
-</li>
-</ol>
-<blockquote>
-<div>This should print a summary of options that can be passed to Plumetrack. If this works, then you&#8217;re done!</div></blockquote>
-</div></blockquote>
-</div>
 </div>
 </div>
 
@@ -225,7 +196,7 @@ python setup.py install
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="index.html">
               <img class="logo" src="_static/plumetrack.png" alt="Logo"/>
@@ -239,7 +210,6 @@ python setup.py install
 <li><a class="reference internal" href="#prerequisites-using-an-existing-python-installation">Prerequisites - Using an Existing Python Installation</a></li>
 <li><a class="reference internal" href="#installing-opencv">Installing OpenCV</a></li>
 <li><a class="reference internal" href="#installing-plumetrack">Installing Plumetrack</a></li>
-<li><a class="reference internal" href="#installing-plumetrack-from-svn">Installing Plumetrack from SVN</a></li>
 </ul>
 </li>
 </ul>
@@ -252,29 +222,28 @@ python setup.py install
   <h4>Next topic</h4>
   <p class="topless"><a href="quickstart_gui.html"
                         title="next chapter">Quickstart - Graphical User Interface</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="_sources/installation.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/installation.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -289,12 +258,12 @@ python setup.py install
         <li class="right" >
           <a href="index.html" title="Welcome to Plumetrack’s documentation!"
              >previous</a> |</li>
-        <li><a href="index.html">Plumetrack 15.06 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Plumetrack 18.05 documentation</a> &#187;</li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2014, Nial Peters.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2014, Nial Peters.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.6.
     </div>
   </body>
 </html>

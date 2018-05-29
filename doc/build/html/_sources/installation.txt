@@ -17,7 +17,7 @@ These instructions are for Ubuntu Linux, other distributions should be similar, 
   
       sudo apt-get install python-numpy python-scipy python-opencv python-matplotlib python-wxgtk2.8 python-pyinotify
 
-  #. Download the Plumetrack distribution package (a .zip file) from `here <http://ccpforge.cse.rl.ac.uk/gf/project/plumetrack/frs>`_.
+  #. Download the Plumetrack distribution package (a .zip file) from `here <https://github.com/nonbiostudent/plumetrack/releases>`_.
   
   #. Right-click on the zip file and select "Extract here", or open a terminal and use the command::
   
@@ -27,7 +27,7 @@ These instructions are for Ubuntu Linux, other distributions should be similar, 
   
   #. Open a terminal and navigate to the unpacked Plumetrack folder:: 
   
-      cd plumetrack-15.01
+      cd plumetrack-x.x
   
   #. Then run the commands::
     
@@ -53,7 +53,9 @@ Prerequisites - Using Anaconda
 ..............................
 Download and install Anaconda from `here <https://store.continuum.io/cshop/anaconda/>`_. Note, that you want the Python 2.7 version.
 
-Unfortunately, Anaconda does not come with wxPython, and so you will need to install that separately. wxPython can be downloaded from `here <http://www.wxpython.org/>`_.
+Unfortunately, Anaconda does not come with wxPython, and so you will need to install that separately. wxPython can be downloaded from `here <https://sourceforge.net/projects/wxpython/files/wxPython/3.0.2.0/>`_.
+
+.. warning:: Plumetrack does not currently work with v4 (Phoenix) versions of wxPython. Please make sure you install wxPython3.x.
 
 Now go to the OpenCV section below.
 
@@ -66,8 +68,9 @@ If you already have a Python installation on your system, then you will need to 
  * `SciPy <http://www.scipy.org/>`_
  * `matplotlib <http://matplotlib.org/>`_
  * `pywin32 <http://sourceforge.net/projects/pywin32>`_
- * `wxPython <http://www.wxpython.org/>`_
-
+ * `wxPython <https://sourceforge.net/projects/wxpython/files/wxPython/3.0.2.0/>`_
+ 
+.. warning:: Plumetrack does not currently work with v4 (Phoenix) versions of wxPython. Please make sure you install wxPython3.x.
 
 Installing OpenCV
 .................
@@ -86,9 +89,9 @@ To install the Python bindings for the OpenCV library:
 Installing Plumetrack
 .....................
 
-Once you have installed all of the dependencies, then installation of Plumetrack itself should be relatively straightforward. You can either download and run one of the executable installers (.exe files) from `here <http://ccpforge.cse.rl.ac.uk/gf/project/plumetrack/frs>`_, or you can follow the instructions below to install from source:
+Once you have installed all of the dependencies, then installation of Plumetrack itself should be relatively straightforward. You can either download and run one of the executable installers (.exe files) from `here <https://github.com/nonbiostudent/plumetrack/releases>`_, or you can follow the instructions below to install from source:
 
- #. Download the Plumetrack distribution package (a .zip file) from `here <http://ccpforge.cse.rl.ac.uk/gf/project/plumetrack/frs>`_.
+ #. Download the Plumetrack distribution package (a .zip file) from `here <https://github.com/nonbiostudent/plumetrack/releases>`_.
  
  #. Unzip the package.
  
@@ -96,7 +99,8 @@ Once you have installed all of the dependencies, then installation of Plumetrack
  
  #. Navigate to the unzipped Plumetrack folder. For example::
      
-     cd plumetrack-14.11
+     cd plumetrack-x.x
+   (where x.x is the version number).
  
  #. Install Plumetrack using the following commands::
 
@@ -118,41 +122,6 @@ Once you have installed all of the dependencies, then installation of Plumetrack
  If you used one of the executable installers for Plumetrack, then a Start Menu entry should have been created for the graphical interface to Plumetrack. You can therefore open it as you would any other program.
 
 
-
-Installing Plumetrack from SVN
-..............................
-
-If you want the very latest version of Plumetrack (and be advised that this may not be very stable!) then you can install it from the SVN repository. To do this you need an SVN client, which you can get from `here <http://sourceforge.net/projects/win32svn>`_. Once you have installed an SVN client:
-
- #. Create a folder on your desktop called plumetrack.
-
- #. Open a terminal (start->run->cmd.exe).
-
- #. Navigate to the plumetrack folder you just created::
-     
-     cd Desktop\plumetrack
-
- #. Check out a copy of the Plumetrack repository by entering the following command::
-     
-     svn checkout http://ccpforge.cse.rl.ac.uk/svn/plumetrack/trunk .
-
- #. When prompted for a password press enter (blank password). When prompted for a username enter 'anonymous'.
-
- #. You should now have a full checkout of the Plumetrack code. Install Plumetrack using the following commands::
-
-     python setup.py build
-     python setup.py install
-
- #. If the previous commands gave you the error ''python' is not recognised as an internal or external command, operable or batch file', then you need to add c:\\python27 to your system path (or c:\\anaconda if you are using anaconda) there are some instructions for this `here <http://stackoverflow.com/questions/6318156/adding-python-path-on-windows-7>`_.
-
- #. Add the C:\\Python27\\Scripts (or C:\\Anaconda\\Scripts) directory to your system path.
-
- #. Open a new terminal and type::
-     
-     plumetrack -h
-  
-  This should print a summary of options that can be passed to Plumetrack. If this works, then you're done!
- 
 
 
 

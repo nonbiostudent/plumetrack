@@ -6,15 +6,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Configuration &mdash; Plumetrack 15.06 documentation</title>
+    <title>Configuration &#8212; Plumetrack 18.05 documentation</title>
     
-    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '15.06',
+        VERSION:     '18.05',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,14 +23,14 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="_static/plumetrack_32.ico"/>
-    <link rel="top" title="Plumetrack 15.06 documentation" href="index.html" />
+    <link rel="top" title="Plumetrack 18.05 documentation" href="index.html" />
     <link rel="next" title="Loading Images" href="loading_images.html" />
     <link rel="prev" title="Quickstart - Command Line" href="quickstart_cmdline.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -45,21 +45,21 @@
         <li class="right" >
           <a href="quickstart_cmdline.html" title="Quickstart - Command Line"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Plumetrack 15.06 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Plumetrack 18.05 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="configuration">
 <span id="section-configuration"></span><h1>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="the-configuration-file">
 <h2>The Configuration File<a class="headerlink" href="#the-configuration-file" title="Permalink to this headline">¶</a></h2>
 <p>The parameters that Plumetrack uses for computing fluxes are controlled through the use of a configuration file. The configuration file used for a particular run of the program must be specified using the <em>-f</em> option on the command line. For example:</p>
-<div class="highlight-python"><div class="highlight"><pre>plumetrack -f my_config.cfg example_images
+<div class="highlight-default"><div class="highlight"><pre><span class="n">plumetrack</span> <span class="o">-</span><span class="n">f</span> <span class="n">my_config</span><span class="o">.</span><span class="n">cfg</span> <span class="n">example_images</span>
 </pre></div>
 </div>
 <p>will process all of the images in the example_images folder using the settings stored in the my_config.cfg file. This allows multiple configurations to be stored for different situations (for example for processing images from different cameras).</p>
@@ -67,8 +67,8 @@
 </div>
 <div class="section" id="the-plumetrack-gui-program">
 <h2>The plumetrack-gui Program<a class="headerlink" href="#the-plumetrack-gui-program" title="Permalink to this headline">¶</a></h2>
-<p>By far the easiest way to configure Plumetrack is using the graphical user interface (the plumetrack-gui program). See <a class="reference internal" href="quickstart_gui.html#section-gui-quickstart"><em>Quickstart - Graphical User Interface</em></a> for details of how to use this program. This allows the effects of changing different configuration options to be viewed in realtime. Since there is a certain amount of trial and error involved in creating a successful configuration file this is an important feature! Note that the configuration files created with the GUI can then be used with the command-line version of Plumetrack.</p>
-<p>As well as the .cfg configuration files, every output file produced by Plumetrack contains a copy of the configuration used to create it. Results files may therefore be used interchangably with configuration files (results files can even be passed to the Plumetrack program as configuration files using the <tt class="docutils literal"><span class="pre">-f</span></tt> option).</p>
+<p>By far the easiest way to configure Plumetrack is using the graphical user interface (the plumetrack-gui program). See <a class="reference internal" href="quickstart_gui.html#section-gui-quickstart"><span class="std std-ref">Quickstart - Graphical User Interface</span></a> for details of how to use this program. This allows the effects of changing different configuration options to be viewed in realtime. Since there is a certain amount of trial and error involved in creating a successful configuration file this is an important feature! Note that the configuration files created with the GUI can then be used with the command-line version of Plumetrack.</p>
+<p>As well as the .cfg configuration files, every output file produced by Plumetrack contains a copy of the configuration used to create it. Results files may therefore be used interchangably with configuration files (results files can even be passed to the Plumetrack program as configuration files using the <code class="docutils literal"><span class="pre">-f</span></code> option).</p>
 </div>
 <div class="section" id="configuration-options">
 <h2>Configuration Options<a class="headerlink" href="#configuration-options" title="Permalink to this headline">¶</a></h2>
@@ -101,7 +101,7 @@ format is specified using the Python <a class="reference external" href="https:/
 <td>String</td>
 <td>If you need to load a non-standard image format, or you want to perform custom
 preprocessing tasks on images, then you can pass the name of Python script here.
-See <a class="reference internal" href="loading_images.html#section-loading-images"><em>Loading Images</em></a> for details.</td>
+See <a class="reference internal" href="loading_images.html#section-loading-images"><span class="std std-ref">Loading Images</span></a> for details.</td>
 </tr>
 <tr class="row-even"><td><strong>file_extension</strong></td>
 <td>3</td>
@@ -176,14 +176,14 @@ an empty string if you do not wish to use a mask image.</td>
 <td>12</td>
 <td>Float</td>
 <td>Farneback algorithm parameter: the image scale (&lt;1.0) to build pyramids for each
-image; <tt class="docutils literal"><span class="pre">farneback_pyr_scale=0.5</span></tt> means a classical pyramid, where each next
+image; <code class="docutils literal"><span class="pre">farneback_pyr_scale=0.5</span></code> means a classical pyramid, where each next
 layer is twice smaller than the previous one.</td>
 </tr>
 <tr class="row-even"><td><strong>farneback_levels</strong></td>
 <td>13</td>
 <td>Integer</td>
 <td>Farneback algorithm parameter: number of pyramid layers including the initial
-image; <tt class="docutils literal"><span class="pre">farneback_levels=1</span></tt> means that no extra layers are created and only the
+image; <code class="docutils literal"><span class="pre">farneback_levels=1</span></code> means that no extra layers are created and only the
 original images are used.</td>
 </tr>
 <tr class="row-odd"><td><strong>farneback_winsize</strong></td>
@@ -205,15 +205,15 @@ pyramid level.</td>
 <td>Farneback algorithm parameter: size of the pixel neighborhood used to find
 polynomial expansion in each pixel; larger values mean that the image will be
 approximated with smoother surfaces, yielding more robust algorithm and more
-blurred  motion field, typically <tt class="docutils literal"><span class="pre">farneback_poly_n</span></tt> =5 or 7.</td>
+blurred  motion field, typically <code class="docutils literal"><span class="pre">farneback_poly_n</span></code> =5 or 7.</td>
 </tr>
 <tr class="row-even"><td><strong>farneback_poly_sigma</strong></td>
 <td>17</td>
 <td>Float</td>
 <td>Farneback algorithm parameter: standard deviation of the Gaussian that is used to
 smooth derivatives used as a basis for the polynomial expansion; for
-<tt class="docutils literal"><span class="pre">farneback_poly_n=5</span></tt>, you can set <tt class="docutils literal"><span class="pre">farneback_poly_sigma=1.1</span></tt>, for
-<tt class="docutils literal"><span class="pre">farneback_poly_n=7</span></tt>, a good value would be <tt class="docutils literal"><span class="pre">farneback_poly_sigma=1.5</span></tt>.</td>
+<code class="docutils literal"><span class="pre">farneback_poly_n=5</span></code>, you can set <code class="docutils literal"><span class="pre">farneback_poly_sigma=1.1</span></code>, for
+<code class="docutils literal"><span class="pre">farneback_poly_n=7</span></code>, a good value would be <code class="docutils literal"><span class="pre">farneback_poly_sigma=1.5</span></code>.</td>
 </tr>
 <tr class="row-odd"><td><strong>integration_method</strong></td>
 <td>18</td>
@@ -287,7 +287,7 @@ line.</td>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="index.html">
               <img class="logo" src="_static/plumetrack.png" alt="Logo"/>
@@ -308,29 +308,28 @@ line.</td>
   <h4>Next topic</h4>
   <p class="topless"><a href="loading_images.html"
                         title="next chapter">Loading Images</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="_sources/configuration.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/configuration.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -345,12 +344,12 @@ line.</td>
         <li class="right" >
           <a href="quickstart_cmdline.html" title="Quickstart - Command Line"
              >previous</a> |</li>
-        <li><a href="index.html">Plumetrack 15.06 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Plumetrack 18.05 documentation</a> &#187;</li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2014, Nial Peters.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2014, Nial Peters.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.6.
     </div>
   </body>
 </html>

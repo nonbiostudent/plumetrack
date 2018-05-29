@@ -6,15 +6,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>plumetrack package &mdash; Plumetrack 15.06 documentation</title>
+    <title>plumetrack package &#8212; Plumetrack 18.05 documentation</title>
     
-    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '15.06',
+        VERSION:     '18.05',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,15 +23,15 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="_static/plumetrack_32.ico"/>
-    <link rel="top" title="Plumetrack 15.06 documentation" href="index.html" />
+    <link rel="top" title="Plumetrack 18.05 documentation" href="index.html" />
     <link rel="up" title="API" href="API.html" />
     <link rel="next" title="plumetrack.gui package" href="plumetrack.gui.html" />
     <link rel="prev" title="API" href="API.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -46,15 +46,15 @@
         <li class="right" >
           <a href="API.html" title="API"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Plumetrack 15.06 documentation</a> &raquo;</li>
-          <li><a href="API.html" accesskey="U">API</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Plumetrack 18.05 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="API.html" accesskey="U">API</a> &#187;</li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="plumetrack-package">
 <h1>plumetrack package<a class="headerlink" href="#plumetrack-package" title="Permalink to this headline">¶</a></h1>
@@ -81,17 +81,17 @@
 <span id="plumetrack-dir-iter-module"></span><h2>plumetrack.dir_iter module<a class="headerlink" href="#module-plumetrack.dir_iter" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="plumetrack.dir_iter.AsyncFileFinder">
-<em class="property">class </em><tt class="descclassname">plumetrack.dir_iter.</tt><tt class="descname">AsyncFileFinder</tt><big>(</big><em>path</em>, <em>recursive=False</em>, <em>pattern='*'</em>, <em>skip_links=True</em>, <em>full_paths=False</em><big>)</big><a class="reference internal" href="_modules/plumetrack/dir_iter.html#AsyncFileFinder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.dir_iter.AsyncFileFinder" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">plumetrack.dir_iter.</code><code class="descname">AsyncFileFinder</code><span class="sig-paren">(</span><em>path</em>, <em>recursive=False</em>, <em>pattern='*'</em>, <em>skip_links=True</em>, <em>full_paths=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/dir_iter.html#AsyncFileFinder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.dir_iter.AsyncFileFinder" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="method">
 <dt id="plumetrack.dir_iter.AsyncFileFinder.close">
-<tt class="descname">close</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack/dir_iter.html#AsyncFileFinder.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.dir_iter.AsyncFileFinder.close" title="Permalink to this definition">¶</a></dt>
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/dir_iter.html#AsyncFileFinder.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.dir_iter.AsyncFileFinder.close" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stops the search for files and causes any calls to next() to raise
 StopIteration</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.dir_iter.AsyncFileFinder.next">
-<tt class="descname">next</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack/dir_iter.html#AsyncFileFinder.next"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.dir_iter.AsyncFileFinder.next" title="Permalink to this definition">¶</a></dt>
+<code class="descname">next</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/dir_iter.html#AsyncFileFinder.next"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.dir_iter.AsyncFileFinder.next" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method required by iterator protocol. Returns the next filename found
 or raises StopIteration if there are no files left to list (or if 
 close() has been called on the iterator.</p>
@@ -104,10 +104,10 @@ close() is called).</p>
 
 <dl class="class">
 <dt id="plumetrack.dir_iter.ListDirIter">
-<em class="property">class </em><tt class="descclassname">plumetrack.dir_iter.</tt><tt class="descname">ListDirIter</tt><big>(</big><em>directory</em>, <em>realtime=False</em>, <em>skip_existing=False</em>, <em>recursive=False</em>, <em>sort_func=None</em>, <em>test_func=None</em>, <em>max_n=None</em>, <em>pattern='*'</em>, <em>full_paths=False</em>, <em>skip_links=True</em><big>)</big><a class="reference internal" href="_modules/plumetrack/dir_iter.html#ListDirIter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.dir_iter.ListDirIter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">plumetrack.dir_iter.</code><code class="descname">ListDirIter</code><span class="sig-paren">(</span><em>directory</em>, <em>realtime=False</em>, <em>skip_existing=False</em>, <em>recursive=False</em>, <em>sort_func=None</em>, <em>test_func=None</em>, <em>max_n=None</em>, <em>pattern='*'</em>, <em>full_paths=False</em>, <em>skip_links=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/dir_iter.html#ListDirIter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.dir_iter.ListDirIter" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="method">
 <dt id="plumetrack.dir_iter.ListDirIter.close">
-<tt class="descname">close</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack/dir_iter.html#ListDirIter.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.dir_iter.ListDirIter.close" title="Permalink to this definition">¶</a></dt>
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/dir_iter.html#ListDirIter.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.dir_iter.ListDirIter.close" title="Permalink to this definition">¶</a></dt>
 <dd><p>This is only needed if the iterator was created with the realtime option
 set to True. Calling close() stops the iterator from waiting for new
 files and causes any pending calls to next() to raise StopIteration.</p>
@@ -115,7 +115,7 @@ files and causes any pending calls to next() to raise StopIteration.</p>
 
 <dl class="method">
 <dt id="plumetrack.dir_iter.ListDirIter.get_current_position">
-<tt class="descname">get_current_position</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack/dir_iter.html#ListDirIter.get_current_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.dir_iter.ListDirIter.get_current_position" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_current_position</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/dir_iter.html#ListDirIter.get_current_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.dir_iter.ListDirIter.get_current_position" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a tuple of number of filenames already returned and number of 
 filenames remaining to be returned. Note that due to the asynchronous
 nature of the iterator the latter of these numbers may be entirely
@@ -124,7 +124,7 @@ fictional.</p>
 
 <dl class="method">
 <dt id="plumetrack.dir_iter.ListDirIter.next">
-<tt class="descname">next</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack/dir_iter.html#ListDirIter.next"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.dir_iter.ListDirIter.next" title="Permalink to this definition">¶</a></dt>
+<code class="descname">next</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/dir_iter.html#ListDirIter.next"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.dir_iter.ListDirIter.next" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method required by iterator protocol. Returns the next filename found
 or raises StopIteration if there are no files left to list (or if 
 close() has been called on the iterator.</p>
@@ -137,7 +137,7 @@ close() is called).</p>
 
 <dl class="function">
 <dt id="plumetrack.dir_iter.find_files">
-<tt class="descclassname">plumetrack.dir_iter.</tt><tt class="descname">find_files</tt><big>(</big><em>path</em>, <em>recursive=False</em>, <em>pattern='*'</em>, <em>skip_links=True</em>, <em>full_paths=False</em><big>)</big><a class="reference internal" href="_modules/plumetrack/dir_iter.html#find_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.dir_iter.find_files" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">plumetrack.dir_iter.</code><code class="descname">find_files</code><span class="sig-paren">(</span><em>path</em>, <em>recursive=False</em>, <em>pattern='*'</em>, <em>skip_links=True</em>, <em>full_paths=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/dir_iter.html#find_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.dir_iter.find_files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a list of files in a directory with various filter options applied.</p>
 <blockquote>
 <div><ul>
@@ -164,11 +164,11 @@ close() is called).</p>
 <span id="plumetrack-flux-module"></span><h2>plumetrack.flux module<a class="headerlink" href="#module-plumetrack.flux" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="plumetrack.flux.FluxEngine1D">
-<em class="property">class </em><tt class="descclassname">plumetrack.flux.</tt><tt class="descname">FluxEngine1D</tt><big>(</big><em>config</em><big>)</big><a class="reference internal" href="_modules/plumetrack/flux.html#FluxEngine1D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.FluxEngine1D" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#plumetrack.flux.FluxEngineBase" title="plumetrack.flux.FluxEngineBase"><tt class="xref py py-class docutils literal"><span class="pre">plumetrack.flux.FluxEngineBase</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">plumetrack.flux.</code><code class="descname">FluxEngine1D</code><span class="sig-paren">(</span><em>config</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/flux.html#FluxEngine1D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.FluxEngine1D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#plumetrack.flux.FluxEngineBase" title="plumetrack.flux.FluxEngineBase"><code class="xref py py-class docutils literal"><span class="pre">plumetrack.flux.FluxEngineBase</span></code></a></p>
 <dl class="method">
 <dt id="plumetrack.flux.FluxEngine1D.compute_flux">
-<tt class="descname">compute_flux</tt><big>(</big><em>current_image</em>, <em>next_image</em>, <em>flow</em>, <em>delta_t</em><big>)</big><a class="reference internal" href="_modules/plumetrack/flux.html#FluxEngine1D.compute_flux"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.FluxEngine1D.compute_flux" title="Permalink to this definition">¶</a></dt>
+<code class="descname">compute_flux</code><span class="sig-paren">(</span><em>current_image</em>, <em>next_image</em>, <em>flow</em>, <em>delta_t</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/flux.html#FluxEngine1D.compute_flux"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.FluxEngine1D.compute_flux" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the fluxes and associated errors across each defined integration 
 line.</p>
 </dd></dl>
@@ -177,18 +177,18 @@ line.</p>
 
 <dl class="class">
 <dt id="plumetrack.flux.FluxEngine2D">
-<em class="property">class </em><tt class="descclassname">plumetrack.flux.</tt><tt class="descname">FluxEngine2D</tt><big>(</big><em>config</em><big>)</big><a class="reference internal" href="_modules/plumetrack/flux.html#FluxEngine2D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.FluxEngine2D" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#plumetrack.flux.FluxEngineBase" title="plumetrack.flux.FluxEngineBase"><tt class="xref py py-class docutils literal"><span class="pre">plumetrack.flux.FluxEngineBase</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">plumetrack.flux.</code><code class="descname">FluxEngine2D</code><span class="sig-paren">(</span><em>config</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/flux.html#FluxEngine2D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.FluxEngine2D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#plumetrack.flux.FluxEngineBase" title="plumetrack.flux.FluxEngineBase"><code class="xref py py-class docutils literal"><span class="pre">plumetrack.flux.FluxEngineBase</span></code></a></p>
 <dl class="method">
 <dt id="plumetrack.flux.FluxEngine2D.compute_flux">
-<tt class="descname">compute_flux</tt><big>(</big><em>current_image</em>, <em>next_image</em>, <em>flow</em>, <em>delta_t</em><big>)</big><a class="reference internal" href="_modules/plumetrack/flux.html#FluxEngine2D.compute_flux"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.FluxEngine2D.compute_flux" title="Permalink to this definition">¶</a></dt>
+<code class="descname">compute_flux</code><span class="sig-paren">(</span><em>current_image</em>, <em>next_image</em>, <em>flow</em>, <em>delta_t</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/flux.html#FluxEngine2D.compute_flux"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.FluxEngine2D.compute_flux" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the fluxes and associated errors across each defined integration 
 line.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.flux.FluxEngine2D.find_flux_contributions">
-<tt class="descname">find_flux_contributions</tt><big>(</big><em>flow</em>, <em>integration_line</em>, <em>poly_approx=-1</em><big>)</big><a class="reference internal" href="_modules/plumetrack/flux.html#FluxEngine2D.find_flux_contributions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.FluxEngine2D.find_flux_contributions" title="Permalink to this definition">¶</a></dt>
+<code class="descname">find_flux_contributions</code><span class="sig-paren">(</span><em>flow</em>, <em>integration_line</em>, <em>poly_approx=-1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/flux.html#FluxEngine2D.find_flux_contributions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.FluxEngine2D.find_flux_contributions" title="Permalink to this definition">¶</a></dt>
 <dd><p>For every pixel in the image, computes whether its motion vector 
 crosses the integration line and whether it crosses in a positive or 
 negative direction. Returns an array the same size as the image, where 
@@ -200,35 +200,41 @@ contribution) or -1 (negative contribution to flux).</p>
 
 <dl class="class">
 <dt id="plumetrack.flux.FluxEngineBase">
-<em class="property">class </em><tt class="descclassname">plumetrack.flux.</tt><tt class="descname">FluxEngineBase</tt><big>(</big><em>config</em><big>)</big><a class="reference internal" href="_modules/plumetrack/flux.html#FluxEngineBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.FluxEngineBase" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">plumetrack.flux.</code><code class="descname">FluxEngineBase</code><span class="sig-paren">(</span><em>config</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/flux.html#FluxEngineBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.FluxEngineBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <dl class="method">
 <dt id="plumetrack.flux.FluxEngineBase.compute_flux">
-<tt class="descname">compute_flux</tt><big>(</big><em>current_image</em>, <em>flow</em>, <em>delta_t</em><big>)</big><a class="reference internal" href="_modules/plumetrack/flux.html#FluxEngineBase.compute_flux"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.FluxEngineBase.compute_flux" title="Permalink to this definition">¶</a></dt>
+<code class="descname">compute_flux</code><span class="sig-paren">(</span><em>current_image</em>, <em>flow</em>, <em>delta_t</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/flux.html#FluxEngineBase.compute_flux"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.FluxEngineBase.compute_flux" title="Permalink to this definition">¶</a></dt>
 <dd><p>Should be implemented by subclasses.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.flux.FluxEngineBase.get_integration_lines">
-<tt class="descname">get_integration_lines</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack/flux.html#FluxEngineBase.get_integration_lines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.FluxEngineBase.get_integration_lines" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_integration_lines</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/flux.html#FluxEngineBase.get_integration_lines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.FluxEngineBase.get_integration_lines" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a list of IntegrationLine objects that were defined in the config.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plumetrack.flux.FluxEngineBase.get_pixel_size">
+<code class="descname">get_pixel_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/flux.html#FluxEngineBase.get_pixel_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.FluxEngineBase.get_pixel_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the pixel size of the image in metres.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="plumetrack.flux.IntegrationLine">
-<em class="property">class </em><tt class="descclassname">plumetrack.flux.</tt><tt class="descname">IntegrationLine</tt><big>(</big><em>name</em>, <em>xpts</em>, <em>ypts</em>, <em>direction</em><big>)</big><a class="reference internal" href="_modules/plumetrack/flux.html#IntegrationLine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.IntegrationLine" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">plumetrack.flux.</code><code class="descname">IntegrationLine</code><span class="sig-paren">(</span><em>name</em>, <em>xpts</em>, <em>ypts</em>, <em>direction</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/flux.html#IntegrationLine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.IntegrationLine" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="method">
 <dt id="plumetrack.flux.IntegrationLine.get_length">
-<tt class="descname">get_length</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack/flux.html#IntegrationLine.get_length"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.IntegrationLine.get_length" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_length</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/flux.html#IntegrationLine.get_length"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.IntegrationLine.get_length" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the cumulative length of all the line segments in pixels (not 
 in metres!)</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.flux.IntegrationLine.get_n_points">
-<tt class="descname">get_n_points</tt><big>(</big><em>n=-1</em><big>)</big><a class="reference internal" href="_modules/plumetrack/flux.html#IntegrationLine.get_n_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.IntegrationLine.get_n_points" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_n_points</code><span class="sig-paren">(</span><em>n=-1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/flux.html#IntegrationLine.get_n_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.IntegrationLine.get_n_points" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns an n by 2 array of of x y coordinates of points along the line.
 If n==-1 then it returns the actual points of the line rather than
 interpolating. Note that the points returned are in pixel coordinates, 
@@ -237,7 +243,7 @@ interpolating. Note that the points returned are in pixel coordinates,
 
 <dl class="method">
 <dt id="plumetrack.flux.IntegrationLine.get_poly_approx">
-<tt class="descname">get_poly_approx</tt><big>(</big><em>n=-1</em><big>)</big><a class="reference internal" href="_modules/plumetrack/flux.html#IntegrationLine.get_poly_approx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.IntegrationLine.get_poly_approx" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_poly_approx</code><span class="sig-paren">(</span><em>n=-1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/flux.html#IntegrationLine.get_poly_approx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.IntegrationLine.get_poly_approx" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a tuple of arrays (startpoints, vectors, normals). Note that the
 points returned are in pixel coordinates, <em>not</em> line coordinates.</p>
 </dd></dl>
@@ -246,18 +252,17 @@ points returned are in pixel coordinates, <em>not</em> line coordinates.</p>
 
 <dl class="class">
 <dt id="plumetrack.flux.ValueAndError">
-<em class="property">class </em><tt class="descclassname">plumetrack.flux.</tt><tt class="descname">ValueAndError</tt><a class="headerlink" href="#plumetrack.flux.ValueAndError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">tuple</span></tt></p>
-<p>ValueAndError(value, error)</p>
+<em class="property">class </em><code class="descclassname">plumetrack.flux.</code><code class="descname">ValueAndError</code><span class="sig-paren">(</span><em>value</em>, <em>error</em><span class="sig-paren">)</span><a class="headerlink" href="#plumetrack.flux.ValueAndError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">tuple</span></code></a></p>
 <dl class="attribute">
 <dt id="plumetrack.flux.ValueAndError.error">
-<tt class="descname">error</tt><a class="headerlink" href="#plumetrack.flux.ValueAndError.error" title="Permalink to this definition">¶</a></dt>
+<code class="descname">error</code><a class="headerlink" href="#plumetrack.flux.ValueAndError.error" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias for field number 1</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="plumetrack.flux.ValueAndError.value">
-<tt class="descname">value</tt><a class="headerlink" href="#plumetrack.flux.ValueAndError.value" title="Permalink to this definition">¶</a></dt>
+<code class="descname">value</code><a class="headerlink" href="#plumetrack.flux.ValueAndError.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias for field number 0</p>
 </dd></dl>
 
@@ -265,7 +270,7 @@ points returned are in pixel coordinates, <em>not</em> line coordinates.</p>
 
 <dl class="function">
 <dt id="plumetrack.flux.compute_error_map">
-<tt class="descclassname">plumetrack.flux.</tt><tt class="descname">compute_error_map</tt><big>(</big><em>current_image</em>, <em>next_image</em>, <em>flow</em><big>)</big><a class="reference internal" href="_modules/plumetrack/flux.html#compute_error_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.compute_error_map" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">plumetrack.flux.</code><code class="descname">compute_error_map</code><span class="sig-paren">(</span><em>current_image</em>, <em>next_image</em>, <em>flow</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/flux.html#compute_error_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.compute_error_map" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function attempts to estimate the error associated with an image pair 
 and their corresponding motion field. It works by considering conservation of
 mass. For each pixel in current_image, it uses the motion vector to compute
@@ -277,7 +282,7 @@ onto their source pixels in current_image.</p>
 
 <dl class="function">
 <dt id="plumetrack.flux.create_flux_engine">
-<tt class="descclassname">plumetrack.flux.</tt><tt class="descname">create_flux_engine</tt><big>(</big><em>config</em><big>)</big><a class="reference internal" href="_modules/plumetrack/flux.html#create_flux_engine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.create_flux_engine" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">plumetrack.flux.</code><code class="descname">create_flux_engine</code><span class="sig-paren">(</span><em>config</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/flux.html#create_flux_engine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.flux.create_flux_engine" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a flux engine object based on the values in config.</p>
 </dd></dl>
 
@@ -286,18 +291,18 @@ onto their source pixels in current_image.</p>
 <span id="plumetrack-image-loader-module"></span><h2>plumetrack.image_loader module<a class="headerlink" href="#module-plumetrack.image_loader" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="plumetrack.image_loader.ImageLoader">
-<em class="property">class </em><tt class="descclassname">plumetrack.image_loader.</tt><tt class="descname">ImageLoader</tt><big>(</big><em>config</em><big>)</big><a class="reference internal" href="_modules/plumetrack/image_loader.html#ImageLoader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.image_loader.ImageLoader" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">plumetrack.image_loader.</code><code class="descname">ImageLoader</code><span class="sig-paren">(</span><em>config</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/image_loader.html#ImageLoader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.image_loader.ImageLoader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <dl class="method">
 <dt id="plumetrack.image_loader.ImageLoader.can_load">
-<tt class="descname">can_load</tt><big>(</big><em>filename</em><big>)</big><a class="reference internal" href="_modules/plumetrack/image_loader.html#ImageLoader.can_load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.image_loader.ImageLoader.can_load" title="Permalink to this definition">¶</a></dt>
+<code class="descname">can_load</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/image_loader.html#ImageLoader.can_load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.image_loader.ImageLoader.can_load" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns True if it looks like this file can be opened by the loader, 
 False otherwise.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.image_loader.ImageLoader.load">
-<tt class="descname">load</tt><big>(</big><em>filename</em><big>)</big><a class="reference internal" href="_modules/plumetrack/image_loader.html#ImageLoader.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.image_loader.ImageLoader.load" title="Permalink to this definition">¶</a></dt>
+<code class="descname">load</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/image_loader.html#ImageLoader.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.image_loader.ImageLoader.load" title="Permalink to this definition">¶</a></dt>
 <dd><p>Given the filename of an image returns a tuple of (image, time), where 
 image is a numpy array containing the pixel data of the image, and time
 is a datetime object representing the capture time of the image.</p>
@@ -307,7 +312,7 @@ is required.</p>
 
 <dl class="method">
 <dt id="plumetrack.image_loader.ImageLoader.time_from_fname">
-<tt class="descname">time_from_fname</tt><big>(</big><em>filename</em><big>)</big><a class="reference internal" href="_modules/plumetrack/image_loader.html#ImageLoader.time_from_fname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.image_loader.ImageLoader.time_from_fname" title="Permalink to this definition">¶</a></dt>
+<code class="descname">time_from_fname</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/image_loader.html#ImageLoader.time_from_fname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.image_loader.ImageLoader.time_from_fname" title="Permalink to this definition">¶</a></dt>
 <dd><p>Given the filename of an image, returns a datetime object representing
 the capture time of the image.</p>
 </dd></dl>
@@ -316,21 +321,21 @@ the capture time of the image.</p>
 
 <dl class="exception">
 <dt id="plumetrack.image_loader.ImageLoaderError">
-<em class="property">exception </em><tt class="descclassname">plumetrack.image_loader.</tt><tt class="descname">ImageLoaderError</tt><a class="reference internal" href="_modules/plumetrack/image_loader.html#ImageLoaderError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.image_loader.ImageLoaderError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/exceptions.html#exceptions.Exception" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></a></p>
+<em class="property">exception </em><code class="descclassname">plumetrack.image_loader.</code><code class="descname">ImageLoaderError</code><a class="reference internal" href="_modules/plumetrack/image_loader.html#ImageLoaderError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.image_loader.ImageLoaderError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></code></p>
 <p>Exception raised when a specified image loader cannot be found/loaded.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="plumetrack.image_loader.get_image_loader">
-<tt class="descclassname">plumetrack.image_loader.</tt><tt class="descname">get_image_loader</tt><big>(</big><em>config</em><big>)</big><a class="reference internal" href="_modules/plumetrack/image_loader.html#get_image_loader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.image_loader.get_image_loader" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">plumetrack.image_loader.</code><code class="descname">get_image_loader</code><span class="sig-paren">(</span><em>config</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/image_loader.html#get_image_loader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.image_loader.get_image_loader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns an image loader object as defined in the config. This may be the 
 default loader, or a custom one if that has been specified in the configuration.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="plumetrack.image_loader.validate_loader">
-<tt class="descclassname">plumetrack.image_loader.</tt><tt class="descname">validate_loader</tt><big>(</big><em>config</em><big>)</big><a class="reference internal" href="_modules/plumetrack/image_loader.html#validate_loader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.image_loader.validate_loader" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">plumetrack.image_loader.</code><code class="descname">validate_loader</code><span class="sig-paren">(</span><em>config</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/image_loader.html#validate_loader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.image_loader.validate_loader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns True if the config contains a valid value for the custom_image_loader
 (and the custom loader can be created successfully), False otherwise.</p>
 </dd></dl>
@@ -340,27 +345,27 @@ default loader, or a custom one if that has been specified in the configuration.
 <span id="plumetrack-main-script-module"></span><h2>plumetrack.main_script module<a class="headerlink" href="#module-plumetrack.main_script" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="plumetrack.main_script.date2secs">
-<tt class="descclassname">plumetrack.main_script.</tt><tt class="descname">date2secs</tt><big>(</big><em>d</em><big>)</big><a class="reference internal" href="_modules/plumetrack/main_script.html#date2secs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.main_script.date2secs" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">plumetrack.main_script.</code><code class="descname">date2secs</code><span class="sig-paren">(</span><em>d</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/main_script.html#date2secs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.main_script.date2secs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts a datetime object into floating point number of seconds since the
 epoch.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="plumetrack.main_script.flatten">
-<tt class="descclassname">plumetrack.main_script.</tt><tt class="descname">flatten</tt><big>(</big><em>l</em>, <em>ltypes=(&lt;type 'list'&gt;</em>, <em>&lt;type 'tuple'&gt;)</em><big>)</big><a class="reference internal" href="_modules/plumetrack/main_script.html#flatten"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.main_script.flatten" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">plumetrack.main_script.</code><code class="descname">flatten</code><span class="sig-paren">(</span><em>l</em>, <em>ltypes=(&lt;type 'list'&gt;</em>, <em>&lt;type 'tuple'&gt;)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/main_script.html#flatten"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.main_script.flatten" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reduces any iterable containing other iterables into a single list
 of non-iterable items. The ltypes option allows control over what 
 element types will be flattened. This algorithm is taken from:
 <a class="reference external" href="http://rightfootin.blogspot.com/2006/09/more-on-python-flatten.html">http://rightfootin.blogspot.com/2006/09/more-on-python-flatten.html</a></p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">flatten</span><span class="p">([</span><span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">)])</span>
+<div class="highlight-default"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">flatten</span><span class="p">([</span><span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">)])</span>
 <span class="go">[0, 1, 2, 3, 4, 5]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">flatten</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,(</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">flatten</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,(</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">)])</span>
 <span class="go">[1, 2, 3, 4]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">flatten</span><span class="p">([</span><span class="mi">1</span><span class="p">,[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,[</span><span class="mi">6</span><span class="p">,[</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,[</span><span class="mi">9</span><span class="p">,[</span><span class="mi">10</span><span class="p">]]]]]]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">flatten</span><span class="p">([</span><span class="mi">1</span><span class="p">,[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,[</span><span class="mi">6</span><span class="p">,[</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,[</span><span class="mi">9</span><span class="p">,[</span><span class="mi">10</span><span class="p">]]]]]]])</span>
 <span class="go">[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">flatten</span><span class="p">([</span><span class="mi">1</span><span class="p">,[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,[</span><span class="mi">6</span><span class="p">,[</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,[</span><span class="mi">9</span><span class="p">,[</span><span class="mi">10</span><span class="p">]]]]]]],</span> <span class="n">ltypes</span><span class="o">=</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">flatten</span><span class="p">([</span><span class="mi">1</span><span class="p">,[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,[</span><span class="mi">6</span><span class="p">,[</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,[</span><span class="mi">9</span><span class="p">,[</span><span class="mi">10</span><span class="p">]]]]]]],</span> <span class="n">ltypes</span><span class="o">=</span><span class="p">())</span>
 <span class="go">[1, [2, 3, [4, 5, [6, [7, 8, [9, [10]]]]]]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">flatten</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,(</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">)],</span><span class="n">ltypes</span><span class="o">=</span><span class="p">(</span><span class="nb">list</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">flatten</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,(</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">)],</span><span class="n">ltypes</span><span class="o">=</span><span class="p">(</span><span class="nb">list</span><span class="p">))</span>
 <span class="go">[1, 2, (3, 4)]</span>
 </pre></div>
 </div>
@@ -368,7 +373,7 @@ element types will be flattened. This algorithm is taken from:
 
 <dl class="function">
 <dt id="plumetrack.main_script.main">
-<tt class="descclassname">plumetrack.main_script.</tt><tt class="descname">main</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack/main_script.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.main_script.main" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">plumetrack.main_script.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/main_script.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.main_script.main" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calling this function executes the main plumetrack program. This is set as 
 an entry-point in the setup.py script and so is called by the plumetrack 
 executable (which is automatically generated by setuptools during installation).</p>
@@ -376,7 +381,7 @@ executable (which is automatically generated by setuptools during installation).
 
 <dl class="function">
 <dt id="plumetrack.main_script.parallel_process">
-<tt class="descclassname">plumetrack.main_script.</tt><tt class="descname">parallel_process</tt><big>(</big><em>func</em>, <em>list_</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/plumetrack/main_script.html#parallel_process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.main_script.parallel_process" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">plumetrack.main_script.</code><code class="descname">parallel_process</code><span class="sig-paren">(</span><em>func</em>, <em>list_</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/main_script.html#parallel_process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.main_script.parallel_process" title="Permalink to this definition">¶</a></dt>
 <dd><p>Runs the function &#8216;func&#8217; on all items in <a href="#id1"><span class="problematic" id="id2">list_</span></a> passing any additional
 args or kwargs specified. The list elements are processed asyncronously
 by as many processors as there are cpus. The return value will be a list
@@ -385,7 +390,7 @@ of the return values of the function in the same order as the input list.</p>
 
 <dl class="function">
 <dt id="plumetrack.main_script.parallel_process_with_progress">
-<tt class="descclassname">plumetrack.main_script.</tt><tt class="descname">parallel_process_with_progress</tt><big>(</big><em>progress_handler</em>, <em>func</em>, <em>list_</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/plumetrack/main_script.html#parallel_process_with_progress"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.main_script.parallel_process_with_progress" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">plumetrack.main_script.</code><code class="descname">parallel_process_with_progress</code><span class="sig-paren">(</span><em>progress_handler</em>, <em>func</em>, <em>list_</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/main_script.html#parallel_process_with_progress"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.main_script.parallel_process_with_progress" title="Permalink to this definition">¶</a></dt>
 <dd><p>Same as parallel_process, but with additional progress_handler argument 
 which should be a callable. This will be called repeatedly during the 
 parallel processing and passed a float (&lt;1.0) which shows the fraction of the
@@ -396,14 +401,14 @@ False is returned, then execution will halt and None will be returned.</p>
 
 <dl class="function">
 <dt id="plumetrack.main_script.process_image_pair">
-<tt class="descclassname">plumetrack.main_script.</tt><tt class="descname">process_image_pair</tt><big>(</big><em>im_pair</em>, <em>image_loader</em>, <em>motion_engine</em>, <em>flux_engine</em>, <em>options</em>, <em>config</em><big>)</big><a class="reference internal" href="_modules/plumetrack/main_script.html#process_image_pair"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.main_script.process_image_pair" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">plumetrack.main_script.</code><code class="descname">process_image_pair</code><span class="sig-paren">(</span><em>im_pair</em>, <em>image_loader</em>, <em>motion_engine</em>, <em>flux_engine</em>, <em>options</em>, <em>config</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/main_script.html#process_image_pair"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.main_script.process_image_pair" title="Permalink to this definition">¶</a></dt>
 <dd><p>Performs the motion tracking and flux calculation on a single image pair.
 This is split into a separate function to make facilitate parallel execution.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="plumetrack.main_script.run_mainloop">
-<tt class="descclassname">plumetrack.main_script.</tt><tt class="descname">run_mainloop</tt><big>(</big><em>options</em>, <em>args</em>, <em>progress_handler=None</em><big>)</big><a class="reference internal" href="_modules/plumetrack/main_script.html#run_mainloop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.main_script.run_mainloop" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">plumetrack.main_script.</code><code class="descname">run_mainloop</code><span class="sig-paren">(</span><em>options</em>, <em>args</em>, <em>progress_handler=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/main_script.html#run_mainloop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.main_script.run_mainloop" title="Permalink to this definition">¶</a></dt>
 <dd><p>This is the main &#8220;do it&#8221; function of Plumetrack. It loads the relevant config
 file and processes images in the specified folder accordingly.</p>
 <p>The options and args arguments are those returned from the 
@@ -415,7 +420,7 @@ and False if execution should be cancelled.</p>
 
 <dl class="function">
 <dt id="plumetrack.main_script.split">
-<tt class="descclassname">plumetrack.main_script.</tt><tt class="descname">split</tt><big>(</big><em>l</em>, <em>n</em><big>)</big><a class="reference internal" href="_modules/plumetrack/main_script.html#split"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.main_script.split" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">plumetrack.main_script.</code><code class="descname">split</code><span class="sig-paren">(</span><em>l</em>, <em>n</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/main_script.html#split"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.main_script.split" title="Permalink to this definition">¶</a></dt>
 <dd><p>splits the list l into n approximately equal length lists and returns
 them in a tuple. if n &gt; len(l) then the returned tuple may contain
 less than n elements.
@@ -430,11 +435,11 @@ less than n elements.
 <span id="plumetrack-motion-module"></span><h2>plumetrack.motion module<a class="headerlink" href="#module-plumetrack.motion" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="plumetrack.motion.MotionEngine">
-<em class="property">class </em><tt class="descclassname">plumetrack.motion.</tt><tt class="descname">MotionEngine</tt><big>(</big><em>config</em><big>)</big><a class="reference internal" href="_modules/plumetrack/motion.html#MotionEngine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.motion.MotionEngine" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">plumetrack.motion.</code><code class="descname">MotionEngine</code><span class="sig-paren">(</span><em>config</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/motion.html#MotionEngine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.motion.MotionEngine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <dl class="method">
 <dt id="plumetrack.motion.MotionEngine.compute_flow">
-<tt class="descname">compute_flow</tt><big>(</big><em>current_image</em>, <em>next_image</em><big>)</big><a class="reference internal" href="_modules/plumetrack/motion.html#MotionEngine.compute_flow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.motion.MotionEngine.compute_flow" title="Permalink to this definition">¶</a></dt>
+<code class="descname">compute_flow</code><span class="sig-paren">(</span><em>current_image</em>, <em>next_image</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/motion.html#MotionEngine.compute_flow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.motion.MotionEngine.compute_flow" title="Permalink to this definition">¶</a></dt>
 <dd><p>Uses the Farneback algorithm to compute the flow field that maps pixels
 in current_image, to pixels in next_image. Both image arguments should be
 numpy arrays.</p>
@@ -442,7 +447,7 @@ numpy arrays.</p>
 
 <dl class="method">
 <dt id="plumetrack.motion.MotionEngine.preprocess">
-<tt class="descname">preprocess</tt><big>(</big><em>image</em><big>)</big><a class="reference internal" href="_modules/plumetrack/motion.html#MotionEngine.preprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.motion.MotionEngine.preprocess" title="Permalink to this definition">¶</a></dt>
+<code class="descname">preprocess</code><span class="sig-paren">(</span><em>image</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/motion.html#MotionEngine.preprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.motion.MotionEngine.preprocess" title="Permalink to this definition">¶</a></dt>
 <dd><p>Performs any required preprocessing tasks on the image (should be called
 prior to calling compute_flow()). Depending on the configuration,
 preprocessing tasks may include thresholding the image and applying 
@@ -460,7 +465,7 @@ replaced with random noise.</p>
 <span id="plumetrack-output-module"></span><h2>plumetrack.output module<a class="headerlink" href="#module-plumetrack.output" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="plumetrack.output.create_motion_png">
-<tt class="descclassname">plumetrack.output.</tt><tt class="descname">create_motion_png</tt><big>(</big><em>image</em>, <em>velocities</em>, <em>output_filename</em>, <em>integration_lines</em><big>)</big><a class="reference internal" href="_modules/plumetrack/output.html#create_motion_png"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.output.create_motion_png" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">plumetrack.output.</code><code class="descname">create_motion_png</code><span class="sig-paren">(</span><em>image</em>, <em>velocities</em>, <em>output_filename</em>, <em>integration_lines</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/output.html#create_motion_png"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.output.create_motion_png" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates and saves a PNG image showing the original image with the computed 
 motion vectors and the integration line superimposed on the top. Note that 
 the motion field will be downsampled to make the vectors visible on the plot.</p>
@@ -468,7 +473,7 @@ the motion field will be downsampled to make the vectors visible on the plot.</p
 
 <dl class="function">
 <dt id="plumetrack.output.create_output_file">
-<tt class="descclassname">plumetrack.output.</tt><tt class="descname">create_output_file</tt><big>(</big><em>filename</em>, <em>im_dir</em>, <em>config</em><big>)</big><a class="reference internal" href="_modules/plumetrack/output.html#create_output_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.output.create_output_file" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">plumetrack.output.</code><code class="descname">create_output_file</code><span class="sig-paren">(</span><em>filename</em>, <em>im_dir</em>, <em>config</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/output.html#create_output_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.output.create_output_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a new output file and writes the header data to it. Returns an open
 file object.</p>
 <blockquote>
@@ -497,15 +502,22 @@ file object.</p>
 
 <dl class="function">
 <dt id="plumetrack.output.resample_velocities">
-<tt class="descclassname">plumetrack.output.</tt><tt class="descname">resample_velocities</tt><big>(</big><em>velocities</em>, <em>yn</em><big>)</big><a class="reference internal" href="_modules/plumetrack/output.html#resample_velocities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.output.resample_velocities" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">plumetrack.output.</code><code class="descname">resample_velocities</code><span class="sig-paren">(</span><em>velocities</em>, <em>yn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/output.html#resample_velocities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.output.resample_velocities" title="Permalink to this definition">¶</a></dt>
 <dd><p>Downsamples the velocities array (an MxNx2 array) such that N=yn and M is 
 such that the downsampled array has the same aspect ratio as the original.</p>
 <p>For efficiency, nearest neighbour interpolation is used.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="plumetrack.output.save_velocity_array">
+<code class="descclassname">plumetrack.output.</code><code class="descname">save_velocity_array</code><span class="sig-paren">(</span><em>arr</em>, <em>filename</em>, <em>format_</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/output.html#save_velocity_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.output.save_velocity_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves a numpy array object to the specified file using the specified format.</p>
+<p>format can be &#8216;mat&#8217;, &#8216;npy&#8217; or &#8216;json&#8217;</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="plumetrack.output.write_output">
-<tt class="descclassname">plumetrack.output.</tt><tt class="descname">write_output</tt><big>(</big><em>options</em>, <em>config</em>, <em>image_dir</em>, <em>times</em>, <em>filenames</em>, <em>fluxes</em><big>)</big><a class="reference internal" href="_modules/plumetrack/output.html#write_output"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.output.write_output" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">plumetrack.output.</code><code class="descname">write_output</code><span class="sig-paren">(</span><em>options</em>, <em>config</em>, <em>image_dir</em>, <em>times</em>, <em>filenames</em>, <em>fluxes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/output.html#write_output"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.output.write_output" title="Permalink to this definition">¶</a></dt>
 <dd><p>If an output file was specified, then writes the image filename, time and
 one SO2 flux entry for each integration line that was defined to the file.
 If no output file was specified then writes this information to stdout.</p>
@@ -516,7 +528,7 @@ If no output file was specified then writes this information to stdout.</p>
 <span id="plumetrack-persist-module"></span><h2>plumetrack.persist module<a class="headerlink" href="#module-plumetrack.persist" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="plumetrack.persist.PersistentStorage">
-<tt class="descclassname">plumetrack.persist.</tt><tt class="descname">PersistentStorage</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack/persist.html#PersistentStorage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.persist.PersistentStorage" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">plumetrack.persist.</code><code class="descname">PersistentStorage</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/persist.html#PersistentStorage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.persist.PersistentStorage" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a reference to the global persistent storage class. Which can be 
 used for storing settings across program restarts.</p>
 </dd></dl>
@@ -526,38 +538,38 @@ used for storing settings across program restarts.</p>
 <span id="plumetrack-settings-module"></span><h2>plumetrack.settings module<a class="headerlink" href="#module-plumetrack.settings" title="Permalink to this headline">¶</a></h2>
 <dl class="exception">
 <dt id="plumetrack.settings.ConfigError">
-<em class="property">exception </em><tt class="descclassname">plumetrack.settings.</tt><tt class="descname">ConfigError</tt><a class="reference internal" href="_modules/plumetrack/settings.html#ConfigError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.settings.ConfigError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/exceptions.html#exceptions.ValueError" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">exceptions.ValueError</span></tt></a></p>
+<em class="property">exception </em><code class="descclassname">plumetrack.settings.</code><code class="descname">ConfigError</code><a class="reference internal" href="_modules/plumetrack/settings.html#ConfigError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.settings.ConfigError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">exceptions.ValueError</span></code></p>
 <p>Exception raised if the configuration file is invalid.</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="plumetrack.settings.CustomOptionParser">
-<em class="property">class </em><tt class="descclassname">plumetrack.settings.</tt><tt class="descname">CustomOptionParser</tt><big>(</big><em>exception_on_error</em><big>)</big><a class="reference internal" href="_modules/plumetrack/settings.html#CustomOptionParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.settings.CustomOptionParser" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/optparse.html#optparse.OptionParser" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">optparse.OptionParser</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">plumetrack.settings.</code><code class="descname">CustomOptionParser</code><span class="sig-paren">(</span><em>exception_on_error</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/settings.html#CustomOptionParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.settings.CustomOptionParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/optparse.html#optparse.OptionParser" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">optparse.OptionParser</span></code></a></p>
 <dl class="method">
 <dt id="plumetrack.settings.CustomOptionParser.error">
-<tt class="descname">error</tt><big>(</big><em>message</em><big>)</big><a class="reference internal" href="_modules/plumetrack/settings.html#CustomOptionParser.error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.settings.CustomOptionParser.error" title="Permalink to this definition">¶</a></dt>
+<code class="descname">error</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/settings.html#CustomOptionParser.error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.settings.CustomOptionParser.error" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="exception">
 <dt id="plumetrack.settings.OptionError">
-<em class="property">exception </em><tt class="descclassname">plumetrack.settings.</tt><tt class="descname">OptionError</tt><a class="reference internal" href="_modules/plumetrack/settings.html#OptionError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.settings.OptionError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/exceptions.html#exceptions.ValueError" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">exceptions.ValueError</span></tt></a></p>
+<em class="property">exception </em><code class="descclassname">plumetrack.settings.</code><code class="descname">OptionError</code><a class="reference internal" href="_modules/plumetrack/settings.html#OptionError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.settings.OptionError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">exceptions.ValueError</span></code></p>
 </dd></dl>
 
 <dl class="function">
 <dt id="plumetrack.settings.get_default_config">
-<tt class="descclassname">plumetrack.settings.</tt><tt class="descname">get_default_config</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack/settings.html#get_default_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.settings.get_default_config" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">plumetrack.settings.</code><code class="descname">get_default_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/settings.html#get_default_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.settings.get_default_config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a default working config which can be used as a template for 
 customisation.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="plumetrack.settings.is_config_file">
-<tt class="descclassname">plumetrack.settings.</tt><tt class="descname">is_config_file</tt><big>(</big><em>filename</em><big>)</big><a class="reference internal" href="_modules/plumetrack/settings.html#is_config_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.settings.is_config_file" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">plumetrack.settings.</code><code class="descname">is_config_file</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/settings.html#is_config_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.settings.is_config_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns True if filename looks like a config file (i.e. is a JSON file) and 
 returns False otherwise. This function is used to determine if we are loading
 configs from a results file or a config file.</p>
@@ -565,7 +577,7 @@ configs from a results file or a config file.</p>
 
 <dl class="function">
 <dt id="plumetrack.settings.load_config_file">
-<tt class="descclassname">plumetrack.settings.</tt><tt class="descname">load_config_file</tt><big>(</big><em>filename</em><big>)</big><a class="reference internal" href="_modules/plumetrack/settings.html#load_config_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.settings.load_config_file" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">plumetrack.settings.</code><code class="descname">load_config_file</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/settings.html#load_config_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.settings.load_config_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load the configuration file and returns a dictionary of name:value pairs
 that were specified in the file. This function calls validate_config on the 
 configuration before returning it.</p>
@@ -575,7 +587,7 @@ results files.</p>
 
 <dl class="function">
 <dt id="plumetrack.settings.parse_cmd_line">
-<tt class="descclassname">plumetrack.settings.</tt><tt class="descname">parse_cmd_line</tt><big>(</big><em>args=None</em>, <em>exception_on_error=False</em><big>)</big><a class="reference internal" href="_modules/plumetrack/settings.html#parse_cmd_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.settings.parse_cmd_line" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">plumetrack.settings.</code><code class="descname">parse_cmd_line</code><span class="sig-paren">(</span><em>args=None</em>, <em>exception_on_error=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/settings.html#parse_cmd_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.settings.parse_cmd_line" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function parses the command line input and returns a tuple
 of (options, args). By default this function parses the sys.vargs, but a list
 of command line arguments may be passed in using the args kwarg instead.</p>
@@ -583,7 +595,7 @@ of command line arguments may be passed in using the args kwarg instead.</p>
 
 <dl class="function">
 <dt id="plumetrack.settings.validate_config">
-<tt class="descclassname">plumetrack.settings.</tt><tt class="descname">validate_config</tt><big>(</big><em>config</em>, <em>filename=None</em><big>)</big><a class="reference internal" href="_modules/plumetrack/settings.html#validate_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.settings.validate_config" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">plumetrack.settings.</code><code class="descname">validate_config</code><span class="sig-paren">(</span><em>config</em>, <em>filename=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/settings.html#validate_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.settings.validate_config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Raises ConfigError if one or more of the configuration entries is 
 invalid. This function checks that all necessary settings are defined, that 
 they have the correct data type and that they are within sensible limits.</p>
@@ -618,41 +630,41 @@ time.sleep(60)</p>
 </div></blockquote>
 <dl class="class">
 <dt id="plumetrack.watcher.LinuxDirectoryWatcher">
-<em class="property">class </em><tt class="descclassname">plumetrack.watcher.</tt><tt class="descname">LinuxDirectoryWatcher</tt><big>(</big><em>dir_name</em>, <em>func</em>, <em>recursive</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/plumetrack/watcher.html#LinuxDirectoryWatcher"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.watcher.LinuxDirectoryWatcher" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">plumetrack.watcher._DirectoryWatcherBase</span></tt>, <tt class="xref py py-class docutils literal"><span class="pre">pyinotify.ProcessEvent</span></tt></p>
+<em class="property">class </em><code class="descclassname">plumetrack.watcher.</code><code class="descname">LinuxDirectoryWatcher</code><span class="sig-paren">(</span><em>dir_name</em>, <em>func</em>, <em>recursive</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/watcher.html#LinuxDirectoryWatcher"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.watcher.LinuxDirectoryWatcher" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">plumetrack.watcher._DirectoryWatcherBase</span></code>, <code class="xref py py-class docutils literal"><span class="pre">pyinotify.ProcessEvent</span></code></p>
 <p>Watcher class using inotify.</p>
 <dl class="method">
 <dt id="plumetrack.watcher.LinuxDirectoryWatcher.process_IN_CLOSE_WRITE">
-<tt class="descname">process_IN_CLOSE_WRITE</tt><big>(</big><em>event</em><big>)</big><a class="reference internal" href="_modules/plumetrack/watcher.html#LinuxDirectoryWatcher.process_IN_CLOSE_WRITE"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.watcher.LinuxDirectoryWatcher.process_IN_CLOSE_WRITE" title="Permalink to this definition">¶</a></dt>
+<code class="descname">process_IN_CLOSE_WRITE</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/watcher.html#LinuxDirectoryWatcher.process_IN_CLOSE_WRITE"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.watcher.LinuxDirectoryWatcher.process_IN_CLOSE_WRITE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.watcher.LinuxDirectoryWatcher.process_IN_CREATE">
-<tt class="descname">process_IN_CREATE</tt><big>(</big><em>event</em><big>)</big><a class="reference internal" href="_modules/plumetrack/watcher.html#LinuxDirectoryWatcher.process_IN_CREATE"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.watcher.LinuxDirectoryWatcher.process_IN_CREATE" title="Permalink to this definition">¶</a></dt>
+<code class="descname">process_IN_CREATE</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/watcher.html#LinuxDirectoryWatcher.process_IN_CREATE"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.watcher.LinuxDirectoryWatcher.process_IN_CREATE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.watcher.LinuxDirectoryWatcher.start">
-<tt class="descname">start</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack/watcher.html#LinuxDirectoryWatcher.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.watcher.LinuxDirectoryWatcher.start" title="Permalink to this definition">¶</a></dt>
+<code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/watcher.html#LinuxDirectoryWatcher.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.watcher.LinuxDirectoryWatcher.start" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="plumetrack.watcher.LinuxDirectoryWatcher.stop">
-<tt class="descname">stop</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack/watcher.html#LinuxDirectoryWatcher.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.watcher.LinuxDirectoryWatcher.stop" title="Permalink to this definition">¶</a></dt>
+<code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/watcher.html#LinuxDirectoryWatcher.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.watcher.LinuxDirectoryWatcher.stop" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="function">
 <dt id="plumetrack.watcher.can_watch_directories">
-<tt class="descclassname">plumetrack.watcher.</tt><tt class="descname">can_watch_directories</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack/watcher.html#can_watch_directories"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.watcher.can_watch_directories" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">plumetrack.watcher.</code><code class="descname">can_watch_directories</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/watcher.html#can_watch_directories"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.watcher.can_watch_directories" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns true if there is a directory watching implementation for
 this system type.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="plumetrack.watcher.create_dir_watcher">
-<tt class="descclassname">plumetrack.watcher.</tt><tt class="descname">create_dir_watcher</tt><big>(</big><em>dir_name</em>, <em>recursive</em>, <em>func</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/plumetrack/watcher.html#create_dir_watcher"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.watcher.create_dir_watcher" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">plumetrack.watcher.</code><code class="descname">create_dir_watcher</code><span class="sig-paren">(</span><em>dir_name</em>, <em>recursive</em>, <em>func</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack/watcher.html#create_dir_watcher"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.watcher.create_dir_watcher" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a watcher class suitable for this system type, or
 None if no implementation is available.</p>
 <ul>
@@ -678,14 +690,14 @@ args or kwargs specified.</p>
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-plumetrack" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="plumetrack.get_plumetrack_icons_dir">
-<tt class="descclassname">plumetrack.</tt><tt class="descname">get_plumetrack_icons_dir</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack.html#get_plumetrack_icons_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.get_plumetrack_icons_dir" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">plumetrack.</code><code class="descname">get_plumetrack_icons_dir</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack.html#get_plumetrack_icons_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.get_plumetrack_icons_dir" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the full path to the directory where the Plumetrack icons
 are stored.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="plumetrack.get_plumetrack_rw_dir">
-<tt class="descclassname">plumetrack.</tt><tt class="descname">get_plumetrack_rw_dir</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack.html#get_plumetrack_rw_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.get_plumetrack_rw_dir" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">plumetrack.</code><code class="descname">get_plumetrack_rw_dir</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack.html#get_plumetrack_rw_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.get_plumetrack_rw_dir" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the path used by plumetrack for things like caching settings,
 storing templates etc. This is platform dependent, but on Linux it 
 will be in ~/.plumetrack</p>
@@ -693,21 +705,21 @@ will be in ~/.plumetrack</p>
 
 <dl class="function">
 <dt id="plumetrack.get_plumetrack_sys_dir">
-<tt class="descclassname">plumetrack.</tt><tt class="descname">get_plumetrack_sys_dir</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack.html#get_plumetrack_sys_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.get_plumetrack_sys_dir" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">plumetrack.</code><code class="descname">get_plumetrack_sys_dir</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack.html#get_plumetrack_sys_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.get_plumetrack_sys_dir" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the path used by Plumetrack to store user independent 
 files</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="plumetrack.have_gpu">
-<tt class="descclassname">plumetrack.</tt><tt class="descname">have_gpu</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/plumetrack.html#have_gpu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.have_gpu" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">plumetrack.</code><code class="descname">have_gpu</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack.html#have_gpu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.have_gpu" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns True if at least one CUDA capable GPU is detected on the system and
 plumetrack has been built with GPU support. Returns False otherwise.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="plumetrack.supermakedirs">
-<tt class="descclassname">plumetrack.</tt><tt class="descname">supermakedirs</tt><big>(</big><em>path</em>, <em>mode</em><big>)</big><a class="reference internal" href="_modules/plumetrack.html#supermakedirs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.supermakedirs" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">plumetrack.</code><code class="descname">supermakedirs</code><span class="sig-paren">(</span><em>path</em>, <em>mode</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plumetrack.html#supermakedirs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plumetrack.supermakedirs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a directory structure and with a certain set of access permissions
 (ignoring the umask - unlike os.makedirs()). This function is copied from 
 <a class="reference external" href="http://stackoverflow.com/questions/5231901/permission-problems-when-creating-a-dir-with-os-makedirs-python">http://stackoverflow.com/questions/5231901/permission-problems-when-creating-a-dir-with-os-makedirs-python</a></p>
@@ -722,7 +734,7 @@ as 0777 or 0o777.</p>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="index.html">
               <img class="logo" src="_static/plumetrack.png" alt="Logo"/>
@@ -752,29 +764,28 @@ as 0777 or 0o777.</p>
   <h4>Next topic</h4>
   <p class="topless"><a href="plumetrack.gui.html"
                         title="next chapter">plumetrack.gui package</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="_sources/plumetrack.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/plumetrack.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -789,13 +800,13 @@ as 0777 or 0o777.</p>
         <li class="right" >
           <a href="API.html" title="API"
              >previous</a> |</li>
-        <li><a href="index.html">Plumetrack 15.06 documentation</a> &raquo;</li>
-          <li><a href="API.html" >API</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Plumetrack 18.05 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="API.html" >API</a> &#187;</li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2014, Nial Peters.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2014, Nial Peters.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.6.
     </div>
   </body>
 </html>

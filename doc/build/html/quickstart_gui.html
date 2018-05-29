@@ -6,15 +6,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Quickstart - Graphical User Interface &mdash; Plumetrack 15.06 documentation</title>
+    <title>Quickstart - Graphical User Interface &#8212; Plumetrack 18.05 documentation</title>
     
-    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '15.06',
+        VERSION:     '18.05',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,14 +23,14 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="_static/plumetrack_32.ico"/>
-    <link rel="top" title="Plumetrack 15.06 documentation" href="index.html" />
+    <link rel="top" title="Plumetrack 18.05 documentation" href="index.html" />
     <link rel="next" title="Quickstart - Command Line" href="quickstart_cmdline.html" />
     <link rel="prev" title="Installation" href="installation.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -45,14 +45,14 @@
         <li class="right" >
           <a href="installation.html" title="Installation"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Plumetrack 15.06 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Plumetrack 18.05 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="quickstart-graphical-user-interface">
 <span id="section-gui-quickstart"></span><h1>Quickstart - Graphical User Interface<a class="headerlink" href="#quickstart-graphical-user-interface" title="Permalink to this headline">¶</a></h1>
@@ -68,6 +68,10 @@
 <p>Before we continue, lets change the line accross which we want to compute the flux, the integration line. To do that, click on the &#8220;Draw&#8221; button next to &#8220;Integration Line 1&#8221; in the bottom right of the window. You should be asked to select an image that you want to use to draw the intergration line. Select one of the images in the examples/villarrica folder (it doesn&#8217;t matter which one you pick). A drawing dialog similar to the one below should open.</p>
 <a class="reference internal image-reference" href="_images/integration_line_draw.png"><img alt="_images/integration_line_draw.png" src="_images/integration_line_draw.png" style="width: 400px;" /></a>
 <p>The integration line (the line across which the flux will be calculated) is shown in blue, with its vertices highlighted in red. The tick marks on the line denote the positive flux direction and this can be changed using the <cite>Reverse integration direction</cite> checkbox at the bottom. Vertices are added to the end of the line by left-clicking on the image and any individual vertex can be removed by right-clicking on it. To remove all the current vertices, click on the <cite>Clear</cite> button in the bottom right of the window. Once you are happy with your choice of integration line click <cite>Ok</cite>. The drawing dialog will close, and the points that you have chosen will be listed in the <cite>Points</cite> box in the format <cite>[[x1, y1], [x2, y2], ...]</cite>- you can also use this box to edit your integration line, but normally it is easier just to draw the points.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">When editing a new configuration file, the integration line is set by default to run from (0,0) to (1,1). Before creating new integration line points you should click the <em>Clear</em> button to remove these points.</p>
+</div>
 <p>You can define as many integration lines as you wish. Additional integration lines are created by clicking on the <cite>Add</cite> button in the bottom right of the main window.</p>
 <p>Now lets see what the motion fields being calculated look like. Click on the <cite>Interactive viewer</cite> button in the toolbar (highighted below).</p>
 <a class="reference internal image-reference" href="_images/interactive_viewer_button.png"><img alt="_images/interactive_viewer_button.png" src="_images/interactive_viewer_button.png" style="width: 400px;" /></a>
@@ -79,14 +83,14 @@
 <p class="first admonition-title">Note</p>
 <p class="last">The realtime display of the motion field requires the recomputation of the motion field each time a parameter is changed. On old hardware, or for very large images this may be rather slow, making the program unresponsive. Increasing the downsizing factor will help to improve performance - but keep in mind that this will also affect the accuracy of the plotted motion field.</p>
 </div>
-<p>Once you are happy with your configuration, save it to a new file using the <cite>Save as</cite> button in the toolbar. Close the interactive viewer and click on the <cite>Batch process</cite> button in the toolbar (immediately to the right of the <cite>Interactive viewer</cite> button). Select the <cite>villarrica</cite> folder as the Image folder, and choose any filename you like for the Results file (this will be a plain text file so you might want to give it a .txt extension). When you are done, click <cite>Ok</cite>. Plumetrack will compute the fluxes accross the integration line(s) you defined in your configuration for all the images in the <cite>villarrica</cite> folder and write them to the results file that you specified (along with their associated error). Easy! Now try having a play with your own images.</p>
+<p>Once you are happy with your configuration, save it to a new file using the <cite>Save as</cite> button in the toolbar. Close the interactive viewer and click on the <cite>Batch process</cite> button in the toolbar (immediately to the right of the <cite>Interactive viewer</cite> button). Select the <cite>villarrica</cite> folder as the Image folder, and choose any filename you like for the Results file (this will be a plain text file so you might want to give it a .txt extension). You can also select to have Plumetrack output the array of computed velocities for each image pair. The velocities will be in m/s (assuming you have correctly specified the pixel size in your configuration) and the arrays will have a shape of MxNx2 where M is the image width N is the image height. arr[:,:,0] are the computed velocities in the x-direction (in m/s) and arr[:,:,1] are the computed velocities in the y-direction (in m/s). When you are done choosing your outputs, click <cite>Ok</cite>. Plumetrack will compute the fluxes accross the integration line(s) you defined in your configuration for all the images in the <cite>villarrica</cite> folder and write them to the results file that you specified (along with their associated error). Easy! Now try having a play with your own images.</p>
 </div>
 
 
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="index.html">
               <img class="logo" src="_static/plumetrack.png" alt="Logo"/>
@@ -97,29 +101,28 @@
   <h4>Next topic</h4>
   <p class="topless"><a href="quickstart_cmdline.html"
                         title="next chapter">Quickstart - Command Line</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="_sources/quickstart_gui.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/quickstart_gui.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -134,12 +137,12 @@
         <li class="right" >
           <a href="installation.html" title="Installation"
              >previous</a> |</li>
-        <li><a href="index.html">Plumetrack 15.06 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Plumetrack 18.05 documentation</a> &#187;</li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2014, Nial Peters.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2014, Nial Peters.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.6.
     </div>
   </body>
 </html>

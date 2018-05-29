@@ -6,15 +6,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Loading Images &mdash; Plumetrack 15.06 documentation</title>
+    <title>Loading Images &#8212; Plumetrack 18.05 documentation</title>
     
-    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '15.06',
+        VERSION:     '18.05',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,14 +23,14 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="_static/plumetrack_32.ico"/>
-    <link rel="top" title="Plumetrack 15.06 documentation" href="index.html" />
+    <link rel="top" title="Plumetrack 18.05 documentation" href="index.html" />
     <link rel="next" title="API" href="API.html" />
     <link rel="prev" title="Configuration" href="configuration.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -45,14 +45,14 @@
         <li class="right" >
           <a href="configuration.html" title="Configuration"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Plumetrack 15.06 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Plumetrack 18.05 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="loading-images">
 <span id="section-loading-images"></span><h1>Loading Images<a class="headerlink" href="#loading-images" title="Permalink to this headline">¶</a></h1>
@@ -115,7 +115,7 @@
 <div class="highlight-python"><div class="highlight"><pre><span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_from_fname</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The ImageLoader class defines a time_from_fname() method which extracts the capture time of an image from its filename (based on the filename_format that the user supplies - see <a class="reference internal" href="configuration.html#section-configuration"><em>Configuration</em></a>) and returns it as a datetime object. This method can also be overridden in order to load images whose capture times do not feature in their filenames - see example below.</p>
+<p>The ImageLoader class defines a time_from_fname() method which extracts the capture time of an image from its filename (based on the filename_format that the user supplies - see <a class="reference internal" href="configuration.html#section-configuration"><span class="std std-ref">Configuration</span></a>) and returns it as a datetime object. This method can also be overridden in order to load images whose capture times do not feature in their filenames - see example below.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="k">return</span> <span class="n">im</span><span class="p">,</span> <span class="n">t</span>
 </pre></div>
 </div>
@@ -139,15 +139,15 @@
 <span class="sd">        the PNG file header.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="c"># open the PNG file using the Python Image Library (PIL)</span>
+        <span class="c1"># open the PNG file using the Python Image Library (PIL)</span>
         <span class="n">im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
 
-        <span class="c"># read the capture time string from the PNG header</span>
-        <span class="n">cap_time_string</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s">&#39;capture time&#39;</span><span class="p">]</span>
+        <span class="c1"># read the capture time string from the PNG header</span>
+        <span class="n">cap_time_string</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;capture time&#39;</span><span class="p">]</span>
 
-        <span class="c"># convert the string to a datetime object. Here we assume that the</span>
-        <span class="c"># capture time is in the format 20151123_092555 (yearmonthday_hourminutesecond)</span>
-        <span class="n">cap_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">cap_time_string</span><span class="p">,</span><span class="s">&quot;%Y%m</span><span class="si">%d</span><span class="s">_%H%M%S&quot;</span><span class="p">)</span>
+        <span class="c1"># convert the string to a datetime object. Here we assume that the</span>
+        <span class="c1"># capture time is in the format 20151123_092555 (yearmonthday_hourminutesecond)</span>
+        <span class="n">cap_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">cap_time_string</span><span class="p">,</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">_%H%M%S&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">cap_time</span>
 </pre></div>
@@ -161,7 +161,7 @@
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="index.html">
               <img class="logo" src="_static/plumetrack.png" alt="Logo"/>
@@ -182,29 +182,28 @@
   <h4>Next topic</h4>
   <p class="topless"><a href="API.html"
                         title="next chapter">API</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="_sources/loading_images.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/loading_images.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -219,12 +218,12 @@
         <li class="right" >
           <a href="configuration.html" title="Configuration"
              >previous</a> |</li>
-        <li><a href="index.html">Plumetrack 15.06 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Plumetrack 18.05 documentation</a> &#187;</li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2014, Nial Peters.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2014, Nial Peters.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.6.
     </div>
   </body>
 </html>

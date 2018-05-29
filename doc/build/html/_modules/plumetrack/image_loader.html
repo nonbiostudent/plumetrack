@@ -6,15 +6,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>plumetrack.image_loader &mdash; Plumetrack 15.06 documentation</title>
+    <title>plumetrack.image_loader &#8212; Plumetrack 18.05 documentation</title>
     
-    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '15.06',
+        VERSION:     '18.05',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,13 +23,13 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="../../_static/plumetrack_32.ico"/>
-    <link rel="top" title="Plumetrack 15.06 documentation" href="../../index.html" />
+    <link rel="top" title="Plumetrack 18.05 documentation" href="../../index.html" />
     <link rel="up" title="plumetrack" href="../plumetrack.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -38,34 +38,34 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">Plumetrack 15.06 documentation</a> &raquo;</li>
-          <li><a href="../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../plumetrack.html" accesskey="U">plumetrack</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../index.html">Plumetrack 18.05 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../plumetrack.html" accesskey="U">plumetrack</a> &#187;</li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <h1>Source code for plumetrack.image_loader</h1><div class="highlight"><pre>
-<span class="c">#Copyright (C) Nial Peters 2014</span>
-<span class="c">#</span>
-<span class="c">#This file is part of plumetrack.</span>
-<span class="c">#</span>
-<span class="c">#plumetrack is free software: you can redistribute it and/or modify</span>
-<span class="c">#it under the terms of the GNU General Public License as published by</span>
-<span class="c">#the Free Software Foundation, either version 3 of the License, or</span>
-<span class="c">#(at your option) any later version.</span>
-<span class="c">#</span>
-<span class="c">#plumetrack is distributed in the hope that it will be useful,</span>
-<span class="c">#but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
-<span class="c">#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
-<span class="c">#GNU General Public License for more details.</span>
-<span class="c">#</span>
-<span class="c">#You should have received a copy of the GNU General Public License</span>
-<span class="c">#along with plumetrack.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+<span class="c1">#Copyright (C) Nial Peters 2014</span>
+<span class="c1">#</span>
+<span class="c1">#This file is part of plumetrack.</span>
+<span class="c1">#</span>
+<span class="c1">#plumetrack is free software: you can redistribute it and/or modify</span>
+<span class="c1">#it under the terms of the GNU General Public License as published by</span>
+<span class="c1">#the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1">#(at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1">#plumetrack is distributed in the hope that it will be useful,</span>
+<span class="c1">#but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1">#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1">#GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1">#You should have received a copy of the GNU General Public License</span>
+<span class="c1">#along with plumetrack.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
 
 <span class="kn">import</span> <span class="nn">cv2</span>
 <span class="kn">import</span> <span class="nn">os</span>
@@ -84,7 +84,7 @@
 <span class="sd">        preprocessing.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__fname_fmt</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s">&#39;filename_format&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__fname_fmt</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;filename_format&#39;</span><span class="p">]</span>
         
     
 <div class="viewcode-block" id="ImageLoader.can_load"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.image_loader.ImageLoader.can_load">[docs]</a>    <span class="k">def</span> <span class="nf">can_load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
@@ -92,26 +92,26 @@
 <span class="sd">        Returns True if it looks like this file can be opened by the loader, </span>
 <span class="sd">        False otherwise.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&quot;file_extension&quot;</span><span class="p">]):</span>
-            <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;file_extension&quot;</span><span class="p">]):</span>
+            <span class="k">return</span> <span class="kc">False</span>
         
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">time_from_fname</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">False</span>
+            <span class="k">return</span> <span class="kc">False</span>
         
-        <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
         
-        </div>
+        
 <div class="viewcode-block" id="ImageLoader.time_from_fname"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.image_loader.ImageLoader.time_from_fname">[docs]</a>    <span class="k">def</span> <span class="nf">time_from_fname</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Given the filename of an image, returns a datetime object representing</span>
 <span class="sd">        the capture time of the image.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">filename</span><span class="p">),</span> 
-                                          <span class="bp">self</span><span class="o">.</span><span class="n">__fname_fmt</span><span class="p">)</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">__fname_fmt</span><span class="p">)</span></div>
     
-    </div>
+    
     <span class="k">def</span> <span class="nf">_load_and_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calls self.load() on the supplied filename and then checks that the </span>
@@ -123,25 +123,25 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
         
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">res</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="c">#return type is correct</span>
-                <span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="c">#returns two values</span>
-                <span class="nb">type</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">is</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="ow">and</span> <span class="c">#image is a numpy array</span>
-                <span class="nb">type</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="ow">is</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">):</span> <span class="c">#capture time is a datetime object</span>
-            <span class="k">raise</span> <span class="n">ImageLoaderError</span><span class="p">(</span><span class="s">&quot;Error in the load() method of custom image &quot;</span>
-                                   <span class="s">&quot;loader class </span><span class="si">%s</span><span class="s">. Expecting a return type of &quot;</span>
-                                   <span class="s">&quot;tuple containing a numpy array of the image &quot;</span>
-                                   <span class="s">&quot;data and a datetime object of the image &quot;</span>
-                                   <span class="s">&quot;capture time.&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">__name__</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">res</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="c1">#return type is correct</span>
+                <span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="c1">#returns two values</span>
+                <span class="nb">type</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">is</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="ow">and</span> <span class="c1">#image is a numpy array</span>
+                <span class="nb">type</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="ow">is</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">):</span> <span class="c1">#capture time is a datetime object</span>
+            <span class="k">raise</span> <span class="n">ImageLoaderError</span><span class="p">(</span><span class="s2">&quot;Error in the load() method of custom image &quot;</span>
+                                   <span class="s2">&quot;loader class </span><span class="si">%s</span><span class="s2">. Expecting a return type of &quot;</span>
+                                   <span class="s2">&quot;tuple containing a numpy array of the image &quot;</span>
+                                   <span class="s2">&quot;data and a datetime object of the image &quot;</span>
+                                   <span class="s2">&quot;capture time.&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">__name__</span><span class="p">)</span>
         
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ImageLoaderError</span><span class="p">(</span><span class="s">&quot;Error in the load() method of custom image &quot;</span>
-                                   <span class="s">&quot;loader class </span><span class="si">%s</span><span class="s">. Returned image array must &quot;</span>
-                                   <span class="s">&quot;be two-dimensional.&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">__name__</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">ImageLoaderError</span><span class="p">(</span><span class="s2">&quot;Error in the load() method of custom image &quot;</span>
+                                   <span class="s2">&quot;loader class </span><span class="si">%s</span><span class="s2">. Returned image array must &quot;</span>
+                                   <span class="s2">&quot;be two-dimensional.&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">__name__</span><span class="p">)</span>
         
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ImageLoaderError</span><span class="p">(</span><span class="s">&quot;Error in the load() method of custom image &quot;</span>
-                                   <span class="s">&quot;loader class </span><span class="si">%s</span><span class="s">. Returned image has too many &quot;</span>
-                                   <span class="s">&quot;channels.&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">__name__</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">ImageLoaderError</span><span class="p">(</span><span class="s2">&quot;Error in the load() method of custom image &quot;</span>
+                                   <span class="s2">&quot;loader class </span><span class="si">%s</span><span class="s2">. Returned image has too many &quot;</span>
+                                   <span class="s2">&quot;channels.&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">__name__</span><span class="p">)</span>
         
         <span class="k">return</span> <span class="n">res</span>
         
@@ -159,16 +159,16 @@
         <span class="n">im</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">IMREAD_UNCHANGED</span><span class="p">)</span>
         <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_from_fname</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
         
-        <span class="k">return</span> <span class="n">im</span><span class="p">,</span><span class="n">t</span>
+        <span class="k">return</span> <span class="n">im</span><span class="p">,</span><span class="n">t</span></div></div>
 
-</div></div>
+
 <div class="viewcode-block" id="ImageLoaderError"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.image_loader.ImageLoaderError">[docs]</a><span class="k">class</span> <span class="nc">ImageLoaderError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Exception raised when a specified image loader cannot be found/loaded.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">pass</span>
+    <span class="k">pass</span></div>
 
-</div>
+
 <div class="viewcode-block" id="validate_loader"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.image_loader.validate_loader">[docs]</a><span class="k">def</span> <span class="nf">validate_loader</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns True if the config contains a valid value for the custom_image_loader</span>
@@ -177,78 +177,76 @@
     
     <span class="k">try</span><span class="p">:</span>
         <span class="n">get_image_loader</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">return</span> <span class="kc">True</span>
     <span class="k">except</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
     
 
-</div>
+
 <div class="viewcode-block" id="get_image_loader"><a class="viewcode-back" href="../../plumetrack.html#plumetrack.image_loader.get_image_loader">[docs]</a><span class="k">def</span> <span class="nf">get_image_loader</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns an image loader object as defined in the config. This may be the </span>
 <span class="sd">    default loader, or a custom one if that has been specified in the configuration.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">config</span><span class="p">[</span><span class="s">&quot;custom_image_loader&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&quot;&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;custom_image_loader&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">ImageLoader</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
     
-    <span class="n">folder</span><span class="p">,</span> <span class="n">module_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s">&quot;custom_image_loader&quot;</span><span class="p">])</span>
+    <span class="n">folder</span><span class="p">,</span> <span class="n">module_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;custom_image_loader&quot;</span><span class="p">])</span>
     
-    <span class="c">#set the system path to the folder where the module lives</span>
+    <span class="c1">#set the system path to the folder where the module lives</span>
     <span class="n">old_sys_path</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span>
-    <span class="k">if</span> <span class="n">folder</span> <span class="o">!=</span> <span class="s">&quot;&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">folder</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="p">[</span><span class="n">folder</span><span class="p">]</span> <span class="o">+</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span>
     
     <span class="k">try</span><span class="p">:</span>
-        <span class="c">#import the module</span>
+        <span class="c1">#import the module</span>
         <span class="n">mod_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">module_file</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">mod</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">mod_name</span><span class="p">)</span>
         
     <span class="k">finally</span><span class="p">:</span>
-        <span class="c">#reset system path again</span>
+        <span class="c1">#reset system path again</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">old_sys_path</span>
         
-    <span class="c">#search the module for valid loader classes</span>
+    <span class="c1">#search the module for valid loader classes</span>
     <span class="n">isvalid_loader</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ImageLoader</span><span class="p">)</span> <span class="ow">and</span> <span class="n">x</span> <span class="o">!=</span> <span class="n">ImageLoader</span>
     <span class="n">loaders</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">mod</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="n">isvalid_loader</span><span class="p">(</span><span class="n">c</span><span class="p">)]</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">loaders</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">ImageLoaderError</span><span class="p">(</span><span class="s">&quot;File </span><span class="si">%s</span><span class="s"> did not contain any ImageLoader classes.&quot;</span><span class="o">%</span><span class="n">module_file</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">ImageLoaderError</span><span class="p">(</span><span class="s2">&quot;File </span><span class="si">%s</span><span class="s2"> did not contain any ImageLoader classes.&quot;</span><span class="o">%</span><span class="n">module_file</span><span class="p">)</span>
     
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">loaders</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">ImageLoaderError</span><span class="p">(</span><span class="s">&quot;File </span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s"> contains multiple ImageLoader classes&quot;</span><span class="o">%</span><span class="n">module_file</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">ImageLoaderError</span><span class="p">(</span><span class="s2">&quot;File </span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2"> contains multiple ImageLoader classes&quot;</span><span class="o">%</span><span class="n">module_file</span><span class="p">)</span>
     
-    <span class="k">return</span> <span class="n">loaders</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="n">config</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">loaders</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="n">config</span><span class="p">)</span></div>
     
     
     
-</pre></div></div>
+
+</pre></div>
 
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../index.html">
               <img class="logo" src="../../_static/plumetrack.png" alt="Logo"/>
             </a></p>
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -257,14 +255,14 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">Plumetrack 15.06 documentation</a> &raquo;</li>
-          <li><a href="../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../plumetrack.html" >plumetrack</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../index.html">Plumetrack 18.05 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../plumetrack.html" >plumetrack</a> &#187;</li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2014, Nial Peters.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2014, Nial Peters.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.6.
     </div>
   </body>
 </html>
