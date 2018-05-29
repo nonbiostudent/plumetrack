@@ -10,7 +10,7 @@ The plumetrack program is designed to be the final component in UV camera proces
 Full documentation can be found in the UserGuide.html file included with the plumetrack distribution, or can be viewed [online here](https://nonbiostudent.github.io/plumetrack).
 
 ## Downloads
-Plumetrack releases can be downloaded from the [here](https://github.com/nonbiostudent/plumetrack/releases).
+Plumetrack releases can be downloaded from [here](https://github.com/nonbiostudent/plumetrack/releases).
 
 
 ## Related Links
