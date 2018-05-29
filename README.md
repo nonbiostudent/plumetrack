@@ -9,6 +9,10 @@ The plumetrack program is designed to be the final component in UV camera proces
 
 Full documentation can be found in the UserGuide.html file included with the plumetrack distribution, or can be viewed [online here](https://nonbiostudent.github.io/plumetrack).
 
+## Downloads
+Plumetrack releases can be downloaded from the [here](https://github.com/nonbiostudent/plumetrack/releases).
+
+
 ## Related Links
 For more information about using motion estimation algorithms for SO2 flux calculations see [this article](http://www.sciencedirect.com/science/article/pii/S0377027314002807).
 
