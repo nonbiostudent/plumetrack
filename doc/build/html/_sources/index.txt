@@ -16,6 +16,8 @@ It is designed with volcanic monitoring in mind and can perform both real-time a
 
 Plumetrack can be used from the command-line, to facilitate easy integration with existing UV image processing toolchains and simple automation of flux calculations. It also ships with a graphical user interface which allows program settings to be adjusted whilst viewing in realtime the effects that the changes have on the computed motion field. This makes configuration of flux calculations relatively straightforward, and allows use of the majority of the program's features without needing to type magic runes at a command prompt.
 
+A software paper introducing Plumetrack, its implementation and use can be found `here <https://doi.org/10.1016/j.cageo.2018.05.014>`_. If you use Plumetrack in your work, please ackowledge this by citing the paper.
+
 
 
 Contents:
